@@ -26,3 +26,4 @@ packages = ["autoascend", "nethack_screensaver"]
 testpaths = ["tests"]
 markers = ["slow: plays real games (minutes)"]
 addopts = "-m 'not slow'"
+filterwarnings = ["error:overflow encountered:RuntimeWarning"]

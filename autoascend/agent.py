@@ -383,7 +383,7 @@ class Agent:
         self.step_count += 1
         self.score += reward
 
-        self.cursor_pos = (observation['tty_cursor'][0] - 1, observation['tty_cursor'][1])
+        self.cursor_pos = (int(observation['tty_cursor'][0]) - 1, int(observation['tty_cursor'][1]))
 
         if hasattr(self, 'blstats'):
             for item in flatten_items(self.inventory.items):
@@ -457,7 +457,7 @@ class Agent:
             self._previous_glyphs = self.last_observation['glyphs']
             self.last_observation = observation
 
-        self.blstats = BLStats(*self.last_observation['blstats'])
+        self.blstats = BLStats(*self.last_observation['blstats'][:len(BLStats._fields)])
         self.glyphs = self.last_observation['glyphs']
 
         self.stats_logger.log_cumulative_value('max_turns_on_position',

@@ -1,0 +1,114 @@
+"""Run one AutoAscend game on NLE, headless-capable."""
+from __future__ import annotations
+
+import signal
+from dataclasses import dataclass
+from typing import Callable
+
+import nle.nethack as nh
+from nle.env.tasks import NetHackChallenge
+
+from autoascend.env_wrapper import EnvWrapper
+
+DEPTH = 12
+TURN = 20
+
+
+class WatchdogTimeout(KeyboardInterrupt):
+    """Raised from SIGALRM; KeyboardInterrupt so the agent never swallows it."""
+
+
+@dataclass
+class GameResult:
+    role: str
+    race: str
+    alignment: str
+    max_depth: int
+    turns: int
+    score: int
+    end_reason: str
+
+
+class _ScreenWatchdog:
+    def __init__(self, seconds: float | None):
+        self.seconds = seconds
+        self._old = None
+
+    def _fire(self, signum, frame):
+        raise WatchdogTimeout()
+
+    def __enter__(self):
+        if self.seconds:
+            self._old = signal.signal(signal.SIGALRM, self._fire)
+            signal.setitimer(signal.ITIMER_REAL, self.seconds)
+        return self
+
+    def screen_changed(self):
+        if self.seconds:
+            signal.setitimer(signal.ITIMER_REAL, self.seconds)
+
+    def __exit__(self, *exc):
+        if self.seconds:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+            signal.signal(signal.SIGALRM, self._old)
+        return False
+
+
+def role_abbrev(obs: dict) -> str:
+    bl = obs["blstats"]
+    glyph = obs["glyphs"][bl[1], bl[0]]
+    if not nh.glyph_is_monster(glyph):
+        return "?"
+    return nh.permonst(nh.glyph_to_mon(glyph)).mname[:3].capitalize()
+
+
+def run_game(
+    role: str | None = None,
+    on_frame: Callable[[dict], None] | None = None,
+    max_steps: int | None = None,
+    watchdog_seconds: float | None = 60.0,
+) -> GameResult:
+    env = NetHackChallenge(no_progress_timeout=1000)
+    max_depth = 1
+    turns = 0
+    prev_chars = None
+    watchdog = _ScreenWatchdog(watchdog_seconds)
+
+    def on_step(obs):
+        nonlocal max_depth, turns, prev_chars
+        # The final (game-over) observation has all-zero blstats; keep the last real values.
+        max_depth = max(max_depth, int(obs["blstats"][DEPTH]))
+        turns = max(turns, int(obs["blstats"][TURN]))
+        chars = obs["tty_chars"]
+        if prev_chars is None or not (chars == prev_chars).all():
+            watchdog.screen_changed()
+            prev_chars = chars.copy()
+        if on_frame is not None:
+            on_frame(obs)
+
+    wrapper = EnvWrapper(env, on_step=on_step, step_limit=max_steps, role=role,
+                         agent_args=dict(panic_on_errors=False, verbose=False))
+    try:
+        with watchdog:
+            wrapper.main()
+        end_reason = wrapper.end_reason or "finished"
+    except WatchdogTimeout:
+        end_reason = "watchdog"
+    except Exception as e:  # never let one bad game kill the screensaver
+        end_reason = f"exception: {type(e).__name__}: {e}"
+    finally:
+        env.close()
+
+    role_s, race, _gender, alignment = _character(wrapper)
+    return GameResult(role_s, race, alignment, max_depth, turns,
+                      int(wrapper.score), end_reason)
+
+
+def _character(wrapper) -> tuple[str, str, str, str]:
+    try:
+        parts = str(wrapper.agent.character).split()[0].split("-")
+        if len(parts) >= 4:
+            return parts[0], parts[1], parts[2], parts[3]
+    except Exception:
+        pass
+    return "?", "?", "?", "?"

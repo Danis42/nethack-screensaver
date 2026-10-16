@@ -1,0 +1,47 @@
+import signal
+import time
+
+import pytest
+
+from nethack_screensaver import game
+
+
+def test_watchdog_fires_without_screen_change():
+    wd = game._ScreenWatchdog(seconds=1)
+    with pytest.raises(game.WatchdogTimeout):
+        with wd:
+            time.sleep(3)
+
+
+def test_watchdog_rearmed_by_changes_does_not_fire():
+    wd = game._ScreenWatchdog(seconds=1)
+    with wd:
+        for i in range(6):
+            time.sleep(0.4)
+            wd.screen_changed()
+    assert signal.getitimer(signal.ITIMER_REAL)[0] == 0
+
+
+@pytest.mark.slow
+def test_headless_games_complete_without_exceptions():
+    for _ in range(2):
+        frames = []
+        result = game.run_game(on_frame=lambda obs: frames.append(1), max_steps=3000)
+        assert not result.end_reason.startswith("exception"), result.end_reason
+        assert result.max_depth >= 1
+        assert result.turns > 0
+        assert result.role and result.race and result.alignment
+        assert len(frames) > 10
+
+
+@pytest.mark.slow
+def test_pinned_role():
+    result = game.run_game(role="val", max_steps=200)
+    assert result.role == "val"
+
+
+@pytest.mark.slow
+def test_agent_makes_progress():
+    # Full games take ~10-40 s headless; a healthy port gets past Dlvl 2 in at least one of four.
+    depths = [game.run_game().max_depth for _ in range(4)]
+    assert max(depths) >= 3, depths
