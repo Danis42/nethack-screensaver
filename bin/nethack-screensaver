@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# NetHack screensaver launcher: owns the tty, runs the player, exits on any key.
+set -u
+
+REPO="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}/nethack-screensaver"
+LOG="$STATE/player.log"
+mkdir -p "$STATE"
+
+if [[ ! -t 0 || ! -t 1 ]]; then
+    echo "nethack-screensaver: needs an interactive terminal" >&2
+    exit 1
+fi
+
+if [[ -n "${NETHACK_SCREENSAVER_PLAYER:-}" ]]; then
+    read -r -a PLAYER <<<"$NETHACK_SCREENSAVER_PLAYER"
+else
+    PY="$REPO/.venv/bin/python"
+    if [[ ! -x "$PY" ]]; then
+        echo "nethack-screensaver: run 'uv sync' in $REPO first" >&2
+        exit 1
+    fi
+    PLAYER=("$PY" -m nethack_screensaver.player)
+fi
+
+saved_stty="$(stty -g)"
+player_pid=""
+
+cleanup() {
+    if [[ -n "$player_pid" ]] && kill -0 "$player_pid" 2>/dev/null; then
+        kill -TERM "$player_pid" 2>/dev/null
+        for _ in {1..10}; do
+            kill -0 "$player_pid" 2>/dev/null || break
+            sleep 0.1
+        done
+        kill -KILL "$player_pid" 2>/dev/null
+        wait "$player_pid" 2>/dev/null
+    fi
+    stty "$saved_stty"
+    printf '\e[0m\e[?25h\e[?1049l'
+}
+trap cleanup EXIT
+trap 'exit 130' INT TERM HUP
+
+printf '\e[?1049h\e[?25l\e[2J'
+stty raw -echo
+
+nice -n 10 "${PLAYER[@]}" </dev/null 2>>"$LOG" &
+player_pid=$!
+
+status=0
+while true; do
+    if IFS= read -r -s -n 1 -t 0.2 key; then
+        # swallow the rest of a multi-byte key (arrows, F-keys, paste)
+        while IFS= read -r -s -n 1 -t 0.05 key; do :; done
+        break
+    fi
+    if ! kill -0 "$player_pid" 2>/dev/null; then
+        wait "$player_pid"
+        status=$?
+        player_pid=""
+        printf '\e[0m\e[2J\e[1;1Hnethack-screensaver: player exited (%d), see %s' "$status" "$LOG"
+        sleep 3
+        break
+    fi
+done
+exit "$status"
