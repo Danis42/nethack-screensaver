@@ -17,7 +17,7 @@ screen.
 
 | Topic | Decision |
 |---|---|
-| Idle detection | zsh `TMOUT=300` + `TRAPALRM`; only fires while idle at the prompt, never during a running program |
+| Idle detection | zsh `TMOUT` + `TRAPALRM`; only fires while idle at the prompt, never during a running program. Timeout from env var `NETHACK_SCREENSAVER_IDLE` (default 300), read by the zsh hook so shell startup never runs Python |
 | Exit | Any keypress; the key is swallowed (not passed to the shell) |
 | Bot | AutoAscend only (NeurIPS 2021 NetHack Challenge winner, rule-based, no ML) |
 | Runtime | Port AutoAscend to modern deps; `uv` venv on Python 3.13; no Docker |
@@ -87,15 +87,14 @@ screen.
    runs from a `trap` on EXIT/INT/TERM so the terminal is never left broken.
    Can be run manually from the prompt.
 
-5. **`zsh/nethack-screensaver.zsh` — shell hook.** Sets `TMOUT` from config
-   default (300) and defines `TRAPALRM` to run the launcher, then
+5. **`zsh/nethack-screensaver.zsh` — shell hook.** Sets `TMOUT` from
+   `NETHACK_SCREENSAVER_IDLE` (default 300) and defines `TRAPALRM` to run the launcher, then
    `zle reset-prompt` so the prompt is redrawn intact. Sourced from
    `~/.zshrc`.
 
 6. **Config** — `~/.config/nethack-screensaver/config.toml`, all keys
    optional, read via stdlib `tomllib`:
    ```toml
-   idle_timeout = 300     # seconds (applied by the zsh hook)
    delay = 0.1            # seconds per move
    level_pause = 1.0      # extra pause on new dungeon level
    end_pause = 5.0        # hold time on the final screen

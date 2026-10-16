@@ -1,0 +1,43 @@
+# nethack-screensaver
+
+After 5 minutes idle at your zsh prompt, your terminal shows NetHack played by
+[AutoAscend](https://github.com/maciej-sypetkowski/autoascend) (ported to
+Python 3.13 / NLE 1.3.0). Any key returns to your prompt.
+
+## Install
+
+```sh
+cd ~/screens
+uv sync
+echo 'source ~/screens/zsh/nethack-screensaver.zsh' >> ~/.zshrc
+```
+
+Optional: `ln -s ~/screens/bin/nethack-screensaver ~/.local/bin/` to start it manually.
+
+## Configure
+
+Idle time: `export NETHACK_SCREENSAVER_IDLE=300` (before sourcing the hook).
+
+`~/.config/nethack-screensaver/config.toml` (all optional):
+
+```toml
+delay = 0.1          # seconds per move
+level_pause = 1.0    # pause on a new dungeon level
+end_pause = 5.0      # hold the final screen
+status_line = false  # "Game #12 · Val · Dlvl 7 · T:4310 · Best: Dlvl 14"
+role = "random"      # or arc bar cav hea kni mon pri ran rog sam tou val wiz
+```
+
+Game history: `~/.local/state/nethack-screensaver/games.jsonl`.
+Errors: `~/.local/state/nethack-screensaver/player.log`.
+
+## Develop
+
+```sh
+uv run pytest                 # fast tests
+uv run pytest -m slow         # plays real games
+uv run python scripts/benchmark.py -n 50 -j 8
+```
+
+AutoAscend is MIT licensed (`autoascend/LICENSE`); port notes and benchmark in
+`autoascend/PORTING.md`.
