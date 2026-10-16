@@ -89,3 +89,40 @@ def test_zsh_idle_hook_starts_and_returns_to_prompt(tmp_path):
     assert b"\r\nkept" in out  # buffer survived and ran; the 'x' was swallowed
     os.write(master, b"exit\n")
     p.wait(timeout=5)
+
+
+def test_key_during_crash_message_not_leaked(tmp_path):
+    master, slave = pty.openpty()
+    env = dict(os.environ,
+               XDG_STATE_HOME=str(tmp_path),
+               NETHACK_SCREENSAVER_PLAYER=f"{sys.executable} {ROOT/'tests'/'fake_player.py'} crash")
+    script = f'"{LAUNCHER}"; IFS= read -r -t 0.5 -n 10 rest; printf "LEFT[%s]" "$rest"'
+    p = subprocess.Popen(["bash", "-c", script], stdin=slave, stdout=slave, stderr=slave, env=env)
+    os.close(slave)
+    _read_until(master, b"player exited")
+    os.write(master, b"\r")
+    out = _read_until(master, b"LEFT[", timeout=6) + _read_until(master, b"]", timeout=2)
+    p.wait(timeout=5)
+    assert b"LEFT[]" in out, out[-80:]
+
+
+def test_terminal_gone_with_hup_ignored_exits_and_stops_player(tmp_path):
+    master, slave = pty.openpty()
+    pidfile = tmp_path / "player.pid"
+    env = dict(os.environ,
+               XDG_STATE_HOME=str(tmp_path),
+               FAKE_PLAYER_PIDFILE=str(pidfile),
+               NETHACK_SCREENSAVER_PLAYER=f"{sys.executable} {ROOT/'tests'/'fake_player.py'} run")
+    p = subprocess.Popen(["bash", "-c", f'trap "" HUP; exec "{LAUNCHER}"'],
+                         stdin=slave, stdout=slave, stderr=slave, env=env, start_new_session=True)
+    os.close(slave)
+    _read_until(master, b"FAKEPLAYER")
+    os.close(master)
+    try:
+        p.wait(timeout=5)
+    finally:
+        if p.poll() is None:
+            p.kill()
+    player_pid = int(pidfile.read_text())
+    time.sleep(0.5)
+    assert not Path(f"/proc/{player_pid}").exists() or "zombie" in Path(f"/proc/{player_pid}/status").read_text().lower()

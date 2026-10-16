@@ -32,13 +32,18 @@ def _on_term(signum, frame):
     raise SystemExit(0)
 
 
+def _install_signals(renderer: Renderer) -> None:
+    signal.signal(signal.SIGTERM, _on_term)
+    signal.signal(signal.SIGHUP, _on_term)  # terminal closed: still run env.close()
+    signal.signal(signal.SIGWINCH, lambda *_: renderer.request_redraw())
+
+
 def main() -> None:
     cfg = load_config(config_path())
     log_path = state_dir() / "games.jsonl"
     out = sys.stdout
     renderer = Renderer()
-    signal.signal(signal.SIGTERM, _on_term)
-    signal.signal(signal.SIGWINCH, lambda *_: renderer.invalidate())
+    _install_signals(renderer)
 
     _write(out, renderer.message(SPLASH, *_size()))
 

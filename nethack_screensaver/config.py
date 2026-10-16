@@ -1,7 +1,11 @@
+import math
 import sys
 import tomllib
 from dataclasses import dataclass, fields
 from pathlib import Path
+
+# Upper bounds keep pacing below the 60 s game watchdog and out of sleep() overflow.
+MAX_SECONDS = {"delay": 10.0, "level_pause": 10.0, "end_pause": 300.0}
 
 ROLES = ("arc", "bar", "cav", "hea", "kni", "mon", "pri",
          "ran", "rog", "sam", "tou", "val", "wiz")
@@ -17,8 +21,9 @@ class Config:
 
 
 def _valid(name, value):
-    if name in ("delay", "level_pause", "end_pause"):
-        return isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
+    if name in MAX_SECONDS:
+        return (isinstance(value, (int, float)) and not isinstance(value, bool)
+                and math.isfinite(value) and 0 <= value <= MAX_SECONDS[name])
     if name == "status_line":
         return isinstance(value, bool)
     if name == "role":
@@ -35,7 +40,7 @@ def load_config(path: Path) -> Config:
         raw = tomllib.loads(Path(path).read_text())
     except FileNotFoundError:
         return Config()
-    except (OSError, tomllib.TOMLDecodeError) as e:
+    except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as e:
         _warn(f"cannot read {path}: {e}; using defaults")
         return Config()
 
@@ -47,5 +52,5 @@ def load_config(path: Path) -> Config:
         elif not _valid(key, value):
             _warn(f"invalid value for {key}: {value!r}; using default")
         else:
-            values[key] = float(value) if key in ("delay", "level_pause", "end_pause") else value
+            values[key] = float(value) if key in MAX_SECONDS else value
     return Config(**values)

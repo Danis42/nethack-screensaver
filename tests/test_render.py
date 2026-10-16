@@ -103,3 +103,28 @@ def test_message_centered():
 
 def test_format_status():
     assert format_status(12, "Val", 7, 4310, 14) == "Game #12 · Val · Dlvl 7 · T:4310 · Best: Dlvl 14"
+
+
+class _ResizeMidFrame(np.ndarray):
+    """Array whose row access simulates SIGWINCH arriving during frame()."""
+    renderer = None
+
+    def __getitem__(self, idx):
+        if _ResizeMidFrame.renderer is not None:
+            _ResizeMidFrame.renderer.request_redraw()
+        return np.asarray(self)[idx]
+
+
+def test_resize_signal_during_frame_is_safe_and_redraws_next():
+    r = Renderer()
+    chars, colors = screen({0: "a"})
+    r.frame(chars, colors, 80, 24)
+    chars2 = chars.copy()
+    chars2[0, 0] = ord("b")
+    racy = chars2.view(_ResizeMidFrame)
+    _ResizeMidFrame.renderer = r
+    try:
+        r.frame(racy, colors, 80, 24)
+    finally:
+        _ResizeMidFrame.renderer = None
+    assert "\x1b[2J" in r.frame(chars2, colors, 80, 24)

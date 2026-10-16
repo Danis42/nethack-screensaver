@@ -12,3 +12,16 @@ def test_level_change_uses_level_pause():
 
 def test_first_frame_uses_delay():
     assert frame_delay(None, 1, Config(delay=0.2)) == 0.2
+
+
+def test_hangup_and_term_exit_cleanly(monkeypatch):
+    import signal
+
+    from nethack_screensaver import player
+    from nethack_screensaver.render import Renderer
+
+    installed = {}
+    monkeypatch.setattr(signal, "signal", lambda sig, h: installed.__setitem__(sig, h))
+    player._install_signals(Renderer())
+    assert installed[signal.SIGTERM] is player._on_term
+    assert installed[signal.SIGHUP] is player._on_term

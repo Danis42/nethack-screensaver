@@ -26,6 +26,11 @@ fi
 saved_stty="$(stty -g)"
 player_pid=""
 
+# Discard pending keystrokes so none reach the shell after we exit.
+drain_input() {
+    while IFS= read -r -s -n 1 -t 0.05 key; do :; done
+}
+
 cleanup() {
     if [[ -n "$player_pid" ]] && kill -0 "$player_pid" 2>/dev/null; then
         kill -TERM "$player_pid" 2>/dev/null
@@ -36,6 +41,7 @@ cleanup() {
         kill -KILL "$player_pid" 2>/dev/null
         wait "$player_pid" 2>/dev/null
     fi
+    drain_input
     stty "$saved_stty"
     printf '\e[0m\e[?25h\e[?1049l'
 }
@@ -50,17 +56,21 @@ player_pid=$!
 
 status=0
 while true; do
-    if IFS= read -r -s -n 1 -t 0.2 key; then
-        # swallow the rest of a multi-byte key (arrows, F-keys, paste)
-        while IFS= read -r -s -n 1 -t 0.05 key; do :; done
+    IFS= read -r -s -n 1 -t 0.2 key
+    rc=$?
+    if (( rc == 0 )); then
+        drain_input  # rest of a multi-byte key (arrows, F-keys, paste)
         break
+    fi
+    if (( rc <= 128 )); then
+        break  # EOF/EIO: terminal is gone (timeouts return >128)
     fi
     if ! kill -0 "$player_pid" 2>/dev/null; then
         wait "$player_pid"
         status=$?
         player_pid=""
         printf '\e[0m\e[2J\e[1;1Hnethack-screensaver: player exited (%d), see %s' "$status" "$LOG"
-        sleep 3
+        IFS= read -r -s -n 1 -t 3 key  # dismissable; the key is swallowed by cleanup
         break
     fi
 done

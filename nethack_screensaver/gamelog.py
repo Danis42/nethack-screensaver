@@ -22,8 +22,8 @@ def append_result(path: Path, result: GameResult, now: datetime | None = None) -
 def read_stats(path: Path) -> LogStats:
     games = best = 0
     try:
-        lines = Path(path).read_text().splitlines()
-    except FileNotFoundError:
+        lines = Path(path).read_text(errors="replace").splitlines()
+    except OSError:
         return LogStats(0, 0)
     for line in lines:
         try:

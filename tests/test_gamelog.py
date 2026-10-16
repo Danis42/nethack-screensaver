@@ -33,3 +33,17 @@ def test_read_stats_skips_malformed_lines(tmp_path):
         f.write("not json\n")
         f.write('{"max_depth": "x"}\n')
     assert read_stats(p) == LogStats(games=1, best_depth=4)
+
+
+def test_read_stats_survives_invalid_utf8(tmp_path):
+    p = tmp_path / "games.jsonl"
+    append_result(p, _r(5))
+    with p.open("ab") as f:
+        f.write(b"\xff\xfe garbage\n")
+    assert read_stats(p) == LogStats(games=1, best_depth=5)
+
+
+def test_read_stats_survives_unreadable_path(tmp_path):
+    d = tmp_path / "games.jsonl"
+    d.mkdir()
+    assert read_stats(d) == LogStats(0, 0)

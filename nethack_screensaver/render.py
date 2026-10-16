@@ -28,7 +28,12 @@ def format_status(game_no: int, role: str, depth: int, turn: int, best_depth: in
 
 class Renderer:
     def __init__(self):
+        self._redraw_requested = False
         self.invalidate()
+
+    def request_redraw(self) -> None:
+        """Signal-safe (e.g. from SIGWINCH): only sets a flag that frame() acts on."""
+        self._redraw_requested = True
 
     def invalidate(self) -> None:
         self._chars = None
@@ -44,6 +49,9 @@ class Renderer:
         return f"{CLEAR}\x1b[{row};{col}H{text}"
 
     def frame(self, tty_chars, tty_colors, cols, rows, status=None) -> str:
+        if self._redraw_requested:
+            self._redraw_requested = False
+            self.invalidate()
         need_rows = H + (1 if status is not None else 0)
         if cols < W or rows < need_rows:
             if self._size == ("small", cols, rows):
