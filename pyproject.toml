@@ -1,0 +1,28 @@
+[project]
+name = "nethack-screensaver"
+version = "0.1.0"
+description = "Terminal screensaver: AutoAscend plays NetHack"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "nle==1.3.0",
+    "numpy>=2.0",
+    "numba>=0.61",
+    "opencv-python-headless>=4.10",
+    "scipy>=1.14",
+    "toolz>=1.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["autoascend", "nethack_screensaver"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: plays real games (minutes)"]
+addopts = "-m 'not slow'"
