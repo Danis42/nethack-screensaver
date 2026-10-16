@@ -14,3 +14,25 @@ Target: Python 3.13, NLE 1.3.0 (gymnasium), numpy 2, modern numba/opencv.
 - agent.py: `BLStats(*blstats[:26])` — tolerate extra blstats fields in newer NLE.
 - agent.py: `cursor_pos` casts `tty_cursor` (uint8) to int. Under NumPy 2 (NEP 50) `uint8(0) - 1` is 255, not -1 as under NumPy 1 — a silent behavior change. Tests now turn overflow RuntimeWarnings into errors.
 - Observed: the final game-over observation has all-zero blstats; `game.run_game` keeps the last non-zero turn/depth.
+
+## Benchmark (2026-10-16, 50 games, `scripts/benchmark.py -n 50 -j 10`)
+
+```
+games            : 50
+median score     : 5952.5
+median max depth : 3.0
+median turns     : 19001.0
+exceptions       : 4
+watchdog         : 0
+  3x AssertionError:
+  1x AssertionError: ('TODO: nested containers', set(), [a partly
+```
+
+Reference: upstream AutoAscend's NeurIPS 2021 challenge median score was 5,300
+(Hambro et al., "Insights From the NeurIPS 2021 NetHack Challenge", arXiv:2203.11889).
+The port's median (5,952) is in line with it. Most deaths involve fainting from
+hunger; the same report notes a "very high incidence of death due to 'fainted of
+starvation'" for challenge agents, and a traced game showed the port's eating
+works (corpses, rations, prayer at Fainting), so this is upstream behavior, not a
+port regression. Remaining exceptions are upstream `AssertionError`s (e.g. "TODO:
+nested containers"); they end the game and the screensaver starts a new one.
