@@ -5,7 +5,7 @@ from dataclasses import dataclass, fields
 from pathlib import Path
 
 # Upper bounds keep pacing below the 60 s game watchdog and out of sleep() overflow.
-MAX_SECONDS = {"delay": 10.0, "level_pause": 10.0, "end_pause": 300.0}
+MAX_SECONDS = {"delay": 10.0, "fast_delay": 10.0, "level_pause": 10.0, "end_pause": 300.0}
 
 ROLES = ("arc", "bar", "cav", "hea", "kni", "mon", "pri",
          "ran", "rog", "sam", "tou", "val", "wiz")
@@ -14,6 +14,7 @@ ROLES = ("arc", "bar", "cav", "hea", "kni", "mon", "pri",
 @dataclass(frozen=True)
 class Config:
     delay: float = 0.1
+    fast_delay: float = 0.005  # boring stretches (see pacing.py); = delay disables
     level_pause: float = 1.0
     end_pause: float = 5.0
     status_line: bool = False

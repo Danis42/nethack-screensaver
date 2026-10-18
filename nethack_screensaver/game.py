@@ -9,9 +9,11 @@ import nle.nethack as nh
 from nle.env.tasks import NetHackChallenge
 
 from autoascend.env_wrapper import EnvWrapper
+from autoascend.global_logic import Milestone
 
 DEPTH = 12
 TURN = 20
+FARMING = (Milestone.BE_ON_FIRST_LEVEL, Milestone.FARM_UPPER_DUNGEON)
 
 
 class WatchdogTimeout(KeyboardInterrupt):
@@ -84,7 +86,7 @@ def run_game(
             watchdog.screen_changed()
             prev_chars = chars.copy()
         if on_frame is not None:
-            on_frame(obs)
+            on_frame({**obs, "farming": _farming(wrapper)})
 
     wrapper = EnvWrapper(env, on_step=on_step, step_limit=max_steps, role=role,
                          agent_args=dict(panic_on_errors=False, verbose=False))
@@ -102,6 +104,11 @@ def run_game(
     role_s, race, _gender, alignment = _character(wrapper)
     return GameResult(role_s, race, alignment, max_depth, turns,
                       int(wrapper.score), end_reason)
+
+
+def _farming(wrapper) -> bool:
+    logic = getattr(wrapper.agent, "global_logic", None)
+    return logic is not None and logic.milestone in FARMING
 
 
 def _character(wrapper) -> tuple[str, str, str, str]:

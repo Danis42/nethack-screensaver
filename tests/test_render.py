@@ -128,3 +128,7 @@ def test_resize_signal_during_frame_is_safe_and_redraws_next():
     finally:
         _ResizeMidFrame.renderer = None
     assert "\x1b[2J" in r.frame(chars2, colors, 80, 24)
+
+
+def test_format_status_marks_fast_forward():
+    assert format_status(1, "Val", 2, 50, 2, fast=True).endswith(" · »")

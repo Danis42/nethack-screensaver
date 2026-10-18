@@ -22,8 +22,10 @@ def _ch(code: int) -> str:
     return chr(code) if 32 <= code <= 126 else " "
 
 
-def format_status(game_no: int, role: str, depth: int, turn: int, best_depth: int) -> str:
-    return f"Game #{game_no} · {role} · Dlvl {depth} · T:{turn} · Best: Dlvl {best_depth}"
+def format_status(game_no: int, role: str, depth: int, turn: int, best_depth: int,
+                  fast: bool = False) -> str:
+    s = f"Game #{game_no} · {role} · Dlvl {depth} · T:{turn} · Best: Dlvl {best_depth}"
+    return s + " · »" if fast else s
 
 
 class Renderer:

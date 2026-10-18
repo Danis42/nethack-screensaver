@@ -5,16 +5,17 @@ import sys
 import time
 
 from nethack_screensaver.config import Config, load_config
+from nethack_screensaver.pacing import Pacer
 from nethack_screensaver.paths import config_path, state_dir
 from nethack_screensaver.render import Renderer, format_status
 
 SPLASH = "a new adventurer enters the dungeon..."
 
 
-def frame_delay(prev_depth, depth, cfg: Config) -> float:
+def frame_delay(prev_depth, depth, cfg: Config, fast: bool = False) -> float:
     if prev_depth is not None and depth != prev_depth:
         return cfg.level_pause
-    return cfg.delay
+    return cfg.fast_delay if fast else cfg.delay
 
 
 def _size():
@@ -56,6 +57,7 @@ def main() -> None:
         stats = read_stats(log_path)
         game_no = stats.games + 1
         state = {"depth": None, "turn": 0, "role": None}
+        pacer = Pacer()
 
         def on_frame(obs):
             depth = int(obs["blstats"][DEPTH])
@@ -64,12 +66,13 @@ def main() -> None:
                 depth, turn = state["depth"] or 1, state["turn"]
             if state["role"] is None:
                 state["role"] = role_abbrev(obs)
+            fast = pacer.update(obs)
             status = None
             if cfg.status_line:
                 status = format_status(game_no, state["role"], depth, turn,
-                                       max(stats.best_depth, depth))
+                                       max(stats.best_depth, depth), fast)
             _write(out, renderer.frame(obs["tty_chars"], obs["tty_colors"], *_size(), status=status))
-            time.sleep(frame_delay(state["depth"], depth, cfg))
+            time.sleep(frame_delay(state["depth"], depth, cfg, fast))
             state["depth"], state["turn"] = depth, turn
 
         result = run_game(role=role, on_frame=on_frame)

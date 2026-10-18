@@ -22,11 +22,16 @@ Idle time: `export NETHACK_SCREENSAVER_IDLE=300` (before sourcing the hook).
 
 ```toml
 delay = 0.1          # seconds per move
+fast_delay = 0.005   # per move while nothing happens (known map, no monsters near)
 level_pause = 1.0    # pause on a new dungeon level
 end_pause = 5.0      # hold the final screen
-status_line = false  # "Game #12 · Val · Dlvl 7 · T:4310 · Best: Dlvl 14"
+status_line = false  # "Game #12 · Val · Dlvl 7 · T:4310 · Best: Dlvl 14" (» = fast-forward)
 role = "random"      # or arc bar cav hea kni mon pri ran rog sam tou val wiz
 ```
+
+Pacing: moves play at `delay` while the bot explores new map, fights (except while
+farming XP on Dlvl 1 and 3) or has low HP; after 10 quiet moves it fast-forwards at
+`fast_delay` (set it equal to `delay` to turn this off).
 
 Game history: `~/.local/state/nethack-screensaver/games.jsonl`.
 Errors: `~/.local/state/nethack-screensaver/player.log`.
