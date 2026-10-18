@@ -64,6 +64,9 @@ def test_leave_dungeon_plan_escapes(monkeypatch):
     ("daredevil", "DEATH: killed by a soldier ant", False, "died on Dlvl 7"),
     ("pilgrim", "exception: AssertionError: x", False, "crashed"),
     ("pilgrim", "watchdog", False, "crashed"),
+    ("pilgrim", "ABORTED", False, "ended on Dlvl 7"),
+    ("pilgrim", "steplimit", False, "ended on Dlvl 7"),
+    ("pilgrim", "finished", False, "ended on Dlvl 7"),
 ])
 def test_outcome(strategy, reason, loot, expected):
     assert game.outcome(strategy, reason, 7, loot) == expected
@@ -85,10 +88,16 @@ def test_loot_check_survives_missing_agent():
 @pytest.mark.slow
 @pytest.mark.parametrize("strategy", ["sightseer", "treasure"])
 def test_escape_strategies_run(strategy):
-    result = game.run_game(strategy=strategy, max_steps=3000)
-    assert result.strategy == strategy
-    assert not result.end_reason.startswith("exception"), result.end_reason
-    assert result.outcome
+    milestones = []
+    for _ in range(3):  # a game can die on Dlvl 1 before its plan moves on
+        result = game.run_game(strategy=strategy, max_steps=3000)
+        assert result.strategy == strategy
+        assert not result.end_reason.startswith("exception"), result.end_reason
+        assert result.outcome
+        milestones.append(result.milestone)
+        if result.milestone != "BE_ON_FIRST_LEVEL":
+            break
+    assert milestones[-1] != "BE_ON_FIRST_LEVEL", milestones
 
 
 def test_loot_check_survives_broken_inventory():
@@ -102,3 +111,14 @@ def test_loot_check_survives_broken_inventory():
     class Wrapper:
         agent = Agent()
     assert game._has_loot(Wrapper()) is False
+
+
+def test_last_milestone_is_reported():
+    from types import SimpleNamespace
+
+    from autoascend.plans import Milestone as M, Plan
+    plan = Plan([M.BE_ON_FIRST_LEVEL, M.GO_DOWN])
+    plan.advance()
+    wrapper = SimpleNamespace(agent=SimpleNamespace(global_logic=SimpleNamespace(plan=plan)))
+    assert game._milestone(wrapper) == "GO_DOWN"
+    assert game._milestone(SimpleNamespace(agent=None)) == "?"

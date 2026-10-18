@@ -34,6 +34,7 @@ class GameResult:
     strategy: str = "?"
     gender: str = "?"
     outcome: str = ""
+    milestone: str = "?"  # last milestone of the plan the bot reached
 
 
 def _pick_strategy(strategy: str | None) -> str:
@@ -47,7 +48,16 @@ def outcome(strategy: str, end_reason: str, max_depth: int, has_loot: bool) -> s
         return "escaped"
     if end_reason.startswith("exception") or end_reason == "watchdog":
         return "crashed"
-    return f"died on Dlvl {max_depth}"
+    if end_reason.startswith("DEATH"):
+        return f"died on Dlvl {max_depth}"
+    return f"ended on Dlvl {max_depth}"  # ABORTED (no progress), step limit, ...
+
+
+def _milestone(wrapper) -> str:
+    try:
+        return wrapper.agent.global_logic.plan.current.name
+    except AttributeError:  # agent never started
+        return "?"
 
 
 def _has_loot(wrapper) -> bool:
@@ -132,7 +142,7 @@ def run_game(
 
     role_s, race, gender, alignment = _character(wrapper)
     return GameResult(role_s, race, alignment, max_depth, turns, int(wrapper.score), end_reason,
-                      strategy=strategy, gender=gender,
+                      strategy=strategy, gender=gender, milestone=_milestone(wrapper),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 

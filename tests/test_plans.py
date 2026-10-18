@@ -49,7 +49,6 @@ def test_endings_and_routes_match_spec():
         "sightseer": "escape the dungeon",
         "treasure": "escape with loot",
     }
-    assert STRATEGIES["daredevil"].milestones == (M.BE_ON_FIRST_LEVEL, M.GO_DOWN)
     assert STRATEGIES["sightseer"].milestones[-2:] == (M.RETURN_TO_SURFACE, M.LEAVE_DUNGEON)
     assert DEFAULT_PLAN == STRATEGIES["pilgrim"].milestones
 
@@ -99,3 +98,102 @@ def test_amulet_picked_up_on_top_sokoban_level_is_the_prize():
 def test_loot_check_ignores_other_levels():
     items = [_Item("a bag", "bag of holding", "sack")]
     assert _logic((0, 5), items)._loot_check() is False
+
+
+def _clock_logic(milestones):
+    from types import SimpleNamespace
+
+    from autoascend.global_logic import GlobalLogic
+    logic = GlobalLogic.__new__(GlobalLogic)
+    logic.agent = SimpleNamespace(blstats=SimpleNamespace(time=100),
+                                  current_level=lambda: SimpleNamespace(key=lambda: (2, 3)))
+    logic.plan, logic._started, logic._arrived = Plan(milestones), {}, {}
+    logic.minetown_level = None
+    return logic
+
+
+def test_minetown_search_gives_up_after_budget():
+    from autoascend.global_logic import MINETOWN_SEARCH_TURNS
+    logic = _clock_logic([M.FIND_MINETOWN, M.EXPLORE_MINETOWN])
+    assert logic._minetown_found() is False
+    logic.agent.blstats.time += MINETOWN_SEARCH_TURNS
+    assert logic._minetown_found() is True
+
+
+def test_no_minetown_means_nothing_to_explore():
+    logic = _clock_logic([M.EXPLORE_MINETOWN])
+    assert logic._minetown_explored() is True
+    logic.minetown_level = (2, 3)
+    assert logic._minetown_explored() is False
+
+
+def test_too_heavy_to_climb_drops_heaviest_non_prize_item():
+    from types import SimpleNamespace
+
+    from autoascend.global_logic import GlobalLogic
+
+    class Thing(_Item):
+        def __init__(self, text, weight, *names):
+            super().__init__(text, *names)
+            self._w = weight
+
+        def weight(self):
+            return self._w
+
+        def can_be_dropped_from_inventory(self):
+            return True
+
+    boulder_ish = Thing("a heavy iron ball", 480, "heavy iron ball")
+    prize = Thing("a bag", 600, "bag of holding", "sack")
+    dropped = []
+    logic = GlobalLogic.__new__(GlobalLogic)
+    logic.agent = SimpleNamespace(
+        message="You have a little trouble lifting. Your load is too heavy to climb the stairs.",
+        inventory=SimpleNamespace(items=[prize, boulder_ish], drop=dropped.append))
+    logic._prize_baseline, logic._prize_found = set(), True
+    logic._after_failed_climb()
+    assert dropped == [boulder_ish]
+
+
+def test_failed_climb_for_other_reasons_drops_nothing():
+    from types import SimpleNamespace
+
+    from autoascend.global_logic import GlobalLogic
+    dropped = []
+    logic = GlobalLogic.__new__(GlobalLogic)
+    logic.agent = SimpleNamespace(message="You are held back by the giant eel.",
+                                  inventory=SimpleNamespace(items=[], drop=dropped.append))
+    logic._after_failed_climb()
+    assert dropped == []
+
+
+def test_prize_pickups_only_while_looting_top_sokoban():
+    bag = _Item("a bag", "bag of holding", "sack")
+    junk = _Item("a rock", "rock")
+    logic = _logic((4, 1), [])
+    logic.plan = Plan([M.LOOT_SOKOBAN_PRIZE])
+    assert logic.prize_pickups([bag, junk]) == [bag]
+    logic.plan = Plan([M.GO_DOWN])
+    assert logic.prize_pickups([bag, junk]) == []
+    elsewhere = _logic((0, 5), [])
+    elsewhere.plan = Plan([M.LOOT_SOKOBAN_PRIZE])
+    assert elsewhere.prize_pickups([bag]) == []
+
+
+def test_dive_stairs_are_known_reachable_main_dungeon_downstairs():
+    import numpy as np
+
+    from autoascend.glyph import G
+    from autoascend.global_logic import dive_stairs
+    down = next(iter(G.STAIR_DOWN))
+    objects = np.zeros((21, 79), dtype=np.int16)
+    objects[3, 4] = objects[10, 10] = objects[15, 20] = down
+    bfs = np.full((21, 79), -1)
+    bfs[3, 4] = bfs[10, 10] = 5  # (15, 20) is unreachable
+    to_mines = {(10, 10): ((2, 1), (7, 7))}  # this one is known to lead into the Mines
+    assert dive_stairs(0, objects, to_mines, bfs) == [(3, 4)]
+    assert dive_stairs(2, objects, {}, bfs) == []  # never dive inside a branch
+
+
+def test_daredevil_dives():
+    assert STRATEGIES["daredevil"].milestones == (M.BE_ON_FIRST_LEVEL, M.DIVE)

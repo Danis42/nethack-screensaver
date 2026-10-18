@@ -1,4 +1,3 @@
-
 import nle.nethack as nh
 import numpy as np
 from nle.nethack import actions as A
@@ -14,10 +13,30 @@ from .item.item_priority_base import ItemPriorityBase
 from .level import Level
 from .plans import DEFAULT_PLAN, Milestone, Plan
 
+from .strategy import Strategy
+
 TOWN_TURNS = 1000  # sightseer: turns to look around Minetown
 LOOT_TURNS = 1500  # treasure: turns on the top Sokoban level to clear the zoo and loot
-_PRIZES = None  # bag of holding, amulet of reflection; O.from_name scans the table, so look up once
-from .strategy import Strategy
+MINETOWN_SEARCH_TURNS = 4000  # Orcish Town has no shopkeeper, so Minetown may never be seen
+_PRIZES = None
+
+
+def _prize_objects():
+    """Bag of holding, amulet of reflection; O.from_name scans the table, so look up once."""
+    global _PRIZES
+    if _PRIZES is None:
+        _PRIZES = {O.from_name('bag of holding'), O.from_name('amulet of reflection')}
+    return _PRIZES
+
+
+def dive_stairs(dungeon_number, objects, stair_destination, bfs):
+    """Known, reachable downstairs on a main-dungeon level that don't lead into a branch."""
+    if dungeon_number != Level.DUNGEONS_OF_DOOM:
+        return []  # the bot also travels up through branches; diving there would loop
+    return [(y, x) for y, x in zip(*utils.isin(objects, G.STAIR_DOWN).nonzero())
+            if bfs[y, x] != -1 and
+            (stair_destination.get((y, x)) is None or
+             stair_destination[(y, x)][0][0] == Level.DUNGEONS_OF_DOOM)]
 
 
 class ItemPriority(ItemPriorityBase):
@@ -56,6 +75,9 @@ class ItemPriority(ItemPriorityBase):
                 max_to_add = min(max_to_add, count)
             ret[item] = min(item.count, how_many_already_total + max_to_add) - (how_many_already_total - how_many_already)
             remaining_weight -= item.unit_weight(with_content=False) * (ret[item] - how_many_already)
+
+        for item in self.agent.global_logic.prize_pickups(items):
+            add_item(item)
 
         for item in items:
             if item.is_container() and item.status in [Item.UNCURSED, Item.BLESSED] and item.objs[0].desc == 'bag':
@@ -147,6 +169,7 @@ class GlobalLogic:
         self.agent = agent
         self.plan = Plan(plan or DEFAULT_PLAN)
         self._arrived = {}  # milestone -> turn it first stood on its target level
+        self._started = {}  # milestone -> turn it became current
         self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
         self._prize_found = False
         self.step_completion_log = {}  # Milestone -> (step, turn)
@@ -169,19 +192,36 @@ class GlobalLogic:
         start = self._arrived.setdefault(self.milestone, self.agent.blstats.time)
         return self.agent.blstats.time - start >= turns
 
+    def _elapsed(self, turns):
+        start = self._started.setdefault(self.milestone, self.agent.blstats.time)
+        return self.agent.blstats.time - start >= turns
+
+    def _minetown_found(self):
+        return self.minetown_level is not None or self._elapsed(MINETOWN_SEARCH_TURNS)
+
+    def _minetown_explored(self):
+        return self.minetown_level is None or self._stayed(self.minetown_level, TOWN_TURNS)
+
     def has_prize(self):
         """A possible Sokoban prize was picked up on the top Sokoban level."""
         return self._prize_found
+
+    def prize_pickups(self, items):
+        """While looting the top Sokoban level, take anything that may be the prize.
+
+        ItemPriority normally skips bags whose status and contents are unknown."""
+        if self.milestone != Milestone.LOOT_SOKOBAN_PRIZE or \
+                self.agent.current_level().key() != (Level.SOKOBAN, 1):
+            return []
+        return [item for item in items if _prize_objects() & set(item.objs)]
 
     def _loot_check(self):
         # Unidentified amulets/bags may be the prize, so only count ones gained up here:
         # an amulet found earlier in the dungeon is not loot.
         if self.agent.current_level().key() != (Level.SOKOBAN, 1):
             return False
-        global _PRIZES
-        if _PRIZES is None:
-            _PRIZES = {O.from_name('bag of holding'), O.from_name('amulet of reflection')}
-        held = {str(item) for item in flatten_items(self.agent.inventory.items) if _PRIZES & set(item.objs)}
+        held = {str(item) for item in flatten_items(self.agent.inventory.items)
+                if _prize_objects() & set(item.objs)}
         if self._prize_baseline is None:
             self._prize_baseline = held
         self._prize_found = self._prize_found or bool(held - self._prize_baseline)
@@ -351,6 +391,26 @@ class GlobalLogic:
         self.agent.go_to(y, x)
         # "Beware, there will be no return! Still climb?" is answered 'y' by Agent.update.
         self.agent.direction('<')
+        self._after_failed_climb()  # still here: the game did not end
+
+    @Strategy.wrap
+    def dive(self):
+        level = self.agent.current_level()
+        stairs = dive_stairs(level.dungeon_number, level.objects, level.stair_destination, self.agent.bfs())
+        if not stairs:
+            yield False
+        yield True
+        y, x = stairs[0]
+        self.agent.go_to(y, x)
+        self.agent.move('>')
+
+    def _after_failed_climb(self):
+        if 'too heavy' not in self.agent.message:
+            return  # e.g. held by a monster: fighting has priority and frees us
+        droppable = [item for item in self.agent.inventory.items
+                     if item.can_be_dropped_from_inventory() and not _prize_objects() & set(item.objs)]
+        if droppable:
+            self.agent.inventory.drop(max(droppable, key=lambda item: item.weight()))
 
     @Strategy.wrap
     def wait_out_unexpected_state_strategy(self):
@@ -578,7 +638,7 @@ class GlobalLogic:
             #     level = (Level.GNOMISH_MINES, self.agent.current_level().level_number)
 
             elif self.milestone == Milestone.FIND_MINETOWN:
-                condition = lambda: self.minetown_level is not None
+                condition = self._minetown_found
                 level = (Level.GNOMISH_MINES, 4)  # TODO
 
             elif self.milestone == Milestone.SOLVE_SOKOBAN:
@@ -592,8 +652,8 @@ class GlobalLogic:
                 level = (Level.GNOMISH_MINES, 9)  # TODO
 
             elif self.milestone == Milestone.EXPLORE_MINETOWN:
-                condition = lambda: self._stayed(self.minetown_level, TOWN_TURNS)
-                level = self.minetown_level
+                condition = self._minetown_explored
+                level = self.minetown_level  # unused when None: the condition is already true
 
             elif self.milestone == Milestone.LOOT_SOKOBAN_PRIZE:
                 condition = lambda: self._loot_check() or self._stayed((Level.SOKOBAN, 1), LOOT_TURNS)
@@ -669,6 +729,9 @@ class GlobalLogic:
             ])
             .preempt(self.agent, [
                 self.leave_dungeon().condition(lambda: self.milestone == Milestone.LEAVE_DUNGEON)
+            ])
+            .preempt(self.agent, [
+                self.dive().condition(lambda: self.milestone == Milestone.DIVE)
             ])
             .preempt(self.agent, [
                 self.offer_corpses().preempt(self.agent, [

@@ -16,6 +16,7 @@ class Milestone(IntEnum):
     LOOT_SOKOBAN_PRIZE = auto()
     RETURN_TO_SURFACE = auto()
     LEAVE_DUNGEON = auto()
+    DIVE = auto()  # GO_DOWN, but take every known downstairs at once
 
 
 class Plan:
@@ -51,7 +52,7 @@ STRATEGIES = {s.name: s for s in [
                  (M.BE_ON_FIRST_LEVEL, M.FIND_GNOMISH_MINES, M.FIND_MINETOWN, M.FIND_SOKOBAN,
                   M.SOLVE_SOKOBAN, M.FIND_MINES_END, M.GO_DOWN)),
     StrategySpec("daredevil", "Daredevil", "escape in celestial disgrace",
-                 (M.BE_ON_FIRST_LEVEL, M.GO_DOWN)),
+                 (M.BE_ON_FIRST_LEVEL, M.DIVE)),
     StrategySpec("sightseer", "Sightseer", "escape the dungeon",
                  (M.BE_ON_FIRST_LEVEL, M.FIND_GNOMISH_MINES, M.FIND_MINETOWN, M.EXPLORE_MINETOWN,
                   M.RETURN_TO_SURFACE, M.LEAVE_DUNGEON)),

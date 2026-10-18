@@ -40,7 +40,7 @@ tours the Mines, Minetown and Sokoban, then dives; Daredevil (aims to escape in
 celestial disgrace) dives straight down; Sightseer visits Minetown and climbs
 back out of the dungeon; Treasure hunter solves Sokoban, loots its prize and
 escapes. Only the two escapes are reachable for this bot. The log records each
-game's `strategy` and `outcome`.
+game's `strategy`, `outcome` and the last plan `milestone` it reached.
 
 Game history: `~/.local/state/nethack-screensaver/games.jsonl`.
 Errors: `~/.local/state/nethack-screensaver/player.log`.
