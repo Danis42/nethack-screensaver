@@ -18,6 +18,7 @@ from .strategy import Strategy
 TOWN_TURNS = 1000  # sightseer: turns to look around Minetown
 LOOT_TURNS = 1500  # treasure: turns on the top Sokoban level to clear the zoo and loot
 MINETOWN_SEARCH_TURNS = 4000  # Orcish Town has no shopkeeper, so Minetown may never be seen
+SOKOBAN_SEARCH_TURNS = 8000  # treasure: give up looking for Sokoban and go home
 _PRIZES = None
 
 
@@ -195,6 +196,15 @@ class GlobalLogic:
     def _elapsed(self, turns):
         start = self._started.setdefault(self.milestone, self.agent.blstats.time)
         return self.agent.blstats.time - start >= turns
+
+    def _should_bail(self):
+        """Escape plans head home early when the run turns bad."""
+        if not self.plan.can_bail_out():
+            return False
+        if self.agent.blstats.hunger_state >= Hunger.WEAK and \
+                not any(item.is_food() for item in flatten_items(self.agent.inventory.items)):
+            return True
+        return self.milestone == Milestone.FIND_SOKOBAN and self._elapsed(SOKOBAN_SEARCH_TURNS)
 
     def _minetown_found(self):
         return self.minetown_level is not None or self._elapsed(MINETOWN_SEARCH_TURNS)
@@ -670,6 +680,9 @@ class GlobalLogic:
                 condition = lambda: False
                 level = (Level.DUNGEONS_OF_DOOM, 100)
 
+            if self._should_bail():
+                self.plan.bail_out()
+                continue
             if condition():
                 self.plan.advance()
                 continue
@@ -689,12 +702,15 @@ class GlobalLogic:
                     ])
                 )
 
+            # Going home is a retreat: no side trips to explore, gather items or wait for the pet.
+            going_home = self.milestone == Milestone.RETURN_TO_SURFACE
+
             def go_to_strategy(y, x):
                 return (
                     exploration_strategy(None)
                     .preempt(self.agent, [
                         self.agent.exploration.go_to_strategy(y, x).preempt(self.agent, [
-                            self.agent.inventory.gather_items(),
+                            self.agent.inventory.gather_items().condition(lambda: not going_home),
                             self.identify_items_on_altar(),
                             self.dip_for_excalibur().condition(lambda: self.agent.blstats.experience_level >= 7),
                         ])
@@ -706,17 +722,18 @@ class GlobalLogic:
                 )
 
             (
-                self.agent.exploration.go_to_level_strategy(*level, go_to_strategy, exploration_strategy(None))
+                self.agent.exploration.go_to_level_strategy(*level, go_to_strategy, exploration_strategy(None),
+                                                            wait_for_pet=not going_home)
                 .before(exploration_strategy(None))#.before(self.agent.exploration.patrol())
                 .preempt(self.agent, [
-                    exploration_strategy(0),
+                    exploration_strategy(0).condition(lambda: not going_home),
                     exploration_strategy(None).until(
                         self.agent, lambda: self.agent.blstats.hitpoints >= 0.8 * self.agent.blstats.max_hitpoints)
                 ])
                 .preempt(self.agent, [
                     self.agent.exploration.explore_stairs(go_to_strategy, all=True).condition(explore_stairs_condition),
                 ])
-                .until(self.agent, condition)
+                .until(self.agent, lambda: condition() or self._should_bail())
             ).run()
 
     def global_strategy(self):

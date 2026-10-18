@@ -119,14 +119,14 @@ class ExplorationLogic:
         self.agent.move(dir)
 
     @Strategy.wrap
-    def follow_level_path_strategy(self, path, go_to_strategy):
+    def follow_level_path_strategy(self, path, go_to_strategy, wait_for_pet=True):
         if not path:
             yield False
         yield True
         for (y, x), _, dir in path:
             go_to_strategy(y, x).run()
             assert (self.agent.blstats.y, self.agent.blstats.x) == (y, x)
-            while self.agent.has_pet:
+            while wait_for_pet and self.agent.has_pet:
                 if utils.any_in(self.agent.glyphs[max(self.agent.blstats.y - 1, 0) : self.agent.blstats.y + 2,
                                                 max(self.agent.blstats.x - 1, 0) : self.agent.blstats.x + 2],
                                 G.PETS):
@@ -135,7 +135,8 @@ class ExplorationLogic:
             self.agent.move(dir)
 
     @Strategy.wrap
-    def go_to_level_strategy(self, dungeon_number, level_number, go_to_strategy, explore_strategy):
+    def go_to_level_strategy(self, dungeon_number, level_number, go_to_strategy, explore_strategy,
+                             wait_for_pet=True):
         yield True
         while 1:
             levels_to_search = self.levels_to_explore_to_get_to(dungeon_number, level_number)
@@ -168,7 +169,7 @@ class ExplorationLogic:
                     assert 0
                 path = self.get_path_to_level(*target_level)
                 assert path is not None
-                self.follow_level_path_strategy(path, go_to_strategy).run()
+                self.follow_level_path_strategy(path, go_to_strategy, wait_for_pet).run()
                 assert self.agent.current_level().key() == target_level
 
             if self.agent.current_level().key() not in levels_to_search:
@@ -186,7 +187,7 @@ class ExplorationLogic:
         assert path is not None, \
                 (self.agent.current_level().key(), (dungeon_number, level_number), self.get_achievable_levels())
         with self.agent.env.debug_log(f'going to level {Level.dungeon_names[dungeon_number]}:{level_number}'):
-            self.follow_level_path_strategy(path, go_to_strategy).run()
+            self.follow_level_path_strategy(path, go_to_strategy, wait_for_pet).run()
             assert self.agent.current_level().key() == (dungeon_number, level_number)
 
     @Strategy.wrap

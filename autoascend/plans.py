@@ -32,6 +32,14 @@ class Plan:
         # The last milestone (GO_DOWN, LEAVE_DUNGEON) ends the game by itself.
         self._index = min(self._index + 1, len(self._milestones) - 1)
 
+    def can_bail_out(self) -> bool:
+        return Milestone.RETURN_TO_SURFACE in self._milestones[self._index + 1:]
+
+    def bail_out(self) -> None:
+        """Give up the rest of the route and head home (only plans that have a way home)."""
+        if self.can_bail_out():
+            self._index = self._milestones.index(Milestone.RETURN_TO_SURFACE)
+
     def drop_sokoban(self) -> None:
         self.advance()
         if self.current == Milestone.LOOT_SOKOBAN_PRIZE:

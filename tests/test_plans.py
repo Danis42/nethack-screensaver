@@ -197,3 +197,71 @@ def test_dive_stairs_are_known_reachable_main_dungeon_downstairs():
 
 def test_daredevil_dives():
     assert STRATEGIES["daredevil"].milestones == (M.BE_ON_FIRST_LEVEL, M.DIVE)
+
+
+def test_path_following_can_skip_waiting_for_the_pet():
+    from types import SimpleNamespace
+
+    import numpy as np
+
+    from autoascend.exploration_logic import ExplorationLogic
+    moves = []
+    agent = SimpleNamespace(has_pet=True, glyphs=np.zeros((21, 79), dtype=np.int16),
+                            blstats=SimpleNamespace(y=5, x=5), move=moves.append)
+    ex = ExplorationLogic.__new__(ExplorationLogic)
+    ex.agent = agent
+    ran = []
+    go_to = lambda y, x: SimpleNamespace(run=lambda: ran.append((y, x)))
+    ex.follow_level_path_strategy([((5, 5), None, '<')], go_to, wait_for_pet=False).run()
+    assert ran == [(5, 5)] and moves == ['<']  # no '.' waits for the pet
+
+
+def test_bail_out_jumps_to_return_to_surface():
+    p = Plan(STRATEGIES["sightseer"].milestones)
+    p.advance()  # FIND_GNOMISH_MINES
+    assert p.can_bail_out()
+    p.bail_out()
+    assert p.current == M.RETURN_TO_SURFACE
+    assert not p.can_bail_out()  # already heading home
+
+
+def test_plans_without_a_way_home_never_bail_out():
+    for name in ("pilgrim", "daredevil"):
+        p = Plan(STRATEGIES[name].milestones)
+        assert not p.can_bail_out()
+        p.bail_out()
+        assert p.current == M.BE_ON_FIRST_LEVEL
+
+
+def _bail_logic(milestones, hunger=1, food=(), elapsed=0):
+    from types import SimpleNamespace
+
+    from autoascend.global_logic import GlobalLogic
+
+    class Food(_Item):
+        def is_food(self):
+            return True
+
+    logic = GlobalLogic.__new__(GlobalLogic)
+    logic.agent = SimpleNamespace(blstats=SimpleNamespace(time=100 + elapsed, hunger_state=hunger),
+                                  inventory=SimpleNamespace(items=[Food(f) for f in food]))
+    logic.plan, logic._started = Plan(milestones), {logic_m: 100 for logic_m in milestones}
+    return logic
+
+
+def test_weak_with_no_food_heads_home():
+    route = STRATEGIES["sightseer"].milestones[1:]
+    assert _bail_logic(route, hunger=3)._should_bail()
+    assert not _bail_logic(route, hunger=3, food=["a food ration"])._should_bail()
+    assert not _bail_logic(route, hunger=2)._should_bail()
+
+
+def test_treasure_gives_up_on_sokoban_after_budget():
+    from autoascend.global_logic import SOKOBAN_SEARCH_TURNS
+    route = STRATEGIES["treasure"].milestones[1:]  # FIND_SOKOBAN first
+    assert not _bail_logic(route, elapsed=SOKOBAN_SEARCH_TURNS - 1)._should_bail()
+    assert _bail_logic(route, elapsed=SOKOBAN_SEARCH_TURNS)._should_bail()
+
+
+def test_no_bail_without_a_way_home():
+    assert not _bail_logic(STRATEGIES["daredevil"].milestones, hunger=3)._should_bail()
