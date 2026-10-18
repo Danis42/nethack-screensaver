@@ -80,3 +80,12 @@ def test_loot_check_survives_missing_agent():
     class Wrapper:
         agent = None
     assert game._has_loot(Wrapper()) is False
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("strategy", ["sightseer", "treasure"])
+def test_escape_strategies_run(strategy):
+    result = game.run_game(strategy=strategy, max_steps=3000)
+    assert result.strategy == strategy
+    assert not result.end_reason.startswith("exception"), result.end_reason
+    assert result.outcome
