@@ -129,3 +129,17 @@ Kept: Oracle-guided search (the Sokoban stairs are always one floor below the Or
 and praying at Weak (Weak is already major trouble). Reverted: avoiding ']' strange
 objects, since the mimics that kill this bot are not the shop ones. Roughly half of
 all Sokoban visits end in `sokoban_dropped`, which is what a live-board solver would fix.
+
+## Live Sokoban solver (2026-10-18)
+
+`soko_solver/search.py` is the fallback when the stored solution no longer fits the board:
+traps filled one at a time (A* per trap with push distances, backtracking), tested on
+NetHack's own `sokoban.des` (disturbed half-played boards: 10/11) and on real boards
+captured from failed games (`tests/data/soko_real_*.json`).
+
+Real games (144 forced treasure runs): every live-solver call first failed. Causes found
+from captured boards: squares only ever seen under items were missing from the floor
+(fixed); the player was not allowed to cross pits (fixed); one board was a true deadlock
+(two boulders frozen in a corridor). Still open: the stored solution sometimes derails
+early on the top level (5-8 boulders moved, all 16-18 holes open), which is beyond the
+10 s search. Treasure escapes with the prize are now seen (2/96 in one run).
