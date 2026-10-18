@@ -1,4 +1,3 @@
-from enum import IntEnum, auto
 
 import nle.nethack as nh
 import numpy as np
@@ -13,6 +12,7 @@ from .glyph import Hunger, G, MON
 from .item import Item, flatten_items
 from .item.item_priority_base import ItemPriorityBase
 from .level import Level
+from .plans import DEFAULT_PLAN, Milestone, Plan
 from .strategy import Strategy
 
 
@@ -136,18 +136,6 @@ class ItemPriority(ItemPriorityBase):
             if item.is_container() and item is not bag and ret_inv.get(item, 0) != 0:
                 r[item] = [0 for _ in items]
         return r
-
-
-class Milestone(IntEnum):
-    BE_ON_FIRST_LEVEL = auto()
-    FIND_GNOMISH_MINES = auto()
-    # FIND_LIGHT_GNOMISH_MINES = auto()
-    # FARM_LIGHT_GNOMISH_MINES = auto()
-    FIND_MINETOWN = auto()
-    FIND_SOKOBAN = auto()
-    SOLVE_SOKOBAN = auto()
-    FIND_MINES_END = auto()
-    GO_DOWN = auto() # TODO
 
 
 class GlobalLogic:
