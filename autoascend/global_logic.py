@@ -31,11 +31,15 @@ def _prize_objects():
     return _PRIZES
 
 
-def sokoban_board(objects, glyphs):
-    """Floor, boulder and trap cells of the current Sokoban level, for the live solver."""
+def sokoban_board(objects, walkable, glyphs):
+    """Floor, boulder and trap cells of the current Sokoban level, for the live solver.
+
+    `objects` only records squares seen bare; squares that always had an item or monster
+    on them are known only as walkable. Doorways are left out: boulders can't use them."""
     boulders = utils.isin(glyphs, G.BOULDER)
     traps = utils.isin(objects, G.TRAPS)
-    floor = utils.isin(objects, G.FLOOR | G.STAIR_UP | G.STAIR_DOWN) | traps | boulders
+    floor = ((utils.isin(objects, G.FLOOR | G.STAIR_UP | G.STAIR_DOWN) | walkable)
+             & ~utils.isin(objects, G.DOORS | G.WALL)) | traps | boulders
     cells = lambda mask: {(int(y), int(x)) for y, x in zip(*mask.nonzero())}
     return cells(floor), cells(boulders), cells(traps)
 
@@ -442,7 +446,8 @@ class GlobalLogic:
     def _solve_live_sokoban(self, push_bolder, attempts=5):
         """Fill the remaining traps from the board as it is now; True once none are left."""
         for _ in range(attempts):
-            floor, boulders, traps = sokoban_board(self.agent.current_level().objects, self.agent.glyphs)
+            level = self.agent.current_level()
+            floor, boulders, traps = sokoban_board(level.objects, level.walkable, self.agent.glyphs)
             if not traps:
                 return True
             pushes = soko_search.solve(floor, boulders, traps, (self.agent.blstats.y, self.agent.blstats.x))

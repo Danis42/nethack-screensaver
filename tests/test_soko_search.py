@@ -152,8 +152,11 @@ def test_live_board_is_read_from_the_level_and_the_screen():
     objects[2, 6] = SS.S_hole
     objects[2, 1] = SS.S_vwall
     objects[2, 3] = -1  # never seen: a boulder has always stood there
+    objects[2, 5] = -1  # a scroll of earth has always lain there: never seen bare
+    walkable = np.zeros((21, 79), bool)
+    walkable[2, 2:6] = True  # the agent knows item squares are walkable
     glyphs = objects.copy()
     glyphs[2, 3] = next(iter(G.BOULDER))
-    floor, boulders, traps = sokoban_board(objects, glyphs)
+    floor, boulders, traps = sokoban_board(objects, walkable, glyphs)
     assert boulders == {(2, 3)} and traps == {(2, 6)}
     assert floor == {(2, 2), (2, 3), (2, 4), (2, 5), (2, 6)}
