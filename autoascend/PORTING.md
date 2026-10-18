@@ -143,3 +143,10 @@ from captured boards: squares only ever seen under items were missing from the f
 (two boulders frozen in a corridor). Still open: the stored solution sometimes derails
 early on the top level (5-8 boulders moved, all 16-18 holes open), which is beyond the
 10 s search. Treasure escapes with the prize are now seen (2/96 in one run).
+
+Seeded replays (2026-10-18): planned pushes failed because a monster being fought stood
+in the only path; the executor now waits a turn (up to 20) instead of giving up. In 192
+same-seed treasure games afterwards the solver found plans and executed pushes, but no
+game was won through it: most solver calls are true deadlocks or a top level derailed
+early, and 8 of 13 characters that reached Sokoban were killed there by monsters. The
+puzzle is no longer the main obstacle; surviving Dlvl 6-9 at XL 7-9 is.
