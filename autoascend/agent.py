@@ -35,15 +35,6 @@ BLStats = namedtuple('BLStats',
                      'x y strength_percentage strength dexterity constitution intelligence wisdom charisma score hitpoints max_hitpoints depth gold energy max_energy armor_class monster_level experience_level experience_points time hunger_state carrying_capacity dungeon_number level_number prop_mask')
 
 
-STRANGE_OBJECT_GLYPH = nh.GLYPH_OBJ_OFF  # object 0, shown as ']'
-
-
-def avoid_suspected_mimics(walkable, glyphs):
-    """A ']' strange object is a cloaked mimic (common in shops, NetHack wiki); walking into
-    one gets you stuck to it, so path around it."""
-    return walkable & (glyphs != STRANGE_OBJECT_GLYPH)
-
-
 def prayer_trouble(blstats, safe_hp, safe_hunger):
     """Pray for low HP (upstream thresholds) or severe hunger.
 
@@ -982,7 +973,6 @@ class Agent:
 
         if self._last_turn - self._allow_walking_through_traps_turn > 50:
             walkable &= ~utils.isin(level.objects, G.TRAPS)
-        walkable = avoid_suspected_mimics(walkable, self.glyphs)
 
         for my, mx in list(zip(*np.nonzero(utils.isin(self.glyphs, G.MONS)))):
             mon = MON.permonst(self.glyphs[my][mx])
