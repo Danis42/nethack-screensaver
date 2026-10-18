@@ -45,12 +45,14 @@ def walkable_from(start, free):
     return seen
 
 
-def replay(floor, boulders, traps, player, pushes):
+def replay(floor, boulders, traps, player, pushes, crossable=frozenset()):
     """Check every push is legal in order; return the traps left unfilled."""
     boulders, traps = set(boulders), set(traps)
     for (by, bx), (dy, dx) in pushes:
         assert (by, bx) in boulders, ("no boulder to push", (by, bx))
-        assert (by - dy, bx - dx) in walkable_from(player, floor - boulders - traps), "can't reach push"
+        walk = floor - boulders - (traps - set(crossable))
+        assert (by - dy, bx - dx) in walkable_from(player, walk), "can't reach push"
+        assert (by - dy, bx - dx) not in traps, "pushing while stuck in a pit"
         ty, tx = by + dy, bx + dx
         assert (ty, tx) in floor and (ty, tx) not in boulders, ("push blocked", (by, bx), (dy, dx))
         boulders.remove((by, bx))
@@ -160,3 +162,18 @@ def test_live_board_is_read_from_the_level_and_the_screen():
     floor, boulders, traps = sokoban_board(objects, walkable, glyphs)
     assert boulders == {(2, 3)} and traps == {(2, 6)}
     assert floor == {(2, 2), (2, 3), (2, 4), (2, 5), (2, 6)}
+
+
+def _real_board(name):
+    import json
+    d = json.loads((Path(__file__).parent / "data" / name).read_text())
+    cells = lambda key: frozenset(map(tuple, d[key]))
+    return cells("floor"), cells("boulders"), cells("traps"), tuple(d["player"])
+
+
+def test_player_may_cross_pits_on_the_lower_levels():
+    # Real game: the bot stood between two pits and the solver thought it was trapped.
+    floor, boulders, traps, player = _real_board("soko_real_between_pits.json")
+    pushes = solve(floor, boulders, traps, player, crossable=traps)
+    assert pushes is not None
+    assert replay(floor, boulders, traps, player, pushes, crossable=traps) == set()

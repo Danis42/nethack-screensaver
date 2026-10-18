@@ -8,7 +8,7 @@ from .soko_solver import search as soko_search
 from . import utils
 from .character import Character
 from .exceptions import AgentPanic
-from .glyph import Hunger, G, MON
+from .glyph import Hunger, G, MON, SS
 from .item import Item, flatten_items
 from .item.item_priority_base import ItemPriorityBase
 from .level import Level
@@ -450,10 +450,15 @@ class GlobalLogic:
             floor, boulders, traps = sokoban_board(level.objects, level.walkable, self.agent.glyphs)
             if not traps:
                 return True
-            pushes = soko_search.solve(floor, boulders, traps, (self.agent.blstats.y, self.agent.blstats.x))
+            # The lower levels have pits, which the player may walk through; holes never.
+            pits = {(y, x) for y, x in traps if level.objects[y, x] in (SS.S_pit, SS.S_spiked_pit)}
+            pushes = soko_search.solve(floor, boulders, traps, (self.agent.blstats.y, self.agent.blstats.x),
+                                       crossable=pits if pits == traps else frozenset())
             if pushes is None:
                 return False
             for (by, bx), (dy, dx) in pushes:
+                if pits == traps:
+                    self.agent._allow_walking_through_traps_turn = self.agent._last_turn
                 if self.agent.glyphs[by, bx] not in G.BOULDER or not push_bolder(by - dy, bx - dx, dy, dx):
                     break  # the board changed under us (a monster, a mimic): look again
         return not utils.isin(self.agent.current_level().objects, G.TRAPS).any()

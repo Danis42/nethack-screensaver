@@ -52,7 +52,7 @@ def _unwind(path):
     return pushes[::-1]
 
 
-def _fill_one(floor, boulders, traps, player, target, live, deadline, budget):
+def _fill_one(floor, boulders, traps, player, target, live, deadline, budget, crossable):
     """A* yielding ways (cheapest first) to drop some boulder into `target`; other traps
     stay untouched. Each yield is (pushes, boulders left, player position)."""
     # A boulder pushed over another unfilled trap falls in there instead, so route around them.
@@ -65,8 +65,9 @@ def _fill_one(floor, boulders, traps, player, target, live, deadline, budget):
     seen, results = set(), set()
     while queue:
         _, g, _, bs, pos, path = heapq.heappop(queue)
-        # The player never steps on an unfilled trap: a hole drops you a level.
-        reach = _reachable(pos, floor - bs - traps)
+        # The player may walk through pits (falls in, climbs out) but never into a hole,
+        # which drops you a level; pushing from inside a pit is impossible.
+        reach = _reachable(pos, floor - bs - (traps - crossable))
         key = (bs, min(reach))
         if key in seen:
             continue
@@ -77,7 +78,8 @@ def _fill_one(floor, boulders, traps, player, target, live, deadline, budget):
         for by, bx in bs:
             for dy, dx in DIRS:
                 dest = (by + dy, bx + dx)
-                if (by - dy, bx - dx) not in reach or dest not in floor or dest in bs:
+                if (by - dy, bx - dx) not in reach or (by - dy, bx - dx) in traps \
+                        or dest not in floor or dest in bs:
                     continue
                 push = (path, ((by, bx), (dy, dx)))
                 if dest == target:
@@ -92,9 +94,12 @@ def _fill_one(floor, boulders, traps, player, target, live, deadline, budget):
                 heapq.heappush(queue, (g + 1 + h(nbs), g + 1, next(order), nbs, (by, bx), push))
 
 
-def solve(floor, boulders, traps, player, max_states=300_000, max_seconds=10.0, alternatives=3):
-    """Pushes that fill every trap, or None if none is found within the limits."""
-    floor = frozenset(floor)
+def solve(floor, boulders, traps, player, max_states=300_000, max_seconds=10.0, alternatives=3,
+          crossable=frozenset()):
+    """Pushes that fill every trap, or None if none is found within the limits.
+
+    `crossable`: traps the player may walk through (the pits of the lower levels)."""
+    floor, crossable = frozenset(floor), frozenset(crossable)
     deadline = time.monotonic() + max_seconds
     budget = [max_states]
     failed = set()  # boards already shown to be dead ends
@@ -107,7 +112,8 @@ def solve(floor, boulders, traps, player, max_states=300_000, max_seconds=10.0, 
         live = set().union(*(_push_distances(floor, t) for t in ts))
         order = sorted(ts, key=lambda t: min(_push_distances(floor - (ts - {t}), t).get(b, 10 ** 6) for b in bs))
         for target in order:
-            for n, (sub, left, end) in enumerate(_fill_one(floor, bs, ts, pos, target, live, deadline, budget)):
+            for n, (sub, left, end) in enumerate(_fill_one(floor, bs, ts, pos, target, live, deadline, budget,
+                                                           crossable & ts)):
                 rest = search(left, ts - {target}, end)
                 if rest is not None:
                     return sub + rest
