@@ -55,3 +55,28 @@ def test_leave_dungeon_plan_escapes(monkeypatch):
                                      (M.RETURN_TO_SURFACE, M.LEAVE_DUNGEON)))
     result = game.run_game(strategy="test_escape", max_steps=2000)
     assert result.end_reason == "ESCAPED: escaped the dungeon", result.end_reason
+
+
+@pytest.mark.parametrize("strategy,reason,loot,expected", [
+    ("sightseer", "ESCAPED: escaped the dungeon", False, "escaped"),
+    ("treasure", "ESCAPED: escaped the dungeon", True, "escaped with loot"),
+    ("treasure", "ESCAPED: escaped the dungeon", False, "escaped empty-handed"),
+    ("daredevil", "DEATH: killed by a soldier ant", False, "died on Dlvl 7"),
+    ("pilgrim", "exception: AssertionError: x", False, "crashed"),
+    ("pilgrim", "watchdog", False, "crashed"),
+])
+def test_outcome(strategy, reason, loot, expected):
+    assert game.outcome(strategy, reason, 7, loot) == expected
+
+
+def test_random_pick_covers_all_strategies():
+    from autoascend.plans import STRATEGIES
+    picks = {game._pick_strategy(None) for _ in range(200)}
+    assert picks == set(STRATEGIES)
+    assert game._pick_strategy("sightseer") == "sightseer"
+
+
+def test_loot_check_survives_missing_agent():
+    class Wrapper:
+        agent = None
+    assert game._has_loot(Wrapper()) is False

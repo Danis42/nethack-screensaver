@@ -1,6 +1,7 @@
 """Run one AutoAscend game on NLE, headless-capable."""
 from __future__ import annotations
 
+import random
 import signal
 from dataclasses import dataclass
 from typing import Callable
@@ -10,6 +11,7 @@ from nle.env.tasks import NetHackChallenge
 
 from autoascend.env_wrapper import EnvWrapper
 from autoascend.global_logic import Milestone
+from autoascend.plans import STRATEGIES
 
 DEPTH = 12
 TURN = 20
@@ -29,6 +31,30 @@ class GameResult:
     turns: int
     score: int
     end_reason: str
+    strategy: str = "?"
+    gender: str = "?"
+    outcome: str = ""
+
+
+def _pick_strategy(strategy: str | None) -> str:
+    return strategy if strategy is not None else random.choice(sorted(STRATEGIES))
+
+
+def outcome(strategy: str, end_reason: str, max_depth: int, has_loot: bool) -> str:
+    if end_reason.startswith("ESCAPED"):
+        if strategy == "treasure":
+            return "escaped with loot" if has_loot else "escaped empty-handed"
+        return "escaped"
+    if end_reason.startswith("exception") or end_reason == "watchdog":
+        return "crashed"
+    return f"died on Dlvl {max_depth}"
+
+
+def _has_loot(wrapper) -> bool:
+    try:
+        return wrapper.agent.global_logic.has_prize()
+    except AttributeError:  # agent never started or crashed before its inventory existed
+        return False
 
 
 class _ScreenWatchdog:
@@ -69,7 +95,9 @@ def run_game(
     on_frame: Callable[[dict], None] | None = None,
     max_steps: int | None = None,
     watchdog_seconds: float | None = 60.0,
+    strategy: str | None = None,
 ) -> GameResult:
+    strategy = _pick_strategy(strategy)
     env = NetHackChallenge(no_progress_timeout=1000)
     max_depth = 1
     turns = 0
@@ -89,7 +117,8 @@ def run_game(
             on_frame({**obs, "farming": _farming(wrapper)})
 
     wrapper = EnvWrapper(env, on_step=on_step, step_limit=max_steps, role=role,
-                         agent_args=dict(panic_on_errors=False, verbose=False))
+                         agent_args=dict(panic_on_errors=False, verbose=False,
+                                         plan=STRATEGIES[strategy].milestones))
     try:
         with watchdog:
             wrapper.main()
@@ -101,9 +130,10 @@ def run_game(
     finally:
         env.close()
 
-    role_s, race, _gender, alignment = _character(wrapper)
-    return GameResult(role_s, race, alignment, max_depth, turns,
-                      int(wrapper.score), end_reason)
+    role_s, race, gender, alignment = _character(wrapper)
+    return GameResult(role_s, race, alignment, max_depth, turns, int(wrapper.score), end_reason,
+                      strategy=strategy, gender=gender,
+                      outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 
 def _farming(wrapper) -> bool:

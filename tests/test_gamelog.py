@@ -47,3 +47,18 @@ def test_read_stats_survives_unreadable_path(tmp_path):
     d = tmp_path / "games.jsonl"
     d.mkdir()
     assert read_stats(d) == LogStats(0, 0)
+
+
+def test_new_fields_are_logged(tmp_path):
+    p = tmp_path / "g.jsonl"
+    r = GameResult("val", "hum", "law", 3, 10, 5, "ESCAPED: escaped the dungeon",
+                   strategy="sightseer", gender="fem", outcome="escaped")
+    append_result(p, r)
+    rec = json.loads(p.read_text())
+    assert (rec["strategy"], rec["gender"], rec["outcome"]) == ("sightseer", "fem", "escaped")
+
+
+def test_old_records_without_new_fields_still_count(tmp_path):
+    p = tmp_path / "g.jsonl"
+    p.write_text('{"role": "val", "max_depth": 4, "end_reason": "DEATH: x"}\n')
+    assert read_stats(p).games == 1 and read_stats(p).best_depth == 4
