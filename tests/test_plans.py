@@ -334,3 +334,15 @@ def test_pray_at_low_hp_keeps_upstream_thresholds():
     assert prayer_trouble(_bl(hp=3, maxhp=20), safe_hp=True, safe_hunger=False)
     assert not prayer_trouble(_bl(hp=10, maxhp=20), safe_hp=True, safe_hunger=False)
     assert not prayer_trouble(_bl(hp=3, maxhp=20), safe_hp=False, safe_hunger=True)
+
+
+def test_strange_objects_are_not_walkable():
+    import nle.nethack as nh
+    import numpy as np
+
+    from autoascend.agent import avoid_suspected_mimics
+    glyphs = np.full((21, 79), nh.GLYPH_CMAP_OFF + 19, dtype=np.int16)  # floor
+    glyphs[3, 4] = nh.GLYPH_OBJ_OFF  # ']' strange object: a cloaked mimic (NetHack wiki)
+    glyphs[3, 5] = nh.GLYPH_OBJ_OFF + 1  # an ordinary object
+    walkable = avoid_suspected_mimics(np.ones((21, 79), bool), glyphs)
+    assert not walkable[3, 4] and walkable[3, 5]
