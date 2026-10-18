@@ -951,3 +951,6 @@ maps = {'''\
                                      ((1, 13), (0, 1)), ((1, 14), (0, 1)), ((1, 15), (0, 1)), ((1, 16), (0, 1)),
                                      ((1, 17), (0, 1)), ((1, 18), (0, 1)), ((1, 19), (0, 1)), ((1, 20), (0, 1)),
                                      ((1, 21), (0, 1)), ((1, 22), (0, 1))], }
+
+# The map text above is indented 4 columns; solution coordinates are not.
+maps = {'\n'.join(line[4:] for line in text.splitlines()): answer for text, answer in maps.items()}
