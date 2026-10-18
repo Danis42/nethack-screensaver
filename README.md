@@ -27,11 +27,20 @@ level_pause = 1.0    # pause on a new dungeon level
 end_pause = 5.0      # hold the final screen
 status_line = false  # "Game #12 · Val · Dlvl 7 · T:4310 · Best: Dlvl 14" (» = fast-forward)
 role = "random"      # or arc bar cav hea kni mon pri ran rog sam tou val wiz
+strategy = "random"  # secret goal per game: pilgrim daredevil sightseer treasure
+reveal_goal = false  # true: show the secret goal on the game-over screen
 ```
 
 Pacing: moves play at `delay` while the bot explores new map, fights (except while
 farming XP on Dlvl 1) or has low HP; after 10 quiet moves it fast-forwards at
 `fast_delay` (set it equal to `delay` to turn this off).
+
+Secret goals: each game secretly follows one strategy. Pilgrim (aims to ascend)
+tours the Mines, Minetown and Sokoban, then dives; Daredevil (aims to escape in
+celestial disgrace) dives straight down; Sightseer visits Minetown and climbs
+back out of the dungeon; Treasure hunter solves Sokoban, loots its prize and
+escapes. Only the two escapes are reachable for this bot. The log records each
+game's `strategy` and `outcome`.
 
 Game history: `~/.local/state/nethack-screensaver/games.jsonl`.
 Errors: `~/.local/state/nethack-screensaver/player.log`.

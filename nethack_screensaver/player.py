@@ -4,10 +4,11 @@ import signal
 import sys
 import time
 
+from autoascend.plans import STRATEGIES
 from nethack_screensaver.config import Config, load_config
 from nethack_screensaver.pacing import Pacer
 from nethack_screensaver.paths import config_path, state_dir
-from nethack_screensaver.render import Renderer, format_status
+from nethack_screensaver.render import Renderer, format_reveal, format_status
 
 SPLASH = "a new adventurer enters the dungeon..."
 
@@ -56,7 +57,7 @@ def main() -> None:
     while True:
         stats = read_stats(log_path)
         game_no = stats.games + 1
-        state = {"depth": None, "turn": 0, "role": None}
+        state = {"depth": None, "turn": 0, "role": None, "obs": None}
         pacer = Pacer()
 
         def on_frame(obs):
@@ -74,9 +75,15 @@ def main() -> None:
             _write(out, renderer.frame(obs["tty_chars"], obs["tty_colors"], *_size(), status=status))
             time.sleep(frame_delay(state["depth"], depth, cfg, fast))
             state["depth"], state["turn"] = depth, turn
+            state["obs"] = obs
 
-        result = run_game(role=role, on_frame=on_frame)
+        strategy = None if cfg.strategy == "random" else cfg.strategy
+        result = run_game(role=role, on_frame=on_frame, strategy=strategy)
         append_result(log_path, result)
+        if cfg.reveal_goal and state["obs"] is not None and result.strategy in STRATEGIES:
+            obs = state["obs"]
+            _write(out, renderer.frame(obs["tty_chars"], obs["tty_colors"], *_size(),
+                                       overlay=format_reveal(result.strategy, result.outcome)))
         time.sleep(cfg.end_pause)
         renderer.invalidate()
 

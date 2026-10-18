@@ -1,6 +1,8 @@
 """Pure ANSI renderer for NLE's 80x24 tty observation."""
 import numpy as np
 
+from autoascend.plans import STRATEGIES
+
 W, H = 80, 24
 TOO_SMALL = "Terminal too small for NetHack (need 80x24)"
 CLEAR = "\x1b[0m\x1b[2J"
@@ -28,6 +30,12 @@ def format_status(game_no: int, role: str, depth: int, turn: int, best_depth: in
     return s + " · »" if fast else s
 
 
+def format_reveal(strategy: str, outcome: str) -> str:
+    s = STRATEGIES[strategy]
+    shown = outcome.upper() + "!" if outcome.startswith("escaped") else outcome
+    return f"Secret goal: {s.title} · {s.ending} · {shown}"
+
+
 class Renderer:
     def __init__(self):
         self._redraw_requested = False
@@ -50,7 +58,8 @@ class Renderer:
         col = max((cols - len(text)) // 2, 0) + 1
         return f"{CLEAR}\x1b[{row};{col}H{text}"
 
-    def frame(self, tty_chars, tty_colors, cols, rows, status=None) -> str:
+    def frame(self, tty_chars, tty_colors, cols, rows, status=None, overlay=None) -> str:
+        """`overlay` is drawn over the last game row (needs no extra terminal row)."""
         if self._redraw_requested:
             self._redraw_requested = False
             self.invalidate()
@@ -85,6 +94,8 @@ class Renderer:
                 parts.append(_ch(int(row_c[x])))
         if status is not None and (full or status != self._status):
             parts.append(f"{RESET}\x1b[{top + H + 1};{left + 1}H\x1b[2K{status[:W]}")
+        if overlay is not None:
+            parts.append(f"{RESET}\x1b[{top + H};{left + 1}H\x1b[2K{overlay[:W]}")
         self._chars = tty_chars.copy()
         self._colors = tty_colors.copy()
         self._status = status

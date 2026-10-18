@@ -2,7 +2,7 @@ import re
 
 import numpy as np
 
-from nethack_screensaver.render import TOO_SMALL, Renderer, format_status
+from nethack_screensaver.render import TOO_SMALL, Renderer, format_reveal, format_status
 
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 
@@ -132,3 +132,19 @@ def test_resize_signal_during_frame_is_safe_and_redraws_next():
 
 def test_format_status_marks_fast_forward():
     assert format_status(1, "Val", 2, 50, 2, fast=True).endswith(" · »")
+
+
+def test_format_reveal():
+    assert format_reveal("sightseer", "escaped") == "Secret goal: Sightseer · escape the dungeon · ESCAPED!"
+    assert format_reveal("treasure", "escaped empty-handed") == \
+        "Secret goal: Treasure hunter · escape with loot · ESCAPED EMPTY-HANDED!"
+    assert format_reveal("daredevil", "died on Dlvl 11") == \
+        "Secret goal: Daredevil · escape in celestial disgrace · died on Dlvl 11"
+
+
+def test_overlay_fits_a_24_row_terminal_on_the_last_game_row():
+    r = Renderer()
+    chars, colors = screen()
+    out = r.frame(chars, colors, 80, 24, overlay="Secret goal: X")
+    assert TOO_SMALL[:20] not in ANSI.sub("", out)
+    assert (24, 1) in moves(out) and "Secret goal: X" in out

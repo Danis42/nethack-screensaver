@@ -42,3 +42,14 @@ def test_non_utf8_file_gives_defaults(tmp_path, capsys):
     p.write_bytes(b"delay = 0.2\n\xff\xfe\n")
     assert load_config(p) == Config()
     assert "config" in capsys.readouterr().err
+
+
+def test_strategy_and_reveal(tmp_path, capsys):
+    p = tmp_path / "c.toml"
+    p.write_text('strategy = "treasure"\nreveal_goal = true\n')
+    c = load_config(p)
+    assert c.strategy == "treasure" and c.reveal_goal is True
+    p.write_text('strategy = "speedrun"\nreveal_goal = "yes"\n')
+    assert load_config(p) == Config()
+    err = capsys.readouterr().err
+    assert "strategy" in err and "reveal_goal" in err
