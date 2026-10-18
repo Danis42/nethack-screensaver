@@ -45,3 +45,13 @@ def test_agent_makes_progress():
     # Full games take ~10-40 s headless; a healthy port gets past Dlvl 2 in at least one of four.
     depths = [game.run_game().max_depth for _ in range(4)]
     assert max(depths) >= 3, depths
+
+
+@pytest.mark.slow
+def test_leave_dungeon_plan_escapes(monkeypatch):
+    from autoascend.plans import STRATEGIES, Milestone as M, StrategySpec
+    monkeypatch.setitem(STRATEGIES, "test_escape",
+                        StrategySpec("test_escape", "Test", "escape the dungeon",
+                                     (M.RETURN_TO_SURFACE, M.LEAVE_DUNGEON)))
+    result = game.run_game(strategy="test_escape", max_steps=2000)
+    assert result.end_reason == "ESCAPED: escaped the dungeon", result.end_reason

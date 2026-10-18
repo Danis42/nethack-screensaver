@@ -37,7 +37,7 @@ BLStats = namedtuple('BLStats',
 
 class Agent:
     def __init__(self, env, seed=0, verbose=False, panic_on_errors=False,
-                 rl_model_to_train=None, rl_model_training_comm=(None, None)):
+                 rl_model_to_train=None, rl_model_training_comm=(None, None), plan=None):
         self.env = env
         self.verbose = verbose
         self.rng = np.random.RandomState(seed)
@@ -64,7 +64,7 @@ class Agent:
         self.inventory = Inventory(self)
         self.character = Character(self)
         self.exploration = ExplorationLogic(self)
-        self.global_logic = GlobalLogic(self)
+        self.global_logic = GlobalLogic(self, plan)
         self.monster_tracker = MonsterTracker(self)
 
         self.last_bfs_dis = None

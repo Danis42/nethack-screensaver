@@ -13,6 +13,9 @@ from .item import Item, flatten_items
 from .item.item_priority_base import ItemPriorityBase
 from .level import Level
 from .plans import DEFAULT_PLAN, Milestone, Plan
+
+TOWN_TURNS = 1000  # sightseer: turns to look around Minetown
+LOOT_TURNS = 1500  # treasure: turns on the top Sokoban level to clear the zoo and loot
 from .strategy import Strategy
 
 
@@ -139,9 +142,10 @@ class ItemPriority(ItemPriorityBase):
 
 
 class GlobalLogic:
-    def __init__(self, agent):
+    def __init__(self, agent, plan=None):
         self.agent = agent
-        self.milestone = Milestone(1)
+        self.plan = Plan(plan or DEFAULT_PLAN)
+        self._arrived = {}  # milestone -> turn it first stood on its target level
         self.step_completion_log = {}  # Milestone -> (step, turn)
 
         self.item_priority = ItemPriority(self.agent)
@@ -150,6 +154,22 @@ class GlobalLogic:
         self.minetown_level = None
 
         self._got_artifact = False
+
+    @property
+    def milestone(self):
+        return self.plan.current
+
+    def _stayed(self, key, turns):
+        """True once the bot has been on level `key` for `turns` turns in this milestone."""
+        if self.agent.current_level().key() != key:
+            return False
+        start = self._arrived.setdefault(self.milestone, self.agent.blstats.time)
+        return self.agent.blstats.time - start >= turns
+
+    def has_prize(self):
+        """Sokoban prize (or an unidentified item that may be it) in the inventory."""
+        prizes = {O.from_name('bag of holding'), O.from_name('amulet of reflection')}
+        return any(prizes & set(item.objs) for item in flatten_items(self.agent.inventory.items))
 
     def update(self):
         if not self.agent.character.prop.hallu:
@@ -299,8 +319,22 @@ class GlobalLogic:
                     continue
 
             self.agent.stats_logger.log_event('sokoban_dropped')
-            self.milestone = Milestone(int(self.milestone) + 1)
+            self.plan.drop_sokoban()
             raise AgentPanic('sokomap unsolvable')
+
+    @Strategy.wrap
+    def leave_dungeon(self):
+        if self.agent.current_level().key() != (Level.DUNGEONS_OF_DOOM, 1):
+            yield False
+        stairs = [(y, x) for y, x in zip(*utils.isin(self.agent.current_level().objects, G.STAIR_UP).nonzero())
+                  if self.agent.bfs()[y, x] != -1]
+        if not stairs:
+            yield False  # upstairs not known or not reachable yet: keep exploring Dlvl 1
+        yield True
+        y, x = stairs[0]
+        self.agent.go_to(y, x)
+        # "Beware, there will be no return! Still climb?" is answered 'y' by Agent.update.
+        self.agent.direction('<')
 
     @Strategy.wrap
     def wait_out_unexpected_state_strategy(self):
@@ -541,13 +575,27 @@ class GlobalLogic:
                 condition = lambda: self.agent.current_level().key() == (Level.GNOMISH_MINES, 9)  # TODO
                 level = (Level.GNOMISH_MINES, 9)  # TODO
 
+            elif self.milestone == Milestone.EXPLORE_MINETOWN:
+                condition = lambda: self._stayed(self.minetown_level, TOWN_TURNS)
+                level = self.minetown_level
+
+            elif self.milestone == Milestone.LOOT_SOKOBAN_PRIZE:
+                condition = lambda: self.has_prize() or self._stayed((Level.SOKOBAN, 1), LOOT_TURNS)
+                level = (Level.SOKOBAN, 1)
+
+            elif self.milestone in (Milestone.RETURN_TO_SURFACE, Milestone.LEAVE_DUNGEON):
+                # LEAVE_DUNGEON never completes here: leave_dungeon() ends the game.
+                condition = lambda: self.milestone == Milestone.RETURN_TO_SURFACE and \
+                                    self.agent.current_level().key() == (Level.DUNGEONS_OF_DOOM, 1)
+                level = (Level.DUNGEONS_OF_DOOM, 1)
+
             else:
                 # TODO
                 condition = lambda: False
                 level = (Level.DUNGEONS_OF_DOOM, 100)
 
             if condition():
-                self.milestone = Milestone(int(self.milestone) + 1)
+                self.plan.advance()
                 continue
 
 
@@ -602,6 +650,9 @@ class GlobalLogic:
                 self.solve_sokoban_strategy()
                 .condition(lambda: self.milestone == Milestone.SOLVE_SOKOBAN and
                                    self.agent.current_level().dungeon_number == Level.SOKOBAN)
+            ])
+            .preempt(self.agent, [
+                self.leave_dungeon().condition(lambda: self.milestone == Milestone.LEAVE_DUNGEON)
             ])
             .preempt(self.agent, [
                 self.offer_corpses().preempt(self.agent, [
