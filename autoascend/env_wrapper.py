@@ -88,6 +88,9 @@ class EnvWrapper:
             text = ' '.join(words[idx + 1:-2])
             first, _, rest = text.partition('.')
             cause = rest.strip().rstrip('.') or first.split(' in ')[0].strip()
+            if cause.startswith('escaped'):
+                # NLE reports escapes with end_status DEATH; the text says otherwise.
+                return 'ESCAPED: ' + cause.split(' [')[0]
             return f'{status_name}: {cause[:1].lower()}{cause[1:]}'
         except Exception:
             return status_name

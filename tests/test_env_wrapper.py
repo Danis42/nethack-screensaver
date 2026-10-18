@@ -17,3 +17,9 @@ def test_end_reason_includes_cause_of_death():
 def test_end_reason_falls_back_to_status():
     obs = {"tty_chars": np.zeros((24, 80), dtype=np.uint8)}
     assert EnvWrapper(env=None)._parse_end_reason(obs, {"end_status": NLE.StepStatus.ABORTED}) == "ABORTED"
+
+
+def test_escape_is_not_reported_as_death():
+    obs = {"tty_chars": np.load(DATA / "escaped_tty_chars.npy")}
+    reason = EnvWrapper(env=None)._parse_end_reason(obs, {"end_status": NLE.StepStatus.DEATH})
+    assert reason == "ESCAPED: escaped the dungeon"
