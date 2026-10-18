@@ -39,7 +39,8 @@ Secret goals: each game secretly follows one strategy. Pilgrim (aims to ascend)
 tours the Mines, Minetown and Sokoban, then dives; Daredevil (aims to escape in
 celestial disgrace) dives straight down; Sightseer visits Minetown and climbs
 back out of the dungeon; Treasure hunter solves Sokoban, loots its prize and
-escapes. Only the two escapes are reachable for this bot. The log records each
+escapes. Only the two escapes are reachable for this bot; both head home early
+when they run out of food and prayer. The log records each
 game's `strategy`, `outcome` and the last plan `milestone` it reached.
 
 Game history: `~/.local/state/nethack-screensaver/games.jsonl`.

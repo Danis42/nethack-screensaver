@@ -80,3 +80,22 @@ to be too busy", an artifact blast, turn inactivity, nested containers).
 
 DIVE turned daredevil into the deepest strategy. The treasure game that solved Sokoban
 still left without the prize; one sample, not yet investigated.
+
+## Escape tuning (2026-10-18, 48 games per escape strategy)
+
+Retreat home directly (no exploring detours, item gathering or pet waiting on
+RETURN_TO_SURFACE) and bail out home when Weak with no food while prayer is on
+cooldown; treasure also gives up on Sokoban after 8000 turns.
+
+| | sightseer before | sightseer after | treasure before | treasure after |
+|---|---|---|---|---|
+| escaped | 11% | **21%** | 3% | **19%** (all empty-handed) |
+| escaped after Dlvl 4+ | 11% | 17% | 3% | 10% |
+| median max depth | 4 | 5 | 5 | 5 |
+| visited Mines | 53% | 62% | 28% | 33% |
+| visited Sokoban | 0% | 0% | 8% | 2% |
+
+A first version that bailed out at the first Weak (before praying) gave 52% / 62%
+escapes, but nearly all from Dlvl 2-3; the prayer-cooldown gate removed those.
+Treasure's prize stays out of reach: few games reach Sokoban, and a reached
+Sokoban is sometimes judged unsolvable (`sokoban_dropped`), which skips the loot.
