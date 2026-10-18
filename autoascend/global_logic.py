@@ -16,6 +16,7 @@ from .plans import DEFAULT_PLAN, Milestone, Plan
 
 TOWN_TURNS = 1000  # sightseer: turns to look around Minetown
 LOOT_TURNS = 1500  # treasure: turns on the top Sokoban level to clear the zoo and loot
+_PRIZES = None  # bag of holding, amulet of reflection; O.from_name scans the table, so look up once
 from .strategy import Strategy
 
 
@@ -146,6 +147,8 @@ class GlobalLogic:
         self.agent = agent
         self.plan = Plan(plan or DEFAULT_PLAN)
         self._arrived = {}  # milestone -> turn it first stood on its target level
+        self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
+        self._prize_found = False
         self.step_completion_log = {}  # Milestone -> (step, turn)
 
         self.item_priority = ItemPriority(self.agent)
@@ -167,9 +170,22 @@ class GlobalLogic:
         return self.agent.blstats.time - start >= turns
 
     def has_prize(self):
-        """Sokoban prize (or an unidentified item that may be it) in the inventory."""
-        prizes = {O.from_name('bag of holding'), O.from_name('amulet of reflection')}
-        return any(prizes & set(item.objs) for item in flatten_items(self.agent.inventory.items))
+        """A possible Sokoban prize was picked up on the top Sokoban level."""
+        return self._prize_found
+
+    def _loot_check(self):
+        # Unidentified amulets/bags may be the prize, so only count ones gained up here:
+        # an amulet found earlier in the dungeon is not loot.
+        if self.agent.current_level().key() != (Level.SOKOBAN, 1):
+            return False
+        global _PRIZES
+        if _PRIZES is None:
+            _PRIZES = {O.from_name('bag of holding'), O.from_name('amulet of reflection')}
+        held = {str(item) for item in flatten_items(self.agent.inventory.items) if _PRIZES & set(item.objs)}
+        if self._prize_baseline is None:
+            self._prize_baseline = held
+        self._prize_found = self._prize_found or bool(held - self._prize_baseline)
+        return self._prize_found
 
     def update(self):
         if not self.agent.character.prop.hallu:
@@ -580,7 +596,7 @@ class GlobalLogic:
                 level = self.minetown_level
 
             elif self.milestone == Milestone.LOOT_SOKOBAN_PRIZE:
-                condition = lambda: self.has_prize() or self._stayed((Level.SOKOBAN, 1), LOOT_TURNS)
+                condition = lambda: self._loot_check() or self._stayed((Level.SOKOBAN, 1), LOOT_TURNS)
                 level = (Level.SOKOBAN, 1)
 
             elif self.milestone in (Milestone.RETURN_TO_SURFACE, Milestone.LEAVE_DUNGEON):

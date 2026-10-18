@@ -57,3 +57,45 @@ def test_endings_and_routes_match_spec():
 def test_global_logic_still_exports_milestone():
     from autoascend.global_logic import Milestone
     assert Milestone is M
+
+
+class _Item:
+    def __init__(self, text, *names):
+        from autoascend import objects as O
+        self.text, self.objs = text, [O.from_name(n) for n in names]
+
+    def __str__(self):
+        return self.text
+
+    def is_container(self):
+        return False
+
+
+def _logic(level, items):
+    from types import SimpleNamespace
+
+    from autoascend.global_logic import GlobalLogic
+    logic = GlobalLogic.__new__(GlobalLogic)  # no agent needed for the prize check
+    logic.agent = SimpleNamespace(current_level=lambda: SimpleNamespace(key=lambda: level),
+                                  inventory=SimpleNamespace(items=items))
+    logic._prize_baseline, logic._prize_found = None, False
+    return logic
+
+
+def test_amulet_carried_into_sokoban_is_not_the_prize():
+    held = [_Item("a circular amulet", "amulet of reflection", "amulet of strangulation")]
+    logic = _logic((4, 1), held)
+    assert logic._loot_check() is False and logic.has_prize() is False
+
+
+def test_amulet_picked_up_on_top_sokoban_level_is_the_prize():
+    items = []
+    logic = _logic((4, 1), items)
+    assert logic._loot_check() is False
+    items.append(_Item("an oval amulet", "amulet of reflection", "amulet of strangulation"))
+    assert logic._loot_check() is True and logic.has_prize() is True
+
+
+def test_loot_check_ignores_other_levels():
+    items = [_Item("a bag", "bag of holding", "sack")]
+    assert _logic((0, 5), items)._loot_check() is False

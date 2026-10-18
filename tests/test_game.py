@@ -89,3 +89,16 @@ def test_escape_strategies_run(strategy):
     assert result.strategy == strategy
     assert not result.end_reason.startswith("exception"), result.end_reason
     assert result.outcome
+
+
+def test_loot_check_survives_broken_inventory():
+    class Logic:
+        def has_prize(self):
+            raise ValueError("inventory parse failed")
+
+    class Agent:
+        global_logic = Logic()
+
+    class Wrapper:
+        agent = Agent()
+    assert game._has_loot(Wrapper()) is False

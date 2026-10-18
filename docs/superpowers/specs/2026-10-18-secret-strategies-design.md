@@ -99,8 +99,9 @@ player.main ── cfg.strategy ──► run_game(strategy=None|name)
 - `gender`: from the character string the result already parses
 - `outcome`:
   - escape strategies that escaped: `escaped` (sightseer), `escaped with loot`
-    or `escaped empty-handed` (treasure; loot = bag of holding or amulet of
-    reflection in the inventory at the end)
+    or `escaped empty-handed` (treasure; loot = a possible bag of holding or
+    amulet of reflection picked up on the top Sokoban level; items carried in
+    from elsewhere do not count)
   - any death: `died on Dlvl N` (N = max depth)
   - exception or watchdog: `crashed`
 

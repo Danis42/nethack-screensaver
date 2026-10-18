@@ -53,7 +53,7 @@ def outcome(strategy: str, end_reason: str, max_depth: int, has_loot: bool) -> s
 def _has_loot(wrapper) -> bool:
     try:
         return wrapper.agent.global_logic.has_prize()
-    except AttributeError:  # agent never started or crashed before its inventory existed
+    except Exception:  # agent never started, or crashed with its inventory half-parsed
         return False
 
 

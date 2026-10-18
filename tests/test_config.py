@@ -53,3 +53,10 @@ def test_strategy_and_reveal(tmp_path, capsys):
     assert load_config(p) == Config()
     err = capsys.readouterr().err
     assert "strategy" in err and "reveal_goal" in err
+
+
+def test_non_string_strategy_falls_back_instead_of_crashing(tmp_path, capsys):
+    p = tmp_path / "c.toml"
+    p.write_text('strategy = ["x"]\n')
+    assert load_config(p) == Config()
+    assert "strategy" in capsys.readouterr().err

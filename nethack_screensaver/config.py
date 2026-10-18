@@ -32,7 +32,7 @@ def _valid(name, value):
     if name in ("status_line", "reveal_goal"):
         return isinstance(value, bool)
     if name == "strategy":
-        return value == "random" or value in STRATEGIES
+        return isinstance(value, str) and (value == "random" or value in STRATEGIES)
     if name == "role":
         return value == "random" or value in ROLES
     return False
