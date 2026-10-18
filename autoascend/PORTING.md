@@ -116,3 +116,16 @@ Pilgrim was tried Sokoban-first in this run: 34/42 died during FIND_SOKOBAN,
 because finding the Sokoban stairs explores every level of Dlvl 6-10 in full
 (`levels_to_explore_to_get_to`, "TODO: one level below oracle"). Reverted to
 Mines first. Daredevil's Dlvl 10+ fell from 19% as it now gets more weak roles.
+
+## Wiki rules (2026-10-18, 192 unforced games each)
+
+| | baseline | + Oracle-guided Sokoban search | + pray when Weak | + avoid ']' mimics |
+|---|---|---|---|---|
+| hunger deaths | - | 30 | 29 | 22 |
+| mimic deaths | - | 2 | 8 | 8 |
+| Sokoban visits / solved to top / dropped | 3 / 2 / 1 | 7 / 2 / 2 | 13 / 8 / 7 | 10 / 4 / 3 |
+
+Kept: Oracle-guided search (the Sokoban stairs are always one floor below the Oracle)
+and praying at Weak (Weak is already major trouble). Reverted: avoiding ']' strange
+objects, since the mimics that kill this bot are not the shop ones. Roughly half of
+all Sokoban visits end in `sokoban_dropped`, which is what a live-board solver would fix.
