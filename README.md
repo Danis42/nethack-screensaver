@@ -30,7 +30,7 @@ role = "random"      # or arc bar cav hea kni mon pri ran rog sam tou val wiz
 ```
 
 Pacing: moves play at `delay` while the bot explores new map, fights (except while
-farming XP on Dlvl 1 and 3) or has low HP; after 10 quiet moves it fast-forwards at
+farming XP on Dlvl 1) or has low HP; after 10 quiet moves it fast-forwards at
 `fast_delay` (set it equal to `delay` to turn this off).
 
 Game history: `~/.local/state/nethack-screensaver/games.jsonl`.

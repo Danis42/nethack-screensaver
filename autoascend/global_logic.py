@@ -138,12 +138,8 @@ class ItemPriority(ItemPriorityBase):
         return r
 
 
-FARM_TURNS = 4000
-
-
 class Milestone(IntEnum):
     BE_ON_FIRST_LEVEL = auto()
-    FARM_UPPER_DUNGEON = auto()
     FIND_GNOMISH_MINES = auto()
     # FIND_LIGHT_GNOMISH_MINES = auto()
     # FARM_LIGHT_GNOMISH_MINES = auto()
@@ -166,7 +162,6 @@ class GlobalLogic:
         self.minetown_level = None
 
         self._got_artifact = False
-        self._farm_until = None
 
     def update(self):
         if not self.agent.character.prop.hallu:
@@ -526,15 +521,6 @@ class GlobalLogic:
                 # explore_stairs_condition = lambda: self.agent.inventory.items.total_nutrition() == 0 and \
                 #                                    self.agent.blstats.hunger_state >= Hunger.NOT_HUNGRY
                 level = (Level.DUNGEONS_OF_DOOM, 1)
-
-            elif self.milestone == Milestone.FARM_UPPER_DUNGEON:
-                # Gain levels where monsters and food are richer, before the Mines,
-                # within a turn budget so a slow farm can't take over the game.
-                if self._farm_until is None:
-                    self._farm_until = self.agent.blstats.time + FARM_TURNS
-                condition = lambda: self.agent.blstats.experience_level >= 8 or \
-                                    self.agent.blstats.time >= self._farm_until
-                level = (Level.DUNGEONS_OF_DOOM, 3)
 
             elif self.milestone == Milestone.FIND_SOKOBAN:
                 condition = lambda: self.agent.current_level().dungeon_number == Level.SOKOBAN

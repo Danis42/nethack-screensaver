@@ -13,7 +13,7 @@ from autoascend.global_logic import Milestone
 
 DEPTH = 12
 TURN = 20
-FARMING = (Milestone.BE_ON_FIRST_LEVEL, Milestone.FARM_UPPER_DUNGEON)
+FARMING = (Milestone.BE_ON_FIRST_LEVEL,)
 
 
 class WatchdogTimeout(KeyboardInterrupt):
