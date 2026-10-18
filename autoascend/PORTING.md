@@ -65,3 +65,18 @@ Both escape strategies win sometimes. Daredevil does not dive: GO_DOWN uses the 
 explore-every-level travel as the other milestones, so it is not deeper than the rest.
 Sightseer crashes were upstream assertions while exploring Minetown ("Your hands seem
 to be too busy", an artifact blast, turn inactivity, nested containers).
+
+## Strategies benchmark after follow-up fixes (2026-10-18, 36 games per strategy)
+
+| | pilgrim | daredevil | sightseer | treasure |
+|---|---|---|---|---|
+| median max depth | 5 | **7.5** | 4 | 5 |
+| deepest | 12 | **20** | 8 | 12 |
+| Dlvl 8+ / 10+ | 14% / 6% | **50% / 19%** | 3% / 0% | 17% / 6% |
+| visited Mines | 61% | 56% | 53% | 28% |
+| visited Sokoban | 8% (solved twice) | 0% | 0% | 8% (solved once) |
+| escaped | - | - | **4** | 1 (empty-handed, after solving all of Sokoban) |
+| crashed | 1 | 0 | 2 | 2 |
+
+DIVE turned daredevil into the deepest strategy. The treasure game that solved Sokoban
+still left without the prize; one sample, not yet investigated.
