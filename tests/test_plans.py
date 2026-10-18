@@ -233,7 +233,7 @@ def test_plans_without_a_way_home_never_bail_out():
         assert p.current == M.BE_ON_FIRST_LEVEL
 
 
-def _bail_logic(milestones, hunger=1, food=(), elapsed=0):
+def _bail_logic(milestones, hunger=1, food=(), elapsed=0, can_pray=False):
     from types import SimpleNamespace
 
     from autoascend.global_logic import GlobalLogic
@@ -244,7 +244,8 @@ def _bail_logic(milestones, hunger=1, food=(), elapsed=0):
 
     logic = GlobalLogic.__new__(GlobalLogic)
     logic.agent = SimpleNamespace(blstats=SimpleNamespace(time=100 + elapsed, hunger_state=hunger),
-                                  inventory=SimpleNamespace(items=[Food(f) for f in food]))
+                                  inventory=SimpleNamespace(items=[Food(f) for f in food]),
+                                  is_safe_to_pray=lambda: can_pray)
     logic.plan, logic._started = Plan(milestones), {logic_m: 100 for logic_m in milestones}
     return logic
 
@@ -254,6 +255,11 @@ def test_weak_with_no_food_heads_home():
     assert _bail_logic(route, hunger=3)._should_bail()
     assert not _bail_logic(route, hunger=3, food=["a food ration"])._should_bail()
     assert not _bail_logic(route, hunger=2)._should_bail()
+
+
+def test_weak_but_prayer_available_keeps_going():
+    route = STRATEGIES["sightseer"].milestones[1:]
+    assert not _bail_logic(route, hunger=3, can_pray=True)._should_bail()
 
 
 def test_treasure_gives_up_on_sokoban_after_budget():

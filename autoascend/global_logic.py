@@ -201,7 +201,8 @@ class GlobalLogic:
         """Escape plans head home early when the run turns bad."""
         if not self.plan.can_bail_out():
             return False
-        if self.agent.blstats.hunger_state >= Hunger.WEAK and \
+        # Out of food and prayer still on cooldown: the next hunger is likely fatal.
+        if self.agent.blstats.hunger_state >= Hunger.WEAK and not self.agent.is_safe_to_pray() and \
                 not any(item.is_food() for item in flatten_items(self.agent.inventory.items)):
             return True
         return self.milestone == Milestone.FIND_SOKOBAN and self._elapsed(SOKOBAN_SEARCH_TURNS)
