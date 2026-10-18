@@ -74,10 +74,16 @@ class ExplorationLogic:
                               if (Level.DUNGEONS_OF_DOOM, i) in achievable_levels})
 
         if dungeon_number == Level.SOKOBAN:
-            # TODO: one level below oracle
+            # The Sokoban up stairs are always one floor below the Oracle (Dlvl 5-9), so once the
+            # Oracle has been seen only that level needs searching; until then Dlvl 6-10.
+            oracle = self.agent.global_logic.oracle_level
+            if oracle is not None and oracle[0] == Level.DUNGEONS_OF_DOOM:
+                candidates = range(oracle[1] + 1, oracle[1] + 2)
+            else:
+                candidates = range(6, 11)
             return set.union(*[self.levels_to_explore_to_get_to(Level.DUNGEONS_OF_DOOM, i, achievable_levels)
-                               for i in range(6, 11)],
-                             {(Level.DUNGEONS_OF_DOOM, i) for i in range(6, 11)
+                               for i in candidates],
+                             {(Level.DUNGEONS_OF_DOOM, i) for i in candidates
                               if (Level.DUNGEONS_OF_DOOM, i) in achievable_levels})
 
         if all((dun == Level.GNOMISH_MINES for dun, lev in achievable_levels)):

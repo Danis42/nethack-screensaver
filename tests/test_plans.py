@@ -294,3 +294,23 @@ def test_unknown_role_gets_equal_odds():
     rng = random.Random(2)
     picks = Counter(choose_strategy("???", rng) for _ in range(4000))
     assert all(abs(n / 4000 - 0.25) < 0.04 for n in picks.values())
+
+
+def _explorer(oracle_level):
+    from types import SimpleNamespace
+
+    from autoascend.exploration_logic import ExplorationLogic
+    ex = ExplorationLogic.__new__(ExplorationLogic)
+    ex.agent = SimpleNamespace(global_logic=SimpleNamespace(oracle_level=oracle_level))
+    return ex
+
+
+def test_sokoban_is_searched_only_below_a_known_oracle():
+    reached = {(0, i) for i in range(1, 10)}
+    assert _explorer((0, 7)).levels_to_explore_to_get_to(4, 4, reached) == {(0, 8)}
+
+
+def test_sokoban_search_without_oracle_covers_dlvl_6_to_10():
+    reached = {(0, i) for i in range(1, 10)}
+    assert _explorer(None).levels_to_explore_to_get_to(4, 4, reached) == {(0, i) for i in range(6, 10)}
+
