@@ -20,12 +20,13 @@ def _role_matches(obs, role):
 
 
 class EnvWrapper:
-    def __init__(self, env, on_step=None, step_limit=None, role=None, agent_args=None):
+    def __init__(self, env, on_step=None, step_limit=None, role=None, agent_args=None, choose_plan=None):
         self.env = env
         self.on_step = on_step
         self.step_limit = step_limit
         self.role = role
         self.agent_args = agent_args or {}
+        self.choose_plan = choose_plan  # obs after reset -> milestone plan
         self.agent = None
         self.last_observation = None
         self.score = 0
@@ -34,7 +35,9 @@ class EnvWrapper:
         self.is_done = False
 
     def main(self):
-        self.reset()
+        obs = self.reset()
+        if self.choose_plan is not None:
+            self.agent_args = {**self.agent_args, 'plan': self.choose_plan(obs)}
         self.agent = agent_lib.Agent(self, **self.agent_args)
         self.agent.main()
 

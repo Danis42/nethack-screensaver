@@ -32,7 +32,7 @@ def test_dropped_sokoban_in_pilgrim_just_advances():
     while p.current != M.SOLVE_SOKOBAN:
         p.advance()
     p.drop_sokoban()
-    assert p.current == M.FIND_MINES_END
+    assert p.current == M.FIND_GNOMISH_MINES  # Sokoban comes first now; the Mines are next
 
 
 @pytest.mark.parametrize("name", ["pilgrim", "daredevil", "sightseer", "treasure"])
@@ -271,3 +271,50 @@ def test_treasure_gives_up_on_sokoban_after_budget():
 
 def test_no_bail_without_a_way_home():
     assert not _bail_logic(STRATEGIES["daredevil"].milestones, hunger=3)._should_bail()
+
+
+@pytest.mark.parametrize("text,race", [
+    ("Hello Agent, welcome to NetHack!  You are a lawful dwarven Cavewoman.", "dwa"),
+    ("Hello Agent, welcome to NetHack!  You are a neutral female gnomish\nHealer.", "gno"),
+    ("Aloha Agent, welcome to NetHack!  You are a neutral male human Tourist.", "hum"),
+    ("Hello Agent, welcome to NetHack!  You are a chaotic elven Priest.", "elf"),
+    ("Hello Agent, welcome to NetHack!  You are a chaotic male orcish Rogue.", "orc"),
+    ("$ - 3 gold pieces.", None),
+])
+def test_race_from_welcome(text, race):
+    from autoascend.plans import race_from_welcome
+    assert race_from_welcome(text) == race
+
+
+def test_pilgrim_route_depends_on_race():
+    from autoascend.plans import plan_for
+    normal = plan_for("pilgrim", "hum")
+    assert normal[:3] == (M.BE_ON_FIRST_LEVEL, M.FIND_SOKOBAN, M.SOLVE_SOKOBAN)
+    for race in ("dwa", "gno"):
+        assert plan_for("pilgrim", race)[:3] == (M.BE_ON_FIRST_LEVEL, M.FIND_GNOMISH_MINES, M.FIND_MINETOWN)
+    assert plan_for("pilgrim", None) == normal
+    assert set(plan_for("pilgrim", "dwa")) == set(normal)  # same stops, different order
+    assert plan_for("daredevil", "dwa") == STRATEGIES["daredevil"].milestones
+
+
+@pytest.mark.parametrize("role,favoured,share", [("val", {"pilgrim", "treasure"}, 0.7),
+                                                 ("tou", {"sightseer", "daredevil"}, 0.8)])
+def test_role_tilts_but_never_excludes(role, favoured, share):
+    import random
+    from collections import Counter
+
+    from autoascend.plans import choose_strategy
+    rng = random.Random(1)
+    picks = Counter(choose_strategy(role, rng) for _ in range(4000))
+    assert set(picks) == set(STRATEGIES)  # every strategy still possible
+    assert sum(picks[s] for s in favoured) / 4000 == pytest.approx(share, abs=0.04)
+
+
+def test_unknown_role_gets_equal_odds():
+    import random
+    from collections import Counter
+
+    from autoascend.plans import choose_strategy
+    rng = random.Random(2)
+    picks = Counter(choose_strategy("???", rng) for _ in range(4000))
+    assert all(abs(n / 4000 - 0.25) < 0.04 for n in picks.values())

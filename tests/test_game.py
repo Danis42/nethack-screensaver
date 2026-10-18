@@ -72,11 +72,31 @@ def test_outcome(strategy, reason, loot, expected):
     assert game.outcome(strategy, reason, 7, loot) == expected
 
 
-def test_random_pick_covers_all_strategies():
+def _start_obs(role_name, welcome):
+    import nle.nethack as nh
+    import numpy as np
+    mon = next(i for i in range(nh.NUMMONS) if nh.permonst(i).mname == role_name)
+    glyphs = np.zeros((21, 79), dtype=np.int16)
+    glyphs[5, 7] = nh.GLYPH_MON_OFF + mon
+    chars = np.full((24, 80), ord(" "), dtype=np.uint8)
+    chars[0, :len(welcome)] = np.frombuffer(welcome.encode(), dtype=np.uint8)
+    bl = np.zeros(27, dtype=np.int64)
+    bl[0], bl[1] = 7, 5
+    return {"glyphs": glyphs, "tty_chars": chars, "blstats": bl}
+
+
+def test_strategy_and_plan_from_the_start_screen():
+    from autoascend.plans import PEACEFUL_MINES_PILGRIM, STRATEGIES
+    obs = _start_obs("valkyrie", "Hello Agent, welcome to NetHack!  You are a lawful female dwarven Valkyrie.")
+    assert game._strategy_and_plan(obs, "pilgrim") == ("pilgrim", PEACEFUL_MINES_PILGRIM)
+    name, plan = game._strategy_and_plan(obs, None)
+    assert name in STRATEGIES and plan[0] == STRATEGIES[name].milestones[0]
+
+
+def test_strategy_and_plan_without_welcome_uses_the_normal_route():
     from autoascend.plans import STRATEGIES
-    picks = {game._pick_strategy(None) for _ in range(200)}
-    assert picks == set(STRATEGIES)
-    assert game._pick_strategy("sightseer") == "sightseer"
+    obs = _start_obs("tourist", "$ - 3 gold pieces.")
+    assert game._strategy_and_plan(obs, "pilgrim") == ("pilgrim", STRATEGIES["pilgrim"].milestones)
 
 
 def test_loot_check_survives_missing_agent():

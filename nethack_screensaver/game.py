@@ -11,7 +11,7 @@ from nle.env.tasks import NetHackChallenge
 
 from autoascend.env_wrapper import EnvWrapper
 from autoascend.global_logic import Milestone
-from autoascend.plans import STRATEGIES
+from autoascend.plans import STRATEGIES, choose_strategy, plan_for, race_from_welcome
 
 DEPTH = 12
 TURN = 20
@@ -37,8 +37,11 @@ class GameResult:
     milestone: str = "?"  # last milestone of the plan the bot reached
 
 
-def _pick_strategy(strategy: str | None) -> str:
-    return strategy if strategy is not None else random.choice(sorted(STRATEGIES))
+def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
+    """Pick the secret strategy once the character is known: tilted by role, route by race."""
+    screen = "\n".join(bytes(row).decode(errors="replace").rstrip() for row in obs["tty_chars"])
+    name = forced if forced is not None else choose_strategy(role_abbrev(obs).lower(), rng)
+    return name, plan_for(name, race_from_welcome(screen))
 
 
 def outcome(strategy: str, end_reason: str, max_depth: int, has_loot: bool) -> str:
@@ -107,7 +110,6 @@ def run_game(
     watchdog_seconds: float | None = 60.0,
     strategy: str | None = None,
 ) -> GameResult:
-    strategy = _pick_strategy(strategy)
     env = NetHackChallenge(no_progress_timeout=1000)
     max_depth = 1
     turns = 0
@@ -126,9 +128,14 @@ def run_game(
         if on_frame is not None:
             on_frame({**obs, "farming": _farming(wrapper)})
 
-    wrapper = EnvWrapper(env, on_step=on_step, step_limit=max_steps, role=role,
-                         agent_args=dict(panic_on_errors=False, verbose=False,
-                                         plan=STRATEGIES[strategy].milestones))
+    chosen = {}
+
+    def choose_plan(obs):
+        chosen["strategy"], plan = _strategy_and_plan(obs, strategy)
+        return plan
+
+    wrapper = EnvWrapper(env, on_step=on_step, step_limit=max_steps, role=role, choose_plan=choose_plan,
+                         agent_args=dict(panic_on_errors=False, verbose=False))
     try:
         with watchdog:
             wrapper.main()
@@ -140,6 +147,7 @@ def run_game(
     finally:
         env.close()
 
+    strategy = chosen.get("strategy", strategy or "?")  # "?" if the game never started
     role_s, race, gender, alignment = _character(wrapper)
     return GameResult(role_s, race, alignment, max_depth, turns, int(wrapper.score), end_reason,
                       strategy=strategy, gender=gender, milestone=_milestone(wrapper),
