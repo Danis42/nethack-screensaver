@@ -45,6 +45,11 @@ escapes. Only the two escapes are reachable for this bot; both head home early
 when they run out of food and prayer. The log records each
 game's `strategy`, `outcome` and the last plan `milestone` it reached.
 
+What to expect (benchmarks of v0.2.0, see `autoascend/PORTING.md`): Sightseer escapes in
+about 20% of its games, Treasure hunter in about 15-20% (with the Sokoban prize only
+around 1-2%), Daredevil reaches Dlvl 10+ in about 12-20%; Pilgrim rarely completes its
+tour. Ascension is out of reach for this bot.
+
 Game history: `~/.local/state/nethack-screensaver/games.jsonl`.
 Errors: `~/.local/state/nethack-screensaver/player.log`.
 
