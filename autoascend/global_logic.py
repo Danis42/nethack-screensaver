@@ -4,6 +4,7 @@ from nle.nethack import actions as A
 
 from . import objects as O
 from . import soko_solver
+from .soko_solver import search as soko_search
 from . import utils
 from .character import Character
 from .exceptions import AgentPanic
@@ -28,6 +29,15 @@ def _prize_objects():
     if _PRIZES is None:
         _PRIZES = {O.from_name('bag of holding'), O.from_name('amulet of reflection')}
     return _PRIZES
+
+
+def sokoban_board(objects, glyphs):
+    """Floor, boulder and trap cells of the current Sokoban level, for the live solver."""
+    boulders = utils.isin(glyphs, G.BOULDER)
+    traps = utils.isin(objects, G.TRAPS)
+    floor = utils.isin(objects, G.FLOOR | G.STAIR_UP | G.STAIR_DOWN) | traps | boulders
+    cells = lambda mask: {(int(y), int(x)) for y, x in zip(*mask.nonzero())}
+    return cells(floor), cells(boulders), cells(traps)
 
 
 def dive_stairs(dungeon_number, objects, stair_destination, bfs):
@@ -385,6 +395,12 @@ class GlobalLogic:
                     push_bolder(ty, tx, dy, dx)
                     continue
 
+            # The stored solution no longer fits this board: solve it from what is there now.
+            with self.agent.env.debug_log('live solver'):
+                if self._solve_live_sokoban(push_bolder):
+                    self.agent.stats_logger.log_event('sokoban_live_solved')
+                    return
+
             self.agent.stats_logger.log_event('sokoban_dropped')
             self.plan.drop_sokoban()
             raise AgentPanic('sokomap unsolvable')
@@ -422,6 +438,20 @@ class GlobalLogic:
                      if item.can_be_dropped_from_inventory() and not _prize_objects() & set(item.objs)]
         if droppable:
             self.agent.inventory.drop(max(droppable, key=lambda item: item.weight()))
+
+    def _solve_live_sokoban(self, push_bolder, attempts=5):
+        """Fill the remaining traps from the board as it is now; True once none are left."""
+        for _ in range(attempts):
+            floor, boulders, traps = sokoban_board(self.agent.current_level().objects, self.agent.glyphs)
+            if not traps:
+                return True
+            pushes = soko_search.solve(floor, boulders, traps, (self.agent.blstats.y, self.agent.blstats.x))
+            if pushes is None:
+                return False
+            for (by, bx), (dy, dx) in pushes:
+                if self.agent.glyphs[by, bx] not in G.BOULDER or not push_bolder(by - dy, bx - dx, dy, dx):
+                    break  # the board changed under us (a monster, a mimic): look again
+        return not utils.isin(self.agent.current_level().objects, G.TRAPS).any()
 
     @Strategy.wrap
     def wait_out_unexpected_state_strategy(self):
