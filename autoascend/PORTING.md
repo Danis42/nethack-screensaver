@@ -13,6 +13,13 @@ Target: Python 3.13, NLE 1.3.0 (gymnasium), numpy 2, modern numba/opencv.
 - env_wrapper.py: rewritten for NLE 1.3.0 / gymnasium (`reset()->(obs, info)`, 5-tuple `step()`, `env.actions` instead of `env._actions`); no seeding patch, no visualizer, no fork/reload/interactive tooling; per-step `on_step` callback; role pinning by re-rolling `reset()` (as upstream `bin/main.py --role` did). End-reason parsing made non-asserting and keeps the cause of death.
 - agent.py: `BLStats(*blstats[:26])` — tolerate extra blstats fields in newer NLE.
 - agent.py: `cursor_pos` casts `tty_cursor` (uint8) to int. Under NumPy 2 (NEP 50) `uint8(0) - 1` is 255, not -1 as under NumPy 1 — a silent behavior change. Tests now turn overflow RuntimeWarnings into errors.
+- soko_solver/maps.py: the map text is indented 4 columns but the solution coordinates
+  are not, so every Sokoban attempt died on the first move (`assert ... == BOULDER`).
+  The indent is now stripped; `tests/test_soko_solver.py` replays all 8 solutions.
+- global_logic.py (screensaver tuning, not a port fix): upstream farmed Dlvl 1 until
+  XL 8, which took 15-25k turns and most games fainted from hunger there. Now the bot
+  leaves Dlvl 1 once Hungry, then farms Dlvl 3 (new milestone `FARM_UPPER_DUNGEON`)
+  until XL 8 or for at most 4,000 turns, then goes on to the Mines as before.
 - Observed: the final game-over observation has all-zero blstats; `game.run_game` keeps the last non-zero turn/depth.
 
 ## Benchmark (2026-10-16, 50 games, `scripts/benchmark.py -n 50 -j 10`)
