@@ -99,3 +99,20 @@ A first version that bailed out at the first Weak (before praying) gave 52% / 62
 escapes, but nearly all from Dlvl 2-3; the prayer-cooldown gate removed those.
 Treasure's prize stays out of reach: few games reach Sokoban, and a reached
 Sokoban is sometimes judged unsolvable (`sokoban_dropped`), which skips the loot.
+
+## Role-tilted strategies (2026-10-18, 192 unforced games)
+
+Strategy picked after reset with weights by role tier (strong bar/sam/val/mon get
+pilgrim/treasure 70%, weak arc/tou/rog/hea/wiz get sightseer/daredevil 80%).
+
+| | pilgrim (42) | daredevil (49) | sightseer (54) | treasure (47) |
+|---|---|---|---|---|
+| median max depth | 6 | 5 | 4 | 4 |
+| Dlvl 8+ / 10+ | 17% / 7% | 29% / 12% | 2% / 0% | 9% / 4% |
+| escaped | - | - | **20%** | 15% (empty-handed) |
+| Sokoban visited | 5% | - | - | 2% |
+
+Pilgrim was tried Sokoban-first in this run: 34/42 died during FIND_SOKOBAN,
+because finding the Sokoban stairs explores every level of Dlvl 6-10 in full
+(`levels_to_explore_to_get_to`, "TODO: one level below oracle"). Reverted to
+Mines first. Daredevil's Dlvl 10+ fell from 19% as it now gets more weak roles.

@@ -11,7 +11,7 @@ from nle.env.tasks import NetHackChallenge
 
 from autoascend.env_wrapper import EnvWrapper
 from autoascend.global_logic import Milestone
-from autoascend.plans import STRATEGIES, choose_strategy, plan_for, race_from_welcome
+from autoascend.plans import STRATEGIES, choose_strategy
 
 DEPTH = 12
 TURN = 20
@@ -38,10 +38,9 @@ class GameResult:
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
-    """Pick the secret strategy once the character is known: tilted by role, route by race."""
-    screen = "\n".join(bytes(row).decode(errors="replace").rstrip() for row in obs["tty_chars"])
+    """Pick the secret strategy once the character is known, tilted by role."""
     name = forced if forced is not None else choose_strategy(role_abbrev(obs).lower(), rng)
-    return name, plan_for(name, race_from_welcome(screen))
+    return name, STRATEGIES[name].milestones
 
 
 def outcome(strategy: str, end_reason: str, max_depth: int, has_loot: bool) -> str:

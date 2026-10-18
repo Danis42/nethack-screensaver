@@ -85,18 +85,12 @@ def _start_obs(role_name, welcome):
     return {"glyphs": glyphs, "tty_chars": chars, "blstats": bl}
 
 
-def test_strategy_and_plan_from_the_start_screen():
-    from autoascend.plans import PEACEFUL_MINES_PILGRIM, STRATEGIES
-    obs = _start_obs("valkyrie", "Hello Agent, welcome to NetHack!  You are a lawful female dwarven Valkyrie.")
-    assert game._strategy_and_plan(obs, "pilgrim") == ("pilgrim", PEACEFUL_MINES_PILGRIM)
-    name, plan = game._strategy_and_plan(obs, None)
-    assert name in STRATEGIES and plan[0] == STRATEGIES[name].milestones[0]
-
-
-def test_strategy_and_plan_without_welcome_uses_the_normal_route():
+def test_strategy_follows_the_role_or_the_forced_name():
     from autoascend.plans import STRATEGIES
-    obs = _start_obs("tourist", "$ - 3 gold pieces.")
+    obs = _start_obs("valkyrie", "Hello Agent, welcome to NetHack!")
     assert game._strategy_and_plan(obs, "pilgrim") == ("pilgrim", STRATEGIES["pilgrim"].milestones)
+    name, plan = game._strategy_and_plan(obs, None)
+    assert name in STRATEGIES and plan == STRATEGIES[name].milestones
 
 
 def test_loot_check_survives_missing_agent():
