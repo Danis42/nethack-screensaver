@@ -20,6 +20,11 @@ Target: Python 3.13, NLE 1.3.0 (gymnasium), numpy 2, modern numba/opencv.
   XL 8, which took 15-25k turns and most games fainted from hunger there. Now the bot
   leaves Dlvl 1 once Hungry and goes on to the Mines as before. Farming Dlvl 3 instead
   was tried (4,000 turns, or until XL 8) and gave shallower games: deaths moved to Dlvl 3.
+- plans.py (screensaver feature): the fixed milestone order became per-game plans; four
+  secret strategies (pilgrim = upstream order, daredevil, sightseer, treasure) and new
+  milestones EXPLORE_MINETOWN, LOOT_SOKOBAN_PRIZE, RETURN_TO_SURFACE, LEAVE_DUNGEON.
+- env_wrapper.py: NLE reports leaving the dungeon with end_status DEATH; the final screen
+  says "escaped the dungeon [max level N]", which is now reported as `ESCAPED: ...`.
 - Observed: the final game-over observation has all-zero blstats; `game.run_game` keeps the last non-zero turn/depth.
 
 ## Benchmark (2026-10-16, 50 games, `scripts/benchmark.py -n 50 -j 10`)
@@ -43,3 +48,20 @@ starvation'" for challenge agents, and a traced game showed the port's eating
 works (corpses, rations, prayer at Fainting), so this is upstream behavior, not a
 port regression. Remaining exceptions are upstream `AssertionError`s (e.g. "TODO:
 nested containers"); they end the game and the screensaver starts a new one.
+
+## Strategies benchmark (2026-10-18, 36 games per strategy)
+
+| | pilgrim | daredevil | sightseer | treasure |
+|---|---|---|---|---|
+| median max depth | 5 | 4 | 5 | 4 |
+| deepest | 8 | 13 | 9 | 11 |
+| Dlvl 8+ | 3% | 8% | 14% | 22% |
+| visited Mines | 47% | 33% | 61% | 36% |
+| visited Sokoban | 3% | 0% | 0% | 8% (levels reached 2, 2, 1) |
+| escaped | - | - | 2 | 1 (empty-handed) |
+| crashed | 1 | 1 | 4 | 0 |
+
+Both escape strategies win sometimes. Daredevil does not dive: GO_DOWN uses the same
+explore-every-level travel as the other milestones, so it is not deeper than the rest.
+Sightseer crashes were upstream assertions while exploring Minetown ("Your hands seem
+to be too busy", an artifact blast, turn inactivity, nested containers).
