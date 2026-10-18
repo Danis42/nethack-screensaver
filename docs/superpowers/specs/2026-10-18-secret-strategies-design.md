@@ -52,11 +52,13 @@ so the opening never gives the goal away.
 
 ### New milestones
 
-- `EXPLORE_MINETOWN`: fully explore the Minetown level (existing exploration
-  strategy on `minetown_level`), then advance.
-- `LOOT_SOKOBAN_PRIZE`: on the top Sokoban level `(SOKOBAN, 1)`, explore until
-  the level is fully explored; the bot's own fighting and item gathering clear
-  the zoo and pick up the prize. Then advance.
+- `EXPLORE_MINETOWN`: explore the Minetown level (existing exploration
+  strategy on `minetown_level`) for 1,000 turns, then advance. A turn budget,
+  because the explorer never reports a level as done (it keeps searching).
+- `LOOT_SOKOBAN_PRIZE`: explore the top Sokoban level `(SOKOBAN, 1)`; the bot's
+  own fighting and item gathering clear the zoo and pick up the prize. Advance
+  once a possible prize (bag of holding / amulet of reflection) is in the
+  inventory, or after 1,500 turns on that level.
 - `RETURN_TO_SURFACE`: travel by known stairs to `(DUNGEONS_OF_DOOM, 1)`
   (existing `go_to_level_strategy` path finding), then advance.
 - `LEAVE_DUNGEON`: walk to the Dlvl 1 upstairs and go up. NetHack asks
