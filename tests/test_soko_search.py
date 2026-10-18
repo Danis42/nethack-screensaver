@@ -177,3 +177,17 @@ def test_player_may_cross_pits_on_the_lower_levels():
     pushes = solve(floor, boulders, traps, player, crossable=traps)
     assert pushes is not None
     assert replay(floor, boulders, traps, player, pushes, crossable=traps) == set()
+
+
+def test_blocked_push_square_waits_a_limited_number_of_turns():
+    from types import SimpleNamespace
+
+    from autoascend.global_logic import GlobalLogic, LIVE_SOKOBAN_BLOCKED_TRIES
+    waited = []
+    logic = GlobalLogic.__new__(GlobalLogic)
+    logic.agent = SimpleNamespace(search=lambda: waited.append(1))
+    logic._live_blocked = 0
+    for _ in range(LIVE_SOKOBAN_BLOCKED_TRIES):
+        assert logic._push_square_blocked() is True  # wait a turn: the monster moves or fights
+    assert logic._push_square_blocked() is False  # something permanent: give up
+    assert len(waited) == LIVE_SOKOBAN_BLOCKED_TRIES

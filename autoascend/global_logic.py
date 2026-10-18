@@ -20,6 +20,7 @@ TOWN_TURNS = 1000  # sightseer: turns to look around Minetown
 LOOT_TURNS = 1500  # treasure: turns on the top Sokoban level to clear the zoo and loot
 MINETOWN_SEARCH_TURNS = 4000  # Orcish Town has no shopkeeper, so Minetown may never be seen
 SOKOBAN_SEARCH_TURNS = 8000  # treasure: give up looking for Sokoban and go home
+LIVE_SOKOBAN_BLOCKED_TRIES = 20  # times a monster may block a push square before giving up
 _PRIZES = None
 
 
@@ -185,6 +186,7 @@ class GlobalLogic:
         self.plan = Plan(plan or DEFAULT_PLAN)
         self._arrived = {}  # milestone -> turn it first stood on its target level
         self._started = {}  # milestone -> turn it became current
+        self._live_blocked = 0
         self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
         self._prize_found = False
         self.step_completion_log = {}  # Milestone -> (step, turn)
@@ -459,9 +461,26 @@ class GlobalLogic:
             for (by, bx), (dy, dx) in pushes:
                 if pits == traps:
                     self.agent._allow_walking_through_traps_turn = self.agent._last_turn
-                if self.agent.glyphs[by, bx] not in G.BOULDER or not push_bolder(by - dy, bx - dx, dy, dx):
-                    break  # the board changed under us (a monster, a mimic): look again
-        return not utils.isin(self.agent.current_level().objects, G.TRAPS).any()
+                if self.agent.glyphs[by, bx] not in G.BOULDER:
+                    break  # the board changed under us (a mimic, a destroyed boulder): look again
+                while self.agent.bfs()[by - dy, bx - dx] == -1:
+                    if not self._push_square_blocked():
+                        return False
+                if not push_bolder(by - dy, bx - dx, dy, dx):
+                    break
+        solved = not utils.isin(self.agent.current_level().objects, G.TRAPS).any()
+        if solved:
+            self._live_blocked = 0
+        return solved
+
+    def _push_square_blocked(self):
+        """A monster stands between the bot and its push square: wait a turn, in which it
+        moves on or the fight logic takes over. False once it looks permanent."""
+        self._live_blocked += 1
+        if self._live_blocked > LIVE_SOKOBAN_BLOCKED_TRIES:
+            return False
+        self.agent.search()
+        return True
 
     @Strategy.wrap
     def wait_out_unexpected_state_strategy(self):
