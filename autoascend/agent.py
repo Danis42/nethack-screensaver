@@ -35,6 +35,16 @@ BLStats = namedtuple('BLStats',
                      'x y strength_percentage strength dexterity constitution intelligence wisdom charisma score hitpoints max_hitpoints depth gold energy max_energy armor_class monster_level experience_level experience_points time hunger_state carrying_capacity dungeon_number level_number prop_mask')
 
 
+def prayer_trouble(blstats, safe_hp, safe_hunger):
+    """Pray for low HP (upstream thresholds) or severe hunger.
+
+    Weak is already major trouble (NetHack wiki, Major trouble); upstream waited for
+    Fainting, and fainting was the most common way this bot died."""
+    low_hp = blstats.hitpoints < 1 / (5 if blstats.experience_level < 6 else 6) * blstats.max_hitpoints \
+        or blstats.hitpoints < 6
+    return (safe_hp and low_hp) or (safe_hunger and blstats.hunger_state >= Hunger.WEAK)
+
+
 class Agent:
     def __init__(self, env, seed=0, verbose=False, panic_on_errors=False,
                  rl_model_to_train=None, rl_model_training_comm=(None, None), plan=None):
@@ -1447,12 +1457,7 @@ class Agent:
             self.inventory.quaff(items[0])
             return
 
-        if (
-                (self.is_safe_to_pray(500) and
-                 (self.blstats.hitpoints < 1 / (5 if self.blstats.experience_level < 6 else 6)
-                  * self.blstats.max_hitpoints or self.blstats.hitpoints < 6))
-                or (self.is_safe_to_pray(400) and self.blstats.hunger_state >= Hunger.FAINTING)
-        ):
+        if prayer_trouble(self.blstats, self.is_safe_to_pray(500), self.is_safe_to_pray(400)):
             yield True
             self.pray()
             return

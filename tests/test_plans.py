@@ -314,3 +314,23 @@ def test_sokoban_search_without_oracle_covers_dlvl_6_to_10():
     reached = {(0, i) for i in range(1, 10)}
     assert _explorer(None).levels_to_explore_to_get_to(4, 4, reached) == {(0, i) for i in range(6, 10)}
 
+
+
+def _bl(hp=20, maxhp=20, xl=3, hunger=1):
+    from types import SimpleNamespace
+    return SimpleNamespace(hitpoints=hp, max_hitpoints=maxhp, experience_level=xl, hunger_state=hunger)
+
+
+def test_pray_when_weak_from_hunger_not_only_when_fainting():
+    from autoascend.agent import prayer_trouble
+    assert prayer_trouble(_bl(hunger=3), safe_hp=True, safe_hunger=True)  # Weak is major trouble
+    assert prayer_trouble(_bl(hunger=4), safe_hp=True, safe_hunger=True)
+    assert not prayer_trouble(_bl(hunger=2), safe_hp=True, safe_hunger=True)  # merely Hungry
+    assert not prayer_trouble(_bl(hunger=3), safe_hp=True, safe_hunger=False)  # cooldown
+
+
+def test_pray_at_low_hp_keeps_upstream_thresholds():
+    from autoascend.agent import prayer_trouble
+    assert prayer_trouble(_bl(hp=3, maxhp=20), safe_hp=True, safe_hunger=False)
+    assert not prayer_trouble(_bl(hp=10, maxhp=20), safe_hp=True, safe_hunger=False)
+    assert not prayer_trouble(_bl(hp=3, maxhp=20), safe_hp=False, safe_hunger=True)
