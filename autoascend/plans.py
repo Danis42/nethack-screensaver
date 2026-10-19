@@ -1,4 +1,5 @@
 """Secret strategies: each is an ordered milestone plan aiming at one ending."""
+import re
 from dataclasses import dataclass
 from enum import IntEnum, auto
 from typing import Sequence
@@ -100,6 +101,26 @@ STRATEGIES = {s.name: s for s in [
                   M.RETURN_TO_SURFACE, M.LEAVE_DUNGEON)),
 ]}
 DEFAULT_PLAN = STRATEGIES["pilgrim"].milestones
+
+# Mines natives are hostile to humans, elves and orcs, and a Mines level is harder than a
+# main-dungeon one at the same depth (NetHack wiki): their pilgrims do Sokoban first.
+# Tried before (2026-10-18) without Oracle-guided search or diving when stuck: reverted.
+SOKOBAN_FIRST_PILGRIM = (M.BE_ON_FIRST_LEVEL, M.FIND_SOKOBAN, M.SOLVE_SOKOBAN, M.FIND_GNOMISH_MINES,
+                         M.FIND_MINETOWN, M.FIND_MINES_END, M.GO_DOWN)
+
+_RACES = {"human": "hum", "elven": "elf", "dwarven": "dwa", "gnomish": "gno", "orcish": "orc"}
+
+
+def race_from_welcome(text: str) -> str | None:
+    """Race from NetHack's welcome ("...You are a lawful dwarven Cavewoman."), if on screen."""
+    m = re.search(r"You are an?\s+\w+\s+(?:(?:male|female)\s+)?(\w+)", text)
+    return _RACES.get(m.group(1)) if m else None
+
+
+def plan_for(name: str, race: str | None) -> tuple[Milestone, ...]:
+    if name == "pilgrim" and race in ("hum", "elf", "orc"):
+        return SOKOBAN_FIRST_PILGRIM
+    return STRATEGIES[name].milestones
 
 
 # How well this bot does per role (mean max depth over ~380 games, 2026-10-18).

@@ -376,3 +376,26 @@ def test_progress_watch_ignores_the_first_level_phase_and_restarts():
     assert w.stuck((0, 3), M.DIVE, 1011)  # a diver can be stuck too (e.g. at Mines' End)
     w.restart(1011)
     assert not w.stuck((0, 3), M.DIVE, 1020)
+
+
+@pytest.mark.parametrize("text,race", [
+    ("Hello Agent, welcome to NetHack!  You are a lawful dwarven Cavewoman.", "dwa"),
+    ("Hello Agent, welcome to NetHack!  You are a neutral female gnomish\nHealer.", "gno"),
+    ("Aloha Agent, welcome to NetHack!  You are a neutral male human Tourist.", "hum"),
+    ("Hello Agent, welcome to NetHack!  You are a chaotic elven Priest.", "elf"),
+    ("Hello Agent, welcome to NetHack!  You are a chaotic male orcish Rogue.", "orc"),
+    ("$ - 3 gold pieces.", None),
+])
+def test_race_from_welcome(text, race):
+    from autoascend.plans import race_from_welcome
+    assert race_from_welcome(text) == race
+
+
+def test_pilgrim_does_sokoban_first_unless_the_mines_are_peaceful():
+    from autoascend.plans import plan_for
+    for race in ("hum", "elf", "orc"):
+        assert plan_for("pilgrim", race)[:3] == (M.BE_ON_FIRST_LEVEL, M.FIND_SOKOBAN, M.SOLVE_SOKOBAN)
+    for race in ("dwa", "gno", None):  # gnomes and dwarves are left alone in the Mines
+        assert plan_for("pilgrim", race) == STRATEGIES["pilgrim"].milestones
+    assert set(plan_for("pilgrim", "hum")) == set(STRATEGIES["pilgrim"].milestones)
+    assert plan_for("sightseer", "hum") == STRATEGIES["sightseer"].milestones
