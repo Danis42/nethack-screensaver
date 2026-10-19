@@ -150,3 +150,24 @@ same-seed treasure games afterwards the solver found plans and executed pushes, 
 game was won through it: most solver calls are true deadlocks or a top level derailed
 early, and 8 of 13 characters that reached Sokoban were killed there by monsters. The
 puzzle is no longer the main obstacle; surviving Dlvl 6-9 at XL 7-9 is.
+
+## Survival on Dlvl 6-9 (2026-10-19, 192 unforced games each)
+
+Two identical baselines differ by about ±10 games on "reached Dlvl 6+", so only large
+effects show. Deaths on Dlvl 6-9 have no dominant cause (ants 7, rays 5, floating-eye
+freezes 3 of 43); over all depths, floating-eye freezes cost 6-8 games.
+
+| | baseline | baseline 2 | + no floating-eye melee | + rest on Elbereth |
+|---|---|---|---|---|
+| reached Dlvl 6+ / 10+ | 60 / 9 | 71 / 9 | 71 / 13 | 61 / 6 |
+| died on Dlvl 6-9 | 43 | 53 | 49 | 47 |
+| escapes | 12 | 14 | 19 | 18 |
+| ant deaths / gaze freezes | 13 / 8 | 11 / 6 | 8 / 1 | 11 / 0 |
+| crashes | 4 | 4 | 9 | 5 |
+
+Kept: never melee a seen floating eye (the bot did it when `allow_attack_all` left only
+attacks). Also fixed: a missing `sokoban_live_solved` stat crashed every game whose
+Sokoban level the live solver finished. Elbereth works when written (monsters hit the
+bot on it in 2 of 109 cases), but in 64 of 109 the bot walked off within 30 turns,
+often at a few HP; ~15% of dust engravings come out misspelled and get rewritten.
+Resting on Elbereth below half HP until 80% gave no gain (more fainting deaths), not kept.
