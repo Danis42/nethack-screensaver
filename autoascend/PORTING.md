@@ -207,3 +207,20 @@ unexplored areas, used only when nothing is left to visit. Games with a 2500-tur
 of diving without finding a way down went from 11 to 22 per 192; Dlvl 6+ 92 -> 76. Not
 kept. Note: two 192-game runs of identical code gave 15 and 3 escapes and 20 / 14 games
 at Dlvl 10+, so single runs are noisier than assumed for rarer outcomes.
+
+## Sokoban first, digging down, boulders (2026-10-20, 576 unforced games each)
+
+Measured on 576 games each, since 192-game runs proved too noisy (sightseer escapes varied
+from 10 to 24 between runs that do not change sightseers).
+
+| | baseline | + Sokoban-first pilgrim (human/elf/orc) | + dig down | + push boulders |
+|---|---|---|---|---|
+| reached Dlvl 6+ / 10+ | 241 / 54 | 251 / 67 | 253 / 55 | 262 / 68 |
+| hunger deaths | 73 | 62 | 75 | 74 |
+| pilgrims: median depth / Dlvl 10+ | 5 / 22 | 5 / 22 | 6 / 14 | 6 / 19 |
+| stuck-diver games / stuck spells | 56 / 102 | 52 / 114 | 55 / 141 | 55 / 163 |
+| crashes (cyclic panic) | 18 | 11 | 9 | 13 |
+
+Kept: Sokoban-first pilgrims for races the Mines natives attack (neutral on depth, more
+Sokoban). Reverted: digging down (escape at critical HP with a known wand of digging, or
+when stuck) and pushing boulders when stuck; neither freed stuck divers measurably.
