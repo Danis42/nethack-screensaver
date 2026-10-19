@@ -19,6 +19,7 @@ class StatsLogger:
             "sokoban_dropped": 0,
             "sokoban_live_solved": 0,
             "stuck_dive": 0,
+            "stuck_diving": 0,
             "wait_in_fight": 0,
             "melee_gas_spore": 0,
             "ad_aerarium_below_me": 0,

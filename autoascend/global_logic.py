@@ -764,6 +764,8 @@ class GlobalLogic:
                     self.plan.dive_instead()
                 elif self._diving_in_mines():
                     self._mines_dive_over = True  # bottom of the Mines: back up, dive the main dungeon
+                else:
+                    self.agent.stats_logger.log_event('stuck_diving')  # no downstairs found
                 self._progress.restart(self.agent.blstats.time)
                 continue
             if condition():

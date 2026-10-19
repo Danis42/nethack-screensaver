@@ -44,6 +44,7 @@ class GameResult:
     elbereth: int = 0  # times the bot wrote Elbereth
     xp_level: int = 0  # highest experience level
     panics: int = 0  # times the bot replanned after a panic (incl. recovered errors)
+    stuck_diving: int = 0  # 2500-turn spells of diving in the main dungeon without finding a way down
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -169,7 +170,7 @@ def run_game(
     return GameResult(role_s, race, alignment, max_depth, turns, int(wrapper.score), end_reason,
                       strategy=strategy, gender=gender, milestone=_milestone(wrapper),
                       elbereth=_stat(wrapper, "elbereth_write"), xp_level=xp_level,
-                      panics=_stat(wrapper, "agent_panic"),
+                      panics=_stat(wrapper, "agent_panic"), stuck_diving=_stat(wrapper, "stuck_diving"),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 
