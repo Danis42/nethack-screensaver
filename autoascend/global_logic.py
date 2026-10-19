@@ -57,6 +57,24 @@ def dive_stairs(dungeon_number, objects, stair_destination, bfs, mines=False):
              stair_destination[(y, x)][0][0] == dungeon_number)]
 
 
+def boulder_pushes(boulders, walkable, dis):
+    """ (stand square, direction) pushes that move a boulder onto free floor; a boulder can hide
+    the downstairs (NetHack wiki, Stair) and the bot never looked under one """
+    ret = []
+    h, w = boulders.shape
+    for y, x in zip(*boulders.nonzero()):
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if dy == 0 and dx == 0:
+                    continue
+                sy, sx, ty, tx = y - dy, x - dx, y + dy, x + dx
+                if not (0 <= sy < h and 0 <= sx < w and 0 <= ty < h and 0 <= tx < w):
+                    continue
+                if dis[sy, sx] != -1 and walkable[ty, tx] and not boulders[ty, tx]:
+                    ret.append(((int(sy), int(sx)), (dy, dx)))
+    return ret
+
+
 class ItemPriority(ItemPriorityBase):
     MAX_NUMBER_OF_ITEMS = 26 * 2 - 1  # + coin slot, one slot should be left for item arranging
     def __init__(self, agent):
@@ -191,6 +209,7 @@ class GlobalLogic:
         self._live_blocked = 0
         self._progress = ProgressWatch(STUCK_TURNS)
         self._mines_dive_over = False  # a diver in the Mines heads down them until stuck (Mines' End)
+        self._pushed_boulders = {}  # level key -> boulder squares already pushed
         self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
         self._prize_found = False
         self.step_completion_log = {}  # Milestone -> (step, turn)
@@ -226,6 +245,25 @@ class GlobalLogic:
                 not any(item.is_food() for item in flatten_items(self.agent.inventory.items)):
             return True
         return self.milestone == Milestone.FIND_SOKOBAN and self._elapsed(SOKOBAN_SEARCH_TURNS)
+
+    def _look_under_boulders(self):
+        """ Push every reachable boulder on this level once, to see what it was covering """
+        level = self.agent.current_level()
+        tried = self._pushed_boulders.setdefault(level.key(), set())
+        while True:
+            boulders = utils.isin(self.agent.glyphs, G.BOULDER)
+            pushes = [(stand, d) for stand, d in boulder_pushes(boulders, level.walkable, self.agent.bfs())
+                      if (stand[0] + d[0], stand[1] + d[1]) not in tried]
+            if not pushes:
+                return
+            (sy, sx), (dy, dx) = pushes[0]
+            tried.add((sy + dy, sx + dx))
+            self.agent.stats_logger.log_event('boulder_push')
+            try:
+                self.agent.go_to(sy, sx)
+                self.agent.move(sy + dy, sx + dx)
+            except AgentPanic:
+                pass  # blocked behind it, or the way there changed
 
     def _diving_in_mines(self):
         return self.agent.current_level().dungeon_number == Level.GNOMISH_MINES and not self._mines_dive_over
@@ -771,6 +809,8 @@ class GlobalLogic:
                     if tool is not None and self.agent.can_dig_down():
                         self.agent.stats_logger.log_event('dig_stuck')
                         self.agent.dig_down(tool)
+                    else:
+                        self._look_under_boulders()
                 self._progress.restart(self.agent.blstats.time)
                 continue
             if condition():
