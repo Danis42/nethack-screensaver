@@ -766,11 +766,6 @@ class GlobalLogic:
                     self._mines_dive_over = True  # bottom of the Mines: back up, dive the main dungeon
                 else:
                     self.agent.stats_logger.log_event('stuck_diving')  # no downstairs found
-                    from .agent import dig_down_tool  # agent imports this module
-                    tool = dig_down_tool(self.agent.inventory.items.all_items, slow_ok=True)
-                    if tool is not None and self.agent.can_dig_down():
-                        self.agent.stats_logger.log_event('dig_stuck')
-                        self.agent.dig_down(tool)
                 self._progress.restart(self.agent.blstats.time)
                 continue
             if condition():
