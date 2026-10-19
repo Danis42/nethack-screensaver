@@ -22,7 +22,6 @@ class StatsLogger:
             "stuck_diving": 0,
             "dig_escape": 0,
             "dig_stuck": 0,
-            "boulder_push": 0,
             "wait_in_fight": 0,
             "melee_gas_spore": 0,
             "ad_aerarium_below_me": 0,
