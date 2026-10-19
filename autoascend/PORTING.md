@@ -192,3 +192,11 @@ door, gnomes in Mines passages) was tried: escapes fell from 39-46 to 28, not ke
 Prayer facts (NetHack wiki, Prayer timeout): a successful prayer resets the timeout to
 rnz(350), usually 50-1000; major trouble needs it below 200; 95% safe only after ~1230
 turns. The bot prays at 500 (HP) / 400 (hunger) turns.
+
+Stuck divers (diagnostic, 192 games): 44 had a diving character with no new level for
+3000+ turns: 20 in the Gnomish Mines (diving ignored Mines downstairs and tried to climb
+back out through a blocked route), 23 in the main dungeon with no downstairs found (only
+4 carried a pick-axe). Fix: divers in the Mines head down the Mines; when stuck there
+(Mines' End) they go back and dive the main dungeon. Result: Dlvl 6+ / 10+ 84 / 20,
+escapes 15, hunger deaths still 25 (three runs in a row), now split into early starvation
+of weak roles on Dlvl 2-4 (turn 1300-4500) and long games (6000+ turns).

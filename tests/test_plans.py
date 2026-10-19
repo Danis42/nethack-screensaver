@@ -192,7 +192,9 @@ def test_dive_stairs_are_known_reachable_main_dungeon_downstairs():
     bfs[3, 4] = bfs[10, 10] = 5  # (15, 20) is unreachable
     to_mines = {(10, 10): ((2, 1), (7, 7))}  # this one is known to lead into the Mines
     assert dive_stairs(0, objects, to_mines, bfs) == [(3, 4)]
-    assert dive_stairs(2, objects, {}, bfs) == []  # never dive inside a branch
+    assert dive_stairs(2, objects, {}, bfs) == []  # not in a branch once its dive is over
+    assert dive_stairs(2, objects, {}, bfs, mines=True) == [(3, 4), (10, 10)]  # down the Mines
+    assert dive_stairs(1, objects, {}, bfs, mines=True) == []  # other branches never
 
 
 def test_daredevil_dives():
@@ -366,9 +368,11 @@ def test_progress_watch_counts_new_levels_and_milestones():
     assert not w.stuck((0, 1), M.SOLVE_SOKOBAN, 300)  # next milestone is progress
 
 
-def test_progress_watch_never_fires_while_diving_or_on_first_level():
+def test_progress_watch_ignores_the_first_level_phase_and_restarts():
     from autoascend.plans import ProgressWatch
     w = ProgressWatch(limit=10)
     assert not w.stuck((0, 1), M.BE_ON_FIRST_LEVEL, 500)
     assert not w.stuck((0, 3), M.DIVE, 1000)
-    assert not w.stuck((0, 3), M.DIVE, 5000)
+    assert w.stuck((0, 3), M.DIVE, 1011)  # a diver can be stuck too (e.g. at Mines' End)
+    w.restart(1011)
+    assert not w.stuck((0, 3), M.DIVE, 1020)

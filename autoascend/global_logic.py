@@ -46,14 +46,15 @@ def sokoban_board(objects, walkable, glyphs):
     return cells(floor), cells(boulders), cells(traps)
 
 
-def dive_stairs(dungeon_number, objects, stair_destination, bfs):
-    """Known, reachable downstairs on a main-dungeon level that don't lead into a branch."""
-    if dungeon_number != Level.DUNGEONS_OF_DOOM:
+def dive_stairs(dungeon_number, objects, stair_destination, bfs, mines=False):
+    """Known, reachable downstairs that stay in this dungeon: the main one, or the Gnomish
+    Mines while diving there (`mines`); a diver stuck in the Mines used to climb back out."""
+    if dungeon_number != Level.DUNGEONS_OF_DOOM and not (mines and dungeon_number == Level.GNOMISH_MINES):
         return []  # the bot also travels up through branches; diving there would loop
     return [(y, x) for y, x in zip(*utils.isin(objects, G.STAIR_DOWN).nonzero())
             if bfs[y, x] != -1 and
             (stair_destination.get((y, x)) is None or
-             stair_destination[(y, x)][0][0] == Level.DUNGEONS_OF_DOOM)]
+             stair_destination[(y, x)][0][0] == dungeon_number)]
 
 
 class ItemPriority(ItemPriorityBase):
@@ -189,6 +190,7 @@ class GlobalLogic:
         self._started = {}  # milestone -> turn it became current
         self._live_blocked = 0
         self._progress = ProgressWatch(STUCK_TURNS)
+        self._mines_dive_over = False  # a diver in the Mines heads down them until stuck (Mines' End)
         self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
         self._prize_found = False
         self.step_completion_log = {}  # Milestone -> (step, turn)
@@ -224,6 +226,9 @@ class GlobalLogic:
                 not any(item.is_food() for item in flatten_items(self.agent.inventory.items)):
             return True
         return self.milestone == Milestone.FIND_SOKOBAN and self._elapsed(SOKOBAN_SEARCH_TURNS)
+
+    def _diving_in_mines(self):
+        return self.agent.current_level().dungeon_number == Level.GNOMISH_MINES and not self._mines_dive_over
 
     def _stuck(self):
         return self._progress.stuck(self.agent.current_level().key(), self.milestone, self.agent.blstats.time)
@@ -434,7 +439,8 @@ class GlobalLogic:
     @Strategy.wrap
     def dive(self):
         level = self.agent.current_level()
-        stairs = dive_stairs(level.dungeon_number, level.objects, level.stair_destination, self.agent.bfs())
+        stairs = dive_stairs(level.dungeon_number, level.objects, level.stair_destination, self.agent.bfs(),
+                             mines=self._diving_in_mines())
         if not stairs:
             yield False
         yield True
@@ -740,6 +746,10 @@ class GlobalLogic:
                                     self.agent.current_level().key() == (Level.DUNGEONS_OF_DOOM, 1)
                 level = (Level.DUNGEONS_OF_DOOM, 1)
 
+            elif self.milestone == Milestone.DIVE and self._diving_in_mines():
+                condition = lambda: False
+                level = (Level.GNOMISH_MINES, 100)  # explore the deepest known Mines level for its downstairs
+
             else:
                 # TODO
                 condition = lambda: False
@@ -750,7 +760,11 @@ class GlobalLogic:
                 continue
             if self._stuck():
                 self.agent.stats_logger.log_event('stuck_dive')
-                self.plan.dive_instead()
+                if self.milestone != Milestone.DIVE:
+                    self.plan.dive_instead()
+                elif self._diving_in_mines():
+                    self._mines_dive_over = True  # bottom of the Mines: back up, dive the main dungeon
+                self._progress.restart(self.agent.blstats.time)
                 continue
             if condition():
                 self.plan.advance()

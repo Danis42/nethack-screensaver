@@ -56,7 +56,7 @@ class ProgressWatch:
 
     Stuck characters (a blocked way home, an endless search for Sokoban) lived on prayer
     until one came too early and they starved."""
-    QUIET = (Milestone.BE_ON_FIRST_LEVEL, Milestone.DIVE)
+    QUIET = (Milestone.BE_ON_FIRST_LEVEL,)
 
     def __init__(self, limit: int):
         self.limit = limit
@@ -70,6 +70,9 @@ class ProgressWatch:
             self._milestone = milestone
             self._since = turn
         return milestone not in self.QUIET and turn - self._since > self.limit
+
+    def restart(self, turn: int) -> None:
+        self._since = turn
 
 
 @dataclass(frozen=True)
