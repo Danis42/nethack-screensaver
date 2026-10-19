@@ -1646,10 +1646,7 @@ class Agent:
                     inactivity_counter = 0
 
                 if inactivity_counter >= 5:
-                    try:
-                        panics = sorted({p.args[0] for p in self.all_panics[-5:]})
-                    except (TypeError, IndexError):
-                        panics = 'UNKNOWN'
+                    panics = sorted({f'{type(p).__name__}: {str(p)[:80]}' for p in self.all_panics[-5:]})
 
                     raise RuntimeError(f'Cyclic Panic: {panics}')
 
