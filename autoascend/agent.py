@@ -45,6 +45,15 @@ def prayer_trouble(blstats, safe_hp, safe_hunger):
     return (safe_hp and low_hp) or (safe_hunger and blstats.hunger_state >= Hunger.WEAK)
 
 
+def diagonal_blocked_square(message, here, target):
+    """ Square NetHack would not let us cross diagonally, judging by its refusal message """
+    if "move diagonally out of an intact doorway" in message:
+        return here
+    if "move diagonally into an intact doorway" in message:
+        return target
+    return None
+
+
 class Agent:
     def __init__(self, env, seed=0, verbose=False, panic_on_errors=False,
                  rl_model_to_train=None, rl_model_training_comm=(None, None), plan=None):
@@ -893,7 +902,13 @@ class Agent:
                     (self.blstats.y, self.blstats.x)] = (level.key(), (expected_y, expected_x))
 
         else:
+            here = (self.blstats.y, self.blstats.x)
             self.direction(dir)
+
+            blocked = diagonal_blocked_square(self.message, here, (expected_y, expected_x))
+            if blocked is not None:
+                # otherwise the same diagonal path is retried until the turn-inactivity assert
+                self.current_level().no_diagonal[blocked] = True
 
             if self.blstats.y != expected_y or self.blstats.x != expected_x:
                 raise AgentPanic(f'agent position do not match after "move": '
@@ -981,7 +996,8 @@ class Agent:
 
         dis = utils.bfs(y, x,
                         walkable=walkable,
-                        walkable_diagonally=walkable & ~utils.isin(level.objects, G.DOORS) & (level.objects != -1),
+                        walkable_diagonally=walkable & ~utils.isin(level.objects, G.DOORS) & (level.objects != -1)
+                                            & ~level.no_diagonal,
                         can_squeeze=self.inventory.items.total_weight <= 600 and \
                                     self.current_level().dungeon_number != Level.SOKOBAN,
                         )

@@ -3,8 +3,10 @@
 Usage: uv run python scripts/benchmark.py -n 50 -j 8
 """
 import argparse
+import json
 import statistics
 from collections import Counter
+from dataclasses import asdict
 from multiprocessing import Pool
 
 from nethack_screensaver.game import run_game
@@ -20,14 +22,18 @@ def main():
     ap.add_argument("-j", "--jobs", type=int, default=4)
     ap.add_argument("--strategy", default=None,
                     help="pilgrim/daredevil/sightseer/treasure (default: random per game)")
+    ap.add_argument("--out", help="also write every result as a JSON line to this file")
     args = ap.parse_args()
 
     results = []
     with Pool(args.jobs) as pool:
         for i, r in enumerate(pool.imap_unordered(_one, [args.strategy] * args.games), 1):
             results.append(r)
+            if args.out:
+                with open(args.out, "a") as f:
+                    f.write(json.dumps(asdict(r)) + "\n")
             print(f"[{i}/{args.games}] {r.strategy} {r.role} depth={r.max_depth} score={r.score} "
-                  f"turns={r.turns} elb={r.elbereth} :: {r.outcome} :: {r.end_reason[:70]}", flush=True)
+                  f"turns={r.turns} xl={r.xp_level} elb={r.elbereth} :: {r.outcome} :: {r.end_reason[:70]}", flush=True)
 
     exc = [r for r in results if r.end_reason.startswith("exception")]
     wd = [r for r in results if r.end_reason == "watchdog"]

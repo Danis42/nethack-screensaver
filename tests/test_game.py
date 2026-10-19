@@ -136,3 +136,14 @@ def test_last_milestone_is_reported():
     wrapper = SimpleNamespace(agent=SimpleNamespace(global_logic=SimpleNamespace(plan=plan)))
     assert game._milestone(wrapper) == "GO_DOWN"
     assert game._milestone(SimpleNamespace(agent=None)) == "?"
+
+
+def test_agent_recovers_from_bot_errors_but_not_from_the_watchdog():
+    from types import SimpleNamespace
+    from autoascend.agent import Agent
+    stub = SimpleNamespace(panic_on_errors=game.AGENT_ARGS["panic_on_errors"], all_panics=[], verbose=False,
+                           stats_logger=SimpleNamespace(log_event=lambda name: None))
+    Agent.handle_exception(stub, AssertionError("TODO: nested containers"))  # upstream assert: replan
+    assert len(stub.all_panics) == 1
+    with pytest.raises(game.WatchdogTimeout):
+        Agent.handle_exception(stub, game.WatchdogTimeout())

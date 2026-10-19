@@ -15,7 +15,13 @@ from autoascend.plans import STRATEGIES, choose_strategy
 
 DEPTH = 12
 TURN = 20
+XP_LEVEL = 18
 FARMING = (Milestone.BE_ON_FIRST_LEVEL,)
+
+
+# panic_on_errors=True turns upstream assertions into AgentPanic: the bot replans instead of
+# crashing; its cyclic-panic guard and NLE's no-progress timeout still end a stuck game.
+AGENT_ARGS = dict(panic_on_errors=True, verbose=False)
 
 
 class WatchdogTimeout(KeyboardInterrupt):
@@ -36,6 +42,8 @@ class GameResult:
     outcome: str = ""
     milestone: str = "?"  # last milestone of the plan the bot reached
     elbereth: int = 0  # times the bot wrote Elbereth
+    xp_level: int = 0  # highest experience level
+    panics: int = 0  # times the bot replanned after a panic (incl. recovered errors)
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -63,9 +71,9 @@ def _milestone(wrapper) -> str:
         return "?"
 
 
-def _elbereth_count(wrapper) -> int:
+def _stat(wrapper, name: str) -> int:
     try:
-        return wrapper.agent.stats_logger.get_stats_dict()["elbereth_write"]
+        return wrapper.agent.stats_logger.get_stats_dict()[name]
     except Exception:  # agent never started
         return 0
 
@@ -120,14 +128,16 @@ def run_game(
     env = NetHackChallenge(no_progress_timeout=1000)
     max_depth = 1
     turns = 0
+    xp_level = 0
     prev_chars = None
     watchdog = _ScreenWatchdog(watchdog_seconds)
 
     def on_step(obs):
-        nonlocal max_depth, turns, prev_chars
+        nonlocal max_depth, turns, xp_level, prev_chars
         # The final (game-over) observation has all-zero blstats; keep the last real values.
         max_depth = max(max_depth, int(obs["blstats"][DEPTH]))
         turns = max(turns, int(obs["blstats"][TURN]))
+        xp_level = max(xp_level, int(obs["blstats"][XP_LEVEL]))
         chars = obs["tty_chars"]
         if prev_chars is None or not (chars == prev_chars).all():
             watchdog.screen_changed()
@@ -142,7 +152,7 @@ def run_game(
         return plan
 
     wrapper = EnvWrapper(env, on_step=on_step, step_limit=max_steps, role=role, choose_plan=choose_plan,
-                         agent_args=dict(panic_on_errors=False, verbose=False))
+                         agent_args=dict(AGENT_ARGS))
     try:
         with watchdog:
             wrapper.main()
@@ -158,7 +168,8 @@ def run_game(
     role_s, race, gender, alignment = _character(wrapper)
     return GameResult(role_s, race, alignment, max_depth, turns, int(wrapper.score), end_reason,
                       strategy=strategy, gender=gender, milestone=_milestone(wrapper),
-                      elbereth=_elbereth_count(wrapper),
+                      elbereth=_stat(wrapper, "elbereth_write"), xp_level=xp_level,
+                      panics=_stat(wrapper, "agent_panic"),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 
