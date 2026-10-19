@@ -200,3 +200,10 @@ back out through a blocked route), 23 in the main dungeon with no downstairs fou
 (Mines' End) they go back and dive the main dungeon. Result: Dlvl 6+ / 10+ 84 / 20,
 escapes 15, hunger deaths still 25 (three runs in a row), now split into early starvation
 of weak roles on Dlvl 2-4 (turn 1300-4500) and long games (6000+ turns).
+
+Downstairs search (2026-10-19): searching a dead end ~25 times instead of ~11 (each search
+finds an adjacent hidden passage with ~1/7 chance) plus a bonus for walls near large
+unexplored areas, used only when nothing is left to visit. Games with a 2500-turn spell
+of diving without finding a way down went from 11 to 22 per 192; Dlvl 6+ 92 -> 76. Not
+kept. Note: two 192-game runs of identical code gave 15 and 3 escapes and 20 / 14 games
+at Dlvl 10+, so single runs are noisier than assumed for rarer outcomes.
