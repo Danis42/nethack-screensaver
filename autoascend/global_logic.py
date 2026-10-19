@@ -12,7 +12,7 @@ from .glyph import Hunger, G, MON, SS
 from .item import Item, flatten_items
 from .item.item_priority_base import ItemPriorityBase
 from .level import Level
-from .plans import DEFAULT_PLAN, Milestone, Plan
+from .plans import DEFAULT_PLAN, Milestone, Plan, ProgressWatch
 
 from .strategy import Strategy
 
@@ -21,6 +21,7 @@ LOOT_TURNS = 1500  # treasure: turns on the top Sokoban level to clear the zoo a
 MINETOWN_SEARCH_TURNS = 4000  # Orcish Town has no shopkeeper, so Minetown may never be seen
 SOKOBAN_SEARCH_TURNS = 8000  # treasure: give up looking for Sokoban and go home
 LIVE_SOKOBAN_BLOCKED_TRIES = 20  # times a monster may block a push square before giving up
+STUCK_TURNS = 2500  # no new level and no new milestone for this long: give up the route and dive
 _PRIZES = None
 
 
@@ -187,6 +188,7 @@ class GlobalLogic:
         self._arrived = {}  # milestone -> turn it first stood on its target level
         self._started = {}  # milestone -> turn it became current
         self._live_blocked = 0
+        self._progress = ProgressWatch(STUCK_TURNS)
         self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
         self._prize_found = False
         self.step_completion_log = {}  # Milestone -> (step, turn)
@@ -222,6 +224,9 @@ class GlobalLogic:
                 not any(item.is_food() for item in flatten_items(self.agent.inventory.items)):
             return True
         return self.milestone == Milestone.FIND_SOKOBAN and self._elapsed(SOKOBAN_SEARCH_TURNS)
+
+    def _stuck(self):
+        return self._progress.stuck(self.agent.current_level().key(), self.milestone, self.agent.blstats.time)
 
     def _minetown_found(self):
         return self.minetown_level is not None or self._elapsed(MINETOWN_SEARCH_TURNS)
@@ -743,6 +748,10 @@ class GlobalLogic:
             if self._should_bail():
                 self.plan.bail_out()
                 continue
+            if self._stuck():
+                self.agent.stats_logger.log_event('stuck_dive')
+                self.plan.dive_instead()
+                continue
             if condition():
                 self.plan.advance()
                 continue
@@ -793,7 +802,7 @@ class GlobalLogic:
                 .preempt(self.agent, [
                     self.agent.exploration.explore_stairs(go_to_strategy, all=True).condition(explore_stairs_condition),
                 ])
-                .until(self.agent, lambda: condition() or self._should_bail())
+                .until(self.agent, lambda: condition() or self._should_bail() or self._stuck())
             ).run()
 
     def global_strategy(self):

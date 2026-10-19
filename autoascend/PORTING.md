@@ -171,3 +171,24 @@ Sokoban level the live solver finished. Elbereth works when written (monsters hi
 bot on it in 2 of 109 cases), but in 64 of 109 the bot walked off within 30 turns,
 often at a few HP; ~15% of dust engravings come out misspelled and get rewritten.
 Resting on Elbereth below half HP until 80% gave no gain (more fainting deaths), not kept.
+
+## Hunger (2026-10-19, 192 unforced games each)
+
+Diagnostics: most characters that starve carry no food and live on prayer (566 of 643
+prayers succeeded); death comes when a game drags on until a prayer is too early. Long
+games were stuck (way home blocked, endless search for Sokoban or the Mines). Some
+characters prayed when Weak while carrying food rations, because prayer is the top
+emergency action. Waiting next to peaceful monsters that block a path (shopkeeper by the
+door, gnomes in Mines passages) was tried: escapes fell from 39-46 to 28, not kept.
+
+| | before | eat carried food at Weak + dive after 2500 turns without progress |
+|---|---|---|
+| reached Dlvl 6+ / 10+ | 69 / 10 | 81 / **23** |
+| hunger deaths | 25 | 25 (14 now while diving on Dlvl 2-5) |
+| escapes | 16 | 11 |
+| goals pilgrim / daredevil / sightseer / treasure | 0/46, 6/51, 9/50, 0/45 | 0/40, 8/56, 8/56, 0/40 |
+| games that gave up their route to dive | - | 45 |
+
+Prayer facts (NetHack wiki, Prayer timeout): a successful prayer resets the timeout to
+rnz(350), usually 50-1000; major trouble needs it below 200; 95% safe only after ~1230
+turns. The bot prays at 500 (HP) / 400 (hunger) turns.

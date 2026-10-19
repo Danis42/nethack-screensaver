@@ -329,8 +329,46 @@ def test_pray_when_weak_from_hunger_not_only_when_fainting():
     assert not prayer_trouble(_bl(hunger=3), safe_hp=True, safe_hunger=False)  # cooldown
 
 
+def test_eat_carried_food_instead_of_praying_for_hunger():
+    from autoascend.agent import prayer_trouble
+    assert not prayer_trouble(_bl(hunger=3), safe_hp=True, safe_hunger=True, has_food=True)
+    assert not prayer_trouble(_bl(hunger=4), safe_hp=True, safe_hunger=True, has_food=True)
+    assert prayer_trouble(_bl(hp=3, maxhp=20, hunger=3), safe_hp=True, safe_hunger=True, has_food=True)  # HP first
+
+
 def test_pray_at_low_hp_keeps_upstream_thresholds():
     from autoascend.agent import prayer_trouble
     assert prayer_trouble(_bl(hp=3, maxhp=20), safe_hp=True, safe_hunger=False)
     assert not prayer_trouble(_bl(hp=10, maxhp=20), safe_hp=True, safe_hunger=False)
     assert not prayer_trouble(_bl(hp=3, maxhp=20), safe_hp=False, safe_hunger=True)
+
+
+def test_dive_instead_replaces_the_rest_of_the_route():
+    p = Plan(STRATEGIES["sightseer"].milestones)
+    while p.current != M.RETURN_TO_SURFACE:
+        p.advance()
+    p.dive_instead()
+    assert p.current == M.DIVE
+    assert not p.can_bail_out()
+    p.advance()
+    assert p.current == M.DIVE
+
+
+def test_progress_watch_counts_new_levels_and_milestones():
+    from autoascend.plans import ProgressWatch
+    w = ProgressWatch(limit=100)
+    assert not w.stuck((0, 1), M.FIND_SOKOBAN, 0)
+    assert not w.stuck((0, 1), M.FIND_SOKOBAN, 100)
+    assert w.stuck((0, 1), M.FIND_SOKOBAN, 101)
+    assert not w.stuck((0, 2), M.FIND_SOKOBAN, 150)  # new level is progress
+    assert not w.stuck((0, 1), M.FIND_SOKOBAN, 240)  # an old level is not, but the clock restarted at 150
+    assert w.stuck((0, 1), M.FIND_SOKOBAN, 251)
+    assert not w.stuck((0, 1), M.SOLVE_SOKOBAN, 300)  # next milestone is progress
+
+
+def test_progress_watch_never_fires_while_diving_or_on_first_level():
+    from autoascend.plans import ProgressWatch
+    w = ProgressWatch(limit=10)
+    assert not w.stuck((0, 1), M.BE_ON_FIRST_LEVEL, 500)
+    assert not w.stuck((0, 3), M.DIVE, 1000)
+    assert not w.stuck((0, 3), M.DIVE, 5000)

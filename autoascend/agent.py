@@ -35,14 +35,15 @@ BLStats = namedtuple('BLStats',
                      'x y strength_percentage strength dexterity constitution intelligence wisdom charisma score hitpoints max_hitpoints depth gold energy max_energy armor_class monster_level experience_level experience_points time hunger_state carrying_capacity dungeon_number level_number prop_mask')
 
 
-def prayer_trouble(blstats, safe_hp, safe_hunger):
-    """Pray for low HP (upstream thresholds) or severe hunger.
+def prayer_trouble(blstats, safe_hp, safe_hunger, has_food=False):
+    """Pray for low HP (upstream thresholds) or severe hunger with nothing to eat.
 
     Weak is already major trouble (NetHack wiki, Major trouble); upstream waited for
-    Fainting, and fainting was the most common way this bot died."""
+    Fainting, and fainting was the most common way this bot died. Carried food is eaten
+    instead: praying for it left prayer on cooldown when it was needed."""
     low_hp = blstats.hitpoints < 1 / (5 if blstats.experience_level < 6 else 6) * blstats.max_hitpoints \
         or blstats.hitpoints < 6
-    return (safe_hp and low_hp) or (safe_hunger and blstats.hunger_state >= Hunger.WEAK)
+    return (safe_hp and low_hp) or (safe_hunger and not has_food and blstats.hunger_state >= Hunger.WEAK)
 
 
 def diagonal_blocked_square(message, here, target):
@@ -1478,9 +1479,17 @@ class Agent:
             self.inventory.quaff(items[0])
             return
 
-        if prayer_trouble(self.blstats, self.is_safe_to_pray(500), self.is_safe_to_pray(400)):
+        food = self.edible_inventory_food()
+        if prayer_trouble(self.blstats, self.is_safe_to_pray(500), self.is_safe_to_pray(400),
+                          has_food=food is not None):
             yield True
             self.pray()
+            return
+
+        # eat_from_inventory may not get a turn (e.g. while the bot keeps replanning a blocked path)
+        if food is not None and self.blstats.hunger_state >= Hunger.WEAK:
+            yield True
+            self.inventory.eat(food)
             return
 
         # if self.inventory.engraving_below_me.lower() != 'elbereth' and self.can_engrave() and \
@@ -1500,15 +1509,20 @@ class Agent:
     def eat_from_inventory(self):
         if self.blstats.hunger_state < Hunger.HUNGRY:
             yield False
+        item = self.edible_inventory_food()
+        if item is None:
+            yield False
+        yield True
+        self.inventory.eat(item)
+
+    def edible_inventory_food(self):
         for item in flatten_items(self.inventory.items):
             if item.category == nh.FOOD_CLASS and \
                     item.objs[0].name != 'sprig of wolfsbane' and \
                     (not item.is_corpse() or
                      item.monster_id in [MON.from_name(n) - nh.GLYPH_MON_OFF for n in ['lizard', 'lichen']]):
-                yield True
-                self.inventory.eat(item)
-                return
-        yield False
+                return item
+        return None
 
     @utils.debug_log('cure_disease')
     @Strategy.wrap

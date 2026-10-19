@@ -40,10 +40,36 @@ class Plan:
         if self.can_bail_out():
             self._index = self._milestones.index(Milestone.RETURN_TO_SURFACE)
 
+    def dive_instead(self) -> None:
+        """Abandon the rest of the route and head down: a stuck character starves otherwise."""
+        self._milestones = self._milestones[:self._index + 1] + (Milestone.DIVE,)
+        self._index += 1
+
     def drop_sokoban(self) -> None:
         self.advance()
         if self.current == Milestone.LOOT_SOKOBAN_PRIZE:
             self.advance()
+
+
+class ProgressWatch:
+    """Notices a character that has seen no new level and no new milestone for `limit` turns.
+
+    Stuck characters (a blocked way home, an endless search for Sokoban) lived on prayer
+    until one came too early and they starved."""
+    QUIET = (Milestone.BE_ON_FIRST_LEVEL, Milestone.DIVE)
+
+    def __init__(self, limit: int):
+        self.limit = limit
+        self._levels = set()
+        self._milestone = None
+        self._since = None
+
+    def stuck(self, level, milestone: Milestone, turn: int) -> bool:
+        if level not in self._levels or milestone != self._milestone or self._since is None:
+            self._levels.add(level)
+            self._milestone = milestone
+            self._since = turn
+        return milestone not in self.QUIET and turn - self._since > self.limit
 
 
 @dataclass(frozen=True)
