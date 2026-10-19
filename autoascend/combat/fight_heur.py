@@ -198,6 +198,15 @@ def get_potential_wand_usages(agent, monsters, dy, dx):
     return ret
 
 
+def drop_floating_eye_melee(actions, monsters, player_pos, blind):
+    """ Hitting a seen floating eye freezes you for many turns, often to death """
+    if blind:
+        return actions
+    py, px = player_pos
+    eyes = {(y - py, x - px) for _, y, x, mon, _ in monsters if mon.mname == 'floating eye'}
+    return [a for a in actions if not (a[1][0] == 'melee' and (a[1][1], a[1][2]) in eyes)]
+
+
 def elbereth_action(agent, monsters):
     if agent.inventory.engraving_below_me.lower() == 'elbereth':
         return []

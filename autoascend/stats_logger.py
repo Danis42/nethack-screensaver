@@ -17,6 +17,7 @@ class StatsLogger:
             "allow_walk_traps": 0,
             "allow_attack_all": 0,
             "sokoban_dropped": 0,
+            "sokoban_live_solved": 0,
             "wait_in_fight": 0,
             "melee_gas_spore": 0,
             "ad_aerarium_below_me": 0,

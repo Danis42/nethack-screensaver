@@ -1160,13 +1160,18 @@ class Agent:
             if self.character.prop.polymorph:
                 actions = list(filter(lambda x: x[1][0] != 'ranged', actions))
 
+            actions = combat.fight_heur.drop_floating_eye_melee(
+                actions, monsters, (self.blstats.y, self.blstats.x), self.character.prop.blind)
+
             if allow_attack_all:
                 attack_actions = [a for a in actions if a[1][0] in ('melee', 'ranged', 'zap')]
                 if attack_actions:
                     actions = attack_actions
 
             if not actions:
-                assert 0, 'No possible action available during fight2'
+                # e.g. only a floating eye blocks the way: let it drift off
+                self.search()
+                continue
 
             # best_action = combat.rl_scoring.rl_communicate(self, actions)
             priority, best_action = max(actions, key=lambda x: x[0]) if actions else None

@@ -35,6 +35,7 @@ class GameResult:
     gender: str = "?"
     outcome: str = ""
     milestone: str = "?"  # last milestone of the plan the bot reached
+    elbereth: int = 0  # times the bot wrote Elbereth
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -60,6 +61,13 @@ def _milestone(wrapper) -> str:
         return wrapper.agent.global_logic.plan.current.name
     except AttributeError:  # agent never started
         return "?"
+
+
+def _elbereth_count(wrapper) -> int:
+    try:
+        return wrapper.agent.stats_logger.get_stats_dict()["elbereth_write"]
+    except Exception:  # agent never started
+        return 0
 
 
 def _has_loot(wrapper) -> bool:
@@ -150,6 +158,7 @@ def run_game(
     role_s, race, gender, alignment = _character(wrapper)
     return GameResult(role_s, race, alignment, max_depth, turns, int(wrapper.score), end_reason,
                       strategy=strategy, gender=gender, milestone=_milestone(wrapper),
+                      elbereth=_elbereth_count(wrapper),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 

@@ -27,7 +27,7 @@ def main():
         for i, r in enumerate(pool.imap_unordered(_one, [args.strategy] * args.games), 1):
             results.append(r)
             print(f"[{i}/{args.games}] {r.strategy} {r.role} depth={r.max_depth} score={r.score} "
-                  f"turns={r.turns} :: {r.outcome} :: {r.end_reason[:70]}", flush=True)
+                  f"turns={r.turns} elb={r.elbereth} :: {r.outcome} :: {r.end_reason[:70]}", flush=True)
 
     exc = [r for r in results if r.end_reason.startswith("exception")]
     wd = [r for r in results if r.end_reason == "watchdog"]
