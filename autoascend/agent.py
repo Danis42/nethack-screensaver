@@ -8,6 +8,7 @@ import numpy as np
 from nle.nethack import actions as A
 
 from . import combat
+from . import objects as O
 from . import utils
 from .character import Character
 from .exceptions import AgentPanic, AgentFinished, AgentChangeStrategy
@@ -35,15 +36,32 @@ BLStats = namedtuple('BLStats',
                      'x y strength_percentage strength dexterity constitution intelligence wisdom charisma score hitpoints max_hitpoints depth gold energy max_energy armor_class monster_level experience_level experience_points time hunger_state carrying_capacity dungeon_number level_number prop_mask')
 
 
+def critical_hp(blstats):
+    return blstats.hitpoints < 1 / (5 if blstats.experience_level < 6 else 6) * blstats.max_hitpoints \
+        or blstats.hitpoints < 6
+
+
+def dig_down_tool(items, slow_ok):
+    """ Something to make a hole down with: a known wand of digging (instant) or, given time,
+    a pick-axe or mattock (several turns) """
+    known = [i for i in items if i.is_unambiguous()]
+    for item in known:
+        if item.object == O.from_name('digging', nh.WAND_CLASS):
+            return item
+    if slow_ok:
+        for item in known:
+            if item.object in (O.from_name('pick-axe'), O.from_name('dwarvish mattock')):
+                return item
+    return None
+
+
 def prayer_trouble(blstats, safe_hp, safe_hunger, has_food=False):
     """Pray for low HP (upstream thresholds) or severe hunger with nothing to eat.
 
     Weak is already major trouble (NetHack wiki, Major trouble); upstream waited for
     Fainting, and fainting was the most common way this bot died. Carried food is eaten
     instead: praying for it left prayer on cooldown when it was needed."""
-    low_hp = blstats.hitpoints < 1 / (5 if blstats.experience_level < 6 else 6) * blstats.max_hitpoints \
-        or blstats.hitpoints < 6
-    return (safe_hp and low_hp) or (safe_hunger and not has_food and blstats.hunger_state >= Hunger.WEAK)
+    return (safe_hp and critical_hp(blstats)) or (safe_hunger and not has_food and blstats.hunger_state >= Hunger.WEAK)
 
 
 def diagonal_blocked_square(message, here, target):
@@ -107,6 +125,7 @@ class Agent:
         # when (number of turn) there was last decision about allowing these actions (e.g. agent is somewhat stuck)
         self._allow_walking_through_traps_turn = -float('inf')
         self._allow_attack_all_turn = -float('inf')
+        self._undiggable_levels = set()  # level keys where digging down failed
 
         self.last_cast_fail_turn = defaultdict(lambda: -float('inf'))
 
@@ -776,6 +795,30 @@ class Agent:
         self.last_prayer_turn = self.blstats.time
         # TODO: return value
         return True
+
+    def can_dig_down(self):
+        level = self.current_level()
+        return level.dungeon_number != Level.SOKOBAN and level.key() not in self._undiggable_levels
+
+    def dig_down(self, item):
+        """ Zap or apply `item` downwards; True if that took us off this level """
+        key = self.current_level().key()
+        if item.object == O.from_name('digging', nh.WAND_CLASS):
+            self.zap(item, '>')
+        else:
+            with self.atom_operation():
+                self.step(A.Command.APPLY)
+                self.type_text(self.inventory.items.get_letter(item))
+                self.direction('>')
+        if self.current_level().key() == key:
+            self._undiggable_levels.add(key)
+            return False
+        return True
+
+    def hostile_next_to_me(self):
+        y, x = self.blstats.y, self.blstats.x
+        mask = self.monster_tracker.monster_mask & ~self.monster_tracker.peaceful_monster_mask
+        return mask[max(y - 1, 0):y + 2, max(x - 1, 0):x + 2].any()
 
     def open_door(self, y, x):
         with self.panic_if_position_changes():
@@ -1491,6 +1534,16 @@ class Agent:
             yield True
             self.inventory.eat(food)
             return
+
+        # last resort (NetHack wiki, "going to die next turn"): a hole down leaves the attacker behind
+        if critical_hp(self.blstats) and not self.is_safe_to_pray(500) and self.hostile_next_to_me() \
+                and self.can_dig_down():
+            wand = dig_down_tool(self.inventory.items.all_items, slow_ok=False)
+            if wand is not None:
+                yield True
+                self.stats_logger.log_event('dig_escape')
+                self.dig_down(wand)
+                return
 
         # if self.inventory.engraving_below_me.lower() != 'elbereth' and self.can_engrave() and \
         #         (self.blstats.hitpoints < 1 / 5 * self.blstats.max_hitpoints or self.blstats.hitpoints < 5):
