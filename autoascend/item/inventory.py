@@ -17,6 +17,17 @@ from autoascend.item.inventory_items import InventoryItems
 from autoascend.strategy import Strategy
 
 
+# blstats encumbrance level at which NetHack refuses to eat, apply or loot
+OVERTAXED = 4
+
+
+def items_to_unload(items, keep=()):
+    """Items to drop when too loaded to act: heaviest first, food last, never equipped or kept ones."""
+    spare = [i for i in items
+             if i not in keep and not i.equipped and i.can_be_dropped_from_inventory()]
+    return sorted(spare, key=lambda i: (i.category == nh.FOOD_CLASS, -i.weight()))
+
+
 class Inventory:
     _name_to_category = {
         'Amulets': nh.AMULET_CLASS,
@@ -680,6 +691,8 @@ class Inventory:
             item = self.move_to_inventory(item)
 
         assert item in self.items.all_items, item or item in self.items_below_me
+        if not quaff:
+            self.lighten_load(keep=[item])
         letter = self.items.get_letter(item)
         with self.agent.atom_operation():
             if quaff:
@@ -709,6 +722,14 @@ class Inventory:
                 assert 0, self.agent.message
 
         assert 0
+
+    def lighten_load(self, keep=()):
+        """Drop spare items until NetHack lets us eat again (it refuses while Overtaxed)."""
+        for item in items_to_unload(self.items.all_items, keep):
+            if self.agent.blstats.carrying_capacity < OVERTAXED:
+                return
+            self.agent.stats_logger.log_event('drop_to_lighten_load')
+            self.drop(item)
 
     ######## STRATEGIES helpers
 

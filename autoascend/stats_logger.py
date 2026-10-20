@@ -18,6 +18,7 @@ class StatsLogger:
             "allow_attack_all": 0,
             "sokoban_dropped": 0,
             "sokoban_live_solved": 0,
+            "drop_to_lighten_load": 0,
             "stuck_dive": 0,
             "stuck_diving": 0,
             "wait_in_fight": 0,
