@@ -1,40 +1,70 @@
-# Where we are (2026-10-20)
+# Where we are (2026-10-20, end of day)
 
 Version 0.2.0 is released; everything below is on local `main` after it (not yet released).
 Benchmark numbers and every experiment: `autoascend/PORTING.md`.
 
-## Done since 0.2.0 (kept)
+## New main objective: a bot that really wins NetHack
 
-- Never melee a seen floating eye (gaze freezes 6-8 → 0-1 per 192 games).
-- Bot errors make the bot replan instead of ending the game (`panic_on_errors=True`);
-  doorways that refuse diagonal moves are remembered. Crashes went down; the rest end as
-  "Cyclic Panic", which now names the errors behind it.
-- Fixed: a live-solved Sokoban level crashed the game (missing stat).
-- Hunger: eat carried food when Weak instead of praying.
-- A character with no new level or plan step for 2500 turns gives up its route and dives;
-  divers inside the Gnomish Mines dive down the Mines.
-- Human, elven and orcish pilgrims do Sokoban before the Mines.
-- Benchmark extras: `--out file.jsonl`, results carry XP level, Elbereth count, panics,
-  stuck-diving count.
+Decided 2026-10-20. Pilgrim (ascension) and daredevil (ascension in disgrace) should
+really pursue their goals instead of stand-ins; the project's main objective becomes a
+real ascension. Sightseer and treasure keep their reachable escape goals. Workflow stays
+superpowers (brainstorm, spec, plan, inline execution) plus a `docs/ROADMAP.md` (not
+written yet), not GSD.
 
-## Tried and dropped (kept as git stashes or reverts)
+Proposed ladder of sub-projects (each gets its own spec, plan and build):
 
-Resting on Elbereth, waiting for peaceful monsters to clear a path, a smarter search for
-hidden passages, digging down, pushing boulders. None improved the benchmark.
+0. Ascension ladder: make it the real goal and measure which stage each game reaches
+1. Midgame survival, Dlvl 4-12 (most games die on Dlvl 4-8)
+2. Real descent past Mines' End and the Big Room; reliably finding downstairs
+3. Gearing up: wands, rings, armour, protection, reflection, magic resistance
+4. Medusa's level   5. Castle and wishes   6. Quest (XL 14, Bell)
+7. Gehennom: Vlad's, Wizard's Tower, invocation   8. Elemental and Astral Planes
 
-## How to measure
+**Start tomorrow here:** resume the brainstorm. Open question: what counts as success —
+climbing the ladder (recommended: each rung is progress, a real ascension is the last
+rung) or only real ascensions. Then write `docs/ROADMAP.md` and the spec for
+sub-project 0.
 
-- Use 576 games per change (`uv run python scripts/benchmark.py -n 576 -j 11 --out x.jsonl`,
-  ~15 min). 192-game runs proved too noisy.
-- One change per measurement; to measure a commit while working on the next, use a git
-  worktree and run it with `PYTHONPATH=<worktree> .venv/bin/python scripts/benchmark.py`.
+## Yardstick: 687 real ascensions (hardfought.org, in the bench database)
 
-## Next steps (proposed, pick one)
+Median turn of each step (131 NetHack 5.0 timelines): Mines 1173, Minetown 3538,
+Sokoban 9022 (solved 12412), Mines' End luckstone 10853, Quest 22426, Medusa 29317,
+Bell 30475, Gehennom 34155, Vlad 44189, invocation 49741, Astral 53518, ascended 53630.
+At the end: magic resistance 100%, bag of holding 99%, reflection 83%, median XL 23,
+AC -38; wands of teleportation 89%, death 83%, digging 64%.
+Our bot: median game about 4900 turns, ends on Dlvl 5; best games Dlvl 10-22.
 
-1. Crashes: run games, read the "Cyclic Panic" messages, fix the most common cause
-   (9-18 of 576 games end this way).
-2. Fight soldier ants from corridors so they cannot surround the character.
-3. Step out of the line of fire of monsters that zap wands (largest group of killers,
-   about 12% of deaths; striking hits when d20 < 10 + armour class).
+## Bench server (new, use it for every measurement)
 
-Your preference so far: an exciting deep run that dies beats a boring escape.
+- `uv run screens-bench serve` -> http://localhost:8765 (job, experiment verdict,
+  dashboard, history, ascenders). Plays only while a job runs; 11 workers with `nice`.
+- Claude: MCP tools from `.mcp.json` (reconnect MCP once: `/mcp`), or the JSON API.
+  Start an experiment, then run `uv run screens-bench wait <job>` in the background.
+- Experiments judge one metric (default "reached Dlvl 6+") at 192/384/576/1152 games per
+  side (99% early, 95% at the end); stored games of a commit are reused. Commit first:
+  only committed code can be measured.
+- Database `~/.local/share/screens-bench/results.db` holds 576 games of `aa4b1cf`
+  (current bot code), 1152 of `choke-points`, and the 687 reference ascensions.
+- `scripts/benchmark.py` still works as a fallback.
+
+## Done today (kept)
+
+- Crashes 9 -> 2 per 576 games: drop spare items when Overtaxed, stop refused armour,
+  parse 80-character inventory lines and worn rings, empty containers, pit-edge items,
+  no kicking with wounded legs, plus a safety net (after 100 steps without game time,
+  search once; `unsticks` in results). Crash reports show the bot's call chain.
+- Bench server with status page, MCP tools and the ascension import.
+
+## Tried and dropped
+
+Earlier: resting on Elbereth, waiting for peaceful monsters, smarter hidden-passage
+search, digging down, pushing boulders (git stashes / reverts). Today: fighting packs of
+fast monsters (soldier ants, killer bees) from doorways and corridors — no measurable
+difference (branch `choke-points`). Ants + killer bees still kill about 8% of games.
+
+## Notes
+
+- One change per measurement; single 576-game runs mislead (286 vs 262 was noise).
+- Killers to look at: wand/ray users (~8%), ants (~8%), starvation (~13%).
+- Your preference: an exciting deep run that dies beats a boring escape.
+- Never push; merge finished, tested branches to `main` locally.
