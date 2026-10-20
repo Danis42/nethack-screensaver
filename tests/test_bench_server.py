@@ -74,7 +74,10 @@ def test_api_errors(bench_url):
 def test_page_is_served(bench_url):
     with urlopen(bench_url + "/", timeout=10) as r:
         assert r.headers["Content-Type"].startswith("text/html")
-        assert b"<title>Screens Bench</title>" in r.read()
+        page = r.read()
+        assert b"<title>Screens Bench</title>" in page
+        for section in (b'id="job"', b'id="experiment"', b'id="dashboard"', b'id="history"', b'id="ascenders"'):
+            assert section in page
 
 
 def test_second_server_on_the_same_port_exits_with_a_message(bench_app):

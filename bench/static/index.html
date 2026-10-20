@@ -1,3 +1,205 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Screens Bench</title></head>
-<body><p>Screens Bench</p></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screens Bench</title>
+<style>
+:root { --bg:#f6f6f7; --fg:#1d1d1f; --muted:#6b6b70; --line:#dcdce0; --card:#fff; --good:#1a7f37; --bad:#c62828; --accent:#2f5bd3; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#161618; --fg:#e8e8ea; --muted:#9a9aa0; --line:#323236; --card:#1f1f22; --good:#4cc26a; --bad:#ef6b6b; --accent:#7a9cff; }
+}
+body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:16px; }
+h1 { font-size:20px; margin:4px 0 12px; }
+h2 { font-size:16px; margin:0 0 8px; }
+h3 { font-size:13px; margin:12px 0 4px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+section { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 16px; margin-bottom:16px; }
+table { border-collapse:collapse; width:100%; }
+td, th { text-align:left; padding:3px 8px; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums; vertical-align:top; }
+th { color:var(--muted); font-weight:500; }
+.wrap { overflow-x:auto; }
+.muted { color:var(--muted); }
+.better { color:var(--good); font-weight:600; }
+.worse { color:var(--bad); font-weight:600; }
+.bar { display:inline-block; height:10px; background:var(--accent); vertical-align:middle; border-radius:2px; }
+form { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:8px 0 0; }
+input, select, button { font:inherit; padding:3px 6px; color:var(--fg); background:var(--bg); border:1px solid var(--line); border-radius:4px; }
+button { cursor:pointer; }
+</style>
+</head>
+<body>
+<main>
+<h1>Screens Bench</h1>
+<section id="job">
+  <h2>Job</h2>
+  <div id="job-body" class="muted">loading…</div>
+  <form id="baseline-form">Baseline <input name="ref" value="main" size="12"> games <input name="games" value="576" size="5"> <button>Start</button></form>
+  <form id="experiment-form">Experiment <input name="candidate" placeholder="branch" size="14"> vs <input name="baseline" value="main" size="12"> metric <select name="metric" id="metric-select"></select> <button>Start</button></form>
+  <form id="stop-form"><button>Stop current job</button></form>
+  <div id="form-error" class="worse"></div>
+</section>
+<section id="experiment"><h2>Experiment</h2><div id="experiment-body" class="muted">no experiment yet</div></section>
+<section id="dashboard"><h2>Dashboard — newest main commit with games</h2><div id="dashboard-body" class="muted">loading…</div></section>
+<section id="history"><h2>History</h2><div id="history-body" class="muted">loading…</div></section>
+<section id="ascenders"><h2>Ascenders — imported real wins</h2><div id="ascenders-body" class="muted">loading…</div></section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const pct = x => x == null ? '–' : (100 * x).toFixed(1) + '%';
+const short = sha => esc((sha || '').slice(0, 10));
+
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  const body = await r.json();
+  if (!r.ok) throw new Error(body.error || r.statusText);
+  return body;
+}
+
+function table(head, rows) {
+  return '<div class="wrap"><table><tr>' + head.map(h => `<th>${esc(h)}</th>`).join('') + '</tr>'
+    + rows.map(r => '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>').join('') + '</table></div>';
+}
+
+function verdictHtml(v) {
+  if (!v) return '<span class="muted">open</span>';
+  const cls = v.state === 'better' ? 'better' : v.state === 'worse' ? 'worse' : '';
+  return `<span class="${cls}">${esc(v.state)}</span> at ${v.checkpoint} games per side: `
+    + `${pct(v.diff)} [${pct(v.lo)}, ${pct(v.hi)}], smallest visible difference ${pct(v.detectable)}`;
+}
+
+function renderJob(s) {
+  const j = s.job;
+  let html;
+  if (!j) {
+    html = '<span class="muted">idle</span>';
+  } else {
+    const p = j.progress, sp = j.spec;
+    const what = j.kind === 'baseline'
+      ? `baseline <b>${esc(sp.ref)}</b> ${short(sp.sha)} — ${esc(sp.subject)}`
+      : `experiment <b>${esc(sp.candidate_ref)}</b> vs <b>${esc(sp.baseline_ref)}</b> on ${esc(sp.metric)}`;
+    const prog = j.kind === 'baseline'
+      ? `${p.games}/${p.target} games`
+      : `checkpoint ${p.checkpoint}: baseline ${p.baseline}, candidate ${p.candidate}`;
+    const eta = j.eta_seconds ? `, about ${Math.max(1, Math.round(j.eta_seconds / 60))} min left` : '';
+    html = `#${j.id} ${what}<br>${prog} · ${s.games_per_minute.toFixed(1)} games/min · ${s.busy_workers}/${s.slots} workers${eta}`;
+    if (j.kind === 'experiment') html += '<br>verdict so far: ' + verdictHtml(j.result && j.result.verdict);
+  }
+  if (s.error) html += `<div class="worse">${esc(s.error)}</div>`;
+  const imp = s.import || {};
+  if (imp.running || imp.last) html += `<div class="muted">import: ${imp.running ? 'running…' : esc(JSON.stringify(imp.last))}</div>`;
+  $('job-body').innerHTML = html;
+  return Boolean(j) || Boolean(imp.running);
+}
+
+async function renderExperiment(id) {
+  const job = await api('/api/jobs/' + id);
+  const sp = job.spec;
+  const rows = (job.table || []).map(r => r.kind === 'rate'
+    ? [esc(r.description), pct(r.candidate.rate), pct(r.baseline.rate), r.diff == null ? '–' : `${pct(r.diff)} [${pct(r.lo)}, ${pct(r.hi)}]`]
+    : [esc(r.description), esc(r.candidate.median), esc(r.baseline.median), '']);
+  $('experiment-body').innerHTML =
+    `#${job.id} <b>${esc(sp.candidate_ref)}</b> ${short(sp.candidate)} vs <b>${esc(sp.baseline_ref)}</b> ${short(sp.baseline)} — ${esc(job.state)}, ${job.games_per_side} games per side<br>`
+    + `primary metric <b>${esc(sp.metric)}</b>: ${verdictHtml(job.result && job.result.verdict)}<br>`
+    + '<span class="muted">The other metrics are information only (95% intervals); only the primary metric decides.</span>'
+    + table(['metric', 'candidate', 'baseline', 'difference'], rows);
+}
+
+function renderDashboard(d) {
+  if (!d.sha) { $('dashboard-body').innerHTML = '<span class="muted">no games stored for main yet</span>'; return; }
+  const rates = Object.entries(d.metrics).filter(([, v]) => 'rate' in v)
+    .map(([k, v]) => [esc(k), pct(v.rate), `${v.hits}/${v.n}` + (v.skipped ? ` (${v.skipped} without data)` : '')]);
+  const most = Math.max(1, ...Object.values(d.depths));
+  const depths = Object.entries(d.depths).map(([k, v]) => [esc(k), `<span class="bar" style="width:${Math.round(220 * v / most)}px"></span> ${v}`]);
+  const outcomes = Object.entries(d.outcomes).map(([s, o]) => [esc(s), esc(Object.entries(o).map(([k, n]) => `${n} ${k}`).join(', '))]);
+  $('dashboard-body').innerHTML = `${short(d.sha)} — ${esc(d.subject)} · ${d.games} games`
+    + '<h3>Rates</h3>' + table(['metric', 'rate', 'games'], rates)
+    + '<h3>Top killers</h3>' + table(['killer', 'games'], d.killers.map(([k, n]) => [esc(k), n]))
+    + '<h3>Max depth</h3>' + table(['Dlvl', 'games'], depths)
+    + '<h3>Outcomes per strategy</h3>' + table(['strategy', 'outcomes'], outcomes)
+    + '<h3>Crashes</h3>' + (d.crashes.length ? table(['end reason'], d.crashes.map(c => [esc(c)])) : '<span class="muted">none</span>')
+    + '<h3>Most unsticks</h3>' + (d.unstuck.length
+      ? table(['role', 'depth', 'turns', 'unsticks', 'end'], d.unstuck.map(g => [esc(g.role), g.max_depth, g.turns, g.unsticks, esc(g.end_reason)]))
+      : '<span class="muted">none</span>');
+}
+
+function renderHistory(list) {
+  $('history-body').innerHTML = list.length
+    ? table(['#', 'candidate', 'baseline', 'metric', 'state', 'verdict'],
+        list.map(j => [j.id, esc(j.spec.candidate_ref), esc(j.spec.baseline_ref), esc(j.spec.metric), esc(j.state), verdictHtml(j.result && j.result.verdict)]))
+    : '<span class="muted">no experiments yet</span>';
+}
+
+function renderAscenders(r) {
+  if (!r.ascensions) {
+    $('ascenders-body').innerHTML = '<span class="muted">nothing imported yet — <code>screens-bench import xlog URL</code></span>';
+    return;
+  }
+  const t = r.turns;
+  let html = `${r.ascensions} ascensions, ${r.with_dumplog} with dumplog, ${r.with_timeline} with a timeline · `
+    + `turns to ascend: median ${esc(t.median)} (quartiles ${esc(t.q1)}–${esc(t.q3)})`;
+  html += '<h3>Milestones (first time, median turn)</h3>' + (r.milestones.length
+    ? table(['event', 'median turn', 'share of games with a timeline'], r.milestones.map(e => [esc(e.event), esc(e.median_turn), pct(e.share)]))
+    : '<span class="muted">no timelines yet — <code>screens-bench import dumplogs</code></span>');
+  html += '<h3>Achievements</h3>' + table(['achievement', 'share'], r.achievements.map(([a, s]) => [esc(a.replaceAll('_', ' ')), pct(s)]));
+  html += '<h3>Roles</h3>' + table(['role', 'ascensions'], r.roles.map(([k, n]) => [esc(k), n]));
+  if (r.with_dumplog) {
+    html += '<h3>At the end</h3>' + table(['', ''], [
+      ['reflection', pct(r.reflection)], ['magic resistance', pct(r.magic_resistance)],
+      ['bag of holding', pct(r.bag_of_holding)], ['experience level (median)', esc(r.xl)],
+      ['armour class (median)', esc(r.ac)]]);
+    html += '<h3>Wands carried</h3>' + table(['wand', 'share'], r.wands.map(([w, s]) => [esc(w), pct(s)]));
+  }
+  $('ascenders-body').innerHTML = html;
+}
+
+let timer = null;
+async function refresh() {
+  clearTimeout(timer);
+  let busy = false;
+  try {
+    const s = await api('/api/status');
+    busy = renderJob(s);
+    const history = await api('/api/experiments');
+    renderHistory(history);
+    const current = s.job && s.job.kind === 'experiment' ? s.job.id : (history[0] && history[0].id);
+    if (current) await renderExperiment(current);
+    renderDashboard(await api('/api/dashboard'));
+    renderAscenders(await api('/api/reference/summary'));
+  } catch (e) {
+    $('job-body').innerHTML = `<span class="worse">${esc(e.message)}</span>`;
+  }
+  timer = setTimeout(refresh, busy ? 2000 : 30000);
+}
+
+async function send(path, method, body) {
+  $('form-error').textContent = '';
+  try {
+    await api(path, {method, headers: {'Content-Type': 'application/json'}, body: body && JSON.stringify(body)});
+  } catch (e) {
+    $('form-error').textContent = e.message;
+  }
+  refresh();
+}
+
+$('baseline-form').onsubmit = e => {
+  e.preventDefault();
+  const f = e.target.elements;
+  send('/api/jobs', 'POST', {kind: 'baseline', ref: f.ref.value, games: Number(f.games.value)});
+};
+$('experiment-form').onsubmit = e => {
+  e.preventDefault();
+  const f = e.target.elements;
+  send('/api/jobs', 'POST', {kind: 'experiment', candidate: f.candidate.value, baseline: f.baseline.value, metric: f.metric.value});
+};
+$('stop-form').onsubmit = e => { e.preventDefault(); send('/api/jobs', 'DELETE'); };
+
+api('/api/metrics').then(metrics => {
+  $('metric-select').innerHTML = Object.entries(metrics).filter(([, m]) => m.kind === 'rate')
+    .map(([n, m]) => `<option value="${esc(n)}"${n === 'dlvl6' ? ' selected' : ''}>${esc(n)} — ${esc(m.description)}</option>`).join('');
+});
+refresh();
+</script>
+</body>
+</html>
