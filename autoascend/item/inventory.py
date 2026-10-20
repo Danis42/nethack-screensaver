@@ -58,6 +58,7 @@ class Inventory:
         self.engraving_below_me = None
 
         self.skip_engrave_counter = 0
+        self._out_of_reach = None  # (level, y, x) of items at the bottom of a pit we stand at the edge of
 
     def on_panic(self):
         self.items_below_me = None
@@ -516,6 +517,12 @@ class Inventory:
                                                                                   self.agent.blstats.y,
                                                                                   self.agent.blstats.x)))
 
+                here = (*self.agent.current_level().key(), self.agent.blstats.y, self.agent.blstats.x)
+                if self._out_of_reach == here:
+                    items, letters = [], []
+                else:
+                    self._out_of_reach = None
+
                 self.items_below_me = items
                 self.letters_below_me = letters
                 return items
@@ -552,6 +559,12 @@ class Inventory:
                              if count != 0 and screen == current_screen])
                     for current_screen in range(max(screens) + 1)))
                 self.agent.step(A.Command.PICKUP, iter(list(text) + [A.MiscAction.MORE]))
+
+            if 'You cannot reach the bottom of the ' in self.agent.message:
+                # after climbing out of a pit we teeter at its edge; retrying would loop without game time
+                self._out_of_reach = (*self.agent.current_level().key(), self.agent.blstats.y, self.agent.blstats.x)
+                self.get_items_below_me()
+                return False
 
             while re.search('You have [a-z ]+ lifting ', self.agent.message) and \
                     'Continue?' in self.agent.message:
@@ -956,7 +969,7 @@ class Inventory:
                 if not yielded:
                     yielded = True
                     yield True
-                assert self.pickup([items_below_me[i] for i in indices], [to_pickup[i] for i in indices])
+                self.pickup([items_below_me[i] for i in indices], [to_pickup[i] for i in indices])
                 continue
 
             break
