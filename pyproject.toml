@@ -12,15 +12,19 @@ dependencies = [
     "toolz>=1.0",
 ]
 
+[project.scripts]
+screens-bench = "bench.cli:main"
+
 [dependency-groups]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", {include-group = "bench"}]
+bench = ["mcp>=1.2"]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["autoascend", "nethack_screensaver"]
+packages = ["autoascend", "nethack_screensaver", "bench"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
