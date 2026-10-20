@@ -23,6 +23,11 @@ from .stats_logger import StatsLogger
 from .strategy import Strategy
 
 
+# NetHack's answers to #kick when it refuses before asking for a direction
+CANNOT_KICK = ['in no shape for kicking', 'too heavy to balance yourself for a kick',
+               'cannot kick effectively', 'You have no legs to kick with']
+
+
 def _raise_site(exc, depth=6):
     """The innermost bot frames that raised exc (innermost first), for crash reports."""
     frames = [f for f in traceback.extract_tb(exc.__traceback__) if 'autoascend' in f.filename]
@@ -73,6 +78,7 @@ class Agent:
         self.rng = np.random.RandomState(seed)
         self.panic_on_errors = panic_on_errors
         self.all_panics = []
+        self._no_kick_until = -1  # game turn; NetHack refuses kicks e.g. with wounded legs
         self.rl_model_to_train = rl_model_to_train
         self.rl_model_training_comm = rl_model_training_comm
 
@@ -853,7 +859,14 @@ class Agent:
         with self.panic_if_position_changes():
             with self.atom_operation():
                 self.step(A.Command.KICK)
+                if any(refusal in self.message for refusal in CANNOT_KICK):
+                    # refused without game time passing; kicking again would loop
+                    self._no_kick_until = self.blstats.time + 100
+                    raise AgentPanic(f'cannot kick: {self.message}')
                 self.direction(self.calc_direction(self.blstats.y, self.blstats.x, y, x))
+
+    def can_kick(self):
+        return self.blstats.time >= self._no_kick_until
 
     def search(self, max_count=1):
         assert max_count >= 1
