@@ -247,3 +247,17 @@ a free hand, ...) is caught by the safety net: after 100 steps without game time
 searches once and replans (`unsticks` in results). It fired in 2 of 576 games; one healer
 stayed stuck ~3000 turns before dying. Left: polymorphed "physically incapable of picking
 anything up" and ball-and-chain parsing (1 each).
+
+## Bench server (2026-10-20)
+
+Benchmarks now run through `screens-bench` (see README). The choke-points validation
+experiment (`choke-points` vs `aa4b1cf`, metric dlvl6, 1152 games per side, of which 1728
+imported from the earlier benchmark files) ended as: no measurable difference at 1152,
+difference +0.3% (95% interval -3.7% .. +4.4%; smaller real effects than about 4 points
+cannot be seen at this size). The first choke run's +4 points at 576 stayed "open".
+
+Imported yardstick: 687 ascensions from hardfought.org (NetHack 5.0 and 3.6), 199 with
+dumplogs. Median turns: Mines 1173, Minetown 3538, Sokoban 9022 (solved 12412), Quest
+22426, Medusa 29317, Gehennom 34155, invocation 49741, ascension 53630 (5.0 timelines).
+At the end 100% have magic resistance, 99% a bag of holding, 83% reflection; median XL 23,
+AC -38; wands of teleportation 89%, death 83%, digging 64%.

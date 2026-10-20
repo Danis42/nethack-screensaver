@@ -63,3 +63,19 @@ uv run python scripts/benchmark.py -n 50 -j 8
 
 AutoAscend is MIT licensed (`autoascend/LICENSE`); port notes and benchmark in
 `autoascend/PORTING.md`.
+
+## Bench server (for working on the bot)
+
+`uv run screens-bench serve` starts a local server on http://localhost:8765 that plays bot
+games on demand, stores every game per commit, and compares commits:
+
+- **Baseline:** play a commit up to N games (`main` by default); the page's dashboard shows
+  killers, depths, outcomes and crashes of the newest `main` commit with games.
+- **Experiment:** candidate branch vs baseline, judged on one metric (default "reached Dlvl
+  6+") at 192/384/576/1152 games per side; stored baseline games are reused.
+- **Ascenders:** `screens-bench import xlog <url>` and `screens-bench import dumplogs` load
+  real ascensions from public servers (e.g. hardfought.org) as a yardstick.
+
+Claude drives it through the MCP server in `.mcp.json`. Only committed code can be
+benchmarked; each commit runs from its own worktree under `~/.cache/screens-bench/`.
+Results live in `~/.local/share/screens-bench/results.db`.
