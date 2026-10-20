@@ -27,6 +27,23 @@ class ContainerContent:
         return sum((item.weight() for item in self.items))
 
 
+# NLE cuts inventory lines at this many characters, sometimes inside the trailing "(...)"
+_TEXT_LIMIT = nh.NLE_INVENTORY_STR_LENGTH
+_KNOWN_INFOS = ['being worn', 'wielded', 'weapon in hand', 'weapon in hands', 'alternate weapon; not wielded',
+                'at the ready', 'in quiver', 'in quiver pouch', 'lit', 'chained to you']
+
+
+def _repair_cut_text(text):
+    """Complete or drop a "(...)" suffix that NLE cut off at the line limit."""
+    if len(text) < _TEXT_LIMIT or text.endswith(')') or ' (' not in text:
+        return text
+    head, fragment = text.rsplit(' (', 1)
+    for info in _KNOWN_INFOS:
+        if info.startswith(fragment):
+            return f'{head} ({info})'
+    return head
+
+
 class ItemManager:
     def __init__(self, agent):
         self.agent = agent
@@ -257,6 +274,7 @@ class ItemManager:
 
         assert category not in [nh.RANDOM_CLASS]
 
+        text = _repair_cut_text(text)
         matches = re.findall(
             r'^(a|an|the|\d+)'
             r'( empty)?'
