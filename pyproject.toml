@@ -17,7 +17,7 @@ screens-bench = "bench.cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8", {include-group = "bench"}]
-bench = ["mcp>=1.2"]
+bench = ["mcp>=2.3"]
 
 [build-system]
 requires = ["hatchling"]

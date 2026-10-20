@@ -335,9 +335,9 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-bench = [{ name = "mcp", specifier = ">=1.2" }]
+bench = [{ name = "mcp", specifier = ">=2.3" }]
 dev = [
-    { name = "mcp", specifier = ">=1.2" },
+    { name = "mcp", specifier = ">=2.3" },
     { name = "pytest", specifier = ">=8" },
 ]
 
