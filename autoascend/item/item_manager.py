@@ -30,7 +30,7 @@ class ContainerContent:
 # NLE cuts inventory lines at this many characters, sometimes inside the trailing "(...)"
 _TEXT_LIMIT = nh.NLE_INVENTORY_STR_LENGTH
 _KNOWN_INFOS = ['being worn', 'wielded', 'weapon in hand', 'weapon in hands', 'alternate weapon; not wielded',
-                'at the ready', 'in quiver', 'in quiver pouch', 'lit', 'chained to you']
+                'at the ready', 'in quiver', 'in quiver pouch', 'lit', 'chained to you', 'on left hand', 'on right hand']
 
 
 def _repair_cut_text(text):
@@ -219,10 +219,10 @@ class ItemManager:
                 else:
                     identifier = self._get_new_container_identifier()
             item.container_id = identifier
-            if identifier not in self.container_contents and re.match(r'^(a|an|the|\d+) empty ', text) and \
-                    O.from_name('bag of tricks') not in objs:
-                # NetHack calls a container "empty" once it knows; looting it again would loop without game time
-                self.container_contents[identifier] = ContainerContent()
+            if re.match(r'^(a|an|the|\d+) empty ', text) and O.from_name('bag of tricks') not in objs:
+                # NetHack calls a container "empty" once it knows; looting it again (or trying to take out
+                # what we remember inside) would loop without game time
+                self.container_contents.setdefault(identifier, ContainerContent()).reset()
             if identifier in self.container_contents:
                 item.content = self.container_contents[identifier]
                 if len(item.glyphs) == 1 and item.glyphs[0] not in self._is_not_bag_of_tricks:
@@ -307,7 +307,8 @@ class ItemManager:
         ) = matches[0]
         # TODO: effects, uses
 
-        if info in {'being worn', 'being worn; slippery', 'wielded', 'chained to you'} or info.startswith(
+        if info in {'being worn', 'being worn; slippery', 'wielded', 'chained to you',
+                    'on left hand', 'on right hand'} or info.startswith(
                 'weapon in ') or \
                 info.startswith('tethered weapon in '):
             equipped = True

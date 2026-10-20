@@ -1,4 +1,4 @@
-from autoascend.item.item_manager import ItemManager
+from autoascend.item.item_manager import ContainerContent, ItemManager
 
 CLOAK = 'an uncursed thoroughly burnt thoroughly rotted +2 cloak of displacement (being worn)'
 
@@ -34,3 +34,20 @@ def test_container_named_empty_counts_as_already_looted():
 def test_container_without_empty_mark_still_needs_looking_into():
     box = _manager().get_item_from_text('an unlocked large box', position=(0, 1, 5, 7))
     assert box.is_possible_container()
+
+
+def test_empty_mark_clears_stale_container_content():
+    manager = _manager()
+    box = manager.get_item_from_text('an unlocked large box', position=(0, 1, 5, 7))
+    manager.container_contents[box.container_id] = stale = ContainerContent()
+    stale.items.append(manager.get_item_from_text('a dagger', position=None))
+
+    box = manager.get_item_from_text('an empty unlocked large box', position=(0, 1, 5, 7))
+    assert list(box.content) == []
+
+
+def test_worn_ring_parses_as_equipped():
+    for hand in ['left', 'right']:
+        objs, glyphs, count, status, modifier, equipped, *rest = ItemManager.parse_text(
+            f'an uncursed ring of slow digestion (on {hand} hand)')
+        assert objs[0].name == 'slow digestion' and equipped
