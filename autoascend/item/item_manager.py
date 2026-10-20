@@ -219,6 +219,10 @@ class ItemManager:
                 else:
                     identifier = self._get_new_container_identifier()
             item.container_id = identifier
+            if identifier not in self.container_contents and re.match(r'^(a|an|the|\d+) empty ', text) and \
+                    O.from_name('bag of tricks') not in objs:
+                # NetHack calls a container "empty" once it knows; looting it again would loop without game time
+                self.container_contents[identifier] = ContainerContent()
             if identifier in self.container_contents:
                 item.content = self.container_contents[identifier]
                 if len(item.glyphs) == 1 and item.glyphs[0] not in self._is_not_bag_of_tricks:
