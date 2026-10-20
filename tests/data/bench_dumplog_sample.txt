@@ -1,0 +1,52 @@
+Unix NetHack Version 5.0.0-0 post-release - last build Sep 14 2026 19:18:36.
+
+Game began 2026-09-17 11:16:10, ended 2026-09-20 23:08:45.
+
+player1, chaotic male orcish Barbarian
+
+Inventory:
+ Amulets  ('"')
+  L - an uncursed amulet of life saving (being worn)
+ Armor    ('[')
+  E - a blessed greased fireproof +4 cloak of magic resistance (being worn)
+ Wands    ('/')
+  b - a wand of digging (0:3)
+  c - a blessed wand of death (0:5)
+ Tools    ('(')
+  h - a bag of holding
+
+Contents of the bag of holding:
+  m - a wand of teleportation (0:4)
+
+Background:
+ You were a Slayer, a level 25 male orcish Barbarian.
+ You were in the endgame, on the Astral Plane.
+
+Basics:
+ You had 83 out of 110 hit points.
+ Your armor class was -38.
+
+Final Attributes:
+ You were magic-protected.
+ You were fire resistant.
+ You had reflection.
+
+Major events:
+ Turn
+    1: player1 the chaotic male orcish Barbarian entered the dungeon
+  435: entered the Gnomish Mines
+ 2976: reached Mine Town
+10483: acquired the Mines' End luckstone
+15652: entered Sokoban
+59166: killed Famine
+59189: killed Famine (2nd time)
+59302: ascended
+
+Voluntary challenges:
+ You engraved Elbereth 26 times.
+ You used 2 wishes.
+
+Vanquished creatures:
+  Death (3 times)
+  2 jackals
+1840 creatures vanquished.
