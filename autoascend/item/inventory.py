@@ -170,9 +170,10 @@ class Inventory:
                 return False
             assert 'What do you want to wear?' in self.agent.message, self.agent.message
             self.agent.type_text(letter)
+            if 'Your foot is trapped!' in self.agent.message:
+                return False  # boots can't go on before we leave the trap
             assert 'You finish your dressing maneuver.' in self.agent.message or \
-                   'You are now wearing ' in self.agent.message or \
-                   'Your foot is trapped!' in self.agent.message, self.agent.message
+                   'You are now wearing ' in self.agent.message, self.agent.message
 
         return True
 
@@ -1217,7 +1218,8 @@ class Inventory:
                         self.takeoff(getattr(self.items, name))
                         break
                     assert best_armorset[slot] is not None
-                    self.wear(best_armorset[slot])
+                    if not self.wear(best_armorset[slot]):
+                        return  # retrying would loop without game time passing
                     break
             else:
                 break
