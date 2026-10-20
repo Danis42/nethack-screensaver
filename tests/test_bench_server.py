@@ -108,3 +108,22 @@ def test_import_results_file(tmp_path, bench_repo, monkeypatch):
     assert cli.main(["--data", str(tmp_path / "d"), "import", "results", str(results), "--ref", "main"]) == 0
     sha = subprocess.run(["git", "-C", str(repo), "rev-parse", "main"], capture_output=True, text=True).stdout.strip()
     assert Store(tmp_path / "d" / "results.db").count(sha) == 2
+
+
+def test_requests_a_foreign_web_page_could_send_are_refused(bench_url):
+    # a cross-site form or fetch can POST text/plain without a CORS preflight
+    req = Request(bench_url + "/api/jobs", data=b'{"kind": "baseline"}', method="POST",
+                  headers={"Content-Type": "text/plain"})
+    with pytest.raises(HTTPError) as e:
+        urlopen(req, timeout=10)
+    assert e.value.code == 415
+    # DNS rebinding: the page's own host name arrives in the Host header
+    req = Request(bench_url + "/api/status", headers={"Host": "evil.example:8765"})
+    with pytest.raises(HTTPError) as e:
+        urlopen(req, timeout=10)
+    assert e.value.code == 403
+
+
+def test_imports_only_fetch_http_urls(bench_app):
+    with pytest.raises(ValueError, match="http"):
+        bench_app.start_import("xlog", url="file:///etc/passwd")

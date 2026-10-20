@@ -11,6 +11,7 @@ from .filters import parse_where
 from .metrics import METRICS, evaluate
 
 STATIC = Path(__file__).with_name("static")
+LOCAL_HOSTS = ("127.0.0.1", "localhost")
 
 
 class App:
@@ -103,8 +104,8 @@ class App:
         from . import importers
         if kind not in ("xlog", "dumplogs"):
             raise ValueError("kind must be xlog or dumplogs")
-        if kind == "xlog" and not url:
-            raise ValueError("an xlog import needs a url")
+        if kind == "xlog" and not (url or "").startswith(("https://", "http://")):
+            raise ValueError("an xlog import needs an http(s) url")
         with self.lock:
             if self.imports["running"]:
                 raise ValueError("an import is already running")
@@ -155,6 +156,17 @@ def make_handler(app):
                 raise ValueError("request body must be a JSON object")
             return body
 
+        def _refused(self, write=False):
+            """Keep web pages from other sites out: they can reach localhost from the browser."""
+            host = (self.headers.get("Host") or "").rsplit(":", 1)[0]
+            if host not in LOCAL_HOSTS:
+                self._send(403, {"error": "only http://localhost or http://127.0.0.1 may use the bench server"})
+                return True
+            if write and (self.headers.get("Content-Type") or "").split(";")[0].strip() != "application/json":
+                self._send(415, {"error": "send Content-Type: application/json"})
+                return True
+            return False
+
         def _handle(self, fn):
             try:
                 self._send(200, fn())
@@ -164,6 +176,8 @@ def make_handler(app):
                 self._send(400, {"error": str(e)})
 
         def do_GET(self):
+            if self._refused():
+                return
             url = urlparse(self.path)
             q = {k: v[0] for k, v in parse_qs(url.query).items()}
             path = url.path
@@ -187,6 +201,8 @@ def make_handler(app):
             self._send(404, {"error": f"no route {path}"})
 
         def do_POST(self):
+            if self._refused(write=True):
+                return
             path = urlparse(self.path).path
             if path == "/api/jobs":
                 def start():
@@ -203,6 +219,8 @@ def make_handler(app):
             self._send(404, {"error": f"no route {path}"})
 
         def do_DELETE(self):
+            if self._refused(write=True):
+                return
             path = urlparse(self.path).path
             if path == "/api/jobs":
                 return self._handle(app.stop)
