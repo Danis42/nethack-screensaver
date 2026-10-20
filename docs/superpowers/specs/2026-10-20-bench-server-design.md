@@ -67,7 +67,7 @@ Claude --MCP----> |  scheduler --> worker processes (max 11, nice)          |
     candidate to the same size; judge; stop when decided or at the last checkpoint.
   The scheduler hands out one game at a time to free workers, so a job can switch from
   baseline top-up to candidate without waiting for a batch.
-- **Load.** Workers start with `nice -n 10`. The count is a job parameter (default 11).
+- **Load.** Workers start with `nice -n 10`. The count is a server option (`--workers`, default 11).
 
 ## 2. Comparison and verdicts
 
@@ -136,23 +136,29 @@ verdict; Claude runs it as a background shell command and is notified when it ex
 - An unknown ref fails before anything starts, with git's message.
 - `screens-bench prune` removes worktrees of commits not used for 14 days.
 - The database schema has a version number; tables: `games(id, sha, job_id, finished_at,
-  json)`, `jobs(...)`, `experiments(...)`, `reference_games(id, source, url, role, turns,
-  ascended, json, raw)`.
+  json)`, `jobs(id, kind, spec, state, created_at, ended_at, result)` (an experiment is a
+  job of kind `experiment`, its verdicts in `result`), `reference_games(id, source, name,
+  starttime, role, turns, json, dumplog)` (raw dumplog text; unique per source, name and
+  start time).
+- `screens-bench import results <file.jsonl> --ref <ref>` stores games from the old
+  `scripts/benchmark.py --out` files under a commit, so earlier runs count.
 
 ## 5. Importing real ascensions
 
-- `screens-bench import xlog <url>` downloads an xlogfile (e.g. nethack.alt.org's),
-  parses each line (`key=value` fields separated by `:`; achievement bit fields decoded
-  into named flags) and stores the ascended games in `reference_games`.
+- `screens-bench import xlog <url>` downloads an xlogfile (e.g.
+  `https://www.hardfought.org/xlogfiles/nethack50/xlogfile`), parses each line
+  (`key=value` fields separated by tabs, or `:` in old files; achievements from `achieveX`
+  names, or decoded from the 3.6 `achieve` bit field) and stores the ascended games in
+  `reference_games`.
 - `screens-bench import dumplogs [--limit 500]` downloads the dumplogs of stored
   ascensions that do not have one yet: one request per second, cached under
-  `~/.cache/screens-bench/dumplogs/`, so each file is fetched once. The dumplog URL
-  pattern is per server and checked at implementation start; servers without dumplogs
-  are skipped.
+  `~/.cache/screens-bench/dumplogs/`, so each file is fetched once. Hardfought's pattern is
+  `https://www.hardfought.org/userdata/<initial>/<name>/nethack/dumplog/<starttime>.nh.txt`
+  (older files redirect to its S3 archive); sources without a known pattern are skipped.
 - The dumplog parser splits by section heading and extracts: final inventory, attributes,
   intrinsics, conducts, killed monsters count, and the major-events timeline with turn
-  numbers where the server's version writes one (to be confirmed for NetHack 3.7
-  dumplogs at implementation start). Raw text is kept so later parsers need no new
+  numbers where the server's version writes one (NetHack 5.0 dumplogs have "Major
+  events"; 3.6 dumplogs do not). Raw text is kept so later parsers need no new
   download.
 - Ascenders page and `bench_reference`: number of ascensions, turns to ascend
   (median, quartiles), role mix, achievement order and turn of each milestone (where a
