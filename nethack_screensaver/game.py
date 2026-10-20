@@ -45,6 +45,7 @@ class GameResult:
     xp_level: int = 0  # highest experience level
     panics: int = 0  # times the bot replanned after a panic (incl. recovered errors)
     stuck_diving: int = 0  # 2500-turn spells of diving in the main dungeon without finding a way down
+    unsticks: int = 0  # turns the bot let pass because NetHack kept refusing an action
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -172,6 +173,7 @@ def run_game(
                       strategy=strategy, gender=gender, milestone=_milestone(wrapper),
                       elbereth=_stat(wrapper, "elbereth_write"), xp_level=xp_level,
                       panics=_stat(wrapper, "agent_panic"), stuck_diving=_stat(wrapper, "stuck_diving"),
+                      unsticks=_stat(wrapper, "unstick"),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 

@@ -23,6 +23,9 @@ from .stats_logger import StatsLogger
 from .strategy import Strategy
 
 
+# steps without game time after which the bot lets a turn pass instead of retrying the same refused action
+UNSTICK_AFTER = 100
+
 # NetHack's answers to #kick when it refuses before asking for a direction
 CANNOT_KICK = ['in no shape for kicking', 'too heavy to balance yourself for a kick',
                'cannot kick effectively', 'You have no legs to kick with']
@@ -507,6 +510,9 @@ class Agent:
             self._last_turn = self.blstats.time
             self._inactivity_counter = 0
         assert self._inactivity_counter < 200, ('turn inactivity', sorted(set(self._message_history[-50:])))
+        if self._inactivity_counter == UNSTICK_AFTER:
+            # something NetHack keeps refusing; main() lets a turn pass before replanning
+            raise AgentPanic('no game time passed', sorted(set(self._message_history[-20:])))
 
         self.update_state(allow_update=self._atom_operation_allow_update or not self.in_atom_operation,
                           allow_callbacks=not self.in_atom_operation)
@@ -1625,6 +1631,9 @@ class Agent:
                     try:
                         self.step(A.Command.ESC)
                         self.step(A.Command.ESC)
+                        if self._inactivity_counter >= UNSTICK_AFTER:
+                            self.stats_logger.log_event('unstick')
+                            self.step(A.Command.SEARCH)
                         self.on_panic()
                     finally:
                         last_step = self.step_count
