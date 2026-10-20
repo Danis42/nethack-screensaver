@@ -1,4 +1,5 @@
 import contextlib
+import traceback
 import re
 from collections import namedtuple, Counter, defaultdict
 from functools import partial
@@ -20,6 +21,15 @@ from .level import Level
 from .monster_tracker import MonsterTracker, disappearance_mask
 from .stats_logger import StatsLogger
 from .strategy import Strategy
+
+
+def _raise_site(exc):
+    """file:line of the innermost bot frame that raised exc, for crash reports."""
+    frames = [f for f in traceback.extract_tb(exc.__traceback__) if 'autoascend' in f.filename]
+    if not frames:
+        return '?'
+    return f'{frames[-1].filename.rsplit("/", 1)[-1]}:{frames[-1].lineno}'
+
 
 def _edit_distance(a, b):
     prev = list(range(len(b) + 1))
@@ -1593,7 +1603,8 @@ class Agent:
                     inactivity_counter = 0
 
                 if inactivity_counter >= 5:
-                    panics = sorted({f'{type(p).__name__}: {str(p)[:80]}' for p in self.all_panics[-5:]})
+                    panics = sorted({f'{type(p).__name__} at {_raise_site(p)}: {str(p)[:300]}'
+                                     for p in self.all_panics[-5:]})
 
                     raise RuntimeError(f'Cyclic Panic: {panics}')
 
