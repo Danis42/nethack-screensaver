@@ -224,3 +224,26 @@ from 10 to 24 between runs that do not change sightseers).
 Kept: Sokoban-first pilgrims for races the Mines natives attack (neutral on depth, more
 Sokoban). Reverted: digging down (escape at critical HP with a known wand of digging, or
 when stuck) and pushing boulders when stuck; neither freed stuck divers measurably.
+
+## Crashes (2026-10-20, 576 unforced games each)
+
+Every crash was a "Cyclic Panic": NetHack refused an action without game time passing and
+the bot asked again until the turn-inactivity guard (200 steps) ended the game. Crash
+reports now name where each error was raised and the bot's call chain.
+
+| | baseline | + six cause fixes | + kick, rings, stale boxes | + unstick safety net |
+|---|---|---|---|---|
+| crashes | 9 | 6 | 7 | 2 |
+| reached Dlvl 6+ / 10+ | 244 / 45 | 262 / 55 | 259 / 63 | 263 / 60 |
+| escapes | 41 | 30 | 25 | 33 |
+| median turns | 4929 | 4816 | 4984 | 4934 |
+
+Cause fixes: drop spare items when Overtaxed (can't eat); stop putting on armour NetHack
+refuses (boots while trapped); parse inventory lines NLE cuts at 80 characters and worn
+rings; treat containers NetHack calls "empty" as empty (also clears remembered contents);
+leave items at the bottom of a pit we teeter at the edge of; no kicking for 100 turns after
+NetHack refuses a kick (wounded legs). The long tail (wield what is wielded, loot without
+a free hand, ...) is caught by the safety net: after 100 steps without game time the bot
+searches once and replans (`unsticks` in results). It fired in 2 of 576 games; one healer
+stayed stuck ~3000 turns before dying. Left: polymorphed "physically incapable of picking
+anything up" and ball-and-chain parsing (1 each).
