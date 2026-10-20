@@ -23,12 +23,12 @@ from .stats_logger import StatsLogger
 from .strategy import Strategy
 
 
-def _raise_site(exc):
-    """file:line of the innermost bot frame that raised exc, for crash reports."""
+def _raise_site(exc, depth=6):
+    """The innermost bot frames that raised exc (innermost first), for crash reports."""
     frames = [f for f in traceback.extract_tb(exc.__traceback__) if 'autoascend' in f.filename]
     if not frames:
         return '?'
-    return f'{frames[-1].filename.rsplit("/", 1)[-1]}:{frames[-1].lineno}'
+    return ' < '.join(f'{f.filename.rsplit("/", 1)[-1]}:{f.lineno} {f.name}' for f in reversed(frames[-depth:]))
 
 
 def _edit_distance(a, b):
