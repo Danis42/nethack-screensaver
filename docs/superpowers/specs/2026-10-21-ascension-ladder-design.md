@@ -31,11 +31,11 @@ NetHack numbers its dungeons in `dungeon.def` order: 0 Dungeons of Doom, 1 Gehen
 | 2 | `minetown` | `global_logic.minetown_level` is set | bot | reached Mine Town (3538) |
 | 3 | `oracle` | `global_logic.oracle_level` is set | bot | — |
 | 4 | `sokoban` | in dungeon 4 | exact | entered Sokoban (9022) |
-| 5 | `sokoban_solved` | on (4, 1) with no closed door left (the SOLVE_SOKOBAN check) | bot | completed 4th Sokoban level (12412) |
+| 5 | `sokoban_solved` | on (4, 1), no trap left (see below) | bot | completed 4th Sokoban level (12412) |
 | 6 | `mines_end` | the bottom Mines level, see below | proxy | acquired the Mines' End luckstone (10853) |
-| 7 | `dlvl15` | depth 15+ in dungeon 0 | exact | — |
+| 7 | `dlvl15` | level 15+ in dungeon 0 | exact | — |
 | 8 | `quest` | in dungeon 3 | exact | entered Home 1, the Quest (22426) |
-| 9 | `medusa` | dungeon 0, depth 21+, and Medusa seen or more than a third of the seen map is water | proxy | killed Medusa (29317) |
+| 9 | `medusa` | dungeon 0, level 21+, and Medusa seen or more than a third of the seen map is water | proxy | killed Medusa (29317) |
 | 10 | `castle` | dungeon 0 and a drawbridge glyph seen | proxy | — |
 | 11 | `gehennom` | in dungeon 1 | exact | entered Gehennom (34155) |
 | 12 | `vlad` | in dungeon 6 | exact | destroyed Vlad the Impaler (44189) |
@@ -45,11 +45,18 @@ NetHack numbers its dungeons in `dungeon.def` order: 0 Dungeons of Doom, 1 Gehen
 | 16 | `astral` | at (7, 1) | exact | entered the Astral Plane (53518) |
 | 17 | `ascended` | the end reason says "ascended" | exact | ascended (53630) |
 
-**Mines' End.** The Mines have 8 or 9 levels (`(8, 2)` in `dungeon.def`), so the bottom
-is 7 or 8 levels below the first Mines level. The bot's own check `(MINES, 9)` (TODO in
-`global_logic.py`) is wrong for most games and stays untouched here. Rung 6 counts when the
-bot is in the Mines and its depth is first-Mines-depth + 8, or first-Mines-depth + 7 and it
-has spent 1000 turns on that level without seeing a down staircase.
+**Level numbers.** `blstats` gives the level number inside each dungeon (Sokoban 1 is
+its top level, Astral is Planes level 1); in the Dungeons of Doom that equals the depth.
+All rules above use this number.
+
+**Mines' End.** The Mines have 8 or 9 levels (`(8, 2)` in `dungeon.def`, 8 + rn2(2)).
+The bot's own check `(MINES, 9)` (TODO in `global_logic.py`) misses the 8-level Mines and
+stays untouched here. Rung 6 counts on Mines level 9, or on Mines level 8 once the bot has
+spent 1000 turns there without seeing a down staircase.
+
+**Sokoban solved.** Sokoban levels are lit, so the holes are visible on arrival. Rung 5
+counts on Sokoban level 1 when at least 100 squares are seen and no trap glyph is left
+(the live solver's own "solved" check).
 
 The yardstick events differ from some rungs (they record killing Medusa or the luckstone,
 we record arriving). That is good enough for a turn comparison; the table says which is which.
@@ -58,15 +65,15 @@ we record arriving). That is good enough for a turn comparison; the table says w
 
 **`autoascend/ladder.py` (new, standard library only, so the bench can import it)**
 - `RUNGS`: ordered tuple of `Rung(number, key, title, yardstick_event)`.
-- `Facts`: a small dataclass of everything a rung needs on one step: turn, dungeon,
-  depth, oracle seen, Minetown seen, Sokoban solved, Medusa seen, water share, drawbridge
+- `Facts`: a small dataclass of everything a rung needs on one step: turn, dungeon, level,
+  oracle seen, Minetown seen, Sokoban solved, Medusa seen, water share, drawbridge
   seen, down stairs seen, inventory names, message. Built by the caller, so no glyph or
   agent code lives in this module.
 - One detection function per rung, `(facts, memory) -> bool`; `memory` holds the few
-  things that span steps (first Mines depth, turn of arrival on the current level,
-  vibration level).
+  things that span steps (the current level and the turn the bot arrived there,
+  the level of the vibrating square).
 - `Ladder.observe(facts)`: records `{key: turn}` for each newly reached rung and skips
-  rungs already recorded. `Ladder.finish(end_reason)` adds `ascended`.
+  rungs already recorded. `Ladder.finish(end_reason, turn)` adds `ascended`.
   `Ladder.highest()` returns the highest rung number (0 for none).
 
 **`autoascend/global_logic.py`** builds `Facts` in `update()` (next to the Oracle and
@@ -97,7 +104,7 @@ existing results; `bench_results` returns it unchanged through MCP.
 
 ## Testing
 
-- Unit tests per rung with hand-made `Facts` (including the Mines' End 7-vs-8 cases and
+- Unit tests per rung with hand-made `Facts` (including the Mines' End level 8 vs 9 cases and
   "already recorded rungs are not re-checked").
 - `Ladder.finish` with ascension and non-ascension end reasons.
 - Metrics: `rung` and `rungN` on dict games, old games skipped.
