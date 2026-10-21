@@ -25,10 +25,20 @@ numbers did not raise Minetown+ in three variants (worse, then two "no differenc
 details in `autoascend/PORTING.md`, code kept on branch `threat-model` (unmerged).
 Noise between two identical 576-game halves is about 3.6 points.
 
-**Start next here:** feasibility check (spike) on recorded human games (ttyrecs; the
-NetHack Learning Dataset, readable with `nle.dataset`): turn screens into situations
-("soldier ant near, XL 5") and reactions (fled upstairs, wrote Elbereth, fought), then
-turn findings into single rules, each measured on the bench (`rung2`).
+**Since then (2026-10-21, main `dbab398`):**
+- Human games: NLD-NAO part `aa` (39,210 alt.org games, 510 ascensions) unpacked at
+  `/ssd2/nethackFiles/nld-nao-unzipped/`, index `/ssd2/nethackFiles/db/nld.db`
+  (`nle.dataset`). Soldier-ant study: survivors went upstairs 31% vs 6%, met the ant at
+  full HP (100% vs 80%), Elbereth no difference.
+- Flee-upstairs rule from that: no measurable difference (branch `flee-upstairs`).
+- Control test showed the shared baseline came out high: earlier "worse"/"no difference"
+  results are really "no difference". Details in `autoascend/PORTING.md`.
+- **Ascension is the only priority** (user, 2026-10-21): every game plays the pilgrim
+  route; the other plans are behind `strategy = "random"`; cheesy tactics are allowed.
+
+**Start next here:** make the bench sharper by seeding both sides with the same games
+(same character and dungeon per game number), then a pilgrim-only baseline, then the
+next survival rule (rest to full HP before exploring on, from the human data).
 
 ## Yardstick: 687 real ascensions (hardfought.org, in the bench database)
 

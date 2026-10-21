@@ -308,3 +308,27 @@ ants doubles their Elbereth weight, and a dust Elbereth (73% success) costs a tu
 AutoAscend's heuristics are tuned around its own lists, so swapping the lists alone does
 not help. Noise check: the baseline's two halves of 576 games differ by 3.6 points.
 Next: learn from recorded human games what actually saves characters on Dlvl 3-8.
+
+## Flee upstairs from fast insects (2026-10-21, rung2, 1152 unforced games per side)
+
+Idea from human games (NLD-NAO part `aa`, 3.6 games Dlvl 4+): of 682 players who survived
+a soldier ant 31% went upstairs soon after seeing it, of 145 it killed 6%. Rule (branch
+`flee-upstairs`, `a535f7a`, not merged): in a fight with a soldier/fire/giant ant or killer
+bee within 6 squares, climb the up stairs if on them, else step toward stairs within 8
+steps; not on Dlvl 1, only in the main dungeon and the Mines, 150-turn cooldown per level.
+It fired in 200 of 1152 games; insect deaths 96 vs 89; rung2 23.6% vs 26.8%: no
+measurable difference (-3.2 [-6.7, +0.3]).
+
+**Control (A/A) test:** `0c7acbc` (same code as `2653410`, only docs changed) against
+`2653410`: -2.3 [-5.9, +1.2], no measurable difference. So the baseline sample came out
+high, and every experiment against it (threat model x3, flee) looked 2-4 points worse
+without being worse: none of them differs measurably from changing nothing. All code-
+identical games pooled: rung2 25.6% (2304 games). Lesson: unseeded games need a fresh or
+pooled baseline; next, seed both sides with the same games so dungeon luck cancels out.
+
+## Ascension route only (2026-10-21, main `dbab398`)
+
+Every game plays the pilgrim route now (`strategy = "random"` in the config brings the
+mix of all four plans back). In the 1152 games of `2653410` pilgrims reached Minetown+ in
+35%, daredevils and sightseers in 20%: the other plans diluted every measurement.
+New baselines are needed; numbers before this change are not comparable.
