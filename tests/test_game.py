@@ -171,3 +171,21 @@ def test_ladder_is_reported_and_survives_a_missing_agent():
     assert game._ladder(wrapper, "DEATH: killed by a newt", 900) == ({"mines": 40}, 1)
     assert game._ladder(wrapper, "DEATH: ascended to demigod-hood", 999) == ({"mines": 40, "ascended": 999}, 17)
     assert game._ladder(SimpleNamespace(agent=None), "exception: x", 3) == ({}, 0)
+
+
+def test_a_seed_replays_the_same_game_start():
+    def first_screen(seed):
+        frames = []
+        result = game.run_game(seed=seed, max_steps=50, on_frame=lambda obs: frames.append(obs["tty_chars"].copy()))
+        return result, frames[0]
+    r1, s1 = first_screen(17)
+    r2, s2 = first_screen(17)
+    r3, s3 = first_screen(18)
+    assert (s1 == s2).all() and not (s1 == s3).all()
+    assert r1.seed == 17 and (r1.role, r1.race) == (r2.role, r2.race)
+    assert game.run_game.__defaults__ is not None  # stays callable without a seed
+
+
+def test_a_seed_with_a_pinned_role_is_refused():
+    with pytest.raises(ValueError):
+        game.run_game(seed=3, role="val", max_steps=5)

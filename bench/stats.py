@@ -49,10 +49,7 @@ class Verdict:
         return {**asdict(self), "detectable": self.detectable}
 
 
-def judge(k_cand, n_cand, k_base, n_base, checkpoint):
-    if n_cand == 0 or n_base == 0:
-        raise ValueError("both sides need games")
-    diff, lo, hi = newcombe(k_cand, n_cand, k_base, n_base, z_for(checkpoint))
+def _verdict(diff, lo, hi, checkpoint):
     if lo > 0:
         state = "better"
     elif hi < 0:
@@ -62,3 +59,23 @@ def judge(k_cand, n_cand, k_base, n_base, checkpoint):
     else:
         state = "open"
     return Verdict(state, checkpoint, diff, lo, hi)
+
+
+def judge(k_cand, n_cand, k_base, n_base, checkpoint):
+    """Two independent samples (unseeded games)."""
+    if n_cand == 0 or n_base == 0:
+        raise ValueError("both sides need games")
+    return _verdict(*newcombe(k_cand, n_cand, k_base, n_base, z_for(checkpoint)), checkpoint)
+
+
+def judge_paired(pairs, checkpoint):
+    """Same seeds on both sides: (candidate, baseline) outcome per seed; paired Wald interval.
+    Only the seeds where the two sides disagree carry information, so shared luck cancels."""
+    n = len(pairs)
+    if n == 0:
+        raise ValueError("no paired games")
+    n10 = sum(1 for c, b in pairs if c and not b)
+    n01 = sum(1 for c, b in pairs if b and not c)
+    diff = (n10 - n01) / n
+    half = z_for(checkpoint) * math.sqrt(max(n10 + n01 - n * diff * diff, 0.0)) / n
+    return _verdict(diff, diff - half, diff + half, checkpoint)

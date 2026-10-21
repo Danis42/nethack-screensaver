@@ -62,10 +62,10 @@ class App:
             raise LookupError(f"no job {job_id}")
         if job["kind"] == "experiment":
             spec = job["spec"]
-            n = min(self.store.count(spec["candidate"]), self.store.count(spec["baseline"]))
-            job["table"] = report.compare(self.store.games(spec["candidate"], limit=n),
-                                          self.store.games(spec["baseline"], limit=n))
-            job["games_per_side"] = n
+            seeds = sorted(self.store.seeds(spec["candidate"]) & self.store.seeds(spec["baseline"]))
+            job["table"] = report.compare(list(self.store.games_by_seed(spec["candidate"], seeds).values()),
+                                          list(self.store.games_by_seed(spec["baseline"], seeds).values()))
+            job["games_per_side"] = len(seeds)
         return job
 
     def results(self, ref="main", metric=None):

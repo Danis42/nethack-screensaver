@@ -44,3 +44,31 @@ def test_verdict_reports_the_smallest_detectable_difference():
 def test_empty_sides_are_rejected():
     with pytest.raises(ValueError):
         judge(0, 0, 5, 10, 192)
+
+
+def _pairs(n10, n01, n11, n00):
+    return [(True, False)] * n10 + [(False, True)] * n01 + [(True, True)] * n11 + [(False, False)] * n00
+
+
+def test_paired_interval_matches_a_hand_computed_example():
+    from bench.stats import judge_paired
+    # n = 100, candidate-only 15, baseline-only 5: d = 0.10, se = sqrt(20 - 100 * 0.01) / 100
+    v = judge_paired(_pairs(15, 5, 30, 50), CHECKPOINTS[-1])
+    assert v.diff == pytest.approx(0.10)
+    assert v.lo == pytest.approx(0.10 - Z95 * 19 ** 0.5 / 100)
+    assert v.hi == pytest.approx(0.10 + Z95 * 19 ** 0.5 / 100)
+    assert v.state == "better" and v.checkpoint == 1152
+
+
+def test_pairs_cancel_shared_luck():
+    from bench.stats import judge_paired
+    # same 25% rate on both sides, games agree except 4 swaps each way: interval is narrow
+    v = judge_paired(_pairs(4, 4, 284, 860), CHECKPOINTS[-1])
+    assert v.diff == 0 and v.state == "no measurable difference" and v.detectable < 0.01
+    assert judge_paired(_pairs(0, 0, 10, 182), 192).state == "open"  # no discordant pairs, early
+
+
+def test_paired_needs_games():
+    from bench.stats import judge_paired
+    with pytest.raises(ValueError):
+        judge_paired([], 192)

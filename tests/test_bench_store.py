@@ -74,3 +74,15 @@ def test_schema_version_mismatch_is_refused(tmp_path):
     db.close()
     with pytest.raises(RuntimeError, match="schema"):
         Store(tmp_path / "r.db")
+
+
+def test_seeded_games_are_found_by_seed(tmp_path):
+    store = Store(tmp_path / "r.db")
+    store.add_game("aaa", None, _game(1))  # unseeded, from an older commit
+    store.add_game("aaa", None, _game(2, seed=0))
+    store.add_game("aaa", None, _game(3, seed=5))
+    store.add_game("aaa", None, _game(4, seed=5))  # a replay: the first one counts
+    store.add_game("bbb", None, _game(9, seed=0))
+    assert store.seeds("aaa") == {0, 5} and store.seeds("ccc") == set()
+    found = store.games_by_seed("aaa", range(6))
+    assert {k: g["max_depth"] for k, g in found.items()} == {0: 2, 5: 3}

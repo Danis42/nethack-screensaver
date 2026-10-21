@@ -46,6 +46,7 @@ class GameResult:
     panics: int = 0  # times the bot replanned after a panic (incl. recovered errors)
     stuck_diving: int = 0  # 2500-turn spells of diving in the main dungeon without finding a way down
     unsticks: int = 0  # turns the bot let pass because NetHack kept refusing an action
+    seed: int | None = None  # NetHack core/display seed of a seeded (bench) game
     ladder: dict = field(default_factory=dict)  # ascension-ladder rung key -> first turn (autoascend/ladder.py)
     rung: int = 0  # highest ladder rung reached
     ladder_error: int = 0  # 1 when the ladder broke mid-game (values incomplete)
@@ -143,8 +144,15 @@ def run_game(
     max_steps: int | None = None,
     watchdog_seconds: float | None = 60.0,
     strategy: str | None = None,
+    seed: int | None = None,
 ) -> GameResult:
+    if seed is not None and role is not None:
+        # the wrapper resets until the role matches; with a fixed seed every reset is the same game
+        raise ValueError("a seeded game cannot pin the role")
     env = NetHackChallenge(no_progress_timeout=1000)
+    if seed is not None:
+        # NetHackChallenge blocks the instance method; the class's own one still works
+        type(env.nethack).set_initial_seeds(env.nethack, seed, seed, False)
     max_depth = 1
     turns = 0
     xp_level = 0
@@ -191,7 +199,7 @@ def run_game(
                       elbereth=_stat(wrapper, "elbereth_write"), xp_level=xp_level,
                       panics=_stat(wrapper, "agent_panic"), stuck_diving=_stat(wrapper, "stuck_diving"),
                       unsticks=_stat(wrapper, "unstick"), ladder=ladder, rung=rung,
-                      ladder_error=_stat(wrapper, "ladder_error"),
+                      ladder_error=_stat(wrapper, "ladder_error"), seed=seed,
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 
