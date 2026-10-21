@@ -285,3 +285,26 @@ median game reaches rung 1 for every strategy. Sokoban was solved (rung recorded
 games, all treasure hunters. The one Quest game was a monk pilgrim who stepped into the
 Quest portal on Dlvl 15 at turn 12806 and died to a xorn there. Other numbers as before:
 Dlvl 6+ 49%, Dlvl 10+ 12%, median depth 5, median 5258 turns.
+
+## Threat model (2026-10-21, rung2 = Minetown+, 1152 unforced games per side, baseline `2653410`)
+
+Idea: judge monsters by NetHack's own numbers (monster level, speed and attack dice from
+NetHack 3.6.6 `monst.c`, hit chance as in `mattacku`) instead of AutoAscend's name lists
+and fixed HP limits. Branch `threat-model` (not merged; it holds the generated attack
+table `autoascend/combat/monster_data.py`, the generator and `combat/threat.py`).
+
+| Variant | Commit | rung2 | Verdict |
+|---------|--------|-------|---------|
+| baseline | `2653410` | 26.8% | — |
+| all three predicates (dangerous, faster, near death at HP <= 2 x damage/turn) | `46a7003` | 23.1% | worse, -3.7 [-7.3, -0.2] |
+| real danger + real speed, upstream near-death limits (16 / 8) | `ace25e2` | 24.3% | no measurable difference, -2.5 [-6.1, +1.0] |
+| real danger only (upstream speed list and limits) | `fdf6b48` | 24.6% | no measurable difference, -2.3 [-5.8, +1.3] |
+
+All variants include the fix of `elbereth_action` counting weak monsters as weak.
+With the first variant ant deaths rose (soldier ant 35 -> 49) and giant bat deaths fell
+(33 -> 18); the bot wrote Elbereth 35% more often. "Near death" stops the bot from
+striking first, and against fast monsters that only gives them free hits; "faster" for
+ants doubles their Elbereth weight, and a dust Elbereth (73% success) costs a turn.
+AutoAscend's heuristics are tuned around its own lists, so swapping the lists alone does
+not help. Noise check: the baseline's two halves of 576 games differ by 3.6 points.
+Next: learn from recorded human games what actually saves characters on Dlvl 3-8.

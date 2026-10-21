@@ -20,10 +20,15 @@ invocation, Planes, Astral, ascended). Each game records the rungs it reached
 games: Mines 57%, Minetown 29%, Oracle 22%, Sokoban 9%, Sokoban solved 5%, Mines' End
 4%, Dlvl 15+ 2%, Quest 1 game, nothing higher. Median game: rung 1, Dlvl 5, 5258 turns.
 
-**Start next here:** sub-project 1, midgame survival (Dlvl 4-12). Brainstorm a short
-spec, judged by rung metrics (e.g. `rung2`, Minetown+). Research so far: soldier ants
-respect Elbereth reliably, never get surrounded, fight from corridors/doorways, stay
-unburdened; wands of striking hit if d20 beats AC + 10, magic resistance blocks them.
+**Sub-project 1, first idea dropped (2026-10-21):** judging monsters by NetHack's real
+numbers did not raise Minetown+ in three variants (worse, then two "no difference");
+details in `autoascend/PORTING.md`, code kept on branch `threat-model` (unmerged).
+Noise between two identical 576-game halves is about 3.6 points.
+
+**Start next here:** feasibility check (spike) on recorded human games (ttyrecs; the
+NetHack Learning Dataset, readable with `nle.dataset`): turn screens into situations
+("soldier ant near, XL 5") and reactions (fled upstairs, wrote Elbereth, fought), then
+turn findings into single rules, each measured on the bench (`rung2`).
 
 ## Yardstick: 687 real ascensions (hardfought.org, in the bench database)
 
