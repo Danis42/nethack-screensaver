@@ -104,3 +104,17 @@ def test_elbereth_counts_weak_monsters_as_weak(monkeypatch):
     # a weak monster counts 0.1 (times the low-HP multiplier 1.5), not 1
     assert lichen[0][0] == pytest.approx(-15 + 20 * 0.1 * 1.5 * (1 - (10 / 20) ** 0.5))
     assert lichen[0][0] < ant[0][0]
+
+
+def test_predicates_accept_the_placeholder_for_unseen_monsters():
+    class dummy_permonst:  # same fields as Agent.get_visible_monsters builds
+        mname = 'unknown'
+        mlet = '0'
+        mmove = 12
+
+    unseen = (1, 5, 5, dummy_permonst(), nh.GLYPH_INVISIBLE)
+    assert not mu.is_dangerous_monster(unseen)
+    assert mu.imminent_death_on_melee(agent(8), unseen)
+    assert not mu.imminent_death_on_melee(agent(9), unseen)
+    assert not mu.is_monster_faster(agent(20), unseen)
+    assert not mu.is_monster_faster(agent(20, role=Character.SAMURAI), unseen)

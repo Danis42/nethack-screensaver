@@ -34,7 +34,7 @@ def is_monster_faster(agent, monster):
 
 def imminent_death_on_melee(agent, monster):
     _, y, x, mon, glyph = monster
-    damage = threat.damage_per_turn(monster_index(glyph), mon.mlevel, mon.mmove,
+    damage = threat.damage_per_turn(monster_index(glyph), getattr(mon, 'mlevel', 0), mon.mmove,
                                     agent.blstats.armor_class, our_speed(agent))
     return agent.blstats.hitpoints <= max(8, 2 * damage)
 
@@ -45,7 +45,7 @@ def is_dangerous_monster(monster):
         return True
     index = monster_index(glyph)
     return threat.has_special_attack(index) or \
-        threat.damage_per_turn(index, mon.mlevel, mon.mmove, 10) >= threat.DANGER_HP_PER_TURN
+        threat.damage_per_turn(index, getattr(mon, 'mlevel', 0), mon.mmove, 10) >= threat.DANGER_HP_PER_TURN
 
 
 def consider_melee_only_ranged_if_hp_full(agent, monster):
