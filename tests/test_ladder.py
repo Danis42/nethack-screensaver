@@ -39,15 +39,16 @@ def test_rungs_the_bot_notices():
     assert ladder.reached["minetown"] == 5 and ladder.reached["oracle"] == 9
 
 
-def test_sokoban_solved_needs_the_top_level_drawn_and_no_trap_left():
-    assert "sokoban_solved" not in reached(
-        Facts(turn=1, dungeon=SOKOBAN, level=1, sokoban_seen=40, sokoban_traps=False)).reached
-    assert "sokoban_solved" not in reached(
-        Facts(turn=1, dungeon=SOKOBAN, level=1, sokoban_seen=300, sokoban_traps=True)).reached
-    assert "sokoban_solved" not in reached(
-        Facts(turn=1, dungeon=SOKOBAN, level=2, sokoban_seen=300, sokoban_traps=False)).reached
-    assert "sokoban_solved" in reached(
-        Facts(turn=1, dungeon=SOKOBAN, level=1, sokoban_seen=300, sokoban_traps=False)).reached
+def test_sokoban_solved_needs_a_trap_seen_then_the_top_level_drawn_and_no_trap_left():
+    def step(level, seen, traps):
+        return Facts(turn=1, dungeon=SOKOBAN, level=level, sokoban_seen=seen, sokoban_traps=traps)
+
+    assert "sokoban_solved" not in reached(step(1, 40, False)).reached
+    assert "sokoban_solved" not in reached(step(1, 300, True)).reached
+    assert "sokoban_solved" not in reached(step(2, 300, True), step(2, 300, False)).reached
+    # arriving with the holes out of sight is not a solved puzzle
+    assert "sokoban_solved" not in reached(step(1, 300, False)).reached
+    assert "sokoban_solved" in reached(step(1, 120, True), step(1, 300, False)).reached
 
 
 def test_mines_end_is_level_nine_or_a_level_eight_without_down_stairs():
@@ -78,6 +79,8 @@ def test_medusa_and_castle_proxies():
 def test_wizard_tower_and_invocation_proxies():
     book = Facts(turn=1, dungeon=GEHENNOM, level=12, inventory=("a papyrus spellbook", "the Book of the Dead"))
     assert "wizard_tower" in reached(book).reached
+    assert "wizard_tower" in reached(Facts(turn=1, dungeon=DOOM, level=1, inventory=("a papyrus spellbook",))).reached
+    assert "wizard_tower" not in reached(Facts(turn=1, dungeon=DOOM, level=1, inventory=("a dusty spellbook",))).reached
     vibration = Facts(turn=2, dungeon=GEHENNOM, level=20, message="You feel a strange vibration under your feet.")
     assert "invocation" not in reached(vibration).reached
     assert "invocation" in reached(vibration, Facts(turn=3, dungeon=GEHENNOM, level=21)).reached
@@ -96,7 +99,7 @@ def test_finish_adds_ascended_only_for_an_ascension():
     ladder = Ladder()
     ladder.finish("DEATH: killed by a newt", 500)
     assert ladder.reached == {}
-    ladder.finish("ASCENDED: ascended to demigod-hood", 53000)
+    ladder.finish("DEATH: ascended to demigod-hood", 53000)
     assert ladder.reached == {"ascended": 53000} and ladder.highest() == 17
 
 
@@ -109,11 +112,11 @@ def _fake_logic(hallu=False, objects=None, seen=None, glyphs=None, key=(0, 22)):
     from autoascend.global_logic import GlobalLogic
     from autoascend.glyph import C
     logic = GlobalLogic.__new__(GlobalLogic)
-    level = SimpleNamespace(dungeon_number=key[0], level_number=key[1], key=lambda: key,
+    level = SimpleNamespace(dungeon_number=np.int64(key[0]), level_number=np.int64(key[1]), key=lambda: key,
                             objects=objects if objects is not None else np.full((C.SIZE_Y, C.SIZE_X), -1, np.int16),
                             seen=seen if seen is not None else np.ones((C.SIZE_Y, C.SIZE_X), bool))
     logic.agent = SimpleNamespace(
-        current_level=lambda: level, blstats=SimpleNamespace(time=123),
+        current_level=lambda: level, blstats=SimpleNamespace(time=np.int64(123)),
         character=SimpleNamespace(prop=SimpleNamespace(hallu=hallu)),
         glyphs=glyphs if glyphs is not None else np.zeros((C.SIZE_Y, C.SIZE_X), np.int16),
         inventory=SimpleNamespace(items=[]), message="")
@@ -128,6 +131,7 @@ def test_facts_see_water_and_medusa_but_not_while_hallucinating():
     glyphs[3, 3] = MON.fn('Medusa')
     facts = _fake_logic(objects=objects, glyphs=glyphs).ladder_facts()
     assert facts.turn == 123 and (facts.dungeon, facts.level) == (0, 22)
+    assert all(type(v) is int for v in (facts.turn, facts.dungeon, facts.level))
     assert facts.water_share == 1.0 and facts.medusa_seen
     tripping = _fake_logic(hallu=True, objects=objects, glyphs=glyphs).ladder_facts()
     assert tripping.water_share == 0.0 and not tripping.medusa_seen and not tripping.drawbridge_seen
@@ -138,3 +142,20 @@ def test_facts_on_an_undrawn_sokoban_top_level_are_not_solved():
     facts = _fake_logic(key=(4, 1), seen=np.zeros((C.SIZE_Y, C.SIZE_X), bool)).ladder_facts()
     assert facts.sokoban_seen == 0
     assert "sokoban_solved" not in reached(facts).reached
+
+
+def test_a_failing_ladder_is_reported_once_and_never_ends_the_game():
+    from types import SimpleNamespace
+    logic = _fake_logic()
+    events = []
+    logic.ladder = Ladder()
+    logic._ladder_broken = False
+    logic.agent.stats_logger = SimpleNamespace(log_event=events.append)
+
+    def boom():
+        raise RuntimeError("no facts")
+    logic.ladder_facts = boom
+    logic._update_ladder()
+    logic._update_ladder()
+    assert events == ["ladder_error"] and logic._ladder_broken
+    assert logic.ladder.reached == {}

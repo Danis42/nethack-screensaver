@@ -63,6 +63,7 @@ class _Memory:
     here: tuple[int, int] | None = None
     arrived: int = 0  # turn the bot arrived on `here`
     vibration_level: int | None = None  # Gehennom level of the vibrating square
+    sokoban_traps_seen: bool = False  # saw a hole on Sokoban level 1, so "none left" means solved
 
 
 def _mines_end(f, m):
@@ -77,7 +78,7 @@ DETECTORS = {
     "oracle": lambda f, m: f.oracle_seen,
     "sokoban": lambda f, m: f.dungeon == SOKOBAN,
     "sokoban_solved": lambda f, m: (f.dungeon, f.level) == (SOKOBAN, 1) and f.sokoban_seen >= SOKOBAN_DRAWN
-                                   and not f.sokoban_traps,
+                                   and m.sokoban_traps_seen and not f.sokoban_traps,
     "mines_end": _mines_end,
     "dlvl15": lambda f, m: f.dungeon == DOOM and f.level >= 15,
     "quest": lambda f, m: f.dungeon == QUEST,
@@ -85,7 +86,7 @@ DETECTORS = {
     "castle": lambda f, m: f.dungeon == DOOM and f.drawbridge_seen,
     "gehennom": lambda f, m: f.dungeon == GEHENNOM,
     "vlad": lambda f, m: f.dungeon == VLAD,
-    "wizard_tower": lambda f, m: any("Book of the Dead" in name for name in f.inventory),
+    "wizard_tower": lambda f, m: any("Book of the Dead" in name or "papyrus spellbook" in name for name in f.inventory),
     "invocation": lambda f, m: f.dungeon == GEHENNOM and m.vibration_level is not None
                                and f.level > m.vibration_level,
     "planes": lambda f, m: f.dungeon == PLANES,
@@ -104,6 +105,8 @@ class Ladder:
         here = (facts.dungeon, facts.level)
         if here != m.here:
             m.here, m.arrived = here, facts.turn
+        if here == (SOKOBAN, 1) and facts.sokoban_traps:
+            m.sokoban_traps_seen = True
         if facts.dungeon == GEHENNOM and VIBRATION in facts.message:
             m.vibration_level = facts.level
         for rung in RUNGS:

@@ -285,6 +285,9 @@ class GlobalLogic:
                 else:
                     assert self.minetown_level == self.agent.current_level().key()
 
+        self._update_ladder()
+
+    def _update_ladder(self):
         if not self._ladder_broken:
             try:
                 self.ladder.observe(self.ladder_facts())
@@ -299,7 +302,7 @@ class GlobalLogic:
         seen = int(level.seen.sum())
         water = int((utils.isin(level.objects, WATER) & level.seen).sum())
         return Facts(
-            turn=self.agent.blstats.time, dungeon=level.dungeon_number, level=level.level_number,
+            turn=int(self.agent.blstats.time), dungeon=int(level.dungeon_number), level=int(level.level_number),
             oracle_seen=self.oracle_level is not None, minetown_seen=self.minetown_level is not None,
             sokoban_seen=seen, sokoban_traps=bool(utils.isin(level.objects, G.TRAPS).any()),
             medusa_seen=not hallu and bool(utils.isin(self.agent.glyphs, MEDUSA).any()),

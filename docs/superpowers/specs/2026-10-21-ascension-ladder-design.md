@@ -54,9 +54,9 @@ The bot's own check `(MINES, 9)` (TODO in `global_logic.py`) misses the 8-level 
 stays untouched here. Rung 6 counts on Mines level 9, or on Mines level 8 once the bot has
 spent 1000 turns there without seeing a down staircase.
 
-**Sokoban solved.** Sokoban levels are lit, so the holes are visible on arrival. Rung 5
-counts on Sokoban level 1 when at least 100 squares are seen and no trap glyph is left
-(the live solver's own "solved" check).
+**Sokoban solved.** Rung 5 counts on Sokoban level 1 once a trap has been seen there and
+none is left (at least 100 squares seen). Arriving with the holes out of sight does not
+count.
 
 The yardstick events differ from some rungs (they record killing Medusa or the luckstone,
 we record arriving). That is good enough for a turn comparison; the table says which is which.

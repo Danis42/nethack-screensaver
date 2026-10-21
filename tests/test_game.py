@@ -1,3 +1,5 @@
+import json
+from dataclasses import asdict
 import signal
 import time
 
@@ -34,6 +36,7 @@ def test_headless_games_complete_without_exceptions():
         assert len(frames) > 10
         from autoascend.ladder import BY_KEY
         assert set(result.ladder) <= set(BY_KEY)
+        json.dumps(asdict(result))  # the worker and the game log serialise results
         assert result.rung == max((BY_KEY[k].number for k in result.ladder), default=0)
 
 
@@ -160,5 +163,5 @@ def test_ladder_is_reported_and_survives_a_missing_agent():
     ladder.observe(Facts(turn=40, dungeon=2, level=1))
     wrapper = SimpleNamespace(agent=SimpleNamespace(global_logic=SimpleNamespace(ladder=ladder)))
     assert game._ladder(wrapper, "DEATH: killed by a newt", 900) == ({"mines": 40}, 1)
-    assert game._ladder(wrapper, "ASCENDED: ascended", 999) == ({"mines": 40, "ascended": 999}, 17)
+    assert game._ladder(wrapper, "DEATH: ascended to demigod-hood", 999) == ({"mines": 40, "ascended": 999}, 17)
     assert game._ladder(SimpleNamespace(agent=None), "exception: x", 3) == ({}, 0)

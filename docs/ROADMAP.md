@@ -21,7 +21,7 @@ change is measured on the bench server, one change per experiment.
 | 3 | Gearing up: wands, rings, armour, protection, reflection, magic resistance | 7-9 | |
 | 4 | Medusa's level | 9 | |
 | 5 | Castle and wishes | 10 | |
-| 6 | Quest (XL 14, Bell) | 8, 11 | |
+| 6 | Quest (XL 14, Bell) | 8 | |
 | 7 | Gehennom: Vlad's, Wizard's Tower, invocation | 11-14 | |
 | 8 | Elemental and Astral Planes | 15-17 | |
 

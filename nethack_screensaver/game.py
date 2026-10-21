@@ -48,6 +48,7 @@ class GameResult:
     unsticks: int = 0  # turns the bot let pass because NetHack kept refusing an action
     ladder: dict = field(default_factory=dict)  # ascension-ladder rung key -> first turn (autoascend/ladder.py)
     rung: int = 0  # highest ladder rung reached
+    ladder_error: int = 0  # 1 when the ladder broke mid-game (values incomplete)
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -186,6 +187,7 @@ def run_game(
                       elbereth=_stat(wrapper, "elbereth_write"), xp_level=xp_level,
                       panics=_stat(wrapper, "agent_panic"), stuck_diving=_stat(wrapper, "stuck_diving"),
                       unsticks=_stat(wrapper, "unstick"), ladder=ladder, rung=rung,
+                      ladder_error=_stat(wrapper, "ladder_error"),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 
