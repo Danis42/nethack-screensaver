@@ -77,8 +77,7 @@ def main() -> None:
             state["depth"], state["turn"] = depth, turn
             state["obs"] = obs
 
-        strategy = None if cfg.strategy == "random" else cfg.strategy
-        result = run_game(role=role, on_frame=on_frame, strategy=strategy)
+        result = run_game(role=role, on_frame=on_frame, strategy=cfg.strategy)
         append_result(log_path, result)
         if cfg.reveal_goal and state["obs"] is not None and result.strategy in STRATEGIES:
             obs = state["obs"]

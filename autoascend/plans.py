@@ -101,6 +101,9 @@ STRATEGIES = {s.name: s for s in [
                   M.RETURN_TO_SURFACE, M.LEAVE_DUNGEON)),
 ]}
 DEFAULT_PLAN = STRATEGIES["pilgrim"].milestones
+# Ascension is the only priority (2026-10-21): every game plays the pilgrim route;
+# strategy "random" brings the role-tilted mix of all four plans back.
+DEFAULT_STRATEGY = "pilgrim"
 
 # Mines natives are hostile to humans, elves and orcs, and a Mines level is harder than a
 # main-dungeon one at the same depth (NetHack wiki): their pilgrims do Sokoban first.
