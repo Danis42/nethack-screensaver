@@ -111,6 +111,7 @@ class Agent:
         self.last_prayer_turn = None
         self._previous_glyphs = None
         self._last_turn = -1
+        self.fled_from = {}  # level key -> turn the bot fled upstairs from it
         self._inactivity_counter = 0
         self._is_updating_state = False
 
@@ -1304,6 +1305,15 @@ class Agent:
             _, target_y, target_x = best_action
             self.go_to(target_y, target_x, stop_one_before=True, max_steps=1,
                        debug_tiles_args=dict(color=(255, 0, 0), is_path=True))
+            return wait_counter
+        elif best_action[0] == 'flee_up':
+            self.fled_from[self.current_level().key()] = self.blstats.time
+            self.stats_logger.log_event('flee_upstairs')
+            self.move('<')
+            return wait_counter
+        elif best_action[0] == 'flee_to':
+            _, target_y, target_x = best_action
+            self.move(target_y, target_x)
             return wait_counter
         raise NotImplementedError(best_action)
 

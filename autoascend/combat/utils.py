@@ -38,5 +38,9 @@ def action_str(agent, action):
         return f'{priority:.1f}w'
     elif a[0] == 'go_to':
         return f'{priority}goto:{a[1]},{a[2]}'
+    elif a[0] == 'flee_up':
+        return f'{priority}<'
+    elif a[0] == 'flee_to':
+        return f'{priority}flee:{a[1]},{a[2]}'
     else:
         return f'{priority}{a[0][0]}:{a[1]},{a[2]}'

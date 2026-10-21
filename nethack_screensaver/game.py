@@ -49,6 +49,7 @@ class GameResult:
     ladder: dict = field(default_factory=dict)  # ascension-ladder rung key -> first turn (autoascend/ladder.py)
     rung: int = 0  # highest ladder rung reached
     ladder_error: int = 0  # 1 when the ladder broke mid-game (values incomplete)
+    flee_upstairs: int = 0  # times the bot fled upstairs from fast insects
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -188,6 +189,7 @@ def run_game(
                       panics=_stat(wrapper, "agent_panic"), stuck_diving=_stat(wrapper, "stuck_diving"),
                       unsticks=_stat(wrapper, "unstick"), ladder=ladder, rung=rung,
                       ladder_error=_stat(wrapper, "ladder_error"),
+                      flee_upstairs=_stat(wrapper, "flee_upstairs"),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 

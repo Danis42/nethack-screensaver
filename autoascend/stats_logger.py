@@ -27,6 +27,7 @@ class StatsLogger:
             "ad_aerarium_below_me": 0,
             "drop_gold": 0,
             "ladder_error": 0,
+            "flee_upstairs": 0,
             **{f"cast_{n}": 0 for n in character.ALL_SPELL_NAMES},
             **{f"cast_fail_{n}": 0 for n in character.ALL_SPELL_NAMES},
         }
