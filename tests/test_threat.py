@@ -87,8 +87,9 @@ def test_faster_uses_real_speed_and_fast_roles():
 
 
 def test_imminent_death_depends_on_the_monster():
-    assert mu.imminent_death_on_melee(agent(25, ac=4), mon("soldier ant"))
-    assert not mu.imminent_death_on_melee(agent(25, ac=4), mon("newt"))
+    assert mu.imminent_death_on_melee(agent(16, ac=4), mon("soldier ant"))
+    assert not mu.imminent_death_on_melee(agent(17, ac=4), mon("soldier ant"))
+    assert not mu.imminent_death_on_melee(agent(16, ac=4), mon("newt"))
     assert mu.imminent_death_on_melee(agent(8), mon("newt"))  # old floor kept
     assert not mu.imminent_death_on_melee(agent(9), mon("newt"))
 

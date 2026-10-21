@@ -33,10 +33,11 @@ def is_monster_faster(agent, monster):
 
 
 def imminent_death_on_melee(agent, monster):
-    _, y, x, mon, glyph = monster
-    damage = threat.damage_per_turn(monster_index(glyph), getattr(mon, 'mlevel', 0), mon.mmove,
-                                    agent.blstats.armor_class, our_speed(agent))
-    return agent.blstats.hitpoints <= max(8, 2 * damage)
+    # Upstream limits, now with the real danger test. Tried HP <= 2 x damage per turn
+    # (2026-10-21): it broke off fights against fast monsters, rung2 -3.7 points at 1152.
+    if is_dangerous_monster(monster):
+        return agent.blstats.hitpoints <= 16
+    return agent.blstats.hitpoints <= 8
 
 
 def is_dangerous_monster(monster):
