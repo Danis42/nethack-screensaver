@@ -17,6 +17,7 @@ LOCAL_HOSTS = ("127.0.0.1", "localhost")
 class App:
     def __init__(self, store, scheduler, repo, cache_dir):
         self.store, self.scheduler = store, scheduler
+        self._yardstick = (None, {})
         self.repo, self.cache_dir = Path(repo), Path(cache_dir)
         self.lock = threading.RLock()
         self.imports = {"running": False, "last": None}
@@ -74,7 +75,7 @@ class App:
             if metric not in METRICS:
                 raise ValueError(f"unknown metric {metric!r}; known: {sorted(METRICS)}")
             return {"sha": sha, "metric": metric, **evaluate(METRICS[metric], games)}
-        return {"sha": sha, "subject": subject, **report.summary(games)}
+        return {"sha": sha, "subject": subject, **report.summary(games, self.yardstick())}
 
     def games(self, ref="main", where=None, limit=50):
         sha, _ = self._sha(ref)
@@ -88,8 +89,18 @@ class App:
     def dashboard(self, ref="main"):
         for sha in gitrefs.history(self.repo, ref):
             if self.store.count(sha):
-                return {"sha": sha, "subject": self._sha(sha)[1], **report.summary(self.store.games(sha))}
+                return {"sha": sha, "subject": self._sha(sha)[1], **report.summary(self.store.games(sha), self.yardstick())}
         return {"sha": None, "games": 0}
+
+    def yardstick(self):
+        """Median first turn of each timeline event in the real ascensions (cached per import state)."""
+        refs = self.store.references()
+        state = (len(refs), sum(1 for r in refs if r["dumplog"]))
+        if self._yardstick[0] != state:
+            from . import reference
+            milestones = reference.summary(refs).get("milestones", [])
+            self._yardstick = (state, {m["event"]: m["median_turn"] for m in milestones})
+        return self._yardstick[1]
 
     def reference_summary(self):
         from . import reference
