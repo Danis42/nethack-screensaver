@@ -113,8 +113,11 @@ function renderDashboard(d) {
   const most = Math.max(1, ...Object.values(d.depths));
   const depths = Object.entries(d.depths).map(([k, v]) => [esc(k), `<span class="bar" style="width:${Math.round(220 * v / most)}px"></span> ${v}`]);
   const outcomes = Object.entries(d.outcomes).map(([s, o]) => [esc(s), esc(Object.entries(o).map(([k, n]) => `${n} ${k}`).join(', '))]);
+  const ladder = (d.ladder || []).map(r => [r.rung, esc(r.title), r.n ? pct(r.hits / r.n) : '–', `${r.hits}/${r.n}`,
+    r.median_turn ?? '–', r.yardstick_turn ?? '–']);
   $('dashboard-body').innerHTML = `${short(d.sha)} — ${esc(d.subject)} · ${d.games} games`
     + '<h3>Rates</h3>' + table(['metric', 'rate', 'games'], rates)
+    + '<h3>Ascension ladder</h3>' + table(['#', 'rung', 'reached (or higher)', 'games', 'our median turn', 'ascenders median turn'], ladder)
     + '<h3>Top killers</h3>' + table(['killer', 'games'], d.killers.map(([k, n]) => [esc(k), n]))
     + '<h3>Max depth</h3>' + table(['Dlvl', 'games'], depths)
     + '<h3>Outcomes per strategy</h3>' + table(['strategy', 'outcomes'], outcomes)

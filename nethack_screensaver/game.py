@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import random
 import signal
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable
 
 import nle.nethack as nh
@@ -46,6 +46,9 @@ class GameResult:
     panics: int = 0  # times the bot replanned after a panic (incl. recovered errors)
     stuck_diving: int = 0  # 2500-turn spells of diving in the main dungeon without finding a way down
     unsticks: int = 0  # turns the bot let pass because NetHack kept refusing an action
+    ladder: dict = field(default_factory=dict)  # ascension-ladder rung key -> first turn (autoascend/ladder.py)
+    rung: int = 0  # highest ladder rung reached
+    ladder_error: int = 0  # 1 when the ladder broke mid-game (values incomplete)
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -79,6 +82,15 @@ def _stat(wrapper, name: str) -> int:
         return wrapper.agent.stats_logger.get_stats_dict()[name]
     except Exception:  # agent never started
         return 0
+
+
+def _ladder(wrapper, end_reason: str, turns: int) -> tuple[dict, int]:
+    try:
+        ladder = wrapper.agent.global_logic.ladder
+    except AttributeError:  # agent never started
+        return {}, 0
+    ladder.finish(end_reason, turns)
+    return dict(ladder.reached), ladder.highest()
 
 
 def _has_loot(wrapper) -> bool:
@@ -169,11 +181,13 @@ def run_game(
 
     strategy = chosen.get("strategy", strategy or "?")  # "?" if the game never started
     role_s, race, gender, alignment = _character(wrapper)
+    ladder, rung = _ladder(wrapper, end_reason, turns)
     return GameResult(role_s, race, alignment, max_depth, turns, int(wrapper.score), end_reason,
                       strategy=strategy, gender=gender, milestone=_milestone(wrapper),
                       elbereth=_stat(wrapper, "elbereth_write"), xp_level=xp_level,
                       panics=_stat(wrapper, "agent_panic"), stuck_diving=_stat(wrapper, "stuck_diving"),
-                      unsticks=_stat(wrapper, "unstick"),
+                      unsticks=_stat(wrapper, "unstick"), ladder=ladder, rung=rung,
+                      ladder_error=_stat(wrapper, "ladder_error"),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 

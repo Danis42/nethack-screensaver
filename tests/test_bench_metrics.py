@@ -68,3 +68,27 @@ def test_summary_and_compare():
     rows = {r["metric"]: r for r in compare(games, [_g(1), _g(1), _g(1)])}
     assert rows["dlvl6"]["diff"] > 0 and "lo" in rows["dlvl6"]
     assert "diff" not in rows["depth"]
+
+
+from bench.report import ladder_rows
+
+
+def test_rung_metrics_skip_games_without_a_ladder():
+    games = [_g(rung=2, ladder={"mines": 900, "minetown": 3000}), _g(rung=0, ladder={}), _g()]
+    assert evaluate(METRICS["rung1"], games) == {"n": 2, "skipped": 1, "hits": 1, "rate": 0.5}
+    assert evaluate(METRICS["rung3"], games)["hits"] == 0
+    assert evaluate(METRICS["rung"], games)["median"] == 1
+    assert METRICS["rung2"].description == "reached rung 2+ (Minetown)"
+    assert "rung17" in METRICS
+
+
+def test_ladder_rows_compare_with_the_yardstick():
+    games = [_g(rung=4, ladder={"mines": 1000, "sokoban": 8000}), _g(rung=1, ladder={"mines": 2000}), _g()]
+    rows = {r["key"]: r for r in ladder_rows(games, {"entered the Gnomish Mines": 1173})}
+    assert len(rows) == 17
+    assert rows["mines"] == {"rung": 1, "key": "mines", "title": "Gnomish Mines", "hits": 2, "n": 2,
+                             "median_turn": 1500, "yardstick_turn": 1173}
+    assert rows["oracle"]["hits"] == 1 and rows["oracle"]["median_turn"] is None  # rung 4 counts as 3+
+    assert rows["ascended"]["hits"] == 0 and rows["ascended"]["yardstick_turn"] is None
+    assert summary(games)["ladder"][0]["n"] == 2
+    assert summary([])["ladder"][0]["n"] == 0

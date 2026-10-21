@@ -1,11 +1,28 @@
 """Summaries of stored games: the dashboard and the A/B table of an experiment."""
+import statistics
 from collections import Counter, defaultdict
+
+from autoascend.ladder import RUNGS
 
 from .metrics import METRICS, evaluate, killer
 from .stats import Z95, newcombe
 
 
-def summary(games):
+def ladder_rows(games, yardstick=None):
+    """Per rung: games reaching it or higher, our median first turn, the real ascenders' median turn."""
+    yardstick = yardstick or {}
+    laddered = [g for g in games if "ladder" in g]  # older commits did not record it
+    rows = []
+    for r in RUNGS:
+        turns = [g["ladder"][r.key] for g in laddered if r.key in g["ladder"]]
+        rows.append({"rung": r.number, "key": r.key, "title": r.title,
+                     "hits": sum(g["rung"] >= r.number for g in laddered), "n": len(laddered),
+                     "median_turn": statistics.median(turns) if turns else None,
+                     "yardstick_turn": yardstick.get(r.yardstick_event)})
+    return rows
+
+
+def summary(games, yardstick=None):
     outcomes = defaultdict(Counter)
     for g in games:
         outcomes[g.get("strategy", "?")][g.get("outcome", "?").split(" on Dlvl")[0]] += 1
@@ -13,6 +30,7 @@ def summary(games):
     return {
         "games": len(games),
         "metrics": {name: evaluate(m, games) for name, m in METRICS.items()},
+        "ladder": ladder_rows(games, yardstick),
         "killers": Counter(k for k in map(killer, games) if k).most_common(15),
         "depths": dict(sorted(Counter(g["max_depth"] for g in games).items())),
         "outcomes": {s: dict(c) for s, c in sorted(outcomes.items())},

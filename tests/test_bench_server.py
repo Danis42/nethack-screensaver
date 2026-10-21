@@ -127,3 +127,9 @@ def test_requests_a_foreign_web_page_could_send_are_refused(bench_url):
 def test_imports_only_fetch_http_urls(bench_app):
     with pytest.raises(ValueError, match="http"):
         bench_app.start_import("xlog", url="file:///etc/passwd")
+
+
+def test_results_carry_the_ladder_even_without_reference_ascensions(bench_app):
+    assert bench_app.yardstick() == {}
+    rows = bench_app.results("main")["ladder"]
+    assert [r["rung"] for r in rows] == list(range(1, 18))

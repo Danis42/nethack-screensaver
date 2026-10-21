@@ -1,3 +1,5 @@
+import json
+from dataclasses import asdict
 import signal
 import time
 
@@ -32,6 +34,10 @@ def test_headless_games_complete_without_exceptions():
         assert result.turns > 0
         assert result.role and result.race and result.alignment
         assert len(frames) > 10
+        from autoascend.ladder import BY_KEY
+        assert set(result.ladder) <= set(BY_KEY)
+        json.dumps(asdict(result))  # the worker and the game log serialise results
+        assert result.rung == max((BY_KEY[k].number for k in result.ladder), default=0)
 
 
 @pytest.mark.slow
@@ -147,3 +153,15 @@ def test_agent_recovers_from_bot_errors_but_not_from_the_watchdog():
     assert len(stub.all_panics) == 1
     with pytest.raises(game.WatchdogTimeout):
         Agent.handle_exception(stub, game.WatchdogTimeout())
+
+
+def test_ladder_is_reported_and_survives_a_missing_agent():
+    from types import SimpleNamespace
+
+    from autoascend.ladder import Facts, Ladder
+    ladder = Ladder()
+    ladder.observe(Facts(turn=40, dungeon=2, level=1))
+    wrapper = SimpleNamespace(agent=SimpleNamespace(global_logic=SimpleNamespace(ladder=ladder)))
+    assert game._ladder(wrapper, "DEATH: killed by a newt", 900) == ({"mines": 40}, 1)
+    assert game._ladder(wrapper, "DEATH: ascended to demigod-hood", 999) == ({"mines": 40, "ascended": 999}, 17)
+    assert game._ladder(SimpleNamespace(agent=None), "exception: x", 3) == ({}, 0)
