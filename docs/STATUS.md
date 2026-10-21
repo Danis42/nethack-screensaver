@@ -1,29 +1,29 @@
-# Where we are (2026-10-20, end of day)
+# Where we are (2026-10-21)
 
 Version 0.2.0 is released; everything below is on local `main` after it (not yet released).
 Benchmark numbers and every experiment: `autoascend/PORTING.md`.
 
-## New main objective: a bot that really wins NetHack
+## Main objective: a bot that really wins NetHack
 
-Decided 2026-10-20. Pilgrim (ascension) and daredevil (ascension in disgrace) should
-really pursue their goals instead of stand-ins; the project's main objective becomes a
-real ascension. Sightseer and treasure keep their reachable escape goals. Workflow stays
-superpowers (brainstorm, spec, plan, inline execution) plus a `docs/ROADMAP.md` (not
-written yet), not GSD.
+Pilgrim (ascension) and daredevil (ascension in disgrace) pursue a real ascension;
+sightseer and treasure keep their escape goals. Plan: `docs/ROADMAP.md` (sub-projects
+0-8). The route a human takes, step by step with wiki links: `docs/ASCENSION-GUIDE.md`.
+Workflow: superpowers (brainstorm, spec, plan, then build), not GSD.
 
-Proposed ladder of sub-projects (each gets its own spec, plan and build):
+**Success is a ladder of 17 rungs** (Mines, Minetown, Oracle, Sokoban, Sokoban solved,
+Mines' End, Dlvl 15+, Quest, Medusa, Castle, Gehennom, Vlad's Tower, Wizard's Tower,
+invocation, Planes, Astral, ascended). Each game records the rungs it reached
+(`autoascend/ladder.py`, `GameResult.ladder` / `rung`); the bench has `rung`,
+`rung1`..`rung17` metrics and a ladder table on the dashboard.
 
-0. Ascension ladder: make it the real goal and measure which stage each game reaches
-1. Midgame survival, Dlvl 4-12 (most games die on Dlvl 4-8)
-2. Real descent past Mines' End and the Big Room; reliably finding downstairs
-3. Gearing up: wands, rings, armour, protection, reflection, magic resistance
-4. Medusa's level   5. Castle and wishes   6. Quest (XL 14, Bell)
-7. Gehennom: Vlad's, Wizard's Tower, invocation   8. Elemental and Astral Planes
+**Sub-project 0 is done** (2026-10-21, main `2653410`, 239 tests). First baseline, 576
+games: Mines 57%, Minetown 29%, Oracle 22%, Sokoban 9%, Sokoban solved 5%, Mines' End
+4%, Dlvl 15+ 2%, Quest 1 game, nothing higher. Median game: rung 1, Dlvl 5, 5258 turns.
 
-**Start tomorrow here:** resume the brainstorm. Open question: what counts as success —
-climbing the ladder (recommended: each rung is progress, a real ascension is the last
-rung) or only real ascensions. Then write `docs/ROADMAP.md` and the spec for
-sub-project 0.
+**Start next here:** sub-project 1, midgame survival (Dlvl 4-12). Brainstorm a short
+spec, judged by rung metrics (e.g. `rung2`, Minetown+). Research so far: soldier ants
+respect Elbereth reliably, never get surrounded, fight from corridors/doorways, stay
+unburdened; wands of striking hit if d20 beats AC + 10, magic resistance blocks them.
 
 ## Yardstick: 687 real ascensions (hardfought.org, in the bench database)
 

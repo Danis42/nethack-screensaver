@@ -15,7 +15,7 @@ change is measured on the bench server, one change per experiment.
 
 | # | Sub-project | Rungs it targets | Status |
 |---|-------------|------------------|--------|
-| 0 | Ascension ladder: record rungs, bench metrics, yardstick table | (measurement) | spec 2026-10-21 |
+| 0 | Ascension ladder: record rungs, bench metrics, yardstick table | (measurement) | done 2026-10-21 (baseline in PORTING.md) |
 | 1 | Midgame survival, Dlvl 4-12 (most games die on Dlvl 4-8) | 2-6 | |
 | 2 | Real descent past Mines' End and the Big Room; reliably finding downstairs | 6-8 | |
 | 3 | Gearing up: wands, rings, armour, protection, reflection, magic resistance | 7-9 | |

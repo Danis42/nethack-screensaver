@@ -261,3 +261,27 @@ dumplogs. Median turns: Mines 1173, Minetown 3538, Sokoban 9022 (solved 12412), 
 22426, Medusa 29317, Gehennom 34155, invocation 49741, ascension 53630 (5.0 timelines).
 At the end 100% have magic resistance, 99% a bag of holding, 83% reflection; median XL 23,
 AC -38; wands of teleportation 89%, death 83%, digging 64%.
+
+## Ascension ladder baseline (2026-10-21, 576 unforced games of `2653410`)
+
+First baseline with the ladder (sub-project 0, `autoascend/ladder.py`). "Reached" counts
+games whose highest rung is this one or higher; turns are medians of the games that
+recorded the rung. No ladder errors; 4 crashes (Cyclic Panic, inventory parsing).
+
+| # | Rung | Reached | Our median turn | Ascenders' median turn |
+|---|------|---------|-----------------|------------------------|
+| 1 | Gnomish Mines | 331 (57%) | 2566 | 1173 |
+| 2 | Minetown | 165 (29%) | 5787 | 3538 |
+| 3 | Oracle | 126 (22%) | 5769 | — |
+| 4 | Sokoban | 54 (9%) | 7323 | 9022 |
+| 5 | Sokoban solved | 30 (5%) | 9832 | 12412 |
+| 6 | Mines' End | 25 (4%) | 8617 | 10853 |
+| 7 | Dlvl 15+ | 11 (2%) | 11538 | — |
+| 8 | Quest | 1 | 12806 | 22426 |
+| 9-17 | Medusa … Ascended | 0 | — | — |
+
+Highest rung per game: 0: 245, 1: 166, 2: 39, 3: 72, 4: 24, 5: 5, 6: 14, 7: 10, 8: 1; the
+median game reaches rung 1 for every strategy. Sokoban was solved (rung recorded) in 5
+games, all treasure hunters. The one Quest game was a monk pilgrim who stepped into the
+Quest portal on Dlvl 15 at turn 12806 and died to a xorn there. Other numbers as before:
+Dlvl 6+ 49%, Dlvl 10+ 12%, median depth 5, median 5258 turns.
