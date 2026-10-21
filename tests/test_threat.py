@@ -78,13 +78,11 @@ def test_dangerous_monsters_by_numbers():
     assert mu.is_dangerous_monster(mon("little dog", pet=True))  # pets as before
 
 
-def test_faster_uses_real_speed_and_fast_roles():
+def test_faster_keeps_the_upstream_name_list():
     assert mu.is_monster_faster(agent(20), mon("giant bat"))
-    assert mu.is_monster_faster(agent(20), mon("soldier ant"))
-    assert not mu.is_monster_faster(agent(20), mon("gnome lord"))
+    assert mu.is_monster_faster(agent(20), mon("killer bee"))
+    assert not mu.is_monster_faster(agent(20), mon("soldier ant"))
     assert mu.our_speed(agent(20, role=Character.SAMURAI)) == 16
-    assert not mu.is_monster_faster(agent(20, role=Character.SAMURAI), mon("jackal"))
-
 
 def test_imminent_death_depends_on_the_monster():
     assert mu.imminent_death_on_melee(agent(16, ac=4), mon("soldier ant"))

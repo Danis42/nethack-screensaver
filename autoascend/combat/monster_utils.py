@@ -28,8 +28,12 @@ def our_speed(agent):
 
 
 def is_monster_faster(agent, monster):
+    # Upstream name list. Tried mmove > our speed (2026-10-21): soldier ants then counted
+    # as faster, doubling their Elbereth weight, and ant deaths rose (35 -> 49 per 1152).
     _, y, x, mon, _ = monster
-    return mon.mmove > our_speed(agent)
+    return 'bat' in mon.mname or 'dog' in mon.mname or 'cat' in mon.mname \
+           or 'kitten' in mon.mname or 'pony' in mon.mname or 'horse' in mon.mname \
+           or 'bee' in mon.mname or 'fox' in mon.mname
 
 
 def imminent_death_on_melee(agent, monster):
