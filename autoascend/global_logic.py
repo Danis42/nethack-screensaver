@@ -11,6 +11,7 @@ from .exceptions import AgentPanic
 from .glyph import Hunger, G, MON, SS
 from .item import Item, flatten_items
 from .item.item_priority_base import ItemPriorityBase
+from .ladder import Facts, Ladder
 from .level import Level
 from .plans import DEFAULT_PLAN, Milestone, Plan, ProgressWatch
 
@@ -21,6 +22,9 @@ LOOT_TURNS = 1500  # treasure: turns on the top Sokoban level to clear the zoo a
 MINETOWN_SEARCH_TURNS = 4000  # Orcish Town has no shopkeeper, so Minetown may never be seen
 SOKOBAN_SEARCH_TURNS = 8000  # treasure: give up looking for Sokoban and go home
 LIVE_SOKOBAN_BLOCKED_TRIES = 20  # times a monster may block a push square before giving up
+WATER = frozenset({SS.S_pool, SS.S_water})
+DRAWBRIDGE = frozenset({SS.S_vodbridge, SS.S_hodbridge, SS.S_vcdbridge, SS.S_hcdbridge})
+MEDUSA = frozenset({MON.fn('Medusa')})
 STUCK_TURNS = 2500  # no new level and no new milestone for this long: give up the route and dive
 _PRIZES = None
 
@@ -199,6 +203,8 @@ class GlobalLogic:
 
         self.oracle_level = None
         self.minetown_level = None
+        self.ladder = Ladder()
+        self._ladder_broken = False
 
         self._got_artifact = False
 
@@ -278,6 +284,30 @@ class GlobalLogic:
                     self.minetown_level = self.agent.current_level().key()
                 else:
                     assert self.minetown_level == self.agent.current_level().key()
+
+        if not self._ladder_broken:
+            try:
+                self.ladder.observe(self.ladder_facts())
+            except Exception:  # measuring must never end a game
+                self._ladder_broken = True
+                self.agent.stats_logger.log_event('ladder_error')
+
+    def ladder_facts(self):
+        """What the ascension ladder needs to know about this step (see ladder.py)."""
+        level = self.agent.current_level()
+        hallu = self.agent.character.prop.hallu
+        seen = int(level.seen.sum())
+        water = int((utils.isin(level.objects, WATER) & level.seen).sum())
+        return Facts(
+            turn=self.agent.blstats.time, dungeon=level.dungeon_number, level=level.level_number,
+            oracle_seen=self.oracle_level is not None, minetown_seen=self.minetown_level is not None,
+            sokoban_seen=seen, sokoban_traps=bool(utils.isin(level.objects, G.TRAPS).any()),
+            medusa_seen=not hallu and bool(utils.isin(self.agent.glyphs, MEDUSA).any()),
+            water_share=0.0 if hallu or not seen else water / seen,
+            drawbridge_seen=not hallu and bool(utils.isin(level.objects, DRAWBRIDGE).any()),
+            down_stairs_seen=bool(utils.isin(level.objects, G.STAIR_DOWN).any()),
+            inventory=tuple(item.text for item in flatten_items(self.agent.inventory.items)),
+            message=self.agent.message)
 
     @utils.debug_log('solving sokoban')
     @Strategy.wrap

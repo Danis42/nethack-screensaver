@@ -98,3 +98,43 @@ def test_finish_adds_ascended_only_for_an_ascension():
     assert ladder.reached == {}
     ladder.finish("ASCENDED: ascended to demigod-hood", 53000)
     assert ladder.reached == {"ascended": 53000} and ladder.highest() == 17
+
+
+import numpy as np
+
+
+def _fake_logic(hallu=False, objects=None, seen=None, glyphs=None, key=(0, 22)):
+    from types import SimpleNamespace
+
+    from autoascend.global_logic import GlobalLogic
+    from autoascend.glyph import C
+    logic = GlobalLogic.__new__(GlobalLogic)
+    level = SimpleNamespace(dungeon_number=key[0], level_number=key[1], key=lambda: key,
+                            objects=objects if objects is not None else np.full((C.SIZE_Y, C.SIZE_X), -1, np.int16),
+                            seen=seen if seen is not None else np.ones((C.SIZE_Y, C.SIZE_X), bool))
+    logic.agent = SimpleNamespace(
+        current_level=lambda: level, blstats=SimpleNamespace(time=123),
+        character=SimpleNamespace(prop=SimpleNamespace(hallu=hallu)),
+        glyphs=glyphs if glyphs is not None else np.zeros((C.SIZE_Y, C.SIZE_X), np.int16),
+        inventory=SimpleNamespace(items=[]), message="")
+    logic.oracle_level = logic.minetown_level = None
+    return logic
+
+
+def test_facts_see_water_and_medusa_but_not_while_hallucinating():
+    from autoascend.glyph import C, MON, SS
+    objects = np.full((C.SIZE_Y, C.SIZE_X), SS.S_pool, np.int16)
+    glyphs = np.zeros((C.SIZE_Y, C.SIZE_X), np.int16)
+    glyphs[3, 3] = MON.fn('Medusa')
+    facts = _fake_logic(objects=objects, glyphs=glyphs).ladder_facts()
+    assert facts.turn == 123 and (facts.dungeon, facts.level) == (0, 22)
+    assert facts.water_share == 1.0 and facts.medusa_seen
+    tripping = _fake_logic(hallu=True, objects=objects, glyphs=glyphs).ladder_facts()
+    assert tripping.water_share == 0.0 and not tripping.medusa_seen and not tripping.drawbridge_seen
+
+
+def test_facts_on_an_undrawn_sokoban_top_level_are_not_solved():
+    from autoascend.glyph import C
+    facts = _fake_logic(key=(4, 1), seen=np.zeros((C.SIZE_Y, C.SIZE_X), bool)).ladder_facts()
+    assert facts.sokoban_seen == 0
+    assert "sokoban_solved" not in reached(facts).reached
