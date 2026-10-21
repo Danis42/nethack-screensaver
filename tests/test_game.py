@@ -95,8 +95,14 @@ def test_strategy_follows_the_role_or_the_forced_name():
     from autoascend.plans import STRATEGIES
     obs = _start_obs("valkyrie", "Hello Agent, welcome to NetHack!")
     assert game._strategy_and_plan(obs, "pilgrim") == ("pilgrim", STRATEGIES["pilgrim"].milestones)
-    name, plan = game._strategy_and_plan(obs, None)
+    name, plan = game._strategy_and_plan(obs, "random")
     assert name in STRATEGIES and plan == STRATEGIES[name].milestones
+
+
+def test_every_game_plays_the_ascension_route_by_default():
+    from autoascend.plans import STRATEGIES
+    obs = _start_obs("valkyrie", "Hello Agent, welcome to NetHack!")
+    assert game._strategy_and_plan(obs, None) == ("pilgrim", STRATEGIES["pilgrim"].milestones)
 
 
 def test_loot_check_survives_missing_agent():

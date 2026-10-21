@@ -55,6 +55,13 @@ def test_strategy_and_reveal(tmp_path, capsys):
     assert "strategy" in err and "reveal_goal" in err
 
 
+def test_ascension_route_is_the_default_and_random_brings_the_mix_back(tmp_path):
+    assert Config().strategy == "pilgrim"
+    p = tmp_path / "c.toml"
+    p.write_text('strategy = "random"\n')
+    assert load_config(p).strategy == "random"
+
+
 def test_non_string_strategy_falls_back_instead_of_crashing(tmp_path, capsys):
     p = tmp_path / "c.toml"
     p.write_text('strategy = ["x"]\n')

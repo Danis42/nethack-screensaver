@@ -21,7 +21,7 @@ def main():
     ap.add_argument("-n", "--games", type=int, default=50)
     ap.add_argument("-j", "--jobs", type=int, default=4)
     ap.add_argument("--strategy", default=None,
-                    help="pilgrim/daredevil/sightseer/treasure (default: random per game)")
+                    help="pilgrim/daredevil/sightseer/treasure/random (default: pilgrim)")
     ap.add_argument("--out", help="also write every result as a JSON line to this file")
     args = ap.parse_args()
 

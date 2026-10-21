@@ -27,7 +27,7 @@ level_pause = 1.0    # pause on a new dungeon level
 end_pause = 5.0      # hold the final screen
 status_line = false  # "Game #12 · Val · Dlvl 7 · T:4310 · Best: Dlvl 14" (» = fast-forward)
 role = "random"      # or arc bar cav hea kni mon pri ran rog sam tou val wiz
-strategy = "random"  # secret goal per game: pilgrim daredevil sightseer treasure
+strategy = "pilgrim" # ascension route; "random" = secret mix: pilgrim daredevil sightseer treasure
 reveal_goal = false  # true: show the secret goal on the game-over screen
 ```
 
@@ -35,8 +35,9 @@ Pacing: moves play at `delay` while the bot explores new map, fights (except whi
 farming XP on Dlvl 1) or has low HP; after 10 quiet moves it fast-forwards at
 `fast_delay` (set it equal to `delay` to turn this off).
 
-Secret goals: each game secretly follows one strategy, picked once the character
-is known: strong roles (Bar, Sam, Val, Mon) get the hard goals more often, weak ones
+Goals: every game plays the ascension route (pilgrim), the project's only priority
+since 2026-10-21 (see `docs/ROADMAP.md`). With `strategy = "random"` each game
+secretly follows one strategy instead, picked once the character is known: strong roles (Bar, Sam, Val, Mon) get the hard goals more often, weak ones
 (Arc, Tou, Rog, Hea, Wiz) the easier ones; every role can still get any goal. Pilgrim (aims to ascend)
 tours the Mines, Minetown and Sokoban, then dives; Daredevil (aims to escape in
 celestial disgrace) dives straight down; Sightseer visits Minetown and climbs

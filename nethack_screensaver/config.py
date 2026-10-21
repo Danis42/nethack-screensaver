@@ -21,7 +21,7 @@ class Config:
     end_pause: float = 5.0
     status_line: bool = False
     role: str = "random"
-    strategy: str = "random"
+    strategy: str = "pilgrim"  # "random": the mix of all four plans
     reveal_goal: bool = False
 
 
