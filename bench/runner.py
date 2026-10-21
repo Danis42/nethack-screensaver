@@ -32,8 +32,8 @@ class ProcessWorker:
             except json.JSONDecodeError:
                 self._log.write(f"bench: not a result line: {line[:200]}\n")
 
-    def play(self):
-        self._proc.stdin.write("play\n")
+    def play(self, seed=None):
+        self._proc.stdin.write("play\n" if seed is None else f"play {int(seed)}\n")
         self._proc.stdin.flush()
 
     def results(self):

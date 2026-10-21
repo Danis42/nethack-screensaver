@@ -68,6 +68,22 @@ class Store:
     def count(self, sha):
         return self._one("SELECT COUNT(*) AS n FROM games WHERE sha = ?", (sha,))["n"]
 
+    def seeds(self, sha):
+        """Seeds of a commit's seeded games (older games have none)."""
+        rows = self._all("SELECT DISTINCT json_extract(json, '$.seed') AS seed FROM games "
+                         "WHERE sha = ? AND json_extract(json, '$.seed') IS NOT NULL", (sha,))
+        return {r["seed"] for r in rows}
+
+    def games_by_seed(self, sha, seeds):
+        """{seed: game} for the wanted seeds this commit has played; the first game per seed."""
+        wanted, out = set(seeds), {}
+        rows = self._all("SELECT json_extract(json, '$.seed') AS seed, json FROM games "
+                         "WHERE sha = ? AND json_extract(json, '$.seed') IS NOT NULL ORDER BY id", (sha,))
+        for r in rows:
+            if r["seed"] in wanted and r["seed"] not in out:
+                out[r["seed"]] = json.loads(r["json"])
+        return out
+
     def games(self, sha, limit=None):
         """Results of a commit, oldest first."""
         sql, args = "SELECT json FROM games WHERE sha = ? ORDER BY id", (sha,)

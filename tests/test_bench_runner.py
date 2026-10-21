@@ -64,3 +64,46 @@ def test_worker_death_is_visible(tmp_path):
         assert [r["max_depth"] for r in w.results()] == [1, 2]
     finally:
         w.close()
+
+
+SEEDED_GAME = '''
+from dataclasses import dataclass
+
+@dataclass
+class GameResult:
+    max_depth: int
+    seed: object = None
+
+def run_game(watchdog_seconds=None, seed=None):
+    return GameResult(3, seed)
+'''
+
+
+def test_worker_passes_the_seed_when_the_commit_can_take_one(tmp_path):
+    wt = _fake_worktree(tmp_path)
+    (wt / "nethack_screensaver" / "game.py").write_text(SEEDED_GAME)
+    w = ProcessWorker(sys.executable, wt, tmp_path / "worker.log", nice=0)
+    try:
+        w.play(17)
+        got = []
+        _wait_for(lambda: got.extend(w.results()) or got)
+        assert got == [{"max_depth": 3, "seed": 17}]
+    finally:
+        w.close()
+
+
+def test_an_old_commit_plays_unseeded_and_says_so_by_leaving_out_the_seed(tmp_path):
+    w = ProcessWorker(sys.executable, _fake_worktree(tmp_path), tmp_path / "worker.log", nice=0)
+    try:
+        w.play(5)
+        got = []
+        _wait_for(lambda: got.extend(w.results()) or got)
+        assert "seed" not in got[0] and got[0]["max_depth"] == 1
+    finally:
+        w.close()
+
+
+def test_play_lines_are_parsed():
+    from bench.worker import parse
+    assert parse("play\n") == (True, None) and parse("play 7\n") == (True, 7)
+    assert parse("stop\n") == (False, None) and parse("\n") == (False, None)

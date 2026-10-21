@@ -4,15 +4,20 @@
 class FakeWorker:
     """Plays instantly: each play() makes one result from make(sha, index)."""
 
-    def __init__(self, sha, make, log):
-        self.sha, self.make, self.log = sha, make, log
+    def __init__(self, sha, make, log, seeded=True):
+        self.sha, self.make, self.log, self.seeded = sha, make, log, seeded
         self.pending, self.dead, self.closed = [], False, False
+        self.seeds = []
 
-    def play(self):
+    def play(self, seed=None):
         if self.dead:
             raise BrokenPipeError
         self.log.append(self.sha)
-        self.pending.append(self.make(self.sha, len(self.log)))
+        self.seeds.append(seed)
+        result = dict(self.make(self.sha, len(self.log)))
+        if self.seeded and seed is not None:  # a commit from before seeding leaves it out
+            result["seed"] = seed
+        self.pending.append(result)
 
     def results(self):
         out, self.pending = self.pending, []
