@@ -43,3 +43,64 @@ def test_unknown_index_is_harmless():
     assert threat.attacks(-1) == () and threat.attacks(10 ** 6) == ()
     assert threat.damage_per_turn(10 ** 6, 5, 12, 10) == 0.0
     assert not threat.has_special_attack(-1)
+
+
+from types import SimpleNamespace
+
+from autoascend.character import Character
+from autoascend.combat import monster_utils as mu
+from autoascend.glyph import MON
+
+
+def mon(name, pet=False):
+    glyph = MON.fn(name)
+    if pet:
+        glyph = nh.GLYPH_PET_OFF + idx(name)
+    return (1, 5, 5, MON.permonst(glyph), glyph)
+
+
+def agent(hp, ac=10, role=Character.VALKYRIE):
+    return SimpleNamespace(blstats=SimpleNamespace(hitpoints=hp, max_hitpoints=max(hp, 20), armor_class=ac),
+                           character=SimpleNamespace(role=role))
+
+
+def test_monster_index_maps_monster_and_pet_glyphs():
+    assert mu.monster_index(MON.fn("newt")) == idx("newt")
+    assert mu.monster_index(nh.GLYPH_PET_OFF + idx("little dog")) == idx("little dog")
+    assert mu.monster_index(nh.GLYPH_CMAP_OFF) == -1  # a map symbol, not a monster
+
+
+def test_dangerous_monsters_by_numbers():
+    for name in ("soldier ant", "white unicorn", "giant bat", "werejackal", "killer bee"):
+        assert mu.is_dangerous_monster(mon(name)), name
+    for name in ("newt", "lichen", "jackal", "gnome"):
+        assert not mu.is_dangerous_monster(mon(name)), name
+    assert mu.is_dangerous_monster(mon("little dog", pet=True))  # pets as before
+
+
+def test_faster_uses_real_speed_and_fast_roles():
+    assert mu.is_monster_faster(agent(20), mon("giant bat"))
+    assert mu.is_monster_faster(agent(20), mon("soldier ant"))
+    assert not mu.is_monster_faster(agent(20), mon("gnome lord"))
+    assert mu.our_speed(agent(20, role=Character.SAMURAI)) == 16
+    assert not mu.is_monster_faster(agent(20, role=Character.SAMURAI), mon("jackal"))
+
+
+def test_imminent_death_depends_on_the_monster():
+    assert mu.imminent_death_on_melee(agent(25, ac=4), mon("soldier ant"))
+    assert not mu.imminent_death_on_melee(agent(25, ac=4), mon("newt"))
+    assert mu.imminent_death_on_melee(agent(8), mon("newt"))  # old floor kept
+    assert not mu.imminent_death_on_melee(agent(9), mon("newt"))
+
+
+def test_elbereth_counts_weak_monsters_as_weak(monkeypatch):
+    from autoascend.combat import fight_heur
+    a = agent(10)
+    a.blstats.y, a.blstats.x = 5, 6
+    a.inventory = SimpleNamespace(engraving_below_me="")
+    a.can_engrave = lambda: True
+    lichen = fight_heur.elbereth_action(a, [mon("lichen")])
+    ant = fight_heur.elbereth_action(a, [mon("soldier ant")])
+    # a weak monster counts 0.1 (times the low-HP multiplier 1.5), not 1
+    assert lichen[0][0] == pytest.approx(-15 + 20 * 0.1 * 1.5 * (1 - (10 / 20) ** 0.5))
+    assert lichen[0][0] < ant[0][0]
