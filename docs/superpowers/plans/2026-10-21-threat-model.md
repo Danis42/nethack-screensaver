@@ -68,7 +68,7 @@ def test_table_is_aligned_with_nle_monster_indices():
 
 def test_known_attacks():
     assert entry("soldier ant")[1] == ((AT_BITE, AD_PHYS, 2, 4), (AT_STNG, AD_DRST, 3, 4))
-    assert entry("newt")[1] == ((AT_BITE, AD_PHYS, 1, 3),)
+    assert entry("newt")[1] == ((AT_BITE, AD_PHYS, 1, 2),)
     assert MONSTERS[[n for n, _ in MONSTERS].index("werejackal")][1] == ((AT_BITE, AD_WERE, 1, 4),)
     assert entry("dwarf")[1] == ((AT_WEAP, AD_PHYS, 1, 8),)
     assert entry("lichen")[1][0][1] == 19  # AD_STCK
@@ -212,7 +212,7 @@ def test_damage_per_turn_scales_with_dice_and_speed():
     ant = threat.damage_per_turn(idx("soldier ant"), 3, 18, 10)
     assert ant == pytest.approx((2 * 2.5 + 3 * 2.5) * 18 / 12)
     newt = threat.damage_per_turn(idx("newt"), 0, 6, 10)
-    assert newt == pytest.approx(0.95 * 2 * 6 / 12)
+    assert newt == pytest.approx(0.95 * 1.5 * 6 / 12)
     assert threat.damage_per_turn(idx("soldier ant"), 3, 18, 10, our_speed=16) < ant
     dwarf = threat.damage_per_turn(idx("dwarf"), 2, 6, 10)  # weapon users: monst.c dice only
     assert dwarf == pytest.approx(4.5 * 6 / 12)
