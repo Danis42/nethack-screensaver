@@ -40,7 +40,31 @@ created: "2026-10-22"
 
 ## Per-Task Verification Map
 
-Filled in by the planner per task. Requirement → test map from RESEARCH.md §Validation Architecture:
+Per task (planner, 2026-10-22). Bench-job evidence is read with `scripts/seeded_report.py verdict <ref>` (exit 0 = finished job exists; `--expect` / `--forbid` check the state).
+
+| Task | Wave | Requirement | Automated command | File exists | Status |
+|------|------|-------------|-------------------|-------------|--------|
+| 01-01 T1 | 1 | MEAS-03 | `uv run pytest -q tests/test_game.py -k "moon or messages"`; `uv run pytest -q -m slow tests/test_replay.py` | ❌ W0 (test_replay.py created here) | ⬜ pending |
+| 01-01 T2 | 1 | MEAS-03 | `uv run pytest -q tests/test_game.py tests/test_stats_logger.py`; slow replay | ✅ extend | ⬜ pending |
+| 01-02 T1 | 1 | MEAS-03 | `uv run pytest -q tests/test_soko_search.py` | ✅ extend | ⬜ pending |
+| 01-02 T2 | 1 | MEAS-03 | `uv run pytest -q tests/test_bench_runner.py` | ✅ extend | ⬜ pending |
+| 01-03 T1-T3 | 1 | MEAS-01, MEAS-02 | `uv run pytest -q tests/test_seeded_scripts.py`; e2e: `seeded_report.py verdict 0c7acbc --baseline 2653410 --metric rung2 --expect "no measurable difference"`, `replay_check.py 2653410 0c7acbc --min 1` (exit 2), `seeded_report.py ladder 2653410 --all-games` (634 / 309 of 1152) | ❌ W0 (created here) | ⬜ pending |
+| 01-04 T1-T2 | 1 | SURV-02 (D-10) | `uv run pytest -q tests/test_prayer.py tests/test_nld_study.py`; `uv run python scripts/nld_study.py prayers --games 30` | ❌ W0 (created here) | ⬜ pending |
+| 01-05 T1 | 2 | MEAS-01, MEAS-03 | `seeded_report.py verdict p1-aa-twin --baseline p1-aa-base --metric rung2 --expect "no measurable difference"`; `replay_check.py p1-aa-twin p1-aa-base --min 1152 --skip-end watchdog` | n/a (bench) | ⬜ pending |
+| 01-05 T2 | 2 | MEAS-01 | gate line grep for p1-aa-base SHA | n/a | ⬜ pending |
+| 01-06 T1-T3 | 3 | MEAS-01 | `seeded_report.py pairs calib/agent-seed-1 p1-aa-base --metric rung2 --seeds 1152`; same for calib/lgen pair; `uv run pytest -q -m ""` | n/a (bench) | ⬜ pending |
+| 01-07 T1-T2 | 4 | MEAS-02 | `seeded_report.py ladder p1-baseline --seeds 576`; ledger-line and note counts (awk) | n/a | ⬜ pending |
+| 01-08 T1 | 5 | SURV-02 | `uv run pytest -q tests/test_seeded_scripts.py -k starvation`; `seeded_report.py starvation p1-baseline --seeds 1152` | ✅ extend | ⬜ pending |
+| 01-08 T2-T3 | 5 | SURV-02 | `seeded_report.py verdict exp/starvation-1`; `... exp/starvation-2` or recorded skip; `uv run pytest -q -m ""` | n/a (bench) | ⬜ pending |
+| 01-09 T1 | 6 | SURV-01 | `uv run pytest -q tests/test_rest.py` | ❌ W0 (created here) | ⬜ pending |
+| 01-09 T2 | 6 | SURV-01 | `seeded_report.py verdict exp/rest-to-full` | n/a (bench) | ⬜ pending |
+| 01-10 T1-T3 | 7 | SURV-04 | `pytest -k insects`; `uv run pytest -q tests/test_fight_heur.py tests/test_prayer.py`; `seeded_report.py verdict exp/ants-bees` | ✅ extend | ⬜ pending |
+| 01-11 T1-T3 | 8 | SURV-03 | `pytest -k zappers`; `uv run pytest -q tests/test_fight_heur.py tests/test_prayer.py`; `seeded_report.py verdict exp/zappers` | ✅ extend | ⬜ pending |
+| 01-12 T1-T3 | 9 | SURV-05 | `seeded_report.py verdict rejudge/<name> --metric rung2` for the three branches; original SHAs in PORTING.md | ✅ (branch tests) | ⬜ pending |
+| 01-13 T1-T2 | 10 | SURV-06 | `seeded_report.py verdict p1-final --baseline p1-baseline --metric rung2 --expect better`; rung3..rung6 `--forbid worse` | n/a (bench) | ⬜ pending |
+| 01-14 T1-T3 | 11 | SURV-05 (D-13) | ledger SHA check loop; deleted refs absent; checkpoint:decision (owner) | n/a | ⬜ pending |
+
+Requirement → test map from RESEARCH.md §Validation Architecture:
 
 | Requirement | Behavior | Test Type | Automated Command | File Exists | Status |
 |-------------|----------|-----------|-------------------|-------------|--------|

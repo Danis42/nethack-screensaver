@@ -61,7 +61,23 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. A pilgrim-only baseline of `main` (seeds 0..575) is stored, and its 17-rung table (games per rung, median turn against the yardstick) is written into `autoascend/PORTING.md`, with the older mixed-strategy numbers marked not comparable.
   3. Resting to full HP, starvation, wand/ray users, and ants/killer bees each have a recorded paired verdict: `better` changes are merged to `main`, the rest are dropped and logged with their interval; the three unmerged branches (`threat-model`, `flee-upstairs`, `choke-points`) are each re-judged once on the seeded bench.
   4. The final `main` of this phase against the pilgrim-only baseline gives a paired `better` verdict on `rung2` (Minetown+), and rungs 3-6 are not worse.
-**Plans**: TBD
+**Plans:** 14 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Seeded games replay across processes and dates (moon from the seed) and record their death context
+- [ ] 01-02-PLAN.md — Live Sokoban solver on a measured state budget, workers with a fixed hash seed
+- [ ] 01-03-PLAN.md — Read-only seeded-bench tools: verdict, pairs, ladder, killers, deaths, replay check, seeded smoke runs
+- [ ] 01-04-PLAN.md — NLD-NAO human study: prayer-outcome strings and Dlvl 4-12 food/prayer habits (D-10)
+- [ ] 01-05-PLAN.md — Seeded A/A control and D-04 gate; STATUS.md/handoff.txt become pointers (D-02)
+- [ ] 01-06-PLAN.md — Bench calibration: divergence controls, lgen and 2304-checkpoint decisions
+- [ ] 01-07-PLAN.md — Pilgrim-only baseline stored and tabled (MEAS-02); survival-tuning removed
+- [ ] 01-08-PLAN.md — Starvation: diagnosis with bot and human data, killer order, one or two experiments
+- [ ] 01-09-PLAN.md — Rest to full HP before exploring on, judged on the bench
+- [ ] 01-10-PLAN.md — Ants and killer bees: diagnosis-chosen new tactic, judged on the bench
+- [ ] 01-11-PLAN.md — Wand and ray users: diagnosis-chosen tactic, judged on the bench
+- [ ] 01-12-PLAN.md — Re-judge threat-model, choke-points, flee-upstairs once each (SURV-05)
+- [ ] 01-13-PLAN.md — Done bar: final main vs baseline, rung2 better and rungs 3-6 not worse (D-14)
+- [ ] 01-14-PLAN.md — D-13 branch cleanup behind a one-way decision checkpoint
 
 ### Phase 2: Real Descent
 **Goal**: The bot completes the Mines, goes back up and keeps descending the main dungeon past the Oracle and the Big Room, reliably finds downstairs, and enters the Quest portal on purpose.
@@ -150,7 +166,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 (decimal i
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Midgame Survival | 0/TBD | Not started | - |
+| 1. Midgame Survival | 0/14 | Planned | - |
 | 2. Real Descent | 0/TBD | Not started | - |
 | 3. Gearing Up | 0/TBD | Not started | - |
 | 4. Medusa's Level | 0/TBD | Not started | - |
