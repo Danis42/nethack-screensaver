@@ -1,7 +1,7 @@
 # Phase 1 Experiment Protocol (seeded paired bench)
 
 Shared, binding procedure for every Phase 1 plan that submits a `screens-bench` job
-(plans 01-05 .. 01-13 and any gap-closure plan). It turns CONTEXT decisions D-03..D-08 and
+(plans 01-05 .. 01-15 and any gap-closure plan). It turns CONTEXT decisions D-03..D-08 and
 RESEARCH Patterns 1-2 / Pitfalls 1-7 into steps. Plans reference it with
 `@.planning/phases/01-midgame-survival/01-EXPERIMENT-PROTOCOL.md`; where a plan says
 "run the experiment protocol", every numbered step below applies.
@@ -13,15 +13,15 @@ RESEARCH Patterns 1-2 / Pitfalls 1-7 into steps. Plans reference it with
 | `p1-aa-base`, `p1-aa-twin` | local tags | A/A control #1: measurement code and its docs-only twin | 01-05 |
 | `p1-aa2-base`, `p1-aa2-twin` | local tags | A/A control #2, only if `lgen` is adopted | 01-06 |
 | `p1-baseline` | local tag | MEAS-02 pilgrim-only baseline code SHA; never moved after 01-07 | 01-07 |
-| `p1-final` | local tag | Code SHA of `main` judged for SURV-06 | 01-13 |
+| `p1-final` | local tag | Code SHA of `main` judged for SURV-06 | 01-15 |
 | `calib/agent-seed-1`, `calib/lgen`, `calib/lgen-agent-seed-1` | branches | Bench calibration (never merged except `calib/lgen` when adopted) | 01-06 |
 | `exp/starvation-1`, `exp/starvation-2`, `exp/rest-to-full`, `exp/ants-bees`, `exp/zappers` | branches | One bot change each | 01-08 .. 01-11 |
-| `rejudge/threat-model`, `rejudge/choke-points`, `rejudge/flee-upstairs` | branches | Old branches rebased onto `main` (SURV-05) | 01-12 |
+| `rejudge/threat-model`, `rejudge/choke-points`, `rejudge/flee-upstairs` | branches | Old branches rebased onto `main` (SURV-05), one plan each | 01-12, 01-13, 01-14 |
 | `exp/<killer>-<n>` | branches | Gap-closure experiments (D-14 loop) | later plans |
 
 Tags and branches are local refs. Git is local only: never push, never add a remote, never open
 a PR. Experiment branches are never deleted by this phase (deleting an unmerged branch is a
-one-way door; only D-13's four old branches are deleted, behind the 01-14 checkpoint).
+one-way door; only D-13's four old branches are deleted, behind the 01-16 checkpoint).
 
 **Behaviour paths:** `autoascend nethack_screensaver pyproject.toml uv.lock` decide what a game
 does. Two SHAs are *code-identical* when

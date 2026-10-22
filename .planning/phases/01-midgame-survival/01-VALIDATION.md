@@ -60,9 +60,14 @@ Per task (planner, 2026-10-22). Bench-job evidence is read with `scripts/seeded_
 | 01-09 T2 | 6 | SURV-01 | `seeded_report.py verdict exp/rest-to-full` | n/a (bench) | ⬜ pending |
 | 01-10 T1-T3 | 7 | SURV-04 | `pytest -k insects`; `uv run pytest -q tests/test_fight_heur.py tests/test_prayer.py`; `seeded_report.py verdict exp/ants-bees` | ✅ extend | ⬜ pending |
 | 01-11 T1-T3 | 8 | SURV-03 | `pytest -k zappers`; `uv run pytest -q tests/test_fight_heur.py tests/test_prayer.py`; `seeded_report.py verdict exp/zappers` | ✅ extend | ⬜ pending |
-| 01-12 T1-T3 | 9 | SURV-05 | `seeded_report.py verdict rejudge/<name> --metric rung2` for the three branches; original SHAs in PORTING.md | ✅ (branch tests) | ⬜ pending |
-| 01-13 T1-T2 | 10 | SURV-06 | `seeded_report.py verdict p1-final --baseline p1-baseline --metric rung2 --expect better`; rung3..rung6 `--forbid worse` | n/a (bench) | ⬜ pending |
-| 01-14 T1-T3 | 11 | SURV-05 (D-13) | ledger SHA check loop; deleted refs absent; checkpoint:decision (owner) | n/a | ⬜ pending |
+| 01-12 T1 | 9 | SURV-05 | rebase scope check `git diff --name-only main...rejudge/threat-model` (own 4 files); branch tests present; `uv run pytest -q -m ""` on the branch | ✅ (branch tests) | ⬜ pending |
+| 01-12 T2 | 9 | SURV-05 | `seeded_report.py verdict rejudge/threat-model --metric rung2`; original SHA in PORTING.md | n/a (bench) | ⬜ pending |
+| 01-13 T1 | 10 | SURV-05 | rebase scope check `git diff --name-only main...rejudge/choke-points` (fight_heur.py only); tests/test_choke_points.py present | ✅ (branch tests) | ⬜ pending |
+| 01-13 T2 | 10 | SURV-05 | `seeded_report.py verdict rejudge/choke-points --metric rung2`; original SHA in PORTING.md | n/a (bench) | ⬜ pending |
+| 01-14 T1 | 11 | SURV-05 | rebase scope check (own 5 files); `git diff --numstat` 0 deleted lines in game.py / stats_logger.py | ✅ (branch tests) | ⬜ pending |
+| 01-14 T2-T3 | 11 | SURV-05 | `seeded_report.py verdict rejudge/flee-upstairs --metric rung2`; `Due for deletion (plan 01-16):` line lists every unmerged branch SHA | n/a (bench) | ⬜ pending |
+| 01-15 T1-T2 | 12 | SURV-06 | `seeded_report.py verdict p1-final --baseline p1-baseline --metric rung2 --expect better`; rung3..rung6 `--forbid worse` | n/a (bench) | ⬜ pending |
+| 01-16 T1-T3 | 13 | SURV-05 (D-13) | ledger SHA check loop; deleted refs absent; checkpoint:decision (owner) | n/a | ⬜ pending |
 
 Requirement → test map from RESEARCH.md §Validation Architecture:
 

@@ -61,7 +61,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. A pilgrim-only baseline of `main` (seeds 0..575) is stored, and its 17-rung table (games per rung, median turn against the yardstick) is written into `autoascend/PORTING.md`, with the older mixed-strategy numbers marked not comparable.
   3. Resting to full HP, starvation, wand/ray users, and ants/killer bees each have a recorded paired verdict: `better` changes are merged to `main`, the rest are dropped and logged with their interval; the three unmerged branches (`threat-model`, `flee-upstairs`, `choke-points`) are each re-judged once on the seeded bench.
   4. The final `main` of this phase against the pilgrim-only baseline gives a paired `better` verdict on `rung2` (Minetown+), and rungs 3-6 are not worse.
-**Plans:** 14 plans
+**Plans:** 16 plans
 
 Plans:
 - [ ] 01-01-PLAN.md — Seeded games replay across processes and dates (moon from the seed) and record their death context
@@ -75,9 +75,11 @@ Plans:
 - [ ] 01-09-PLAN.md — Rest to full HP before exploring on, judged on the bench
 - [ ] 01-10-PLAN.md — Ants and killer bees: diagnosis-chosen new tactic, judged on the bench
 - [ ] 01-11-PLAN.md — Wand and ray users: diagnosis-chosen tactic, judged on the bench
-- [ ] 01-12-PLAN.md — Re-judge threat-model, choke-points, flee-upstairs once each (SURV-05)
-- [ ] 01-13-PLAN.md — Done bar: final main vs baseline, rung2 better and rungs 3-6 not worse (D-14)
-- [ ] 01-14-PLAN.md — D-13 branch cleanup behind a one-way decision checkpoint
+- [ ] 01-12-PLAN.md — Re-judge threat-model once on the seeded bench (SURV-05, 1 of 3)
+- [ ] 01-13-PLAN.md — Re-judge choke-points once on the seeded bench (SURV-05, 2 of 3)
+- [ ] 01-14-PLAN.md — Re-judge flee-upstairs once (game.py conflict) and write the SURV-05 summary with the deletion list (3 of 3)
+- [ ] 01-15-PLAN.md — Done bar: final main vs baseline, rung2 better and rungs 3-6 not worse (D-14)
+- [ ] 01-16-PLAN.md — D-13 branch cleanup behind a one-way decision checkpoint
 
 ### Phase 2: Real Descent
 **Goal**: The bot completes the Mines, goes back up and keeps descending the main dungeon past the Oracle and the Big Room, reliably finds downstairs, and enters the Quest portal on purpose.
