@@ -1,0 +1,23 @@
+{
+  "source_path": "docs/superpowers/specs/2026-10-21-seeded-bench-design.md",
+  "type": "SPEC",
+  "confidence": "medium",
+  "manifest_override": true,
+  "title": "Seeded, paired bench experiments \u2014 design",
+  "summary": "Design for seeded, paired bench experiments: fixed NetHack seeds per game, a seed-aware scheduler, paired verdict intervals, and seed-aware store queries.",
+  "scope": [
+    "bench games",
+    "run_game(seed)",
+    "GameResult.seed",
+    "worker protocol (play <seed>)",
+    "scheduler",
+    "paired verdict",
+    "results store",
+    "NetHack RNG seeding (set_initial_seeds)",
+    "A/A control"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Path under docs/superpowers/specs/ gives a strong SPEC filename/path signal, and the body defines interface contracts (run_game signature, worker protocol, store queries, verdict formula). No frontmatter and no status field, and the document is framed as a design rationale with Why/Design/Testing/After sections, so it is not a locked ADR. Could be read as DOC because of the rationale prose; SPEC chosen on path and contract signals. Output filename uses a placeholder suffix 'UNHASHED': the required 8-hex SHA-256 suffix of the source path could not be computed because no shell or hashing tool was available to this classifier. Rename to <slug>-<first 8 hex of sha256(source_path)>.json."
+}

@@ -1,0 +1,25 @@
+# Ingest manifest: all discovered docs except docs/ASCENSION-GUIDE.md,
+# which is left out to break its cross-reference cycle with docs/STATUS.md.
+docs:
+  - path: docs/superpowers/specs/2026-10-16-nethack-screensaver-design.md
+    type: SPEC
+  - path: docs/superpowers/specs/2026-10-18-secret-strategies-design.md
+    type: SPEC
+  - path: docs/superpowers/specs/2026-10-20-bench-server-design.md
+    type: SPEC
+  - path: docs/superpowers/specs/2026-10-21-ascension-ladder-design.md
+    type: SPEC
+  - path: docs/superpowers/specs/2026-10-21-seeded-bench-design.md
+    type: SPEC
+  - path: docs/superpowers/plans/2026-10-16-nethack-screensaver.md
+    type: SPEC
+  - path: docs/superpowers/plans/2026-10-18-secret-strategies.md
+    type: SPEC
+  - path: docs/superpowers/plans/2026-10-20-bench-server.md
+    type: SPEC
+  - path: docs/superpowers/plans/2026-10-21-ascension-ladder.md
+    type: SPEC
+  - path: docs/ROADMAP.md
+    type: DOC
+  - path: docs/STATUS.md
+    type: DOC

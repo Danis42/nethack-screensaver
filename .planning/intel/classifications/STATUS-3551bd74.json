@@ -1,0 +1,26 @@
+{
+  "source_path": "docs/STATUS.md",
+  "type": "DOC",
+  "confidence": "medium",
+  "manifest_override": true,
+  "title": "Where we are (2026-10-21)",
+  "summary": "Project status snapshot for the NetHack bot: objective, completed sub-project 0, bench results, next steps, and dropped experiments.",
+  "scope": [
+    "NetHack bot",
+    "ascension objective",
+    "sub-project 0 ladder baseline",
+    "bench server",
+    "experiments",
+    "survival rules",
+    "human game data"
+  ],
+  "cross_refs": [
+    "autoascend/PORTING.md",
+    "docs/ROADMAP.md",
+    "docs/ASCENSION-GUIDE.md",
+    "handoff.txt"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "No ADR, PRD, or SPEC signals: no frontmatter, no Status field, no Context/Decision/Consequences sections, no user stories or acceptance criteria, no API or schema contracts. Prose and bullet status log. It records decisions (e.g. 'Ascension is the only priority', dropped experiments) inline, but not in ADR form, so it is not locked. Classified DOC as context only. Source is a handoff/status copy (mirrored as handoff.txt). Output filename could not include the SHA-256 source_hash because this classifier has no hashing tool; the orchestrator must rename it to STATUS-{first 8 hex of sha256('docs/STATUS.md')}.json."
+}

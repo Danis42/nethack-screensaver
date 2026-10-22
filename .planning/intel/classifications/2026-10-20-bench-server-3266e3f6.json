@@ -1,0 +1,26 @@
+{
+  "source_path": "docs/superpowers/plans/2026-10-20-bench-server.md",
+  "type": "SPEC",
+  "confidence": "low",
+  "manifest_override": true,
+  "title": "Bench Server Implementation Plan",
+  "summary": "Task-by-task implementation plan for a local NetHack bench server: SQLite store, scheduler, worker subprocesses, HTTP API, and MCP client.",
+  "scope": [
+    "bench package",
+    "Store (SQLite)",
+    "Scheduler",
+    "App",
+    "ThreadingHTTPServer API",
+    "bench/worker.py subprocess",
+    "bench/mcp_server.py MCP client",
+    "git worktrees",
+    "xlog/dumplog importers",
+    "reference ascensions"
+  ],
+  "cross_refs": [
+    "docs/superpowers/specs/2026-10-20-bench-server-design.md"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Implementation plan rather than a spec, but it fixes technical contracts (port 8765, DB path, checkpoint sizes, module responsibilities, worker import restriction), so SPEC is the closest fit at low confidence. Classified from the first 50 lines plus the Global Constraints, File Structure, and Review Focus sections."
+}

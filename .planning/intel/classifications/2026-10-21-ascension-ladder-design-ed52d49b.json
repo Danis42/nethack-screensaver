@@ -1,0 +1,32 @@
+{
+  "source_path": "docs/superpowers/specs/2026-10-21-ascension-ladder-design.md",
+  "type": "SPEC",
+  "confidence": "medium",
+  "manifest_override": true,
+  "title": "Ascension ladder (sub-project 0) \u2014 design",
+  "summary": "Design for the ascension ladder: 17 progress rungs measured live by the bot, recorded in GameResult and the bench metrics, with no strategy changes.",
+  "scope": [
+    "ascension ladder",
+    "autoascend/ladder.py",
+    "Facts dataclass",
+    "rung detection",
+    "autoascend/global_logic.py",
+    "nethack_screensaver/game.py GameResult",
+    "bench/metrics.py",
+    "bench/report.py",
+    "dashboard",
+    "Sokoban",
+    "Gnomish Mines",
+    "Mines' End",
+    "Medusa",
+    "Gehennom",
+    "Astral Plane"
+  ],
+  "cross_refs": [
+    "docs/ROADMAP.md",
+    "autoascend/PORTING.md"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Classified by path heuristic (docs/superpowers/specs/ -> SPEC) plus content: component contracts (module, dataclass, function signatures), a rung table with detection rules, and testing/validation sections. No frontmatter and no Status field, so not an ADR; the 'Decisions (from the brainstorm)' section is a bulleted list of design choices, not an ADR Context/Decision/Consequences structure. Could read as PRD-like (goal/rungs), but the content is implementation-facing, so SPEC. Confidence medium, not high, because there is no frontmatter type. source_hash could not be computed: the classifier has no hashing tool, so this file is named with the placeholder UNHASHED instead of the 8-hex SHA-256 suffix. The orchestrator should rename it to ascension-ladder-design-{sha256(source_path)[0:8]}.json."
+}
