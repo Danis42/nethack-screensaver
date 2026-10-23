@@ -26,6 +26,24 @@ Target: Python 3.13, NLE 1.3.0 (gymnasium), numpy 2, modern numba/opencv.
 - env_wrapper.py: NLE reports leaving the dungeon with end_status DEATH; the final screen
   says "escaped the dungeon [max level N]", which is now reported as `ESCAPED: ...`.
 - Observed: the final game-over observation has all-zero blstats; `game.run_game` keeps the last non-zero turn/depth.
+- nethack_screensaver/game.py (Phase 1, determinism): seeded games build `NetHackChallenge(fix_moon_phase=True)`, so
+  the moon phase, Friday the 13th and night come from the seed, not the calendar. Screensaver games (no seed) keep
+  the real clock. `GameResult` gained death-context fields (`last_messages`, `prayers`, `zaps_seen`, `hp_at_end`,
+  `max_hp_at_end`, `hunger_at_end`, `depth_at_end`, `food_at_end`) and `events` (bot counters); all default, so old
+  stored JSON still loads.
+- soko_solver/search.py, global_logic.py (Phase 1, determinism): the live Sokoban solver ends on a state budget only,
+  `SOKOBAN_LIVE_MAX_STATES = 40_000` with no wall-clock limit (worst board: 40,000 states in 8.4 s), so the same seed
+  solves the same way under any machine load.
+- stats_logger.py: `counters()` and `add()` expose the bot's event counters for `GameResult.events`.
+- prayer.py (new, Phase 1): `prayer_outcome` classifies prayer messages taken from NLD-NAO human games. Not used by
+  the bot yet.
+- bench/runner.py: bench workers run with `PYTHONHASHSEED=0`, so set and dict-of-str order is the same in every game.
+- nethack_screensaver/fixed_clock.py (new, Phase 1, determinism): NetHack reads the clock at game start
+  (`u.ubirthday`) and names shopkeepers from it; `fix_moon_phase` does not cover that. A small LD_PRELOAD library
+  replaces libc `time()` with `NLE_FIXED_TIME`, and `run_game` sets it per seed (`1_000_000_000 + seed * 257`, so
+  every seed gets its own name bucket). Python's clocks and the watchdog keep real time. Bench workers load the
+  library and run with one BLAS/OpenMP thread (`OMP_NUM_THREADS=1` etc.); `scripts/benchmark.py --seeds`
+  restarts itself with the library loaded.
 
 ## Benchmark (2026-10-16, 50 games, `scripts/benchmark.py -n 50 -j 10`)
 
@@ -332,3 +350,40 @@ Every game plays the pilgrim route now (`strategy = "random"` in the config brin
 mix of all four plans back). In the 1152 games of `2653410` pilgrims reached Minetown+ in
 35%, daredevils and sightseers in 20%: the other plans diluted every measurement.
 New baselines are needed; numbers before this change are not comparable.
+
+## Phase 1: seeded pilgrim-only bench (2026-10-23)
+
+Rules, names and ledger: `.planning/phases/01-midgame-survival/01-EXPERIMENT-PROTOCOL.md`.
+
+### Determinism (MEAS-03)
+
+A seeded game now plays the same way every time, on any machine load: the moon phase comes
+from the seed (`fix_moon_phase`), the live Sokoban solver stops on a state budget only
+(40,000 states, at most 8.4 s, no wall-clock limit), bench workers run with
+`PYTHONHASHSEED=0` and one BLAS thread, and NetHack's start time is pinned per seed
+(`fixed_clock`, so shopkeeper names come from the seed). What still does not replay: the
+120 s screen watchdog (a game that hangs ends "watchdog"; replay checks skip and list those
+seeds), and unseeded screensaver games, which use the real clock on purpose. Tests:
+`tests/test_replay.py` (same seed in two fresh processes gives the same game and sees the
+pinned time), `tests/test_fixed_clock.py`.
+
+### A/A control
+
+Attempt 1 (job 9, 2026-10-23): `6ce5ac50d334232a20f08dda58410c131b12df6a` against its
+docs-only twin `be40c7c9f6874d958a37ec0f17ac775f480c9c02`, rung2, 1152 seeds per side.
+Verdict no measurable difference (0.0 [0.0, 0.0]), but the replay check failed: 44 of 1149
+seeds played differently. Cause: the start time picks shopkeeper names; 43 seeds differed
+only in names, seed 1127 in play (reproduced by faking the start time: 4067 turns at one
+time, 4754 at another). Fix: `e3f0dd7` (`fixed_clock`).
+
+Attempt 2 (job 10, 2026-10-23): `p1-aa-base` = `e3f0dd7ab7054901d93dab9ef586b50154fb963a`,
+`p1-aa-twin` = `2c567b5b5deb60bc9147b79437f62dba3d473dcf` (docs only), rung2, 1152 seeds
+(0..1151) per side. Verdict: no measurable difference, 0.0 [0.0, 0.0] points; rung2 26.1%
+(301 of 1152) on both sides. Replay check: 1149 seeds compared, 0 mismatched; 3 skipped
+(watchdog: seeds 227, 436, 690). Speed: 39.2 games/min against 36.2 for job 9 (+8%, 11
+workers, whole-run average).
+
+This proves the bench replays identical code identically; it says nothing yet about how
+small a real difference it can see (that is plan 01-06).
+
+A/A control: passed for `e3f0dd7ab7054901d93dab9ef586b50154fb963a`
