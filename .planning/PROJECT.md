@@ -126,9 +126,10 @@ sub-projects) exists but was left out of the ingest on purpose; read it as backg
 | Main objective is a real ascension (2026-10-20); ascension is the only priority (2026-10-21) | The screensaver is eye candy; the bot's strength is the interesting problem | — Pending |
 | Success is a 17-rung ladder in the median order of 687 real ascensions | A binary "ascended" signal is too rare to steer by; rungs give partial credit | ✓ Good (recorded live, baseline measured) |
 | Every game plays the pilgrim route; other plans behind `strategy = "random"` | Mixed strategies diluted every measurement (pilgrim 35% vs others 20% Minetown+) | ✓ Good |
+| Every game is a dwarvish Valkyrie until the first ascension (2026-10-23, `0b09707`); `CHARACTER = "@"` brings random roles back | Melee roles reach Minetown 45-51% vs 8-17% for weak starts; BotHack (first bot ascension, 2015) also played only dwarvish Valkyries; Mines natives are peaceful to dwarves | — Pending (new baseline and A/A) |
 | Vendor rule-based AutoAscend rather than write or train a bot | Upstream won the NeurIPS 2021 challenge; no ML dependencies | ✓ Good |
 | Every change measured on the local bench; one change per experiment | Intuition about bot changes was repeatedly wrong (threat model, flee, choke-points) | ✓ Good |
-| Seeded, paired experiments replace independent samples | Unseeded noise (about 3.5 points) hid real 1-3 point gains | — Pending (A/A control not yet run) |
+| Seeded, paired experiments replace independent samples | Unseeded noise (about 3.5 points) hid real 1-3 point gains | ✓ Replays exactly (A/A job 10); resolution weaker than hoped: a bot-RNG change alone flips 32% of seeds on rung2 (job 11) |
 | Code under test is always a git commit run from a worktree | Reproducible, baselines reusable per SHA | ✓ Good |
 | Rungs 9-17 start as simple proxies, refined when their phase arrives | Rungs 1-8 must be accurate now; later ones cannot be exercised yet | — Pending |
 | Local git only; merge finished tested branches to `main` | Owner's standing rule | ✓ Good |

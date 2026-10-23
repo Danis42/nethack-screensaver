@@ -11,6 +11,7 @@ RESEARCH Patterns 1-2 / Pitfalls 1-7 into steps. Plans reference it with
 | Name | Kind | Meaning | Created by |
 |------|------|---------|------------|
 | `p1-aa-base`, `p1-aa-twin` | local tags | A/A control #1: measurement code and its docs-only twin | 01-05 |
+| `p1-valk-base`, `p1-valk-twin` | local tags | A/A control after the Valkyrie-only switch (owner, 2026-10-23); measurement code for everything after it | 01-06 |
 | `p1-aa2-base`, `p1-aa2-twin` | local tags | A/A control #2, only if `lgen` is adopted | 01-06 |
 | `p1-baseline` | local tag | MEAS-02 pilgrim-only baseline code SHA; never moved after 01-07 | 01-07 |
 | `p1-final` | local tag | Code SHA of `main` judged for SURV-06 | 01-15 |
