@@ -52,6 +52,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Midgame Survival
+
 **Goal**: The pilgrim bot dies measurably less often on Dlvl 4-12, so more games reach Minetown, Sokoban and Mines' End, and the bench can see 1-3 point effects.
 **Depends on**: Nothing (first phase); builds on the delivered ladder and seeded bench
 **Requirements**: MEAS-01, MEAS-02, MEAS-03, SURV-01, SURV-02, SURV-03, SURV-04, SURV-05, SURV-06
@@ -61,10 +62,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. A pilgrim-only baseline of `main` (seeds 0..575) is stored, and its 17-rung table (games per rung, median turn against the yardstick) is written into `autoascend/PORTING.md`, with the older mixed-strategy numbers marked not comparable.
   3. Resting to full HP, starvation, wand/ray users, and ants/killer bees each have a recorded paired verdict: `better` changes are merged to `main`, the rest are dropped and logged with their interval; the three unmerged branches (`threat-model`, `flee-upstairs`, `choke-points`) are each re-judged once on the seeded bench.
   4. The final `main` of this phase against the pilgrim-only baseline gives a paired `better` verdict on `rung2` (Minetown+), and rungs 3-6 are not worse.
-**Plans:** 16 plans
+
+**Plans:** 1/16 plans executed
 
 Plans:
-- [ ] 01-01-PLAN.md — Seeded games replay across processes and dates (moon from the seed) and record their death context
+- [x] 01-01-PLAN.md — Seeded games replay across processes and dates (moon from the seed) and record their death context
 - [ ] 01-02-PLAN.md — Live Sokoban solver on a measured state budget, workers with a fixed hash seed
 - [ ] 01-03-PLAN.md — Read-only seeded-bench tools: verdict, pairs, ladder, killers, deaths, replay check, seeded smoke runs
 - [ ] 01-04-PLAN.md — NLD-NAO human study: prayer-outcome strings and Dlvl 4-12 food/prayer habits (D-10)
@@ -82,6 +84,7 @@ Plans:
 - [ ] 01-16-PLAN.md — D-13 branch cleanup behind a one-way decision checkpoint
 
 ### Phase 2: Real Descent
+
 **Goal**: The bot completes the Mines, goes back up and keeps descending the main dungeon past the Oracle and the Big Room, reliably finds downstairs, and enters the Quest portal on purpose.
 **Depends on**: Phase 1
 **Requirements**: DESC-01, DESC-02, DESC-03, DESC-04, DESC-05
@@ -91,9 +94,11 @@ Plans:
   2. Fewer games end stuck on a level they cannot leave (`unsticks` and watchdog end reasons at Dlvl 5+) than in the Phase 1 result, shown as a paired verdict.
   3. The share of games reaching Dlvl 15+ (`rung7`, baseline 2%) is higher than in the Phase 1 result, paired verdict `better`.
   4. Rung 8 is recorded in more games than the single accidental baseline game, with a recorded game showing the bot recognising the Quest portal level and stepping through on purpose.
+
 **Plans**: TBD
 
 ### Phase 3: Gearing Up
+
 **Goal**: The bot arrives deep wearing and carrying what real ascenders do: armour with low AC, magic resistance, reflection, and working wands and rings.
 **Depends on**: Phase 2
 **Requirements**: GEAR-01, GEAR-02, GEAR-03, GEAR-04, GEAR-05, GEAR-06, GEAR-07
@@ -103,9 +108,11 @@ Plans:
   2. Median final AC is measurably better, and the share of games with a magic-resistance source and with a reflection source is measurably higher, each as a paired verdict against the Phase 2 result.
   3. Recorded games show wands and rings being identified and used on purpose, and the crash rate in a 576-game run is not higher than before (no new exception types).
   4. The Dlvl 15+ share (`rung7`) beats the Phase 2 result, and games that reach Dlvl 15+ carry what Medusa needs (reflection or a blindfold, plus a way over water) in a measurable share.
+
 **Plans**: TBD
 
 ### Phase 4: Medusa's Level
+
 **Goal**: The bot arrives on Medusa's level, survives her gaze, crosses the water and takes the downstairs; a late-game test harness makes this checkable without playing 20 levels first.
 **Depends on**: Phase 3
 **Requirements**: STAGE-01, MED-01, MED-02, MED-03
@@ -114,9 +121,11 @@ Plans:
   1. A bench game can start at a chosen late-game situation (Medusa's level with a standard kit), and staged results are reported separately, leaving natural-play rung rates untouched.
   2. Rung 9 is recorded only on Medusa's level itself (unit-tested and seen in a staged game), and a "crossed Medusa" fact is stored in the result when the level below is reached.
   3. In staged games the bot survives the gaze and takes the downstairs in a recorded share of runs (rate stored in `autoascend/PORTING.md`), including at least one game that crosses.
+
 **Plans**: TBD
 
 ### Phase 5: Castle and Wishes
+
 **Goal**: The bot gets into the Castle, takes the wand of wishing, and turns the wishes into gear it then wears.
 **Depends on**: Phase 4
 **Requirements**: CAST-01, CAST-02, CAST-03
@@ -125,9 +134,11 @@ Plans:
   1. Rung 10 is recorded on the Castle level exactly (unit-tested), and staged games show the bot getting in past the moat and drawbridge.
   2. A staged game ends with the wand of wishing in the bot's inventory, recorded as a fact in the result.
   3. After wishing, the inventory holds items from the defined wish list and the bot wears or uses them, shown by the stored inventory of staged games.
+
 **Plans**: TBD
 
 ### Phase 6: The Quest
+
 **Goal**: The bot reaches XL 14, is accepted by its Quest leader, clears the Quest and returns with the Bell of Opening.
 **Depends on**: Phase 3 (and Phase 2's Quest portal entry)
 **Requirements**: QUEST-01, QUEST-02, QUEST-03
@@ -136,9 +147,11 @@ Plans:
   1. Bench results show final XL, and the share of games reaching XL 14 is recorded per role and rises over the Phase 3 result.
   2. A staged game at the Quest home level with an XL 14 character shows the leader accepting the bot and the bot descending the Quest levels to the nemesis.
   3. A game ends with the Bell of Opening in inventory, stored as a bench-visible fact, for several of the roles the bot is randomly dealt.
+
 **Plans**: TBD
 
 ### Phase 7: Gehennom
+
 **Goal**: The bot enters Gehennom, descends its mazes, takes the Candelabrum and the Book of the Dead, and performs the invocation to get the Amulet of Yendor.
 **Depends on**: Phase 5, Phase 6
 **Requirements**: GEH-01, GEH-02, GEH-03, GEH-04
@@ -147,9 +160,11 @@ Plans:
   1. Staged games from the Castle drop into Gehennom (rung 11) and descend several maze levels, finding the downstairs on levels that are mazes rather than rooms.
   2. Rungs 12 (Vlad's Tower) and 13 (Book of the Dead in inventory) are each recorded exactly, and staged games take the Candelabrum and the Book.
   3. A staged game with Bell, Candelabrum and Book finds the vibrating square, completes the invocation (rung 14) and ends with the Amulet of Yendor in inventory.
+
 **Plans**: TBD
 
 ### Phase 8: Planes and Ascension
+
 **Goal**: The bot climbs out carrying the Amulet, crosses the Elemental Planes, reaches the Astral Plane and offers the Amulet, ending the game as an ascension.
 **Depends on**: Phase 7
 **Requirements**: PLANE-01, PLANE-02, PLANE-03
@@ -159,6 +174,7 @@ Plans:
   2. A staged game reaches the Astral Plane (rung 16), finds its own god's altar and offers the Amulet, so the game's end reason says "ascended" (rung 17).
   3. At least one natural, unstaged seeded bench game on the pilgrim route ends "ascended", recorded in the bench results as rung 17 (the project's core objective).
   4. The same code run by the screensaver itself plays a game to its ascension ending on screen without breaking the terminal.
+
 **Plans**: TBD
 
 ## Progress
@@ -168,7 +184,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 (decimal i
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Midgame Survival | 0/14 | Planned | - |
+| 1. Midgame Survival | 1/16 | In Progress | - |
 | 2. Real Descent | 0/TBD | Not started | - |
 | 3. Gearing Up | 0/TBD | Not started | - |
 | 4. Medusa's Level | 0/TBD | Not started | - |

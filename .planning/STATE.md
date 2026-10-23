@@ -4,16 +4,16 @@ milestone: v0.1.0
 current_phase: 01
 current_phase_name: Midgame Survival
 status: executing
-stopped_at: Phase 1 planned (16 plans)
-last_updated: "2026-10-23T16:16:59.091Z"
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-10-23T16:24:45.504Z"
 last_activity: 2026-10-23
 last_activity_desc: Phase 01 execution started
-state_head: 6bcfcab455981b00cc5f08bd17540db2df71dfed
+state_head: ddca9c3d31ec49a90b8efc04a1b66dbce621e5f5
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 16
-  completed_plans: 0
+  completed_plans: 1
 ---
 
 # Project State
@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 ## Current Position
 
 Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 1 of 16
-Status: Executing Phase 01
+Plan: 2 of 16
+Status: Ready to execute
 Last activity: 2026-10-23 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -52,6 +52,11 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: -
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 01 P01 | 6 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -62,6 +67,8 @@ Full log in PROJECT.md Key Decisions. Recent, affecting current work:
 - [Pre-roadmap]: Ascension is the only priority; every game plays the pilgrim route (`strategy = "pilgrim"`), others behind `strategy = "random"`
 - [Pre-roadmap]: Every change is one experiment on the seeded paired bench; "no measurable difference" is not a win
 - [Pre-roadmap]: Git is local only; finished tested branches merge to `main` locally
+- [Phase 01]: 01-01: fix_moon_phase=seed is not None - only seeded bench games are calendar-independent, screensaver keeps the real moon
+- [Phase 01]: 01-01: _DeathContext observes observations only; agent reads (_food_at_end/_events) happen after the game
 
 ### Pending Todos
 
@@ -89,6 +96,6 @@ Tracked but unscheduled (REQUIREMENTS.md v2): ROLE-01 role choice, DEBT-01..05 t
 
 ## Session Continuity
 
-Last session: 2026-10-23
-Stopped at: Session resumed; Phase 1 planned (16 plans, 13 waves), proceeding to execute
-Resume file: .planning/phases/01-midgame-survival/01-01-PLAN.md
+Last session: 2026-10-23T16:24:45.477Z
+Stopped at: Completed 01-01-PLAN.md
+Resume file: None
