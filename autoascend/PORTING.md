@@ -388,6 +388,21 @@ small a real difference it can see (that is plan 01-06).
 
 A/A control: passed for `e3f0dd7ab7054901d93dab9ef586b50154fb963a`
 
+Attempt 3, Valkyrie only (job 13, 2026-10-24): the owner fixed the character to a dwarvish
+Valkyrie until the first ascension (`CHARACTER = "val-dwa-fem-law"` in `game.py`, `"@"` for
+random characters). `p1-valk-base` = `0b097073adb3071f8e5c2aea954618a3320a5bc7`,
+`p1-valk-twin` = `00006e4f07d28bf93218fd7be1f7e0214a99c69a` (docs only), rung2, 1152 seeds
+per side: no measurable difference, 0.0 [0.0, 0.0]; replay check 1133 seeds compared, 0
+mismatched, 19 skipped (watchdog: seeds 13, 43, 70, 210, 217, 326, 350, 376, 404, 478, 506,
+643, 672, 680, 741, 768, 801, 901, 1100). 23.5 games/min (longer games).
+
+Valkyrie ladder (1152 games): Mines 73%, Minetown 44%, Oracle 29%, Sokoban 18%, Sokoban
+solved 15%, Mines' End 14%, Dlvl 15+ 8%, Quest 2%, Medusa 1% (10 games, the first ever); all
+roles before: Minetown 26%, nothing past the Quest. Every watchdog game is a deep one
+(Dlvl 11-28, rung 7-8): the 120 s watchdog ends the best games, a problem for later rungs.
+
+A/A control: passed for `0b097073adb3071f8e5c2aea954618a3320a5bc7`
+
 ### Bench speed
 
 One BLAS/OpenMP thread per worker (shipped in `e3f0dd7`, before it 11 workers ran ~34
