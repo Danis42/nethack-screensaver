@@ -13,7 +13,8 @@ from nethack_screensaver import game
 
 ROOT = Path(__file__).parent.parent
 # result fields that must replay exactly (the rest, e.g. score, follow from the same game)
-COMPARED = ["turns", "end_reason", "rung", "last_messages"]
+COMPARED = ["turns", "end_reason", "rung", "last_messages", "prayers", "zaps_seen", "hp_at_end", "max_hp_at_end",
+            "hunger_at_end", "depth_at_end", "food_at_end", "events"]
 
 CHILD = """
 import hashlib, json, sys
@@ -55,6 +56,7 @@ def test_fresh_processes_replay_the_same_game():
         for name in COMPARED:
             assert a["result"][name] == b["result"][name], f"seed {seed}: {name} differs"
         json.dumps(a["result"])
+        assert a["result"]["max_hp_at_end"] > 0 and a["result"]["depth_at_end"] >= 1
 
 
 def _play(seed, max_steps=3000):
@@ -72,6 +74,7 @@ def test_one_process_replays_seed_a_after_seed_b():
     assert first[0] == again[0], "seed 3 played differently after seed 10 in the same process"
     for name in COMPARED:
         assert first[1][name] == again[1][name], name
+    json.dumps(first[1])
 
 
 @pytest.mark.slow

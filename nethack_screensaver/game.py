@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import random
+import re
 import signal
 from dataclasses import dataclass, field
 from typing import Callable
@@ -11,6 +12,8 @@ from nle.env.tasks import NetHackChallenge
 
 from autoascend.env_wrapper import EnvWrapper
 from autoascend.global_logic import Milestone
+from autoascend.glyph import MON
+from autoascend.item import flatten_items
 from autoascend.plans import DEFAULT_STRATEGY, STRATEGIES, choose_strategy, plan_for, race_from_welcome
 
 HP = 10
@@ -54,6 +57,14 @@ class GameResult:
     rung: int = 0  # highest ladder rung reached
     ladder_error: int = 0  # 1 when the ladder broke mid-game (values incomplete)
     last_messages: list = field(default_factory=list)  # last 8 distinct message lines, oldest first
+    prayers: list = field(default_factory=list)  # [turn, the next 4 message lines joined with " | "] per prayer
+    zaps_seen: int = 0  # distinct message lines where a monster zapped something
+    hp_at_end: int = 0  # from the last observation whose blstats are not all zero
+    max_hp_at_end: int = 0
+    hunger_at_end: int = 0
+    depth_at_end: int = 0
+    food_at_end: int = -1  # edible food items in the inventory after the game, -1 if unreadable
+    events: dict = field(default_factory=dict)  # the bot's non-zero event counters
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -109,6 +120,19 @@ def _has_loot(wrapper) -> bool:
         return False
 
 
+_ZAPS = re.compile(r"\bzaps\b")
+_PRAYING = "You begin praying to"
+_PRAYER_LINES = 4
+
+
+def _edible_food(item) -> bool:
+    # same rule as autoascend.agent.Agent.edible_inventory_food (kept in step by hand: touching the
+    # agent here would risk changing its behaviour)
+    return (item.category == nh.FOOD_CLASS and item.objs[0].name != "sprig of wolfsbane" and
+            (not item.is_corpse() or
+             item.monster_id in [MON.from_name(n) - nh.GLYPH_MON_OFF for n in ("lizard", "lichen")]))
+
+
 class _DeathContext:
     """Records how a game ended. It sees observations only (never the wrapper or the agent), so it
     cannot act on the game; the bench judges games it runs inside."""
@@ -116,17 +140,50 @@ class _DeathContext:
     def __init__(self, keep: int = 8):
         self.keep = keep
         self.last_messages: list[str] = []
+        self.zaps_seen = 0
+        self.hp_at_end = self.max_hp_at_end = self.hunger_at_end = self.depth_at_end = 0
+        self._prayers: list[list] = []  # [turn, lines]
         self._row0 = None
 
+    @property
+    def prayers(self) -> list:
+        return [[turn, " | ".join(lines)] for turn, lines in self._prayers]
+
     def observe(self, obs):
+        bl = obs["blstats"]
+        if bl.any():  # the final (game-over) observation is all zero
+            self.hp_at_end, self.max_hp_at_end = int(bl[HP]), int(bl[MAX_HP])
+            self.hunger_at_end, self.depth_at_end = int(bl[HUNGER]), int(bl[DEPTH])
         row = obs["tty_chars"][0]
         if self._row0 is not None and (row == self._row0).all():
             return
         self._row0 = row.copy()
         line = bytes(row).decode(errors="replace").strip()
-        if line and (not self.last_messages or self.last_messages[-1] != line):
-            self.last_messages.append(line)
-            del self.last_messages[:-self.keep]
+        if not line or (self.last_messages and self.last_messages[-1] == line):
+            return
+        for turn, lines in self._prayers:
+            if len(lines) < _PRAYER_LINES:
+                lines.append(line)
+        if _PRAYING in line:
+            self._prayers.append([int(bl[TURN]), []])
+        if _ZAPS.search(line) and not line.startswith("You"):
+            self.zaps_seen += 1
+        self.last_messages.append(line)
+        del self.last_messages[:-self.keep]
+
+
+def _food_at_end(wrapper) -> int:
+    try:
+        return sum(1 for item in flatten_items(wrapper.agent.inventory.items) if _edible_food(item))
+    except Exception:  # agent never started, or crashed with its inventory half-parsed
+        return -1
+
+
+def _events(wrapper) -> dict:
+    try:
+        return wrapper.agent.stats_logger.counters()
+    except Exception:  # agent never started
+        return {}
 
 
 class _ScreenWatchdog:
@@ -228,7 +285,10 @@ def run_game(
                       panics=_stat(wrapper, "agent_panic"), stuck_diving=_stat(wrapper, "stuck_diving"),
                       unsticks=_stat(wrapper, "unstick"), ladder=ladder, rung=rung,
                       ladder_error=_stat(wrapper, "ladder_error"), seed=seed,
-                      last_messages=list(ctx.last_messages),
+                      last_messages=list(ctx.last_messages), prayers=ctx.prayers, zaps_seen=ctx.zaps_seen,
+                      hp_at_end=ctx.hp_at_end, max_hp_at_end=ctx.max_hp_at_end,
+                      hunger_at_end=ctx.hunger_at_end, depth_at_end=ctx.depth_at_end,
+                      food_at_end=_food_at_end(wrapper), events=_events(wrapper),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 

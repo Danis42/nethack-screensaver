@@ -255,3 +255,65 @@ def test_messages_keep_the_last_eight_distinct_lines():
     for i, text in enumerate(texts):
         ctx.observe(_fake_obs(text, turn=i + 1))
     assert ctx.last_messages == ["d", "e", "f", "g", "h", "i", "j", "k"]
+
+
+def test_prayer_is_recorded_with_the_messages_that_follow_it():
+    ctx = game._DeathContext()
+    ctx.observe(_fake_obs("You walk.", turn=3))
+    ctx.observe(_fake_obs("You begin praying to Tyr.", turn=41))
+    for i, text in enumerate(["l1", "l1", "", "l2", "l3", "l4", "l5"]):
+        ctx.observe(_fake_obs(text, turn=42 + i))
+    assert ctx.prayers == [[41, "l1 | l2 | l3 | l4"]]
+
+
+def test_unfinished_prayer_is_kept_when_the_game_ends():
+    ctx = game._DeathContext()
+    ctx.observe(_fake_obs("You begin praying to Tyr.", turn=9))
+    ctx.observe(_fake_obs("You are surrounded by a shimmering light.", turn=9))
+    assert ctx.prayers == [[9, "You are surrounded by a shimmering light."]]
+
+
+def test_monster_zaps_are_counted_but_own_zaps_are_not():
+    ctx = game._DeathContext()
+    for text in ["The gnome lord zaps a wand!", "The gnome lord zaps a wand!", "You zap a wand of striking.",
+                 "The newt bites!"]:
+        ctx.observe(_fake_obs(text))
+    assert ctx.zaps_seen == 1
+
+
+def test_end_state_ignores_the_all_zero_final_observation():
+    import numpy as np
+    ctx = game._DeathContext()
+    ctx.observe(_fake_obs("hi", hp=7, max_hp=30, hunger=3, depth=6))
+    final = _fake_obs("DYWYPI?")
+    final["blstats"] = np.zeros(27, dtype=np.int64)
+    ctx.observe(final)
+    assert (ctx.hp_at_end, ctx.max_hp_at_end, ctx.hunger_at_end, ctx.depth_at_end) == (7, 30, 3, 6)
+
+
+def _food_item(name="food ration", corpse=False):
+    import nle.nethack as nh
+    from types import SimpleNamespace
+    return SimpleNamespace(category=nh.FOOD_CLASS, objs=[SimpleNamespace(name=name)],
+                           is_corpse=lambda: corpse, is_container=lambda: False, monster_id=-1)
+
+
+def test_food_at_end_counts_edible_items_and_survives_a_missing_agent():
+    from types import SimpleNamespace
+    import nle.nethack as nh
+    items = [_food_item(), _food_item("apple"), _food_item("sprig of wolfsbane"), _food_item("newt corpse", True),
+             SimpleNamespace(category=nh.WEAPON_CLASS, objs=[SimpleNamespace(name="dagger")],
+                             is_corpse=lambda: False, is_container=lambda: False, monster_id=-1)]
+    wrapper = SimpleNamespace(agent=SimpleNamespace(inventory=SimpleNamespace(items=items)))
+    assert game._food_at_end(wrapper) == 2
+    assert game._food_at_end(SimpleNamespace(agent=None)) == -1
+
+
+def test_events_are_the_non_zero_counters():
+    from types import SimpleNamespace
+    from autoascend.stats_logger import StatsLogger
+    logger = StatsLogger()
+    logger.add("elbereth_write", 2)
+    wrapper = SimpleNamespace(agent=SimpleNamespace(stats_logger=logger))
+    assert game._events(wrapper) == {"elbereth_write": 2}
+    assert game._events(SimpleNamespace(agent=None)) == {}

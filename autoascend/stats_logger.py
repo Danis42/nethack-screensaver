@@ -49,6 +49,13 @@ class StatsLogger:
     def log_event(self, name):
         self._values[name] += 1
 
+    def add(self, name, n=1):
+        self._values[name] += n
+
+    def counters(self):
+        """The non-zero event counters as plain ints."""
+        return {name: int(v) for name, v in self._values.items() if v}
+
     def log_gold(self, amount):
         self.gold.append(amount)
 
