@@ -12,7 +12,7 @@ WORKER_SCRIPT = Path(__file__).with_name("worker.py")
 class ProcessWorker:
     def __init__(self, python, worktree, log_path, nice=10):
         self._log = open(log_path, "a")
-        env = {**os.environ, "PYTHONPATH": str(worktree)}
+        env = {**os.environ, "PYTHONPATH": str(worktree), "PYTHONHASHSEED": "0"}
         cmd = [str(python), str(WORKER_SCRIPT)]
         if nice:
             cmd = ["nice", "-n", str(nice), *cmd]

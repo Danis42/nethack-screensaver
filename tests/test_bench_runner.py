@@ -107,3 +107,31 @@ def test_play_lines_are_parsed():
     from bench.worker import parse
     assert parse("play\n") == (True, None) and parse("play 7\n") == (True, 7)
     assert parse("stop\n") == (False, None) and parse("\n") == (False, None)
+
+
+HASH_SEED_GAME = '''
+import os
+from dataclasses import dataclass
+
+@dataclass
+class GameResult:
+    role: str
+    max_depth: int
+
+def run_game(watchdog_seconds=None):
+    return GameResult(os.environ.get("PYTHONHASHSEED", "unset"), 1)
+'''
+
+
+def test_worker_runs_with_a_fixed_hash_seed(tmp_path, monkeypatch):
+    monkeypatch.setenv("PYTHONHASHSEED", "random")  # whatever the server was started with
+    wt = _fake_worktree(tmp_path)
+    (wt / "nethack_screensaver" / "game.py").write_text(HASH_SEED_GAME)
+    w = ProcessWorker(sys.executable, wt, tmp_path / "worker.log", nice=0)
+    try:
+        w.play()
+        got = []
+        _wait_for(lambda: got.extend(w.results()) or got)
+        assert got[0]["role"] == "0"
+    finally:
+        w.close()
