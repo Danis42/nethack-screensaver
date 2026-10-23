@@ -189,3 +189,69 @@ def test_a_seed_replays_the_same_game_start():
 def test_a_seed_with_a_pinned_role_is_refused():
     with pytest.raises(ValueError):
         game.run_game(seed=3, role="val", max_steps=5)
+
+
+# --- seed decides the moon; death-context observer ---------------------------------------------
+
+def _fake_env_and_wrapper(monkeypatch):
+    from types import SimpleNamespace
+    calls = {"env_kwargs": None, "seeds": None}
+
+    class FakeNethack:
+        def set_initial_seeds(self, core, disp, reseed=False, lgen=None):
+            calls["seeds"] = (core, disp, reseed)
+
+    class FakeEnv:
+        nethack = FakeNethack()
+
+        def __init__(self, **kwargs):
+            calls["env_kwargs"] = kwargs
+
+        def close(self):
+            pass
+
+    class FakeWrapper:
+        def __init__(self, env, **kwargs):
+            self.end_reason = "fake"
+            self.score = 0
+            self.agent = None
+
+        def main(self):
+            return None
+
+    monkeypatch.setattr(game, "NetHackChallenge", FakeEnv)
+    monkeypatch.setattr(game, "EnvWrapper", FakeWrapper)
+    return calls
+
+
+def test_seeded_game_takes_the_moon_from_the_seed(monkeypatch):
+    calls = _fake_env_and_wrapper(monkeypatch)
+    game.run_game(seed=5)
+    assert calls["env_kwargs"]["fix_moon_phase"] is True
+    assert calls["seeds"] == (5, 5, False)
+
+
+def test_unseeded_game_keeps_the_real_moon(monkeypatch):
+    calls = _fake_env_and_wrapper(monkeypatch)
+    game.run_game()
+    assert calls["env_kwargs"]["fix_moon_phase"] is False
+    assert calls["seeds"] is None
+
+
+def _fake_obs(text, turn=1, hp=10, max_hp=10, hunger=1, depth=1):
+    import numpy as np
+    tty = np.zeros((24, 80), dtype=np.uint8)
+    tty[:] = ord(" ")
+    raw = text.encode()
+    tty[0, :len(raw)] = np.frombuffer(raw, dtype=np.uint8)
+    bl = np.zeros(27, dtype=np.int64)
+    bl[game.HP], bl[game.MAX_HP], bl[game.HUNGER], bl[game.DEPTH], bl[game.TURN] = hp, max_hp, hunger, depth, turn
+    return {"tty_chars": tty, "blstats": bl}
+
+
+def test_messages_keep_the_last_eight_distinct_lines():
+    ctx = game._DeathContext()
+    texts = ["a", "a", "", "b", "c", "c", "d", "", "e", "f", "g", "h", "i", "i", "j", "k"]
+    for i, text in enumerate(texts):
+        ctx.observe(_fake_obs(text, turn=i + 1))
+    assert ctx.last_messages == ["d", "e", "f", "g", "h", "i", "j", "k"]

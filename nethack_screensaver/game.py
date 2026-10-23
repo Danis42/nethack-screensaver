@@ -13,8 +13,11 @@ from autoascend.env_wrapper import EnvWrapper
 from autoascend.global_logic import Milestone
 from autoascend.plans import DEFAULT_STRATEGY, STRATEGIES, choose_strategy, plan_for, race_from_welcome
 
+HP = 10
+MAX_HP = 11
 DEPTH = 12
 TURN = 20
+HUNGER = 21
 XP_LEVEL = 18
 FARMING = (Milestone.BE_ON_FIRST_LEVEL,)
 
@@ -50,6 +53,7 @@ class GameResult:
     ladder: dict = field(default_factory=dict)  # ascension-ladder rung key -> first turn (autoascend/ladder.py)
     rung: int = 0  # highest ladder rung reached
     ladder_error: int = 0  # 1 when the ladder broke mid-game (values incomplete)
+    last_messages: list = field(default_factory=list)  # last 8 distinct message lines, oldest first
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -105,6 +109,26 @@ def _has_loot(wrapper) -> bool:
         return False
 
 
+class _DeathContext:
+    """Records how a game ended. It sees observations only (never the wrapper or the agent), so it
+    cannot act on the game; the bench judges games it runs inside."""
+
+    def __init__(self, keep: int = 8):
+        self.keep = keep
+        self.last_messages: list[str] = []
+        self._row0 = None
+
+    def observe(self, obs):
+        row = obs["tty_chars"][0]
+        if self._row0 is not None and (row == self._row0).all():
+            return
+        self._row0 = row.copy()
+        line = bytes(row).decode(errors="replace").strip()
+        if line and (not self.last_messages or self.last_messages[-1] != line):
+            self.last_messages.append(line)
+            del self.last_messages[:-self.keep]
+
+
 class _ScreenWatchdog:
     def __init__(self, seconds: float | None):
         self.seconds = seconds
@@ -149,7 +173,9 @@ def run_game(
     if seed is not None and role is not None:
         # the wrapper resets until the role matches; with a fixed seed every reset is the same game
         raise ValueError("a seeded game cannot pin the role")
-    env = NetHackChallenge(no_progress_timeout=1000)
+    # fix_moon_phase: a seeded game takes moon phase, Friday the 13th and night from the seed, not from
+    # today's date; an unseeded screensaver game keeps the real clock (NLE 1.3.0 reads it otherwise)
+    env = NetHackChallenge(no_progress_timeout=1000, fix_moon_phase=seed is not None)
     if seed is not None:
         # NetHackChallenge blocks the instance method; the class's own one still works
         type(env.nethack).set_initial_seeds(env.nethack, seed, seed, False)
@@ -158,9 +184,11 @@ def run_game(
     xp_level = 0
     prev_chars = None
     watchdog = _ScreenWatchdog(watchdog_seconds)
+    ctx = _DeathContext()
 
     def on_step(obs):
         nonlocal max_depth, turns, xp_level, prev_chars
+        ctx.observe(obs)
         # The final (game-over) observation has all-zero blstats; keep the last real values.
         max_depth = max(max_depth, int(obs["blstats"][DEPTH]))
         turns = max(turns, int(obs["blstats"][TURN]))
@@ -200,6 +228,7 @@ def run_game(
                       panics=_stat(wrapper, "agent_panic"), stuck_diving=_stat(wrapper, "stuck_diving"),
                       unsticks=_stat(wrapper, "unstick"), ladder=ladder, rung=rung,
                       ladder_error=_stat(wrapper, "ladder_error"), seed=seed,
+                      last_messages=list(ctx.last_messages),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 
