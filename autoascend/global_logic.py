@@ -21,6 +21,9 @@ TOWN_TURNS = 1000  # sightseer: turns to look around Minetown
 LOOT_TURNS = 1500  # treasure: turns on the top Sokoban level to clear the zoo and loot
 MINETOWN_SEARCH_TURNS = 4000  # Orcish Town has no shopkeeper, so Minetown may never be seen
 SOKOBAN_SEARCH_TURNS = 8000  # treasure: give up looking for Sokoban and go home
+# Live Sokoban solver budget, no wall clock so the pushes never depend on machine load. Measured 2026-10-23
+# on an idle machine, worst board (soko3-2 minus spare boulders): 40,000 states = 8.4 s, 50,000 = 10.6 s.
+SOKOBAN_LIVE_MAX_STATES = 40_000
 LIVE_SOKOBAN_BLOCKED_TRIES = 20  # times a monster may block a push square before giving up
 WATER = frozenset({SS.S_pool, SS.S_water})
 DRAWBRIDGE = frozenset({SS.S_vodbridge, SS.S_hodbridge, SS.S_vcdbridge, SS.S_hcdbridge})
@@ -499,6 +502,7 @@ class GlobalLogic:
             # The lower levels have pits, which the player may walk through; holes never.
             pits = {(y, x) for y, x in traps if level.objects[y, x] in (SS.S_pit, SS.S_spiked_pit)}
             pushes = soko_search.solve(floor, boulders, traps, (self.agent.blstats.y, self.agent.blstats.x),
+                                       max_states=SOKOBAN_LIVE_MAX_STATES, max_seconds=None,
                                        crossable=pits if pits == traps else frozenset())
             if pushes is None:
                 return False

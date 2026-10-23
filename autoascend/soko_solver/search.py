@@ -9,6 +9,7 @@ boulder can reach without crossing another unfilled trap (A* per trap). Greedy f
 strand the last boulders, so each fill has a few alternatives to backtrack into."""
 import heapq
 import itertools
+import math
 import time
 
 DIRS = ((-1, 0), (1, 0), (0, -1), (0, 1))
@@ -97,10 +98,12 @@ def _fill_one(floor, boulders, traps, player, target, live, deadline, budget, cr
 def solve(floor, boulders, traps, player, max_states=300_000, max_seconds=10.0, alternatives=3,
           crossable=frozenset()):
     """Pushes that fill every trap, or None if none is found within the limits.
+    `max_seconds=None` drops the wall-clock limit, so only the state budget stops the search.
 
     `crossable`: traps the player may walk through (the pits of the lower levels)."""
     floor, crossable = frozenset(floor), frozenset(crossable)
-    deadline = time.monotonic() + max_seconds
+    # max_seconds=None: no wall-clock limit, only max_states ends the search (same result under any load)
+    deadline = math.inf if max_seconds is None else time.monotonic() + max_seconds
     budget = [max_states]
     failed = set()  # boards already shown to be dead ends
 

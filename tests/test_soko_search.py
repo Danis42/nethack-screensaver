@@ -80,6 +80,33 @@ def test_solver_fills_every_trap_from_the_start(name):
     assert time.monotonic() - t < 10
 
 
+def test_no_wall_clock_limit_gives_the_same_pushes_under_load(monkeypatch):
+    import autoascend.soko_solver.search as search
+    expected = solve(*LEVELS["soko3-1"])
+    assert expected is not None
+    clock = iter(range(0, 10 ** 9, 1000))  # every reading jumps 1000 s: a machine under crushing load
+    monkeypatch.setattr(search.time, "monotonic", lambda: next(clock))
+    assert solve(*LEVELS["soko3-1"], max_seconds=None) == expected
+
+
+def _no_spare_boulders(name):
+    floor, boulders, traps, start = LEVELS[name]
+    return floor, frozenset(sorted(boulders)[len(boulders) - len(traps):]), traps, start
+
+
+def test_state_budget_alone_ends_an_unsolvable_search():
+    t = time.monotonic()
+    assert solve(*_no_spare_boulders("soko3-2"), max_states=2000, max_seconds=None) is None
+    assert time.monotonic() - t < 5
+
+
+def test_live_budget_stays_within_the_old_time_limit():
+    from autoascend.global_logic import SOKOBAN_LIVE_MAX_STATES
+    t = time.monotonic()
+    solve(*_no_spare_boulders("soko3-2"), max_states=SOKOBAN_LIVE_MAX_STATES, max_seconds=None)
+    assert time.monotonic() - t < 20
+
+
 def test_disturbed_board_is_still_solved():
     # A boulder gone (destroyed by a monster): there is a spare, so it stays solvable.
     floor, boulders, traps, start = LEVELS["soko4-1"]
