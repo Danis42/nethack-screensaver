@@ -6,13 +6,18 @@ import subprocess
 import threading
 from pathlib import Path
 
+from nethack_screensaver import fixed_clock
+
 WORKER_SCRIPT = Path(__file__).with_name("worker.py")
 
 
 class ProcessWorker:
     def __init__(self, python, worktree, log_path, nice=10):
         self._log = open(log_path, "a")
-        env = {**os.environ, "PYTHONPATH": str(worktree), "PYTHONHASHSEED": "0"}
+        # fixed hash seed, one BLAS thread (workers were oversubscribed), and the fixed_clock shim so a seeded
+        # game's start time comes from its seed
+        env = fixed_clock.preload_env({**os.environ, "PYTHONPATH": str(worktree), "PYTHONHASHSEED": "0",
+                                       "OMP_NUM_THREADS": "1", "OPENBLAS_NUM_THREADS": "1", "MKL_NUM_THREADS": "1"})
         cmd = [str(python), str(WORKER_SCRIPT)]
         if nice:
             cmd = ["nice", "-n", str(nice), *cmd]

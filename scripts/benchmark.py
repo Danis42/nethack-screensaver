@@ -11,10 +11,12 @@ import argparse
 import json
 import re
 import statistics
+import sys
 from collections import Counter
 from dataclasses import asdict
 from multiprocessing import Pool
 
+from nethack_screensaver import fixed_clock
 from nethack_screensaver.game import run_game
 
 
@@ -82,6 +84,8 @@ def main(argv=None):
     else:
         jobs = [(args.strategy, None)] * (50 if args.games is None else args.games)
 
+    if args.seeds is not None and not fixed_clock.preloaded():
+        print("note: fixed_clock shim not loaded; seeded games may not replay the bench's games", file=sys.stderr)
     results = []
     with Pool(args.jobs) as pool:
         for i, r in enumerate(pool.imap_unordered(_one, jobs), 1):
@@ -120,4 +124,6 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
+    if "--seeds" in " ".join(sys.argv):
+        fixed_clock.ensure_preloaded()  # seeded games need the pinned start time to replay the bench's games
     main()

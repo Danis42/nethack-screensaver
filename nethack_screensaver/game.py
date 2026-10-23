@@ -15,6 +15,7 @@ from autoascend.global_logic import Milestone
 from autoascend.glyph import MON
 from autoascend.item import flatten_items
 from autoascend.plans import DEFAULT_STRATEGY, STRATEGIES, choose_strategy, plan_for, race_from_welcome
+from nethack_screensaver import fixed_clock
 
 HP = 10
 MAX_HP = 11
@@ -232,6 +233,9 @@ def run_game(
         raise ValueError("a seeded game cannot pin the role")
     # fix_moon_phase: a seeded game takes moon phase, Friday the 13th and night from the seed, not from
     # today's date; an unseeded screensaver game keeps the real clock (NLE 1.3.0 reads it otherwise)
+    # fixed_clock.pin: a seeded game also sees a start time derived from the seed (NetHack picks shopkeeper
+    # names from it, which fix_moon_phase does not cover); takes effect where the fixed_clock shim is preloaded
+    fixed_clock.pin(seed)
     env = NetHackChallenge(no_progress_timeout=1000, fix_moon_phase=seed is not None)
     if seed is not None:
         # NetHackChallenge blocks the instance method; the class's own one still works

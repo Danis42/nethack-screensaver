@@ -1,3 +1,4 @@
+import os
 import json
 from dataclasses import asdict
 import signal
@@ -229,6 +230,16 @@ def test_seeded_game_takes_the_moon_from_the_seed(monkeypatch):
     game.run_game(seed=5)
     assert calls["env_kwargs"]["fix_moon_phase"] is True
     assert calls["seeds"] == (5, 5, False)
+
+
+def test_seeded_game_pins_the_start_time(monkeypatch):
+    from nethack_screensaver import fixed_clock
+    _fake_env_and_wrapper(monkeypatch)
+    monkeypatch.delenv(fixed_clock.ENV_VAR, raising=False)
+    game.run_game(seed=5)
+    assert os.environ[fixed_clock.ENV_VAR] == str(fixed_clock.seed_time(5))
+    game.run_game()
+    assert fixed_clock.ENV_VAR not in os.environ
 
 
 def test_unseeded_game_keeps_the_real_moon(monkeypatch):

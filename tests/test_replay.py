@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from nethack_screensaver import game
+from nethack_screensaver import fixed_clock, game
 
 ROOT = Path(__file__).parent.parent
 # result fields that must replay exactly (the rest, e.g. score, follow from the same game)
@@ -29,12 +29,14 @@ def on_frame(obs):
     frames[0] += 1
 
 result = game.run_game(seed=int(sys.argv[1]), watchdog_seconds=120, on_frame=on_frame)
-print(json.dumps({"hash": h.hexdigest(), "frames": frames[0], "result": asdict(result)}))
+import ctypes
+clock = ctypes.CDLL(None).time(None)  # what NetHack's time() returned: the seed's pinned start time
+print(json.dumps({"hash": h.hexdigest(), "frames": frames[0], "clock": clock, "result": asdict(result)}))
 """
 
 
 def _start(seed, hashseed):
-    env = {**os.environ, "PYTHONHASHSEED": str(hashseed)}
+    env = fixed_clock.preload_env({**os.environ, "PYTHONHASHSEED": str(hashseed)})
     return subprocess.Popen([sys.executable, "-c", CHILD, str(seed)], cwd=ROOT, env=env,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
@@ -53,6 +55,7 @@ def test_fresh_processes_replay_the_same_game():
         a, b = runs[(seed, 1)], runs[(seed, 2)]
         assert a["hash"] == b["hash"], f"seed {seed}: frame hashes differ"
         assert a["frames"] == b["frames"], f"seed {seed}: frame counts differ"
+        assert a["clock"] == fixed_clock.seed_time(seed), "NetHack saw the real clock (shopkeeper names drift)"
         for name in COMPARED:
             assert a["result"][name] == b["result"][name], f"seed {seed}: {name} differs"
         json.dumps(a["result"])

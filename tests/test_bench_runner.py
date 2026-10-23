@@ -135,3 +135,32 @@ def test_worker_runs_with_a_fixed_hash_seed(tmp_path, monkeypatch):
         assert got[0]["role"] == "0"
     finally:
         w.close()
+
+
+ENV_GAME = '''
+import os
+from dataclasses import dataclass
+
+@dataclass
+class GameResult:
+    role: str
+    turns: int
+
+def run_game(**kw):
+    keys = ("LD_PRELOAD", "OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS")
+    return GameResult("|".join(os.environ.get(k, "unset") for k in keys), 1)
+'''
+
+
+def test_worker_loads_the_clock_shim_and_one_blas_thread(tmp_path):
+    wt = _fake_worktree(tmp_path)
+    (wt / "nethack_screensaver" / "game.py").write_text(ENV_GAME)
+    w = ProcessWorker(sys.executable, wt, tmp_path / "worker.log", nice=0)
+    try:
+        w.play()
+        got = []
+        _wait_for(lambda: got.extend(w.results()) or got)
+        preload, omp, blas = got[0]["role"].split("|")
+        assert "fixtime-" in preload and (omp, blas) == ("1", "1")
+    finally:
+        w.close()
