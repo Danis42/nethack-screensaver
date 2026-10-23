@@ -387,3 +387,23 @@ This proves the bench replays identical code identically; it says nothing yet ab
 small a real difference it can see (that is plan 01-06).
 
 A/A control: passed for `e3f0dd7ab7054901d93dab9ef586b50154fb963a`
+
+### Bench speed
+
+One BLAS/OpenMP thread per worker (shipped in `e3f0dd7`, before it 11 workers ran ~34
+threads each on 12 cores): 36.2 -> 39.2 games/min (+8%, whole-run averages of the two
+2304-game A/A jobs). Below the 10% bar set in plan 01-06, but kept: it is part of the gated
+SHA and removes multi-threaded float sums as a replay risk; the A/A replay check covered it
+(1149 seeds, 0 mismatched).
+
+Turn cap: not adopted. In the 1152 games of `p1-aa-base` (turns as the time measure; wall
+time per game is not stored) turn deciles are 2296, 3163, 3914, 4963, 5719, 6702, 7792,
+9505, 13235, max 43361.
+
+| Cap T | Games longer | Share of all turns past T | First reach rung 2-6 after T |
+|-------|--------------|---------------------------|------------------------------|
+| 20k   | 40           | 3.1%                      | 6 (0.52%)                    |
+| 30k   | 10           | 0.6%                      | 1 (0.09%)                    |
+| 50k   | 0            | 0.0%                      | 0                            |
+
+The rule needed >= 25% of the time past T: long games are rare and cheap.
