@@ -294,3 +294,232 @@ def test_pairs_skips_games_lacking_the_metric_field(store, tmp_path, capsys):
     store.add_game(BASE, None, _g(1, max_depth=1))
     code, out = run(capsys, tmp_path, "pairs", CAND, BASE, "--metric", "dlvl6", "--seeds", "2")
     assert code == 0 and "n=1" in out and "n10=1" in out
+
+
+# ladder, killers, deaths
+
+
+from autoascend.ladder import RUNGS  # noqa: E402
+
+
+def _table(out):
+    """{first cell: cells} for every markdown table row of the output."""
+    rows = {}
+    for line in out.splitlines():
+        if line.startswith("|") and not line.startswith("|--") and not line.startswith("|-"):
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            rows[cells[0]] = cells
+    return rows
+
+
+def _lg(seed, rung, **extra):
+    ladder = {r.key: 100 * (i + 1) + seed for i, r in enumerate(RUNGS[:rung])}
+    return _g(seed, rung=rung, ladder=ladder, **extra)
+
+
+def test_ladder_table_for_exact_seeds(store, tmp_path, capsys):
+    fill(store, CAND, [_lg(0, 0), _lg(1, 1), _lg(2, 2), _lg(3, 2)])
+    store.add_game(CAND, None, {"role": "Wizard", "rung": 8, "ladder": {"mines": 1}, "end_reason": "x"})  # unseeded
+    code, out = run(capsys, tmp_path, "ladder", CAND, "--seeds", "4")
+    assert code == 0
+    assert f"Commit `{CAND}`, n = 4 games (seeds 0..3)" in out
+    assert "| # | Rung | Reached | Our median turn | Ascenders' median turn |" in out
+    rows = _table(out)
+    assert len([k for k in rows if k.isdigit()]) == 17
+    assert rows["1"][1:] == ["Gnomish Mines", "3 (75%)", "102", "-"]  # first turns 101, 102, 103
+    assert rows["2"][2] == "2 (50%)" and rows["3"][2] == "0 (0%)" and rows["3"][3] == "-"
+
+
+def test_ladder_median_turn_of_a_row(store, tmp_path, capsys):
+    fill(store, CAND, [_lg(0, 1), _lg(1, 1), _lg(2, 1), _lg(3, 1)])
+    _, out = run(capsys, tmp_path, "ladder", CAND, "--seeds", "4")
+    assert _table(out)["1"][3] == "101.5"  # 100, 101, 102, 103
+
+
+def test_ladder_needs_all_requested_seeds(store, tmp_path, capsys):
+    fill(store, CAND, [_lg(s, 1) for s in range(3)])
+    code, out = run(capsys, tmp_path, "ladder", CAND, "--seeds", "4")
+    assert code == 2 and out.startswith("missing seeds")
+
+
+def test_ladder_all_games_uses_unseeded_games_too(store, tmp_path, capsys):
+    fill(store, CAND, [_lg(0, 1), _lg(1, 2)])
+    for rung in (1, 1, 3):
+        store.add_game(CAND, None, {"rung": rung, "ladder": {"mines": 5}, "end_reason": "x"})
+    code, out = run(capsys, tmp_path, "ladder", CAND, "--all-games")
+    assert code == 0 and "n = 5 games (all stored games)" in out
+    assert _table(out)["1"][2] == "5 (100%)" and _table(out)["3"][2] == "1 (20%)"
+
+
+def test_ladder_skips_games_without_ladder_in_the_percentages(store, tmp_path, capsys):
+    fill(store, CAND, [_lg(0, 1), {"seed": 1, "end_reason": "x"}])  # an older commit's game has no ladder
+    code, out = run(capsys, tmp_path, "ladder", CAND, "--seeds", "2")
+    assert code == 0 and _table(out)["1"][2] == "1 (100%)"
+
+
+def _killer_games(store):
+    reasons = ["DEATH: killed by a soldier ant", "DEATH: killed by a giant ant", "DEATH: starved",
+               "DEATH: killed by a newt, while fainted from lack of food", "DEATH: killed by a killer bee",
+               "DEATH: killed by a wand of striking", "DEATH: killed by a magic missile",
+               "DEATH: killed by a blast of fire", "exception: ValueError: boom", "watchdog",
+               "ESCAPED: escaped the dungeon", "DEATH: killed by a jackal", "DEATH: killed by a jackal",
+               "DEATH: killed by a gnome lord"]
+    games = []
+    for seed, reason in enumerate(reasons):
+        games.append(_g(seed, end_reason=reason, max_depth=seed % 5 + 1, turns=100 * (seed + 1),
+                        **({"depth_at_end": 9} if seed == 13 else {})))
+    fill(store, CAND, games)
+    return len(reasons)
+
+
+def test_killers_rows_use_the_benchs_own_definitions(store, tmp_path, capsys):
+    n = _killer_games(store)
+    code, out = run(capsys, tmp_path, "killers", CAND, "--seeds", str(n))
+    assert code == 0
+    rows = _table(out)
+    assert rows["starved"][1] == "2"  # starved + killed while fainted
+    assert rows["ants"][1] == "2" and rows["killer bee"][1] == "1" and rows["wand"][1] == "1"
+    assert rows["rays"][1] == "1" and rows["breath"][1] == "1"
+    assert rows["exception"][1] == "1" and rows["watchdog"][1] == "1"
+    assert rows["escaped/other endings"][1] == "1"
+    assert rows["jackal"][1] == "2" and rows["gnome lord"][1] == "1"
+    assert rows["starved"][2] == f"{2 / n * 100:.1f}%"
+    deaths = 11
+    assert rows["jackal"][3] == f"{2 / deaths * 100:.1f}%"
+    assert rows["gnome lord"][4] == "9"  # depth_at_end wins over max_depth
+
+
+def test_killers_other_names_are_not_repeated_in_category_rows(store, tmp_path, capsys):
+    n = _killer_games(store)
+    _, out = run(capsys, tmp_path, "killers", CAND, "--seeds", str(n))
+    rows = _table(out)
+    for name in ("soldier ant", "giant ant", "wand of striking", "newt"):
+        assert name not in rows
+
+
+def test_killers_depth_filter(store, tmp_path, capsys):
+    n = _killer_games(store)
+    _, out = run(capsys, tmp_path, "killers", CAND, "--seeds", str(n), "--min-depth", "9")
+    rows = _table(out)
+    assert rows["gnome lord"][1] == "1"
+    assert "jackal" not in rows
+
+
+def test_killers_all_games_and_missing_seeds(store, tmp_path, capsys):
+    _killer_games(store)
+    assert run(capsys, tmp_path, "killers", CAND, "--all-games")[0] == 0
+    code, out = run(capsys, tmp_path, "killers", CAND, "--seeds", "500")
+    assert code == 2 and out.startswith("missing seeds")
+
+
+def test_deaths_by_killer_prints_context_rows(store, tmp_path, capsys):
+    fill(store, CAND, [
+        _g(0, end_reason="DEATH: killed by a soldier ant", hp_at_end=0, max_hp_at_end=41, hunger_at_end=2,
+           food_at_end=3, depth_at_end=5, prayers=[[100, "You feel that Tyr is well-pleased."], [900, "p" * 80]],
+           zaps_seen=1, last_messages=["m1", "m2", "m3"]),
+        _g(1, end_reason="DEATH: killed by a newt"),
+        _g(2, end_reason="DEATH: killed by a fire ant | with a pipe"),
+    ])
+    code, out = run(capsys, tmp_path, "deaths", CAND, "--seeds", "3", "--killer", "ant")
+    assert code == 0
+    assert out.strip().splitlines()[-1] == "2 games"
+    rows = _table(out)
+    row = rows["0"]
+    assert "0/41" in row and "5" in row and "3" in row
+    assert any(c.startswith("2 (last t=900") and "p" * 40 in c and "p" * 41 not in c for c in row)
+    assert any(c.endswith("m2 / m3") or "m2" in c and "m3" in c and "m1" not in c for c in row)
+    assert "newt" not in out
+    assert "|" not in rows["2"][5].replace("/", "")  # a pipe in the text must not break the table
+
+
+def test_deaths_by_metric_and_without_new_fields(store, tmp_path, capsys):
+    fill(store, CAND, [_g(0, max_depth=8), _g(1, max_depth=2), _g(2, max_depth=9)])
+    code, out = run(capsys, tmp_path, "deaths", CAND, "--seeds", "3", "--metric", "dlvl6")
+    assert code == 0 and out.strip().splitlines()[-1] == "2 games"
+    assert set(k for k in _table(out) if k.isdigit()) == {"0", "2"}
+
+
+def test_deaths_needs_a_selector(store, tmp_path, capsys):
+    fill(store, CAND, [_g(0)])
+    with pytest.raises(SystemExit):
+        seeded_report.main(["--data", str(tmp_path), "deaths", CAND, "--seeds", "1"])
+
+
+# benchmark.py: seeded smoke runs
+
+
+import benchmark  # noqa: E402
+
+
+def test_parse_seeds_accepts_ranges_numbers_and_lists():
+    assert benchmark.parse_seeds("0-21") == list(range(22))
+    assert benchmark.parse_seeds("5") == [5]
+    assert benchmark.parse_seeds("0,3,7") == [0, 3, 7]
+    assert benchmark.parse_seeds("0-2,5, 9-10") == [0, 1, 2, 5, 9, 10]
+    for bad in ("", "a", "3-1", "1,,2", "-1"):
+        with pytest.raises(ValueError):
+            benchmark.parse_seeds(bad)
+
+
+def test_field_value_walks_dotted_names():
+    result = {"turns": 5, "events": {"rest_turns": 7}, "prayers": []}
+    assert benchmark.field_value(result, "turns") == 5
+    assert benchmark.field_value(result, "events.rest_turns") == 7
+    assert benchmark.field_value(result, "events.nothing") is None
+    assert benchmark.field_value(result, "missing") is None
+    assert benchmark.field_value(result, "turns.deeper") is None
+
+
+class _SerialPool:
+    def __init__(self, n):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def imap_unordered(self, fn, items):
+        return map(fn, items)
+
+
+def _fake_run_game(calls):
+    from nethack_screensaver.game import GameResult
+
+    def run_game(watchdog_seconds=None, strategy=None, seed=None):
+        calls.append((strategy, seed))
+        return GameResult("Val", "human", "lawful", 3, 100 + (seed or 0), 10, "DEATH: killed by a newt",
+                          seed=seed, events={"rest_turns": (seed or 0) % 2})
+    return run_game
+
+
+def test_seeds_option_plays_the_chosen_seeds_and_reports_fields(monkeypatch, capsys):
+    calls = []
+    monkeypatch.setattr(benchmark, "Pool", _SerialPool)
+    monkeypatch.setattr(benchmark, "run_game", _fake_run_game(calls))
+    benchmark.main(["--seeds", "0-3", "--field", "events.rest_turns", "--field", "hp_at_end"])
+    out = capsys.readouterr().out
+    assert sorted(seed for _, seed in calls) == [0, 1, 2, 3]
+    assert "events.rest_turns=1" in out and "hp_at_end=0" in out
+    assert "events.rest_turns>0: 2 of 4 games" in out and "hp_at_end>0: 0 of 4 games" in out
+    assert "seed=2" in out
+
+
+def test_unseeded_runs_keep_their_output(monkeypatch, capsys):
+    calls = []
+    monkeypatch.setattr(benchmark, "Pool", _SerialPool)
+    monkeypatch.setattr(benchmark, "run_game", _fake_run_game(calls))
+    benchmark.main(["-n", "2", "-j", "1"])
+    out = capsys.readouterr().out
+    assert calls == [(None, None), (None, None)]
+    assert "[1/2] " in out and "seed=" not in out and ">0:" not in out and "games            : 2" in out
+
+
+def test_seeds_with_strategy_or_n_is_refused(capsys):
+    for extra in (["--strategy", "random"], ["-n", "5"]):
+        with pytest.raises(SystemExit) as exc:
+            benchmark.main(["--seeds", "0-3", *extra])
+        assert exc.value.code == 2
+    with pytest.raises(SystemExit):
+        benchmark.main(["--seeds", "3-1"])
