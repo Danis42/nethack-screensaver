@@ -29,6 +29,9 @@ FARMING = (Milestone.BE_ON_FIRST_LEVEL,)
 # panic_on_errors=True turns upstream assertions into AgentPanic: the bot replans instead of
 # crashing; its cyclic-panic guard and NLE's no-progress timeout still end a stuck game.
 AGENT_ARGS = dict(panic_on_errors=True, verbose=False)
+# Until the first ascension every game is a dwarvish Valkyrie (owner, 2026-10-23): the strongest
+# early game, and Mines natives are peaceful to dwarves. "@" brings random characters back.
+CHARACTER = "val-dwa-fem-law"
 
 
 class WatchdogTimeout(KeyboardInterrupt):
@@ -236,7 +239,9 @@ def run_game(
     # fixed_clock.pin: a seeded game also sees a start time derived from the seed (NetHack picks shopkeeper
     # names from it, which fix_moon_phase does not cover); takes effect where the fixed_clock shim is preloaded
     fixed_clock.pin(seed)
-    env = NetHackChallenge(no_progress_timeout=1000, fix_moon_phase=seed is not None)
+    # a pinned role (screensaver config) is found by resetting random characters until it matches
+    env = NetHackChallenge(no_progress_timeout=1000, fix_moon_phase=seed is not None,
+                           character=CHARACTER if role is None else "@")
     if seed is not None:
         # NetHackChallenge blocks the instance method; the class's own one still works
         type(env.nethack).set_initial_seeds(env.nethack, seed, seed, False)
