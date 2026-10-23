@@ -83,6 +83,7 @@ None yet.
 
 ### Blockers/Concerns
 
+- [Phase 1] A/A #1 (job 9) failed the replay gate: 44/1149 seeds differed because NetHack's start time (shopkeeper names) was not pinned; fixed in e3f0dd7 (fixed_clock shim), A/A re-run on the fixed code.
 - [Phase 1] The seeded A/A control and the pilgrim-only baseline have not been run; all stored numbers predate the pilgrim-only switch and are not comparable (PORTING.md baseline, `choke-points` 1152 games, `aa4b1cf` 576 games).
 - [Phase 1] `docs/STATUS.md` and `handoff.txt` (identical copies) still list "seed both sides" as the next step, but the seeded bench is already merged (`9ff6a6f`); both are stale on that point. Not edited by this roadmap pass.
 - [Workflow] `docs/STATUS.md` says the method is superpowers (brainstorm, spec, plan, build), "not GSD"; `.planning/` now also tracks the roadmap. Owner to decide how the two coexist when planning Phase 1.
