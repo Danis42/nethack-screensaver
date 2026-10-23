@@ -112,3 +112,77 @@ Findings:
   never got the shimmering light, then "You die...". The god's anger (lightning, lost wisdom and level) is a
   separate, rarer ending (27 games).
 - The census counts are a method check, not a rate: the 400 games were sampled by Dlvl 4+, not by prayer.
+
+## Food and prayer on Dlvl 4-12
+
+<!-- food-table:start -->
+Cohorts (NetHack 3.6.x): **got through** = 300 games sampled from those with maxlvl >= 13 (sampling seed 0); **starved** = 153 games with maxlvl 4-12 whose death line names starvation or fainting from lack of food (all of them); **starved, died there** = the 125 of those whose death level is also on Dlvl 4-12. Band = status line shows Dlvl 4..12 (Mines and Sokoban levels count by their Dlvl). Rates pool all games of a cohort.
+
+| | got through (maxlvl >= 13) | starved or fainted to death (maxlvl 4-12) | same, and died on Dlvl 4-12 |
+|---|---|---|---|
+| games used / excluded (no T: counter, or status unreadable for over 20% of the game) | 292 / 8 | 143 / 10 | 117 / 8 |
+| turns observed on Dlvl 4-12 (median per game) | 10,349 | 722 | 929 |
+| turns observed on Dlvl 4-12 (all games) | 3,718,182 | 217,030 | 202,681 |
+| prayers on Dlvl 4-12 (games with at least one) | 542 (200) | 74 (46) | 64 (37) |
+| prayers per 1000 band turns | 0.15 | 0.34 | 0.32 |
+| median gap between prayers (turns; gaps counted) | 2,715 (342) | 946 (28) | 941 (27) |
+| 25th percentile of the gap between prayers | 927 | 611 | 591 |
+| share of gaps under 500 turns | 14.3% | 17.9% | 18.5% |
+| failed prayers after a gap under 1000 turns (failed / prayers) | 6 / 90 | 6 / 15 | 5 / 14 |
+| failed prayers after a gap of 1000+ turns (failed / prayers) | 5 / 252 | 2 / 13 | 2 / 13 |
+| share of prayers while Weak or worse | 13.3% | 54.1% | 51.6% |
+| share of prayers that failed | 2.8% | 14.9% | 14.1% |
+| eating events per 1000 band turns (meals: 10443 / 627 / 591) | 2.81 | 2.89 | 2.92 |
+| share of band turns Hungry or worse | 3.9% | 20.9% | 21.2% |
+| share of band turns Weak or worse | 0.4% | 8.9% | 9.2% |
+<!-- food-table:end -->
+
+Command: `uv run python scripts/nld_study.py food --games 300 --jobs 8 --write .planning/phases/01-midgame-survival/01-HUMAN-STUDY.md`
+(sampling seed 0 for the "got through" sample; the starved cohorts are all matching games, so the seed does not
+touch them). The table between the markers above is written by that command; the text below is by hand.
+
+How each row is measured (all from the screen of each recorded game, `scripts/nld_study.py`):
+
+- Band turns: the turn counter `T:` is read from the status line; each step in `T:` counts for the Dlvl and the
+  hunger word of the earlier reading. A reading is ignored when `T:` goes backwards, exceeds the game's real
+  length (`turns` in the games table), jumps ahead by more than 500 and the next reading does not confirm it, or
+  sits in a row that also shows attribute-line pieces (`St:`, `Wi:`, ...): a window drawn over the status lines
+  leaves such garbage (13 of the first 300 games showed turn counters up to about 100 times the real game length before
+  these rules).
+- Games without `T:` on the status line (the player did not enable it) and games whose status line could be
+  followed for under 80% of their real length are excluded and counted in the first row.
+- Prayers: "You begin praying to" while the status line shows Dlvl 4..12. Hunger is the word on the status line
+  just before the prayer takes effect; the outcome is `autoascend.prayer.prayer_outcome` over the messages
+  that followed (a prayer with no recognised answer counts as not failed).
+- Eating events: one per meal, not per message. The taste line ("This newt corpse tastes terrible!"), the finish
+  line ("You finish eating ...") and an interruption ("You stop eating ...") of one meal count once;
+  a meal that shows only one of them counts once; the "hard time getting all of it down" and "hit the spot"
+  lines are part of a meal. A meal left open is forgotten after 60 turns.
+- Dlvl 4-12 is the number on the status line, so Mines levels (Dlvl 3-13) and Sokoban (Dlvl 5-9) count as well,
+  for both cohorts alike.
+- Only aggregates are printed or stored: the script never writes any per-game or per-player column.
+
+Findings (plain language; the starved cohorts are small, so read the third and fourth as indications):
+
+1. Humans who got through Dlvl 4-12 were Hungry or worse for 3.9% of their turns there and Weak or worse for 0.4%;
+   humans who starved there were Hungry or worse for about 21% and Weak or worse for about 9%. Hunger was a
+   short episode for the survivors, a long state for the others.
+2. The humans who starved there did not eat less often: 2.8 to 2.9 eating events per 1000 turns in all three
+   columns. They also died early: the median of the 153 starved games ended at game turn 2,206 (quartiles 1,505 and
+   3,717; games table), after a median of 722 to 929 turns on Dlvl 4-12 (survivors: 10,349 turns there). That is
+   a different picture from the bot, whose median starvation turn is 7,828 (RESEARCH, Pattern 3): the human
+   starvers are early-game deaths, the bot's are late. Eating frequency alone does not separate the groups; what
+   each meal was worth (corpse versus ration) does not show in this measurement.
+3. Humans pray rarely when they get through: 0.15 prayers per 1000 band turns (one per 6,700 turns), median gap
+   2,715 turns, 25th percentile 927 turns; only 14% of the gaps are under 500 turns. The bot's limits are 400
+   (hunger) and 500 (low HP) turns (`autoascend/agent.py`), i.e. it is ready to pray again after roughly the
+   shortest 15% of human gaps. Only 13% of the survivors' prayers were made while Weak or worse, so most of
+   their prayers were for low HP, not for hunger.
+4. Humans fail 2.8% of their prayers on Dlvl 4-12 (15 of 542) against the bot's 12% (77 failures in 643 prayers,
+   PORTING.md). After a gap under 1000 turns 6 of 90 prayers failed (6.7%), after 1000 or more turns 5 of 252
+   (2.0%): the direction matches RESEARCH's computed safety (about 77% at a gap of 400 turns, 95% at 1000), with
+   small numbers. The humans who starved prayed mostly while Weak or worse (54%) and 14.9% of their prayers failed
+   (6 of 15 after a gap under 1000 turns).
+5. Method limits: the cohorts are not matched by role or by Dlvl at death; "got through" includes the deepest
+   players only (maxlvl >= 13), so it is the best case, not an average human; only 3.6.x games with `T:` shown and a
+   readable status line are used; a prayer or meal message hidden by a window or cut by the 80-column line is missed.
