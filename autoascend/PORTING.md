@@ -697,6 +697,7 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 |---|--------|-------|-----------|----------|--------|---------|------------------------|----------|
 | 1 | `exp/starvation-1` | repeated failed prayers | `a8e8065` | `0b09707` | rung2 | no measurable difference @ 2304 | +0.0 [-0.2, +0.2] | dropped |
 | 2 | `exp/starvation-2` | stuck on levels with a hidden way on | `9ca5d8b` | `0b09707` | rung2 | no measurable difference @ 2304 | -1.1 [-3.9, +1.7] | dropped |
+| 3 | `exp/rest-to-full` | HP-driven deaths (rest, food-scaled) | `894084d` | `0b09707` | rung2 | no measurable difference @ 2304 | -1.5 [-4.2, +1.2] | dropped |
 
 #### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
 - Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
@@ -752,4 +753,11 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
   the 60% rule); games: screen at 384, then to the last checkpoint (diagnosis-backed)
 - Smoke (22 seeds): rest_start fired in 20 of 22, no exceptions, no watchdog; median rest_turns about 600 per game
 - Mechanism metrics: `died`, `ants`, `rays`, `starved` (resting spends food), median `events.rest_turns`
-- Verdict: pending
+- Screen (384 seeds, 80%): rung2 -0.3 [-4.7, +4.2]; not dropped
+- Job 21: Verdict: no measurable difference at 2304 games per side, diff -1.5 points, 95% interval [-4.2, +1.2]
+- Mechanism: starved +2.3 [-0.2, +4.8] (leaning worse); died +1.0 [-0.1, +2.1]; ants -0.5 [-2.0, +1.1];
+  dlvl6 -1.3 [-4.0, +1.4]; dlvl10 -1.6 [-4.1, +0.9]; rested in 2259 of 2304 games, median 549 rest turns per
+  game; crashes: same types, fewer (Cyclic Panic 38 vs 48, watchdog 30 vs 46)
+- Reading: resting buys HP with food, and food is the bottleneck (25% of games starve). The few ant deaths it
+  saves are paid back in starvation. Revisit once the food supply is fixed (Phase 2, stuck levels).
+- Decision: dropped (branch `exp/rest-to-full` kept at `894084deb01bfc8bf76ff2db1ffe0fa9a532778c`)
