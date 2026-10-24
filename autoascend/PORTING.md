@@ -801,3 +801,21 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 - Reading: eating the corpses does not reduce insect deaths; the bot dies to the first swarm, before a corpse
   can help, and the HP-cost of the poison (and the turns spent eating) cost depth elsewhere.
 - Decision: dropped (branch `exp/ants-bees` kept at `9ca4f3199664f4a2b80b100e798b78ac44332197`)
+
+### Shopkeeper diagnosis (SURV-03)
+Found while smoking `exp/zappers`: 93 of 2304 baseline games (4.0%) die to a named zapper on Dlvl 2-5 at rung 0,
+an angry shopkeeper with a wand of striking or magic missile (the zap-line regex matched none of them). Replays of
+10 of them with the full message log: 9 read "Closed for inventory", find the door locked and kick it in ("How dare
+you break my door?"); the tenth fought Keystone Kops after a shop theft. The 81 "killed by a wand" deaths are
+mostly these.
+
+#### Experiment 5: `exp/shop-door` - never kick a closed shop's door
+- Requirement / decisions: SURV-03 (wand and ray users; shopkeepers are the largest named group)
+- Change: reading "Closed for inventory" marks the orthogonal neighbours as `Level.closed_shop_door`; explore's
+  `open_neighbor_doors` does not kick those (it still tries to open them). Counter `shop_door_spared`.
+- Candidate `3fca503215e1a3de57e775378a1598fb05a40c20`; baseline `0b097073adb3071f8e5c2aea954618a3320a5bc7`; primary metric
+  `rung2` (the targeted deaths are at rung 0); games: screen at 384, then to the last checkpoint
+- Smoke (11 baseline shopkeeper-death seeds): counter fired in 11 of 11, no exceptions, no watchdog; all 11 now
+  die later (median Dlvl 8, before Dlvl 2-5)
+- Mechanism metrics: `rays`, `died`, `dlvl6`, `dlvl10`, `starved`
+- Verdict: pending
