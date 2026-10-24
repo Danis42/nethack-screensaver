@@ -4,16 +4,16 @@ milestone: v0.1.0
 current_phase: 01
 current_phase_name: Midgame Survival
 status: executing
-stopped_at: Completed 01-05-PLAN.md
+stopped_at: Completed 01-06-PLAN.md
 last_updated: "2026-10-23T17:17:43.229Z"
 last_activity: 2026-10-23
-last_activity_desc: 01-05 A/A control passed (gate e3f0dd7)
+last_activity_desc: 01-06 calibration done; Valkyrie-only A/A passed (gate 0b09707)
 state_head: e0691aa5c2b7540d1a588a329e8191df315a297e
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 16
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 ## Current Position
 
 Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 6 of 16
+Plan: 7 of 16
 Status: Ready to execute
-Last activity: 2026-10-23 — 01-05 A/A control passed (job 10, 0/1149 replay mismatches); gate line for e3f0dd7 in PORTING.md
+Last activity: 2026-10-24 — 01-06 done: Valkyrie-only A/A passed, calibration recorded, 2304 checkpoint, screen-then-confirm
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -83,7 +83,8 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 1] Seeded A/A passed (job 10, gate `e3f0dd7`). The pilgrim-only baseline is not stored yet (01-06/01-07); older numbers are not comparable.
+- [Phase 1] Every game is a dwarvish Valkyrie since `0b09707` (owner, until the first ascension). Measurement code `p1-valk-base`, A/A passed (job 13). Resolution: ±3.9 points rung2 at 1152, about ±2.8 at 2304 (now the last checkpoint). The baseline (01-07) must be stored on Valkyrie code; all older numbers are not comparable.
+- [Phase 1+] 19/1152 Valkyrie games (all Dlvl 11-28) end on the 120 s watchdog: the bot hangs deep in the dungeon. Needs a stack dump on watchdog and a fix before the deep rungs can be measured.
 - [Workflow] `docs/STATUS.md` says the method is superpowers (brainstorm, spec, plan, build), "not GSD"; `.planning/` now also tracks the roadmap. Owner to decide how the two coexist when planning Phase 1.
 - [Phase 1] Unmerged branches to re-judge or leave dropped: `threat-model`, `flee-upstairs`, `choke-points`; an older `survival-tuning` also exists. They predate pilgrim-only and seeding, so a rebase may be needed.
 - [Phase 1] Human-game studies need the NLD-NAO data at `/ssd2/nethackFiles/` (`nld.db`) to be mounted.
