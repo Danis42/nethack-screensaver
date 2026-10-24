@@ -502,3 +502,126 @@ mean-difference judge (`bench.stats.judge_paired_numeric`, `seeded_report.py pai
 was skipped. No numeric metric beats rung2 (the bar was 20% smaller): screening stays on rung2.
 Rule (protocol step 7a): at 384 seeds, drop if the rung2 80% interval lies entirely below 0;
 otherwise run on to the full rung2 verdict, which alone decides merges.
+
+### Pilgrim-only baseline
+
+Pilgrim-only baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7`
+
+Code = main after plans 01-01..01-06 plus the owner's Valkyrie-only switch: every game a dwarvish
+Valkyrie on the pilgrim route (Mines first), seeded games, moon and start time from the seed,
+level generation not seeded separately.
+
+Ladder, seeds 0..575, n = 576:
+
+| # | Rung | Reached | Our median turn | Ascenders' median turn |
+|---|------|---------|-----------------|------------------------|
+| 1 | Gnomish Mines | 408 (71%) | 3604 | 1173 |
+| 2 | Minetown | 250 (43%) | 7057 | 3538 |
+| 3 | Oracle | 167 (29%) | 7948 | - |
+| 4 | Sokoban | 97 (17%) | 11987 | 9022 |
+| 5 | Sokoban solved | 79 (14%) | 14198 | 12412 |
+| 6 | Mines' End | 75 (13%) | 11610 | 10853 |
+| 7 | Dlvl 15+ | 47 (8%) | 17232.5 | - |
+| 8 | Quest | 11 (2%) | 24718 | 22426 |
+| 9 | Medusa | 6 (1%) | 21779 | 29317 |
+| 10 | Castle | 0 (0%) | - | - |
+| 11 | Gehennom | 0 (0%) | - | 34155 |
+| 12 | Vlad's Tower | 0 (0%) | - | 44189 |
+| 13 | Wizard's Tower | 0 (0%) | - | 49072 |
+| 14 | Invocation | 0 (0%) | - | 49741 |
+| 15 | Elemental Planes | 0 (0%) | - | 53180 |
+| 16 | Astral Plane | 0 (0%) | - | 53518 |
+| 17 | Ascended | 0 (0%) | - | 53630 |
+
+Ladder, seeds 0..2303, n = 2304:
+
+| # | Rung | Reached | Our median turn | Ascenders' median turn |
+|---|------|---------|-----------------|------------------------|
+| 1 | Gnomish Mines | 1687 (73%) | 3643 | 1173 |
+| 2 | Minetown | 1011 (44%) | 7235 | 3538 |
+| 3 | Oracle | 680 (30%) | 9051.5 | - |
+| 4 | Sokoban | 409 (18%) | 11878.5 | 9022 |
+| 5 | Sokoban solved | 349 (15%) | 14529.5 | 12412 |
+| 6 | Mines' End | 335 (15%) | 12106.5 | 10853 |
+| 7 | Dlvl 15+ | 192 (8%) | 17199.5 | - |
+| 8 | Quest | 33 (1%) | 15403 | 22426 |
+| 9 | Medusa | 14 (1%) | 20809.5 | 29317 |
+| 10 | Castle | 0 (0%) | - | - |
+| 11 | Gehennom | 0 (0%) | - | 34155 |
+| 12 | Vlad's Tower | 0 (0%) | - | 44189 |
+| 13 | Wizard's Tower | 0 (0%) | - | 49072 |
+| 14 | Invocation | 0 (0%) | - | 49741 |
+| 15 | Elemental Planes | 0 (0%) | - | 53180 |
+| 16 | Astral Plane | 0 (0%) | - | 53518 |
+| 17 | Ascended | 0 (0%) | - | 53630 |
+
+For orientation only (not comparable: all roles, unseeded, mixed strategies): the 2026-10-21
+table of `2653410` had Minetown+ 28% and nothing past the Quest; all-role pilgrims in the
+Phase 1 A/A had Minetown+ 26%.
+
+Killers, seeds 0..2303, n = 2304, all depths (top rows; rows overlap):
+
+| Ending | Count | % of games | % of deaths | Median depth | Median turns |
+|--------|-------|------------|-------------|--------------|--------------|
+| starved | 576 | 25.0% | 26.1% | 5 | 9022 |
+| ants | 193 | 8.4% | 8.8% | 6 | 8028 |
+| killer bee | 60 | 2.6% | 2.7% | 5 | 6471 |
+| wand | 89 | 3.9% | 4.0% | 3 | 2739 |
+| rays | 116 | 5.0% | 5.3% | 6 | 8190 |
+| breath | 4 | 0.2% | 0.2% | 11 | 17105 |
+| exception | 48 | 2.1% | - | 11 | 17148 |
+| watchdog | 46 | 2.0% | - | 24 | 22928 |
+| escaped/other endings | 182 | 7.9% | - | 7 | 9163.5 |
+| gray unicorn | 36 | 1.6% | 1.6% | 6 | 7171 |
+| mumak | 33 | 1.4% | 1.5% | 8 | 10947 |
+| leocrotta | 27 | 1.2% | 1.2% | 10 | 10435 |
+| Woodland-elf | 25 | 1.1% | 1.1% | 7 | 8985 |
+| hill orc | 23 | 1.0% | 1.0% | 4 | 7342 |
+| troll | 21 | 0.9% | 1.0% | 12 | 14550 |
+| black unicorn | 20 | 0.9% | 0.9% | 6.5 | 8542.5 |
+| owlbear | 19 | 0.8% | 0.9% | 8 | 12456 |
+| rothe | 17 | 0.7% | 0.8% | 4 | 7090 |
+| Green-elf | 17 | 0.7% | 0.8% | 10 | 10703 |
+| vampire lord | 16 | 0.7% | 0.7% | 11 | 9346.5 |
+| wolf | 16 | 0.7% | 0.7% | 6 | 6996.5 |
+| gargoyle | 15 | 0.7% | 0.7% | 10 | 10145 |
+| Uruk-hai | 15 | 0.7% | 0.7% | 6 | 7429 |
+| werewolf | 15 | 0.7% | 0.7% | 6 | 6516 |
+
+Killers, seeds 0..2303, games that ended on Dlvl 4-12 (n = 1710; top rows):
+
+| Ending | Count | % of games | % of deaths | Median depth | Median turns |
+|--------|-------|------------|-------------|--------------|--------------|
+| starved | 419 | 24.5% | 25.0% | 5 | 8942 |
+| ants | 182 | 10.6% | 10.9% | 6 | 7943 |
+| killer bee | 59 | 3.5% | 3.5% | 5 | 6469 |
+| wand | 35 | 2.0% | 2.1% | 4 | 5118 |
+| rays | 78 | 4.6% | 4.7% | 7 | 9384 |
+| breath | 4 | 0.2% | 0.2% | 11 | 17105 |
+| exception | 25 | 1.5% | - | 7 | 13639 |
+| watchdog | 5 | 0.3% | - | 11 | 14533 |
+| escaped/other endings | 151 | 8.8% | - | 7 | 8446 |
+| gray unicorn | 36 | 2.1% | 2.1% | 6 | 7171 |
+| mumak | 32 | 1.9% | 1.9% | 8 | 10868.5 |
+| Woodland-elf | 25 | 1.5% | 1.5% | 7 | 8985 |
+| leocrotta | 22 | 1.3% | 1.3% | 10 | 9184 |
+| black unicorn | 20 | 1.2% | 1.2% | 6.5 | 8542.5 |
+| hill orc | 20 | 1.2% | 1.2% | 4.5 | 7521 |
+| owlbear | 19 | 1.1% | 1.1% | 8 | 12456 |
+| wolf | 16 | 0.9% | 1.0% | 6 | 6996.5 |
+| Green-elf | 16 | 0.9% | 1.0% | 9 | 10471 |
+| vampire lord | 15 | 0.9% | 0.9% | 11 | 9245 |
+| Uruk-hai | 15 | 0.9% | 0.9% | 6 | 7429 |
+| werewolf | 15 | 0.9% | 0.9% | 6 | 6516 |
+| troll | 14 | 0.8% | 0.8% | 11 | 18331.5 |
+| rothe | 14 | 0.8% | 0.8% | 4.5 | 6705 |
+| watch captain | 14 | 0.8% | 0.8% | 6.5 | 9588 |
+
+Starvation ends 25% of all games (26% of deaths), three times the next killer (ants 8%).
+
+### Experiments
+
+Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only baseline)
+
+| # | Branch | Cause | Candidate | Baseline | Metric | Verdict | Diff [lo, hi] (points) | Decision |
+|---|--------|-------|-----------|----------|--------|---------|------------------------|----------|
