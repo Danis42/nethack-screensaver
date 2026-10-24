@@ -687,3 +687,20 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 - Mechanism: starved +0.7 [+0.3, +1.2] (worse: 21 games starve that did not, 4 the other way); died +0.2 [+0.0, +0.4]; counter prayer_failed fired in 557 of 2304 games; crashes: same type (RuntimeError Cyclic Panic, 43 vs 48)
 - Reading: pausing prayer after a failure only moves the death: a hero with no food who may not pray starves anyway, a little more often. The cause is the empty food supply, not the prayer timing (experiment 2).
 - Decision: dropped (branch `exp/starvation-1` kept at `a8e8065c58609c416be1441200370f3c953a73c5`)
+
+#### Experiment 2: `exp/starvation-2` - starvers stuck on levels whose way on is hidden
+- Requirement / decisions: SURV-02 (D-07, D-08, D-09). Recorded deviation from the 20% bucket rule: the next
+  bucket (prayer-cooldown, 14.8%) is below 20%, but 567 of 576 starvers carried no food, so the food supply
+  was diagnosed instead (local replays, scratch counters, not merged).
+- Diagnosis: 22 starvers vs 22 long survivors: kills 5.3 vs 14.0 per 1000 turns, a similar share of corpses
+  eaten (27% vs 30%). 44 starvers: median 3,900 turns (quartiles 1,800-6,700) since their last new level at
+  death, 29 of 44 over 2,500; most in DIVE with no downstairs found, some on Dlvl 1-2 with half the map unseen
+  (seeds 3, 65). 4 of 44 lost 1,000+ turns waiting beside a floating eye (fight2 "let it drift off"; later).
+- Change: `far_side_walls` (`autoascend/exploration_logic.py`): squares beside the outermost wall on a side of
+  the map with 8+ columns 95% unseen get the dead-end search bonus (250). mklev sorts rooms by x and joins
+  neighbours, so that wall holds the (often secret) door on. Earlier 2026-10-19 search change bundled
+  more searches per dead end with a vaguer bonus; this is the geometry alone. Counter `far_side_search`.
+- Candidate `9ca5d8b2024e65a15dac6ba9b423d8dadf39d6f6`; baseline `0b097073adb3071f8e5c2aea954618a3320a5bc7`; primary metric `rung2` (26% of baseline starvers had rung >= 2: below the 60% rule); games: screen at 384, then to the last checkpoint (diagnosis-backed)
+- Smoke (29 seeds): counter fired in 29 of 29; seed 3 Dlvl 1 -> 12, seed 65 Dlvl 2 -> 9; one Cyclic Panic (inventory.py:501, a type in 6 baseline games)
+- Mechanism metrics: `starved`, `depth`, `dlvl10`, `crashed`
+- Verdict: pending
