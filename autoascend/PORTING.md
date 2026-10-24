@@ -716,6 +716,7 @@ Current baseline: `3fca503215e1a3de57e775378a1598fb05a40c20` (exp/shop-door, kep
 | 3 | `exp/rest-to-full` | HP-driven deaths (rest, food-scaled) | `894084d` | `0b09707` | rung2 | no measurable difference @ 2304 | -1.5 [-4.2, +1.2] | dropped |
 | 4 | `exp/ants-bees` | ants and bees (poison resistance corpses) | `9ca4f31` | `0b09707` | rung2 | worse @ 2304 | -1.5 [-2.6, -0.3] | dropped |
 | 5 | `exp/shop-door` | angry shopkeepers (kicked shop doors) | `3fca503` | `0b09707` | rung2 | better @ 384 | +3.1 [+0.8, +5.4] | kept |
+| 6 | `exp/zappers` | wand and ray users (leave zap lines) | `d7d5e6b` | `3fca503` | rung2 | no measurable difference @ 2304 | +0.1 [-0.8, +0.9] | dropped |
 
 #### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
 - Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
@@ -837,4 +838,12 @@ mostly these.
   below the 60% rule); games: screen at 384, then to the last checkpoint
 - Smoke (22 baseline unnamed-zapper death seeds): counter fired in 9 of 22, no exceptions, no watchdog
 - Mechanism metrics: `rays`, `died`, `dlvl6`, `dlvl10`
-- Verdict: pending
+- Screen (384 seeds, 80%): rung2 +0.8 [-0.4, +2.0]; not dropped (rays +1.3 [+0.2, +2.4] at 384, leaning worse)
+- Job 24: Verdict: no measurable difference at 2304 games per side, diff +0.1 points, 95% interval [-0.8, +0.9]
+- Mechanism: rays +0.2 [-0.5, +0.9]; died +0.1; dlvl6 -0.4 [-1.1, +0.4]; dlvl10 +0.2 [-0.8, +1.2]; crashes: same
+  types, exception 51 vs 50, watchdog 45 vs 49
+- Reading: the dodge fired in 9 of 22 smoke games but ray deaths did not fall; most rays come from monsters the bot
+  has not seen zap yet (first zap kills or the zapper is out of sight), and dodging moves cost tempo in the fight.
+- Decision: dropped (branch `exp/zappers` kept at `d7d5e6b1442b9467005b1213febc1584c2b31ca3`)
+- Shop-door effect over 2304 seeds (baseline store): named-zapper (shopkeeper) deaths 118 on `0b09707`, 34 on
+  `3fca503`

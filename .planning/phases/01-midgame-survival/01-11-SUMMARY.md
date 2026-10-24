@@ -7,7 +7,7 @@ requires: [01-08]
 provides:
   - "scripts/seeded_report.py zappers subcommand (classes Z1-Z4, tactic rule)"
   - "Level.closed_shop_door: never kick a door behind a Closed for inventory engraving (kept, 3fca503)"
-  - "branch exp/zappers (36588cb): leave the zap line of a known zapper, not yet judged"
+  - "branch exp/zappers (d7d5e6b): leave the zap line of a known zapper, dropped (no measurable difference)"
 affects: [01-12, 01-15]
 key-decisions:
   - "93 of 2304 baseline games (4.0%) die to angry shopkeepers; 9 of 10 replays kicked a closed shop's door"
@@ -21,5 +21,6 @@ message replays showed the bot reads "Closed for inventory", finds the door lock
 (`exp/shop-door`) stops that and is the phase's first keeper: better on rung2 at 384 games, wand and ray deaths
 -4.2 points. New current baseline `3fca503`.
 
-Next: rebase `exp/zappers` onto the new baseline and judge it against the remaining wand and ray deaths
-(Keystone Kops after shop theft are a second, smaller shopkeeper path).
+Experiment 6 (`exp/zappers` rebased, `d7d5e6b`): no measurable difference at 2304, +0.1 [-0.8, +0.9]; dropped.
+Over 2304 seeds shopkeeper deaths fell from 118 to 34. The rest come from other anger paths (Keystone Kops
+after shop theft, fighting a shopkeeper that was already hostile).
