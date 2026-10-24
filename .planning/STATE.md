@@ -4,16 +4,16 @@ milestone: v0.1.0
 current_phase: 01
 current_phase_name: Midgame Survival
 status: executing
-stopped_at: Completed 01-06-PLAN.md
+stopped_at: Completed 01-07-PLAN.md
 last_updated: "2026-10-23T17:17:43.229Z"
 last_activity: 2026-10-23
-last_activity_desc: 01-06 calibration done; Valkyrie-only A/A passed (gate 0b09707)
+last_activity_desc: 01-07 baseline stored and tabled
 state_head: e0691aa5c2b7540d1a588a329e8191df315a297e
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 16
-  completed_plans: 6
+  completed_plans: 7
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 ## Current Position
 
 Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 7 of 16
+Plan: 8 of 16
 Status: Ready to execute
-Last activity: 2026-10-24 — 01-06 done: Valkyrie-only A/A passed, calibration recorded, 2304 checkpoint, screen-then-confirm
+Last activity: 2026-10-24 — 01-07 done: baseline p1-baseline = 0b09707 stored (2304 seeds) and tabled
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -77,19 +77,18 @@ Full log in PROJECT.md Key Decisions. Recent, affecting current work:
 - [Phase 01]: 01-04: prayer_outcome classifies 'You die...' in the prayer window as failed; a failed prayer with no god-like answer stays unknown — Human games: 134 of 141 'while praying' deaths show monsters hitting a hero with no shimmering light
 - [Phase 01]: 01-04: humans fail 2.8% of prayers on Dlvl 4-12 (bot 12%); human starvers die early (median turn 2,206) while the bot's median is 7,828; eating rate is equal (2.8-2.9 per 1000 turns) — NLD-NAO food study, 01-HUMAN-STUDY.md
 
+- [Phase 1]: pilgrim-only baseline p1-baseline = 0b09707 (dwarvish Valkyrie); bench resolution 2.8 points on rung2 at 2304 (PORTING.md); starvation ends 25% of games
+
 ### Pending Todos
 
 None yet.
 
 ### Blockers/Concerns
 
-- [Phase 1] Every game is a dwarvish Valkyrie since `0b09707` (owner, until the first ascension). Measurement code `p1-valk-base`, A/A passed (job 13). Resolution: ±3.9 points rung2 at 1152, about ±2.8 at 2304 (now the last checkpoint). The baseline (01-07) must be stored on Valkyrie code; all older numbers are not comparable.
-- [Phase 1+] 19/1152 Valkyrie games (all Dlvl 11-28) end on the 120 s watchdog: the bot hangs deep in the dungeon. Needs a stack dump on watchdog and a fix before the deep rungs can be measured.
-- [Workflow] `docs/STATUS.md` says the method is superpowers (brainstorm, spec, plan, build), "not GSD"; `.planning/` now also tracks the roadmap. Owner to decide how the two coexist when planning Phase 1.
-- [Phase 1] Unmerged branches to re-judge or leave dropped: `threat-model`, `flee-upstairs`, `choke-points`; an older `survival-tuning` also exists. They predate pilgrim-only and seeding, so a rebase may be needed.
-- [Phase 1] Human-game studies need the NLD-NAO data at `/ssd2/nethackFiles/` (`nld.db`) to be mounted.
-- [Phases 4-8] Nothing above rung 8 has been reached in natural play; these phases depend on the staged-start harness (STAGE-01, whose `wizard=True` route is unvalidated against `NetHackChallenge` and seeding).
-- [Phase 1] Module-level caches (`_PRIZES` in `global_logic.py`, shared `STRATEGIES` in `plans.py`) may leak state between seeds in a long-lived bench worker (MEAS-03).
+- [Phase 1] Every game is a dwarvish Valkyrie since `0b09707` (owner, until the first ascension). Baseline `p1-baseline` = `0b09707` (2304 seeds stored); older numbers are not comparable.
+- [Phase 1+] 46/2304 baseline games (median Dlvl 24) end on the 120 s watchdog: the bot hangs deep in the dungeon. Needs a stack dump on watchdog and a fix before the deep rungs can be measured.
+- [Phase 1] Unmerged branches await SURV-05 (plan 01-16): `threat-model`, `flee-upstairs`, `choke-points`; they predate pilgrim-only, seeding and Valkyrie-only, so a rebase may be needed. `survival-tuning` deleted (merged, 2026-10-24).
+- [Phases 4-8] Nothing above rung 9 (Medusa, 14 of 2304 games) has been reached; these phases depend on the staged-start harness (STAGE-01, whose `wizard=True` route is unvalidated against `NetHackChallenge` and seeding).
 
 ## Deferred Items
 
