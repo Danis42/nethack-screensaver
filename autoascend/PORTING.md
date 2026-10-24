@@ -715,3 +715,19 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
   two smoke rescues (seeds 3, 65) were balanced by games it slowed. A later variant should fire only when
   nothing is left to visit (stuck), which is where the diagnosis found the hidden-way levels.
 - Decision: dropped (branch `exp/starvation-2` kept at `9ca5d8b2024e65a15dac6ba9b423d8dadf39d6f6`)
+
+#### Experiment 3: `exp/rest-to-full` - rest before exploring on, target scaled by food
+- Requirement / decisions: SURV-01 (D-07 killer order); owner revision 2026-10-24: rest "close to full
+  depending on how much food there is", not always to full
+- Change: `autoascend/rest.py` `should_rest`, wired as `GlobalLogic.rest_to_full()` first in the exploration
+  preempt list: with no hostile in view, search in 20-turn chunks up to a target that depends on the food
+  cushion (carried edible nutrition + 900 if a hunger prayer is safe): >= 800 -> full HP (start below 90%);
+  else Not Hungry, or Hungry with some food -> 85% (start below 75%); Hungry with nothing, or Weak -> no rest.
+  400 resting turns per level at most. Counters `rest_start`, `rest_turns`. Regen below XL 10 is 1 HP per
+  42/(XL+2)+1 turns (wiki Hit points), so each missing HP costs the same; food sets how many to buy.
+- Candidate `6448532ae1b628e932152739ed58ff0c982562d3`; baseline `0b097073adb3071f8e5c2aea954618a3320a5bc7`;
+  primary metric `rung2` (777 of 1631 baseline deaths not from hunger or crashes, 48%, had rung >= 2: below
+  the 60% rule); games: screen at 384, then to the last checkpoint (diagnosis-backed)
+- Smoke (22 seeds): rest_start fired in 20 of 22, no exceptions, no watchdog; median rest_turns about 600 per game
+- Mechanism metrics: `died`, `ants`, `rays`, `starved` (resting spends food), median `events.rest_turns`
+- Verdict: pending
