@@ -675,3 +675,10 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 
 | # | Branch | Cause | Candidate | Baseline | Metric | Verdict | Diff [lo, hi] (points) | Decision |
 |---|--------|-------|-----------|----------|--------|---------|------------------------|----------|
+
+#### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
+- Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
+- Change: `Agent.pray` classifies its messages with `prayer_outcome`; after a failure `is_safe_to_pray` is False for `PRAYER_FAILURE_PAUSE` = 1000 turns (`autoascend/agent.py`); counter `prayer_failed`
+- Candidate `a8e8065c58609c416be1441200370f3c953a73c5`; baseline `0b097073adb3071f8e5c2aea954618a3320a5bc7`; primary metric `rung2` (152 of 576 baseline starvers, 26%, had rung >= 2: below the 60% rule); games: screen at 384 (protocol 7a), then to the last checkpoint (diagnosis-backed)
+- Mechanism metrics: `starved`, `died`, `events.prayer_failed`
+- Verdict: pending
