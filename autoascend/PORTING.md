@@ -675,10 +675,15 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 
 | # | Branch | Cause | Candidate | Baseline | Metric | Verdict | Diff [lo, hi] (points) | Decision |
 |---|--------|-------|-----------|----------|--------|---------|------------------------|----------|
+| 1 | `exp/starvation-1` | repeated failed prayers | `a8e8065` | `0b09707` | rung2 | no measurable difference @ 2304 | +0.0 [-0.2, +0.2] | dropped |
 
 #### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
 - Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
 - Change: `Agent.pray` classifies its messages with `prayer_outcome`; after a failure `is_safe_to_pray` is False for `PRAYER_FAILURE_PAUSE` = 1000 turns (`autoascend/agent.py`); counter `prayer_failed`
 - Candidate `a8e8065c58609c416be1441200370f3c953a73c5`; baseline `0b097073adb3071f8e5c2aea954618a3320a5bc7`; primary metric `rung2` (152 of 576 baseline starvers, 26%, had rung >= 2: below the 60% rule); games: screen at 384 (protocol 7a), then to the last checkpoint (diagnosis-backed)
 - Mechanism metrics: `starved`, `died`, `events.prayer_failed`
-- Verdict: pending
+- Screen (384 seeds, 80%): rung2 +0.3 [-0.1, +0.6], 1 of 384 seeds differs; not dropped
+- Job 17: Verdict: no measurable difference at 2304 games per side, diff +0.0 points, 95% interval [-0.2, +0.2]
+- Mechanism: starved +0.7 [+0.3, +1.2] (worse: 21 games starve that did not, 4 the other way); died +0.2 [+0.0, +0.4]; counter prayer_failed fired in 557 of 2304 games; crashes: same type (RuntimeError Cyclic Panic, 43 vs 48)
+- Reading: pausing prayer after a failure only moves the death: a hero with no food who may not pray starves anyway, a little more often. The cause is the empty food supply, not the prayer timing (experiment 2).
+- Decision: dropped (branch `exp/starvation-1` kept at `a8e8065c58609c416be1441200370f3c953a73c5`)
