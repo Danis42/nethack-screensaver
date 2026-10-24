@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 
 Phase: 01 (Midgame Survival) — EXECUTING
 Plan: 11 of 16
-Status: Executing 01-11 (leave zap lines, branch exp/zappers 36588cb); 01-10 dropped (worse)
+Status: Executing 01-11: job 23 exp/shop-door (3fca503, never kick a "Closed for inventory" door; 93 of 2304 baseline games die to angry shopkeepers); exp/zappers 36588cb queued next; 01-10 dropped (worse)
 Last activity: 2026-10-24 — 01-10 done: exp/ants-bees worse on rung2 -1.5 [-2.6, -0.3], dropped; four experiments, none kept
 
 Progress: [░░░░░░░░░░] 0%
