@@ -4,16 +4,16 @@ milestone: v0.1.0
 current_phase: 01
 current_phase_name: Midgame Survival
 status: executing
-stopped_at: Completed 01-07-PLAN.md
+stopped_at: Completed 01-08-PLAN.md
 last_updated: "2026-10-23T17:17:43.229Z"
-last_activity: 2026-10-23
-last_activity_desc: 01-07 baseline stored and tabled
+last_activity: 2026-10-24
+last_activity_desc: 01-08 starvation done (2 experiments dropped)
 state_head: e0691aa5c2b7540d1a588a329e8191df315a297e
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 16
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 ## Current Position
 
 Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 8 of 16
-Status: Ready to execute
-Last activity: 2026-10-24 — 01-07 done: baseline p1-baseline = 0b09707 stored (2304 seeds) and tabled
+Plan: 9 of 16
+Status: Executing 01-09 (rest, food-scaled target)
+Last activity: 2026-10-24 — 01-08 done: starvation-1 and -2 dropped; starvers carry no food and are stuck on levels
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -77,6 +77,8 @@ Full log in PROJECT.md Key Decisions. Recent, affecting current work:
 - [Phase 01]: 01-04: prayer_outcome classifies 'You die...' in the prayer window as failed; a failed prayer with no god-like answer stays unknown — Human games: 134 of 141 'while praying' deaths show monsters hitting a hero with no shimmering light
 - [Phase 01]: 01-04: humans fail 2.8% of prayers on Dlvl 4-12 (bot 12%); human starvers die early (median turn 2,206) while the bot's median is 7,828; eating rate is equal (2.8-2.9 per 1000 turns) — NLD-NAO food study, 01-HUMAN-STUDY.md
 
+- [Phase 01]: 01-08: starvation is a food-supply and stuck-level problem, not prayer timing; both experiments dropped (PORTING.md experiments 1-2)
+- [Phase 01]: 01-09: rest target scales with food (owner, 2026-10-24): full HP with food or safe prayer, about 85% without food, none when Hungry with no fallback
 - [Phase 1]: pilgrim-only baseline p1-baseline = 0b09707 (dwarvish Valkyrie); bench resolution 2.8 points on rung2 at 2304 (PORTING.md); starvation ends 25% of games
 
 ### Pending Todos
@@ -103,5 +105,5 @@ Tracked but unscheduled (REQUIREMENTS.md v2): ROLE-01 role choice, DEBT-01..05 t
 ## Session Continuity
 
 Last session: 2026-10-23T17:17:43.204Z
-Stopped at: Completed 01-04-PLAN.md
+Stopped at: Completed 01-08-PLAN.md
 Resume file: None
