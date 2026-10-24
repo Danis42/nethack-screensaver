@@ -881,3 +881,15 @@ mostly these.
   starved +0.3; crashes: exception 63 vs 50 (more, same Cyclic Panic types), watchdog 46 vs 49
 - Reading: the closest miss so far, but the deeper metrics do not move, so the rung2 gain is early-game only.
 - Decision: dropped (branches `choke-points` `b31e926` and `rejudge/choke-points` `339a63c` kept for plan 01-16)
+
+#### Experiment 9: `rejudge/flee-upstairs` - re-judge the old flee-upstairs branch
+- Requirement / decisions: SURV-05 (D-12 judged once, D-13)
+- Change: `flee-upstairs` code diff (`a535f7a` against its merge base `0c7acbc`): `fight_heur.flee_upstairs_action`
+  climbs (or walks to) the up stairs when a dangerous monster (soldier ant, killer bee, ...) is near; counter
+  `flee_upstairs`. Rebase conflicts: kept both stats_logger counters; kept main's `game.py` (the branch's
+  `GameResult.flee_upstairs` field is dropped, the counter is in `events`)
+- Candidate `757aad8893bfd9155f14e9122aec1e122b8b51c5` (original `a535f7a`); baseline
+  `3fca503215e1a3de57e775378a1598fb05a40c20`; primary metric `rung2`; games: screen at 384, then to the last checkpoint
+- Smoke (seeds 0-21): 433 tests pass; flee_upstairs fired in 8 of 22; 21 died, 1 watchdog, no exceptions
+- Mechanism metrics: `died`, `ants`, `dlvl6`, `dlvl10`
+- Verdict: pending
