@@ -864,3 +864,14 @@ mostly these.
 - Mechanism: died +0.8 [-0.1, +1.6]; ants -0.2 [-1.4, +0.9]; dlvl6 -1.0 [-2.3, +0.3]; dlvl10 -1.6 [-3.2, -0.0]
   (leaning worse); crashes: fewer (exception 40 vs 50, watchdog 37 vs 49), same types
 - Decision: dropped (branches `threat-model` `fdf6b48` and `rejudge/threat-model` `8284811` kept for plan 01-16)
+
+#### Experiment 8: `rejudge/choke-points` - re-judge the old choke-point fighting branch
+- Requirement / decisions: SURV-05 (D-12 judged once, D-13)
+- Change: `choke-points` code diff (`b31e926` against its merge base `aa4b1cf`): `combat/fight_heur.py` prefers
+  fighting from a corridor or doorway square when several hostiles are near; `tests/test_choke_points.py`
+- Candidate `339a63c5c31f5891d4dcfb1c87d556ab25600272` (original `b31e926`); baseline
+  `3fca503215e1a3de57e775378a1598fb05a40c20`; primary metric `rung2`; games: screen at 384, then to the last checkpoint
+- Smoke (seeds 0-21): 431 tests pass; 19 died, 1 Cyclic Panic AssertionError, 2 watchdog (both types in the
+  baseline); median depth 9
+- Mechanism metrics: `died`, `ants`, `dlvl6`, `dlvl10`
+- Verdict: pending
