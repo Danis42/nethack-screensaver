@@ -32,6 +32,7 @@ class Level:
 
         self.search_count = np.zeros((C.SIZE_Y, C.SIZE_X), np.int32)
         self.door_open_count = np.zeros((C.SIZE_Y, C.SIZE_X), np.int32)
+        self.closed_shop_door = np.zeros((C.SIZE_Y, C.SIZE_X), bool)  # kicking it angers the shopkeeper
 
         self.item_disagreement_counter = np.zeros((C.SIZE_Y, C.SIZE_X), np.int32)
         self.items = np.empty((C.SIZE_Y, C.SIZE_X), dtype=object)

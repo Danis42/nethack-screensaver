@@ -276,6 +276,9 @@ class ExplorationLogic:
             yielded = False
             for py, px in self.agent.neighbors(self.agent.blstats.y, self.agent.blstats.x, diagonal=False):
                 can_kick = kick_doors and self.agent.can_kick()
+                if can_kick and self.agent.current_level().closed_shop_door[py, px]:
+                    can_kick = False
+                    self.agent.stats_logger.log_event('shop_door_spared')
                 if (self.agent.current_level().door_open_count[py, px] < door_open_count or can_kick) and \
                         self.agent.glyphs[py, px] in G.DOOR_CLOSED:
                     if not yielded:
