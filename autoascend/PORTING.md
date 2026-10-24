@@ -717,6 +717,7 @@ Current baseline: `3fca503215e1a3de57e775378a1598fb05a40c20` (exp/shop-door, kep
 | 4 | `exp/ants-bees` | ants and bees (poison resistance corpses) | `9ca4f31` | `0b09707` | rung2 | worse @ 2304 | -1.5 [-2.6, -0.3] | dropped |
 | 5 | `exp/shop-door` | angry shopkeepers (kicked shop doors) | `3fca503` | `0b09707` | rung2 | better @ 384 | +3.1 [+0.8, +5.4] | kept |
 | 6 | `exp/zappers` | wand and ray users (leave zap lines) | `d7d5e6b` | `3fca503` | rung2 | no measurable difference @ 2304 | +0.1 [-0.8, +0.9] | dropped |
+| 7 | `rejudge/threat-model` | old branch re-judged (real danger only) | `8284811` | `3fca503` | rung2 | no measurable difference @ 2304 | +0.3 [-1.2, +1.7] | dropped |
 
 #### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
 - Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
@@ -858,4 +859,8 @@ mostly these.
 - Smoke (seeds 0-21): 440 tests pass; 20 died, seed 15 Cyclic Panic AssertionError (baseline seed 15: Cyclic Panic
   AssertionError at inventory.py, same type), seed 2 watchdog at depth 23 (baseline seed 13 watchdog)
 - Mechanism metrics: `died`, `ants`, `dlvl6`, `dlvl10`
-- Verdict: pending
+- Screen (384 seeds, 80%): rung2 +0.3 [-2.1, +2.6]; not dropped
+- Job 25: Verdict: no measurable difference at 2304 games per side, diff +0.3 points, 95% interval [-1.2, +1.7]
+- Mechanism: died +0.8 [-0.1, +1.6]; ants -0.2 [-1.4, +0.9]; dlvl6 -1.0 [-2.3, +0.3]; dlvl10 -1.6 [-3.2, -0.0]
+  (leaning worse); crashes: fewer (exception 40 vs 50, watchdog 37 vs 49), same types
+- Decision: dropped (branches `threat-model` `fdf6b48` and `rejudge/threat-model` `8284811` kept for plan 01-16)
