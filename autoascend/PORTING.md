@@ -714,6 +714,7 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 | 1 | `exp/starvation-1` | repeated failed prayers | `a8e8065` | `0b09707` | rung2 | no measurable difference @ 2304 | +0.0 [-0.2, +0.2] | dropped |
 | 2 | `exp/starvation-2` | stuck on levels with a hidden way on | `9ca5d8b` | `0b09707` | rung2 | no measurable difference @ 2304 | -1.1 [-3.9, +1.7] | dropped |
 | 3 | `exp/rest-to-full` | HP-driven deaths (rest, food-scaled) | `894084d` | `0b09707` | rung2 | no measurable difference @ 2304 | -1.5 [-4.2, +1.2] | dropped |
+| 4 | `exp/ants-bees` | ants and bees (poison resistance corpses) | `9ca4f31` | `0b09707` | rung2 | worse @ 2304 | -1.5 [-2.6, -0.3] | dropped |
 
 #### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
 - Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
@@ -791,4 +792,12 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 - Smoke (22 baseline insect-death seeds): counter fired in 8 of 22, no exceptions, no watchdog
 - Mechanism metrics: `ants`, `died`, `starved`, insect killer counts (`seeded_report.py insects`) on both sides,
   `eat_for_poison_res`
-- Verdict: pending
+- Screen (384 seeds, 80%): rung2 +0.0 [-1.8, +1.8]; not dropped
+- Job 22: Verdict: worse at 2304 games per side, diff -1.5 points, 95% interval [-2.6, -0.3]
+- Mechanism: ants +0.3 [-0.6, +1.2]; starved +0.3 [-0.9, +1.5]; dlvl6 -0.5 [-1.4, +0.4]; dlvl10 -1.1
+  [-2.5, +0.4]; died +1.1 [+0.3, +1.9] (a game ending in DEATH instead of a crash or watchdog: crashes fell,
+  exception 45 vs 48, watchdog 26 vs 46). Insect deaths 253 on both sides (soldier ant 106 vs 105, giant ant
+  19 vs 16, killer bee 37 vs 42); A2 poison share 25.9% vs 26.4%
+- Reading: eating the corpses does not reduce insect deaths; the bot dies to the first swarm, before a corpse
+  can help, and the HP-cost of the poison (and the turns spent eating) cost depth elsewhere.
+- Decision: dropped (branch `exp/ants-bees` kept at `9ca4f3199664f4a2b80b100e798b78ac44332197`)

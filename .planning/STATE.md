@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 ## Current Position
 
 Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 10 of 16
-Status: Executing 01-10 (poison resistance, branch exp/ants-bees 9ca4f31); 01-09 dropped
-Last activity: 2026-10-24 — 01-08 done: starvation-1 and -2 dropped; starvers carry no food and are stuck on levels
+Plan: 11 of 16
+Status: Executing 01-11 (leave zap lines, branch exp/zappers 36588cb); 01-10 dropped (worse)
+Last activity: 2026-10-24 — 01-10 done: exp/ants-bees worse on rung2 -1.5 [-2.6, -0.3], dropped; four experiments, none kept
 
 Progress: [░░░░░░░░░░] 0%
 
