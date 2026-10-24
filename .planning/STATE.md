@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 
 Phase: 01 (Midgame Survival) — EXECUTING
 Plan: 11 of 16
-Status: Executing 01-11: job 23 exp/shop-door (3fca503, never kick a "Closed for inventory" door; 93 of 2304 baseline games die to angry shopkeepers); exp/zappers 36588cb queued next; 01-10 dropped (worse)
+Status: 01-11 done: exp/shop-door KEPT (rung2 +3.1 [+0.8, +5.4]), baseline now 3fca503; next exp/zappers rebased onto it
 Last activity: 2026-10-24 — 01-10 done: exp/ants-bees worse on rung2 -1.5 [-2.6, -0.3], dropped; four experiments, none kept
 
 Progress: [░░░░░░░░░░] 0%

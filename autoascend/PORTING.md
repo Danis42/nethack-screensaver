@@ -707,7 +707,7 @@ early (median Dlvl 4, XL 4-5: gnome lords and dwarves with wands in the Mines) a
 
 ### Experiments
 
-Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only baseline)
+Current baseline: `3fca503215e1a3de57e775378a1598fb05a40c20` (exp/shop-door, kept 2026-10-24; before: `0b097073adb3071f8e5c2aea954618a3320a5bc7` pilgrim-only baseline)
 
 | # | Branch | Cause | Candidate | Baseline | Metric | Verdict | Diff [lo, hi] (points) | Decision |
 |---|--------|-------|-----------|----------|--------|---------|------------------------|----------|
@@ -715,6 +715,7 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 | 2 | `exp/starvation-2` | stuck on levels with a hidden way on | `9ca5d8b` | `0b09707` | rung2 | no measurable difference @ 2304 | -1.1 [-3.9, +1.7] | dropped |
 | 3 | `exp/rest-to-full` | HP-driven deaths (rest, food-scaled) | `894084d` | `0b09707` | rung2 | no measurable difference @ 2304 | -1.5 [-4.2, +1.2] | dropped |
 | 4 | `exp/ants-bees` | ants and bees (poison resistance corpses) | `9ca4f31` | `0b09707` | rung2 | worse @ 2304 | -1.5 [-2.6, -0.3] | dropped |
+| 5 | `exp/shop-door` | angry shopkeepers (kicked shop doors) | `3fca503` | `0b09707` | rung2 | better @ 384 | +3.1 [+0.8, +5.4] | kept |
 
 #### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
 - Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
@@ -818,4 +819,9 @@ mostly these.
 - Smoke (11 baseline shopkeeper-death seeds): counter fired in 11 of 11, no exceptions, no watchdog; all 11 now
   die later (median Dlvl 8, before Dlvl 2-5)
 - Mechanism metrics: `rays`, `died`, `dlvl6`, `dlvl10`, `starved`
-- Verdict: pending
+- Screen (384 seeds, 80%): rung2 +3.1 [+2.0, +4.3]; not dropped
+- Job 23: Verdict: better at 384 games per side (sequential stop), diff +3.1 points, 95% interval [+0.8, +5.4]
+- Mechanism (384): rays -4.2 [-6.8, -1.5]; dlvl6 +4.7 [+1.9, +7.5]; dlvl10 +2.1 [+0.2, +4.0]; starved +1.6
+  [-0.1, +3.2] (games that live longer starve more); died -0.3; ants +0.5. Crashes: same types (Cyclic Panic
+  5 vs 5), watchdog 9 vs 8
+- Decision: kept; merged to `main` (code identical to `3fca503`), 426 tests pass. New current baseline `3fca503`.
