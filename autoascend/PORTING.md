@@ -47,6 +47,8 @@ Target: Python 3.13, NLE 1.3.0 (gymnasium), numpy 2, modern numba/opencv.
 
 ## Benchmark (2026-10-16, 50 games, `scripts/benchmark.py -n 50 -j 10`)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 ```
 games            : 50
 median score     : 5952.5
@@ -69,6 +71,8 @@ nested containers"); they end the game and the screensaver starts a new one.
 
 ## Strategies benchmark (2026-10-18, 36 games per strategy)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 | | pilgrim | daredevil | sightseer | treasure |
 |---|---|---|---|---|
 | median max depth | 5 | 4 | 5 | 4 |
@@ -86,6 +90,8 @@ to be too busy", an artifact blast, turn inactivity, nested containers).
 
 ## Strategies benchmark after follow-up fixes (2026-10-18, 36 games per strategy)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 | | pilgrim | daredevil | sightseer | treasure |
 |---|---|---|---|---|
 | median max depth | 5 | **7.5** | 4 | 5 |
@@ -100,6 +106,8 @@ DIVE turned daredevil into the deepest strategy. The treasure game that solved S
 still left without the prize; one sample, not yet investigated.
 
 ## Escape tuning (2026-10-18, 48 games per escape strategy)
+
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
 
 Retreat home directly (no exploring detours, item gathering or pet waiting on
 RETURN_TO_SURFACE) and bail out home when Weak with no food while prayer is on
@@ -120,6 +128,8 @@ Sokoban is sometimes judged unsolvable (`sokoban_dropped`), which skips the loot
 
 ## Role-tilted strategies (2026-10-18, 192 unforced games)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 Strategy picked after reset with weights by role tier (strong bar/sam/val/mon get
 pilgrim/treasure 70%, weak arc/tou/rog/hea/wiz get sightseer/daredevil 80%).
 
@@ -137,6 +147,8 @@ Mines first. Daredevil's Dlvl 10+ fell from 19% as it now gets more weak roles.
 
 ## Wiki rules (2026-10-18, 192 unforced games each)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 | | baseline | + Oracle-guided Sokoban search | + pray when Weak | + avoid ']' mimics |
 |---|---|---|---|---|
 | hunger deaths | - | 30 | 29 | 22 |
@@ -149,6 +161,8 @@ objects, since the mimics that kill this bot are not the shop ones. Roughly half
 all Sokoban visits end in `sokoban_dropped`, which is what a live-board solver would fix.
 
 ## Live Sokoban solver (2026-10-18)
+
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
 
 `soko_solver/search.py` is the fallback when the stored solution no longer fits the board:
 traps filled one at a time (A* per trap with push distances, backtracking), tested on
@@ -171,6 +185,8 @@ puzzle is no longer the main obstacle; surviving Dlvl 6-9 at XL 7-9 is.
 
 ## Survival on Dlvl 6-9 (2026-10-19, 192 unforced games each)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 Two identical baselines differ by about ±10 games on "reached Dlvl 6+", so only large
 effects show. Deaths on Dlvl 6-9 have no dominant cause (ants 7, rays 5, floating-eye
 freezes 3 of 43); over all depths, floating-eye freezes cost 6-8 games.
@@ -191,6 +207,8 @@ often at a few HP; ~15% of dust engravings come out misspelled and get rewritten
 Resting on Elbereth below half HP until 80% gave no gain (more fainting deaths), not kept.
 
 ## Hunger (2026-10-19, 192 unforced games each)
+
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
 
 Diagnostics: most characters that starve carry no food and live on prayer (566 of 643
 prayers succeeded); death comes when a game drags on until a prayer is too early. Long
@@ -228,6 +246,8 @@ at Dlvl 10+, so single runs are noisier than assumed for rarer outcomes.
 
 ## Sokoban first, digging down, boulders (2026-10-20, 576 unforced games each)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 Measured on 576 games each, since 192-game runs proved too noisy (sightseer escapes varied
 from 10 to 24 between runs that do not change sightseers).
 
@@ -244,6 +264,8 @@ Sokoban). Reverted: digging down (escape at critical HP with a known wand of dig
 when stuck) and pushing boulders when stuck; neither freed stuck divers measurably.
 
 ## Crashes (2026-10-20, 576 unforced games each)
+
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
 
 Every crash was a "Cyclic Panic": NetHack refused an action without game time passing and
 the bot asked again until the turn-inactivity guard (200 steps) ended the game. Crash
@@ -268,6 +290,8 @@ anything up" and ball-and-chain parsing (1 each).
 
 ## Bench server (2026-10-20)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 Benchmarks now run through `screens-bench` (see README). The choke-points validation
 experiment (`choke-points` vs `aa4b1cf`, metric dlvl6, 1152 games per side, of which 1728
 imported from the earlier benchmark files) ended as: no measurable difference at 1152,
@@ -281,6 +305,8 @@ At the end 100% have magic resistance, 99% a bag of holding, 83% reflection; med
 AC -38; wands of teleportation 89%, death 83%, digging 64%.
 
 ## Ascension ladder baseline (2026-10-21, 576 unforced games of `2653410`)
+
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
 
 First baseline with the ladder (sub-project 0, `autoascend/ladder.py`). "Reached" counts
 games whose highest rung is this one or higher; turns are medians of the games that
@@ -306,6 +332,8 @@ Dlvl 6+ 49%, Dlvl 10+ 12%, median depth 5, median 5258 turns.
 
 ## Threat model (2026-10-21, rung2 = Minetown+, 1152 unforced games per side, baseline `2653410`)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 Idea: judge monsters by NetHack's own numbers (monster level, speed and attack dice from
 NetHack 3.6.6 `monst.c`, hit chance as in `mattacku`) instead of AutoAscend's name lists
 and fixed HP limits. Branch `threat-model` (not merged; it holds the generated attack
@@ -329,6 +357,8 @@ Next: learn from recorded human games what actually saves characters on Dlvl 3-8
 
 ## Flee upstairs from fast insects (2026-10-21, rung2, 1152 unforced games per side)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 Idea from human games (NLD-NAO part `aa`, 3.6 games Dlvl 4+): of 682 players who survived
 a soldier ant 31% went upstairs soon after seeing it, of 145 it killed 6%. Rule (branch
 `flee-upstairs`, `a535f7a`, not merged): in a fight with a soldier/fire/giant ant or killer
@@ -346,6 +376,8 @@ pooled baseline; next, seed both sides with the same games so dungeon luck cance
 
 ## Ascension route only (2026-10-21, main `dbab398`)
 
+*Not comparable with Phase 1 numbers: mixed strategies and/or unseeded games (see "Phase 1: seeded pilgrim-only bench").*
+
 Every game plays the pilgrim route now (`strategy = "random"` in the config brings the
 mix of all four plans back). In the 1152 games of `2653410` pilgrims reached Minetown+ in
 35%, daredevils and sightseers in 20%: the other plans diluted every measurement.
@@ -354,6 +386,8 @@ New baselines are needed; numbers before this change are not comparable.
 ## Phase 1: seeded pilgrim-only bench (2026-10-23)
 
 Rules, names and ledger: `.planning/phases/01-midgame-survival/01-EXPERIMENT-PROTOCOL.md`.
+
+survival-tuning `ade24fb74a0f141745633820eb0eba66cfd04ad5`: no commits main lacks; deleted 2026-10-24; its three stashes ("On survival-tuning") are kept.
 
 ### Determinism (MEAS-03)
 
