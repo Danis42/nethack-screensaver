@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 ## Current Position
 
 Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 13 of 16
-Status: 01-12 done (threat-model dropped); 01-13 choke-points next (rejudge/choke-points 339a63c ready), then 01-14 flee-upstairs (757aad8 ready)
+Plan: 14 of 16
+Status: 01-13 done (choke-points dropped, +1.2 [-0.1, +2.5]); 01-14 flee-upstairs next (rejudge/flee-upstairs 757aad8, 433 tests pass)
 Last activity: 2026-10-24 — 01-10 done: exp/ants-bees worse on rung2 -1.5 [-2.6, -0.3], dropped; four experiments, none kept
 
 Progress: [░░░░░░░░░░] 0%

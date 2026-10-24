@@ -718,6 +718,7 @@ Current baseline: `3fca503215e1a3de57e775378a1598fb05a40c20` (exp/shop-door, kep
 | 5 | `exp/shop-door` | angry shopkeepers (kicked shop doors) | `3fca503` | `0b09707` | rung2 | better @ 384 | +3.1 [+0.8, +5.4] | kept |
 | 6 | `exp/zappers` | wand and ray users (leave zap lines) | `d7d5e6b` | `3fca503` | rung2 | no measurable difference @ 2304 | +0.1 [-0.8, +0.9] | dropped |
 | 7 | `rejudge/threat-model` | old branch re-judged (real danger only) | `8284811` | `3fca503` | rung2 | no measurable difference @ 2304 | +0.3 [-1.2, +1.7] | dropped |
+| 8 | `rejudge/choke-points` | old branch re-judged (fight from corridors) | `339a63c` | `3fca503` | rung2 | no measurable difference @ 2304 | +1.2 [-0.1, +2.5] | dropped |
 
 #### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
 - Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
@@ -874,4 +875,9 @@ mostly these.
 - Smoke (seeds 0-21): 431 tests pass; 19 died, 1 Cyclic Panic AssertionError, 2 watchdog (both types in the
   baseline); median depth 9
 - Mechanism metrics: `died`, `ants`, `dlvl6`, `dlvl10`
-- Verdict: pending
+- Screen (384 seeds, 80%): rung2 +2.9 [+0.9, +4.8]; not dropped
+- Job 26: Verdict: no measurable difference at 2304 games per side, diff +1.2 points, 95% interval [-0.1, +2.5]
+- Mechanism: died -0.5 [-1.5, +0.4]; ants +0.1 [-0.9, +1.1]; dlvl6 +0.3 [-0.8, +1.4]; dlvl10 +0.3 [-1.2, +1.9];
+  starved +0.3; crashes: exception 63 vs 50 (more, same Cyclic Panic types), watchdog 46 vs 49
+- Reading: the closest miss so far, but the deeper metrics do not move, so the rung2 gain is early-game only.
+- Decision: dropped (branches `choke-points` `b31e926` and `rejudge/choke-points` `339a63c` kept for plan 01-16)
