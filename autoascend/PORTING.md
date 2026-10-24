@@ -676,6 +676,7 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 | # | Branch | Cause | Candidate | Baseline | Metric | Verdict | Diff [lo, hi] (points) | Decision |
 |---|--------|-------|-----------|----------|--------|---------|------------------------|----------|
 | 1 | `exp/starvation-1` | repeated failed prayers | `a8e8065` | `0b09707` | rung2 | no measurable difference @ 2304 | +0.0 [-0.2, +0.2] | dropped |
+| 2 | `exp/starvation-2` | stuck on levels with a hidden way on | `9ca5d8b` | `0b09707` | rung2 | no measurable difference @ 2304 | -1.1 [-3.9, +1.7] | dropped |
 
 #### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
 - Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
@@ -703,4 +704,14 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 - Candidate `9ca5d8b2024e65a15dac6ba9b423d8dadf39d6f6`; baseline `0b097073adb3071f8e5c2aea954618a3320a5bc7`; primary metric `rung2` (26% of baseline starvers had rung >= 2: below the 60% rule); games: screen at 384, then to the last checkpoint (diagnosis-backed)
 - Smoke (29 seeds): counter fired in 29 of 29; seed 3 Dlvl 1 -> 12, seed 65 Dlvl 2 -> 9; one Cyclic Panic (inventory.py:501, a type in 6 baseline games)
 - Mechanism metrics: `starved`, `depth`, `dlvl10`, `crashed`
-- Verdict: pending
+- Screen (384 seeds, 80%): rung2 +2.9 [-1.5, +7.3]; not dropped. Job 18 was interrupted at 1,517 games (bench server
+  stopped by the host under memory pressure); job 19 resumed it from the stored games.
+- Job 19: Verdict: no measurable difference at 2304 games per side, diff -1.1 points, 95% interval [-3.9, +1.7]
+- Mechanism: starved +0.3 [-2.2, +2.7]; depth -0.14 [-0.44, +0.15] levels; dlvl10 -0.7 [-3.2, +1.9]; crashed +0.0
+  [-0.8, +0.9]; counter far_side_search fired in 2304 of 2304 games; crashes: same types (Cyclic Panic 49 vs 48,
+  watchdog 33 vs 46)
+- Reading: the bonus applies on nearly every level while exits are still unvisited, so it reshuffles every game
+  (838 of 2304 games change their starved result) without a net gain; the
+  two smoke rescues (seeds 3, 65) were balanced by games it slowed. A later variant should fire only when
+  nothing is left to visit (stuck), which is where the diagnosis found the hidden-way levels.
+- Decision: dropped (branch `exp/starvation-2` kept at `9ca5d8b2024e65a15dac6ba9b423d8dadf39d6f6`)
