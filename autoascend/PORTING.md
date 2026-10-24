@@ -761,3 +761,18 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
 - Reading: resting buys HP with food, and food is the bottleneck (25% of games starve). The few ant deaths it
   saves are paid back in starvation. Revisit once the food supply is fixed (Phase 2, stuck levels).
 - Decision: dropped (branch `exp/rest-to-full` kept at `894084deb01bfc8bf76ff2db1ffe0fa9a532778c`)
+
+#### Experiment 4: `exp/ants-bees` - poison resistance from killer bee and soldier ant corpses
+- Requirement / decisions: SURV-04 (D-07, D-08, D-11 cheese allowed); tactic chosen by the rule in
+  `### Ants and bees diagnosis (SURV-04)` (A2 poison 26.4% >= 25%)
+- Change: `poison_corpse_ok` (`autoascend/agent.py`): fresh (< 50 turns) killer bee and soldier ant corpses are
+  edible when HP >= 2/3 of max and > 15 (the poison costs rnd(15) HP and rnd(4) Str without resistance);
+  "You feel healthy" sets `Agent.poison_resistant`, after which every poisonous corpse is edible (safe food).
+  Counter `eat_for_poison_res`.
+- Candidate `9ca4f3199664f4a2b80b100e798b78ac44332197`; baseline `0b097073adb3071f8e5c2aea954618a3320a5bc7`; primary metric `rung2` (74 of 197
+  baseline insect deaths not while fainted, 38%, had rung >= 2: below the 60% rule); games: screen at 384, then to
+  the last checkpoint (diagnosis-backed)
+- Smoke (22 baseline insect-death seeds): counter fired in 8 of 22, no exceptions, no watchdog
+- Mechanism metrics: `ants`, `died`, `starved`, insect killer counts (`seeded_report.py insects`) on both sides,
+  `eat_for_poison_res`
+- Verdict: pending
