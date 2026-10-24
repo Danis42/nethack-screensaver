@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 
 Phase: 01 (Midgame Survival) — EXECUTING
 Plan: 9 of 16
-Status: Executing 01-09 (rest, food-scaled target)
+Status: Executing 01-09 (job 21 on bench); 01-10 task 1 done (tactic: poison-resistance)
 Last activity: 2026-10-24 — 01-08 done: starvation-1 and -2 dropped; starvers carry no food and are stuck on levels
 
 Progress: [░░░░░░░░░░] 0%
@@ -89,6 +89,7 @@ None yet.
 
 - [Phase 1] Every game is a dwarvish Valkyrie since `0b09707` (owner, until the first ascension). Baseline `p1-baseline` = `0b09707` (2304 seeds stored); older numbers are not comparable.
 - [Phase 1+] 46/2304 baseline games (median Dlvl 24) end on the 120 s watchdog: the bot hangs deep in the dungeon. Needs a stack dump on watchdog and a fix before the deep rungs can be measured.
+- [Phase 1] 2026-10-24 fix `16a6cb8`: a panic loop that keeps the screen changing (empty-bag loot menu) grew workers to 11 GB; the watchdog now also fires when the game turn stalls for 120 s and only 20 panics are kept. The empty-bag menu itself is not fixed (parse in item_manager / loot).
 - [Phase 1] Unmerged branches await SURV-05 (plan 01-16): `threat-model`, `flee-upstairs`, `choke-points`; they predate pilgrim-only, seeding and Valkyrie-only, so a rebase may be needed. `survival-tuning` deleted (merged, 2026-10-24).
 - [Phases 4-8] Nothing above rung 9 (Medusa, 14 of 2304 games) has been reached; these phases depend on the staged-start harness (STAGE-01, whose `wizard=True` route is unvalidated against `NetHackChallenge` and seeding).
 
