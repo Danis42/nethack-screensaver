@@ -619,6 +619,56 @@ Killers, seeds 0..2303, games that ended on Dlvl 4-12 (n = 1710; top rows):
 
 Starvation ends 25% of all games (26% of deaths), three times the next killer (ants 8%).
 
+
+### Starvation diagnosis (D-09, D-10)
+
+`seeded_report.py starvation p1-baseline --seeds 2304`: 576 starvation games (25% of all games;
+starved, or killed while fainted). Buckets, first match wins: a failed prayer in the last 1000
+turns; food carried at the end; a successful prayer in the last 1000 turns; no prayer then.
+
+| Bucket | Games | % of starvation games | Median turns | Median depth | Top roles | fainted-kill | starved | early | long | stuck |
+|---|---|---|---|---|---|---|---|---|---|---|
+| failed-prayer | 481 | 83.5% | 9125 | 5 | val | 377 | 104 | 40 | 372 | 138 |
+| food-carried | 7 | 1.2% | 9105 | 5 | val | 2 | 5 | 1 | 6 | 1 |
+| prayer-cooldown | 85 | 14.8% | 8320 | 5 | val | 85 | 0 | 8 | 54 | 15 |
+| prayer-unused | 0 | 0.0% | - | - | - | 0 | 0 | 0 | 0 | 0 |
+| other | 3 | 0.5% | 7884 | 4 | val | 3 | 0 | 1 | 2 | 1 |
+
+Failed prayers per game: 1 in 195 games, 2+ in 286 (59%); median gap from the previous prayer to
+the first failed one: 851 turns. 567 of the 576 starvers carried no food at all at the end.
+
+The bot lives on prayer: across all 2304 games it prayed 12,689 times, 0.49 prayers per 1000
+turns, median gap 868 turns; 8.9% of prayers failed (1125). Next to the humans of
+`01-HUMAN-STUDY.md` (Dlvl 4-12): humans who got through prayed 0.15 per 1000 turns with a median
+gap of 2,715 turns and 2.8% failures; human starvers 0.34 per 1000, gap 946, 14.9% failed. So the
+bot prays like a human starver, three times as often as a survivor, every ~870 turns for hunger
+("Your stomach feels content"), and when the prayer timeout happens to be long the prayer fails
+and the next ones fail too ("Thou art arrogant", lost levels). Humans eat 2.8 meals per 1000
+turns; the bot's meals and hunger time are not stored, so those human rows cannot be matched.
+
+Ranked causes (in scope unless marked):
+1. Repeated prayers after a failure (failed-prayer, 2+ failures in 59%): each further failure costs
+   luck and levels while fainting. Experiment 1.
+2. No food supply (98% carry no food at the end, every bucket): the bot eats corpses and prays,
+   but does not keep food. Experiment 2 (see its entry: the 20% bucket rule does not see it,
+   because every bucket shares it).
+3. Prayer-cooldown (14.8%): food gone and the prayer timeout not over.
+4. `stuck` tags (138 of 481 failed-prayer games, 29%): below 50% in every bucket, so no bucket is
+   out of scope.
+
+### Killer order (D-07)
+
+Baseline shares on Dlvl 4-12 (games that ended there, n = 1710): starvation 24.5%, ants and killer
+bees 14.1% (10.6 + 3.5), wand users and rays 6.6% (2.0 + 4.6). Order for the following plans:
+- starvation (01-08): largest share, and the cause is a single habit (prayer as food), so one
+  change can move many games per bench hour;
+- rest to full HP (01-09): acts on every HP-driven death at once, including ants and zaps, and
+  its plumbing is reused;
+- ants and bees (01-10): second largest band killer, a fight-or-flee rule per monster type;
+- wand and ray users (01-11): mixed causes (striking wands, monster rays, breath, divine lightning)
+  need the zap/prayer context first, so less gain per hour;
+- the three old branches (01-12..01-14, one plan each): prior near zero (PORTING.md control test).
+
 ### Experiments
 
 Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only baseline)

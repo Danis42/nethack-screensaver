@@ -544,3 +544,61 @@ def test_pairs_reports_an_80_percent_interval(store, tmp_path, capsys):
                            + [(False, False)] * 60, 100, z=1.2815515655446004)
     assert code == 0 and "(80%)" in out
     assert f"half-width={verdict.detectable * 100:.1f}" in out and "standardized=" in out
+
+
+# starvation
+
+OK = "You finish your prayer.  You feel that Tyr is well-pleased.--More-- | Your stomach feels content."
+BAD = "You feel that Tyr is displeased. | You faint from lack of food."
+
+
+def _starver(seed, turns=5000, end="DEATH: starved to death", **extra):
+    return _g(seed, **{"turns": turns, "end_reason": end, "max_depth": 5, "depth_at_end": 5, "food_at_end": 0,
+                       "prayers": [], **extra})
+
+
+def _bucket_rows(out):
+    return {line.split("|")[1].strip(): line for line in out.splitlines() if line.startswith("| ") and "---" not in line}
+
+
+def test_starvation_buckets(store, tmp_path, capsys):
+    games = [
+        _starver(0, prayers=[[4800, BAD]]),                      # failed-prayer
+        _starver(1, food_at_end=2),                              # food-carried
+        _starver(2, prayers=[[4400, OK]]),                       # prayer-cooldown
+        _starver(3, prayers=[[3000, OK]]),                       # prayer-unused (no prayer after T-1000)
+        _starver(4, turns=1200, food_at_end=-1, prayers=None),   # other
+        _g(5, end_reason="DEATH: killed by a newt"),             # not a starvation game: ignored
+    ]
+    games[4].pop("prayers")
+    fill(store, CAND, games)
+    code, out = run(capsys, tmp_path, "starvation", CAND, "--seeds", "6")
+    rows = _bucket_rows(out)
+    assert code == 0
+    for bucket in ("failed-prayer", "food-carried", "prayer-cooldown", "prayer-unused", "other"):
+        assert rows[bucket].split("|")[2].strip() == "1", bucket
+    assert "n = 5 starvation games" in out
+
+
+def test_starvation_tags(store, tmp_path, capsys):
+    fill(store, CAND, [
+        _starver(0, turns=3000, end="DEATH: killed by a jackal, while fainted from lack of food", max_depth=3,
+                 depth_at_end=3, food_at_end=1),
+        _starver(1, turns=7000, food_at_end=1, stuck_diving=1),
+    ])
+    code, out = run(capsys, tmp_path, "starvation", CAND, "--seeds", "2")
+    cells = [c.strip() for c in _bucket_rows(out)["food-carried"].split("|")[1:-1]]
+    # bucket | games | % | median turns | median depth | roles | fainted-kill | starved | early | long | stuck
+    assert code == 0 and cells[1] == "2"
+    assert cells[6:] == ["1", "1", "1", "1", "1"]
+
+
+def test_starvation_failed_prayer_detail(store, tmp_path, capsys):
+    fill(store, CAND, [
+        _starver(0, prayers=[[3500, OK], [4400, BAD]]),
+        _starver(1, prayers=[[4000, OK], [4500, BAD], [4900, BAD]]),
+    ])
+    code, out = run(capsys, tmp_path, "starvation", CAND, "--seeds", "2")
+    assert code == 0
+    assert "failed prayers per game: 1 -> 1, 2+ -> 1" in out
+    assert "median gap from the previous prayer to the first failed one: 700 turns" in out

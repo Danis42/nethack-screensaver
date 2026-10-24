@@ -32,6 +32,7 @@ from pathlib import Path
 
 from bench import gitrefs, reference
 from bench.cli import DATA, REPO
+from autoascend.prayer import prayer_outcome
 from bench.metrics import ANTS, METRICS, RAYS, killer
 from bench.report import ladder_rows
 from bench.stats import CHECKPOINTS, Z95, judge_paired, judge_paired_numeric, z_for
@@ -297,6 +298,87 @@ def _killers(args):
     return 0
 
 
+# starvation
+
+STARVATION_WINDOW = 1000  # turns before the end in which a prayer counts as part of the starvation
+
+
+def _prayer_list(game):
+    """[(turn, outcome)] from the stored prayers; [] when none were stored."""
+    return [(turn, prayer_outcome(text.split(" | ")))
+            for turn, text in ((p[0], p[1] if len(p) > 1 else "") for p in game.get("prayers") or [])]
+
+
+def _starvation_bucket(game):
+    end = game["turns"]
+    recent = [(t, o) for t, o in _prayer_list(game) if t >= end - STARVATION_WINDOW]
+    food = game.get("food_at_end", -1)
+    if any(o == "failed" for _, o in recent):
+        return "failed-prayer"
+    if food > 0:
+        return "food-carried"
+    if food == 0 and any(o == "success" for _, o in recent):
+        return "prayer-cooldown"
+    if food == 0 and "prayers" in game and not recent and end > STARVATION_WINDOW + 300:
+        return "prayer-unused"
+    return "other"
+
+
+def _starvation_tags(game):
+    reason, depth = game["end_reason"], _depth(game)
+    return {
+        "fainted-kill": "while fainted" in reason or "fainted from lack of food" in reason,
+        "starved": "starved" in reason,
+        "early": game["turns"] < 4500 and depth is not None and depth <= 4,
+        "long": game["turns"] >= 6000,
+        "stuck": game.get("stuck_diving", 0) > 0 or game.get("unsticks", 0) > 0,
+    }
+
+
+STARVATION_BUCKETS = ("failed-prayer", "food-carried", "prayer-cooldown", "prayer-unused", "other")
+
+
+def _starvation(args):
+    store = _store(args)
+    sha = _sha(args.repo, args.ref)
+    games, label = _games(args, store, sha)
+    if games is None:
+        return 2
+    games = [g for g in games if _safe(METRICS["starved"].fn, g)]
+    n = len(games)
+    by_bucket = {b: [g for g in games if _starvation_bucket(g) == b] for b in STARVATION_BUCKETS}
+    tags = ("fainted-kill", "starved", "early", "long", "stuck")
+    print(f"Commit `{sha}`, n = {n} starvation games ({label}); prayers count if within "
+          f"{STARVATION_WINDOW} turns of the end")
+    print()
+    print("| Bucket | Games | % of starvation games | Median turns | Median depth | Top roles | "
+          + " | ".join(tags) + " |")
+    print("|" + "---|" * (6 + len(tags)))
+    for bucket, members in by_bucket.items():
+        depths = [d for d in map(_depth, members) if d is not None]
+        roles = ", ".join(r for r, _ in Counter(g.get("role", "?") for g in members).most_common(3))
+        counts = [sum(_starvation_tags(g)[t] for g in members) for t in tags]
+        print(f"| {bucket} | {len(members)} | {_pct(len(members), n)} "
+              f"| {_num(statistics.median(g['turns'] for g in members)) if members else '-'} "
+              f"| {_num(statistics.median(depths)) if depths else '-'} | {roles or '-'} | "
+              + " | ".join(map(str, counts)) + " |")
+    failed = by_bucket["failed-prayer"]
+    if failed:
+        per_game = [sum(o == "failed" for _, o in _prayer_list(g)) for g in failed]
+        gaps = []
+        for g in failed:
+            prayers = _prayer_list(g)
+            first = next(i for i, (_, o) in enumerate(prayers) if o == "failed")
+            if first > 0:
+                gaps.append(prayers[first][0] - prayers[first - 1][0])
+        print()
+        print(f"failed prayers per game: 1 -> {sum(c == 1 for c in per_game)}, "
+              f"2+ -> {sum(c >= 2 for c in per_game)}")
+        print("median gap from the previous prayer to the first failed one: "
+              + (f"{_num(statistics.median(gaps))} turns" if gaps else "-"))
+    return 0
+
+
 # deaths
 
 
@@ -371,6 +453,11 @@ def main(argv=None):
     _selection(p)
     _depth_options(p)
     p.set_defaults(fn=_killers)
+
+    p = sub.add_parser("starvation", help="starvation games split into cause buckets (prayers, food)")
+    p.add_argument("ref")
+    _selection(p)
+    p.set_defaults(fn=_starvation)
 
     p = sub.add_parser("deaths", help="one context row per matching game")
     p.add_argument("ref")
