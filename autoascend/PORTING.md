@@ -745,7 +745,9 @@ Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only basel
   else Not Hungry, or Hungry with some food -> 85% (start below 75%); Hungry with nothing, or Weak -> no rest.
   400 resting turns per level at most. Counters `rest_start`, `rest_turns`. Regen below XL 10 is 1 HP per
   42/(XL+2)+1 turns (wiki Hit points), so each missing HP costs the same; food sets how many to buy.
-- Candidate `6448532ae1b628e932152739ed58ff0c982562d3`; baseline `0b097073adb3071f8e5c2aea954618a3320a5bc7`;
+- Candidate `894084deb01bfc8bf76ff2db1ffe0fa9a532778c` (first `6448532ae1b628e932152739ed58ff0c982562d3`, job 20, stopped at 1,278 games: seed 990
+  looped on an empty-bag menu and two workers grew to 11 GB; rebased onto fix `16a6cb8`, which plays seeds 0-21
+  identically to the baseline); baseline `0b097073adb3071f8e5c2aea954618a3320a5bc7`;
   primary metric `rung2` (777 of 1631 baseline deaths not from hunger or crashes, 48%, had rung >= 2: below
   the 60% rule); games: screen at 384, then to the last checkpoint (diagnosis-backed)
 - Smoke (22 seeds): rest_start fired in 20 of 22, no exceptions, no watchdog; median rest_turns about 600 per game
