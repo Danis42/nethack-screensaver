@@ -719,6 +719,7 @@ Current baseline: `3fca503215e1a3de57e775378a1598fb05a40c20` (exp/shop-door, kep
 | 6 | `exp/zappers` | wand and ray users (leave zap lines) | `d7d5e6b` | `3fca503` | rung2 | no measurable difference @ 2304 | +0.1 [-0.8, +0.9] | dropped |
 | 7 | `rejudge/threat-model` | old branch re-judged (real danger only) | `8284811` | `3fca503` | rung2 | no measurable difference @ 2304 | +0.3 [-1.2, +1.7] | dropped |
 | 8 | `rejudge/choke-points` | old branch re-judged (fight from corridors) | `339a63c` | `3fca503` | rung2 | no measurable difference @ 2304 | +1.2 [-0.1, +2.5] | dropped |
+| 9 | `rejudge/flee-upstairs` | old branch re-judged (flee up stairs) | `757aad8` | `3fca503` | rung2 | no measurable difference @ 2304 | +0.5 [-0.9, +1.9] | dropped |
 
 #### Experiment 1: `exp/starvation-1` - repeated prayers after a failed one
 - Requirement / decisions: SURV-02 (D-07, D-08, D-09); decision-table row "failed-prayer, at least 50% with 2+ failures" (59%)
@@ -892,4 +893,8 @@ mostly these.
   `3fca503215e1a3de57e775378a1598fb05a40c20`; primary metric `rung2`; games: screen at 384, then to the last checkpoint
 - Smoke (seeds 0-21): 433 tests pass; flee_upstairs fired in 8 of 22; 21 died, 1 watchdog, no exceptions
 - Mechanism metrics: `died`, `ants`, `dlvl6`, `dlvl10`
-- Verdict: pending
+- Screen (384 seeds, 80%): rung2 -0.3 [-2.4, +1.9]; not dropped
+- Job 27: Verdict: no measurable difference at 2304 games per side, diff +0.5 points, 95% interval [-0.9, +1.9]
+- Mechanism: died +0.4 [-0.5, +1.3]; ants +0.3 [-0.7, +1.3]; dlvl6 +0.4 [-0.7, +1.4]; dlvl10 +0.3 [-1.2, +1.8];
+  crashes: same types, exception 46 vs 50, watchdog 43 vs 49
+- Decision: dropped (branches `flee-upstairs` `a535f7a` and `rejudge/flee-upstairs` `757aad8` kept for plan 01-16)

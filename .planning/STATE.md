@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 ## Current Position
 
 Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 14 of 16
-Status: 01-14 running: job 27 rejudge/flee-upstairs (757aad8) vs 3fca503, screen at 384 -0.3 [-2.4, +1.9]. PAUSED by owner 2026-10-24 after job 27; resume 2026-10-25: read job 27 verdict (seeded_report.py verdict rejudge/flee-upstairs), log Experiment 9 + 01-14-SUMMARY, then 01-15 done bar (main vs p1-baseline: shop-door already better on rung2 at 384; run rung3-6 jobs), then 01-16 branch cleanup (ask owner before deleting)
+Plan: 15 of 16
+Status: PAUSED by owner after job 27 (2026-10-24). 01-14 done (flee-upstairs dropped, +0.5 [-0.9, +1.9]); all three old branches judged, none kept. Resume: 01-15 done bar (main = 3fca503 code vs p1-baseline 0b09707: rung2 already better at 384 in job 23; run rung3-rung6 jobs on the same pair, stored games), then 01-16 branch cleanup (ask owner before deleting)
 Last activity: 2026-10-24 — 01-10 done: exp/ants-bees worse on rung2 -1.5 [-2.6, -0.3], dropped; four experiments, none kept
 
 Progress: [░░░░░░░░░░] 0%
