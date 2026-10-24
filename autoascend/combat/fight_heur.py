@@ -4,6 +4,7 @@ from itertools import product
 import numpy as np
 from scipy import signal
 
+from .. import utils
 from ..glyph import G
 from ..utils import adjacent
 from .monster_utils import is_monster_faster, is_dangerous_monster, \
@@ -322,6 +323,45 @@ def get_corridors_priority_map(walkable):
     return corridor_mask + corridor_dilated >= 1
 
 
+def attack_squares(walkable, no_diagonal):
+    """For each square, how many neighbouring squares a monster could attack it from."""
+    h, w = walkable.shape
+    pad_walk = np.pad(walkable, 1)
+    pad_nodiag = np.pad(no_diagonal, 1)
+    count = np.zeros((h, w), int)
+    for dy, dx in product([-1, 0, 1], [-1, 0, 1]):
+        if dy == 0 and dx == 0:
+            continue
+        neighbour = pad_walk[1 + dy:1 + dy + h, 1 + dx:1 + dx + w]
+        if dy != 0 and dx != 0:
+            # nothing moves or attacks diagonally into or out of a doorway
+            neighbour = neighbour & ~no_diagonal & ~pad_nodiag[1 + dy:1 + dy + h, 1 + dx:1 + dx + w]
+        count += neighbour
+    return count
+
+
+def fast_pack(monsters):
+    """At least two fast monsters that fight in melee, too many to stand among in the open."""
+    return sum(mon.mmove > 12 and mon.mname not in WEAK_MONSTERS + ONLY_RANGED_SLOW_MONSTERS
+               for _, _, _, mon, _ in monsters) >= 2
+
+
+def choke_point_bonus(walkable, no_diagonal, scale=4, reach=3):
+    """Movement bonus for squares few attackers can reach (doorways, corridors, corners),
+    sloping down by 1 per step so greedy one-step moves lead there. NaN on non-walkable squares."""
+    # full bonus where at most 2 can attack (doorway, corridor), half in a corner (3), none in the open
+    bonus = scale * np.clip(4 - attack_squares(walkable, no_diagonal), 0, 2) / 2
+    bonus[~walkable] = -np.inf
+    for _ in range(reach):
+        spread = np.pad(bonus, 1, constant_values=-np.inf)
+        h, w = bonus.shape
+        best = np.max([spread[1 + dy:1 + dy + h, 1 + dx:1 + dx + w]
+                       for dy, dx in product([-1, 0, 1], [-1, 0, 1])], axis=0)
+        bonus = np.where(walkable, np.maximum(bonus, best - 1), -np.inf)
+    bonus[~walkable] = np.nan
+    return bonus
+
+
 def get_priorities(agent):
     """ Returns a pair (move priority heatmap, other actions (with priorities) list) """
     walkable = agent.current_level().walkable
@@ -333,13 +373,11 @@ def get_priorities(agent):
         draw_monster_priority_negative(agent, m, priority, walkable)
     priority[~walkable] = float('nan')
 
-    # TODO: figure out how to use corridors priority so that it improves the score
-    # if len([m for m in monsters if m[3].mname not in chain(ONLY_RANGED_SLOW_MONSTERS, WEAK_MONSTERS)]) >= 4:
-    #     priority += get_corridors_priority_map(walkable)
-    # for _, _, _, mon, _ in monsters:
-    #     if ord(mon.mlet) == MON.S_ANT:
-    #         priority += get_corridors_priority_map(walkable)
-    #         break
+    # a pack of fast monsters (soldier ants, killer bees) kills by surrounding: fight it from a choke point
+    if fast_pack(monsters):
+        level = agent.current_level()
+        no_diagonal = level.no_diagonal | utils.isin(level.objects, G.DOOR_OPENED)
+        priority += choke_point_bonus(walkable, no_diagonal)
 
     # use relative priority to te current position
     priority -= priority[agent.blstats.y, agent.blstats.x]
