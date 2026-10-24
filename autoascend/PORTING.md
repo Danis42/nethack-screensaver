@@ -448,3 +448,23 @@ is the same, the bot's path through it is not, so pairing removes little noise.
 `calib/valk-lgen` and `calib/valk-lgen-agent-seed-1` are calibration-only branches, kept unmerged.
 
 Bench resolution: half-width 2.8 points on rung2 at 2304 games per side (MDE80 about 4.0 points; projected for 2304 as h/sqrt(2)); level generation seeded: no; checkpoints: (192, 384, 576, 1152, 2304).
+
+### Screening metric
+
+To drop losing ideas early, each metric's resolution was measured on the Valkyrie divergence
+control (`calib/valk-agent-seed-1` vs `p1-valk-base`, first 384 seeds), as half-width (95%)
+divided by the SD of per-game values (smaller is better). Numeric metrics use the new paired
+mean-difference judge (`bench.stats.judge_paired_numeric`, `seeded_report.py pairs --metric <numeric>`).
+
+| Metric | Kind | Half-width at 384 | Standardized |
+|--------|------|-------------------|--------------|
+| rung2 | rate | 8.8 points | 0.177 |
+| rung (highest rung, 0-17) | numeric | 0.42 rungs | 0.182 |
+| depth | numeric | 0.92 levels | 0.185 |
+| turns | numeric | 1516 turns | 0.186 |
+| score | numeric | 3929 points | 0.190 |
+
+`deep_turns` (turns on Dlvl 4-12) is not derivable from stored games (no per-level turns), so it
+was skipped. No numeric metric beats rung2 (the bar was 20% smaller): screening stays on rung2.
+Rule (protocol step 7a): at 384 seeds, drop if the rung2 80% interval lies entirely below 0;
+otherwise run on to the full rung2 verdict, which alone decides merges.

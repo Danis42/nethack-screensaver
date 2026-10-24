@@ -96,6 +96,15 @@ the tags above), never by `main` (a docs commit on `main` creates a SHA with zer
    `curl -s -X POST http://127.0.0.1:8765/api/jobs -H 'Content-Type: application/json' -d '{"kind":"experiment","candidate":"exp/<name>","baseline":"<sha>","metric":"<primary>"}'`.
    Then run `uv run screens-bench wait <job id>` as a background command and do research until it
    ends.
+7a. **Screen-then-confirm (fixed 2026-10-24, plan 01-06 Task 4).** When the job has stored 384
+   seeds on both sides (the stored baseline side costs nothing), run
+   `uv run python scripts/seeded_report.py pairs exp/<name> <baseline sha> --metric rung2 --seeds 384 --confidence 80`.
+   If the 80% interval lies entirely below 0 (`hi` < 0: clearly not better), DROP: stop the job
+   (`bench_stop`) and log that interval as the experiment's result (state `dropped at screen`).
+   Otherwise let the job run on to its full rung2 verdict exactly as before. The screening metric
+   is rung2: no numeric metric resolved >= 20% better at 384 seeds (PORTING.md `### Screening
+   metric`). The screen can only drop an idea; the rung2 verdict alone decides merging and the
+   phase done bar (D-14 unchanged).
 8. **Read.** `uv run python scripts/seeded_report.py verdict exp/<name>` prints the job's verdict
    (state, checkpoint, diff, lo, hi). Mechanism:
    `uv run python scripts/seeded_report.py pairs exp/<name> <baseline sha> --metric <m> --seeds <checkpoint>`

@@ -72,3 +72,28 @@ def test_paired_needs_games():
     from bench.stats import judge_paired
     with pytest.raises(ValueError):
         judge_paired([], 192)
+
+
+def test_numeric_paired_interval_matches_a_hand_computed_example():
+    from bench.stats import judge_paired_numeric
+    # differences 1, 1, 0, -1, 4: mean 1, sample sd sqrt(14 / 4)
+    pairs = [(3, 2), (5, 4), (1, 1), (0, 1), (6, 2)]
+    v = judge_paired_numeric(pairs, CHECKPOINTS[-1])
+    assert v.diff == pytest.approx(1.0)
+    assert v.detectable == pytest.approx(Z95 * (14 / 4) ** 0.5 / 5 ** 0.5)
+    assert v.state == "no measurable difference"
+
+
+def test_numeric_paired_judge_takes_an_explicit_z():
+    from bench.stats import judge_paired_numeric
+    pairs = [(2, 0)] * 9 + [(0, 0)]
+    v = judge_paired_numeric(pairs, 384, z=1.0)
+    assert v.diff == pytest.approx(1.8)
+    assert v.detectable == pytest.approx(0.2)  # sd sqrt(3.6 / 9), over sqrt(10)
+    assert v.state == "better"
+
+
+def test_numeric_paired_judge_rejects_empty_input():
+    from bench.stats import judge_paired_numeric
+    with pytest.raises(ValueError):
+        judge_paired_numeric([], 192)

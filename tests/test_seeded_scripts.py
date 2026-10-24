@@ -523,3 +523,24 @@ def test_seeds_with_strategy_or_n_is_refused(capsys):
         assert exc.value.code == 2
     with pytest.raises(SystemExit):
         benchmark.main(["--seeds", "3-1"])
+
+
+def test_pairs_judges_a_numeric_metric(store, tmp_path, capsys):
+    from bench.stats import judge_paired_numeric
+    for seed, (c, b) in enumerate([(3, 1), (2, 2), (5, 1), (1, 2)]):
+        store.add_game(CAND, None, _g(seed, rung=c))
+        store.add_game(BASE, None, _g(seed, rung=b))
+    code, out = run(capsys, tmp_path, "pairs", CAND, BASE, "--metric", "rung", "--seeds", "4")
+    v = judge_paired_numeric([(3, 1), (2, 2), (5, 1), (1, 2)], 4)
+    assert code == 0
+    assert "(numeric)" in out and f"diff={v.diff:+.3f}" in out and f"half-width={v.detectable:.3f}" in out
+
+
+def test_pairs_reports_an_80_percent_interval(store, tmp_path, capsys):
+    pair_games(store, hits_both=20, only_cand=15, only_base=5, neither=60)
+    code, out = run(capsys, tmp_path, "pairs", CAND, BASE, "--metric", "dlvl6", "--seeds", "100",
+                    "--confidence", "80")
+    verdict = judge_paired([(True, True)] * 20 + [(True, False)] * 15 + [(False, True)] * 5
+                           + [(False, False)] * 60, 100, z=1.2815515655446004)
+    assert code == 0 and "(80%)" in out
+    assert f"half-width={verdict.detectable * 100:.1f}" in out and "standardized=" in out

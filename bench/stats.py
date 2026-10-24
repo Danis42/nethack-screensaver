@@ -68,14 +68,28 @@ def judge(k_cand, n_cand, k_base, n_base, checkpoint):
     return _verdict(*newcombe(k_cand, n_cand, k_base, n_base, z_for(checkpoint)), checkpoint)
 
 
-def judge_paired(pairs, checkpoint):
+def judge_paired(pairs, checkpoint, z=None):
     """Same seeds on both sides: (candidate, baseline) outcome per seed; paired Wald interval.
-    Only the seeds where the two sides disagree carry information, so shared luck cancels."""
+    Only the seeds where the two sides disagree carry information, so shared luck cancels.
+    z defaults to the checkpoint's."""
     n = len(pairs)
     if n == 0:
         raise ValueError("no paired games")
     n10 = sum(1 for c, b in pairs if c and not b)
     n01 = sum(1 for c, b in pairs if b and not c)
     diff = (n10 - n01) / n
-    half = z_for(checkpoint) * math.sqrt(max(n10 + n01 - n * diff * diff, 0.0)) / n
+    half = (z_for(checkpoint) if z is None else z) * math.sqrt(max(n10 + n01 - n * diff * diff, 0.0)) / n
+    return _verdict(diff, diff - half, diff + half, checkpoint)
+
+
+def judge_paired_numeric(pairs, checkpoint, z=None):
+    """Same seeds on both sides, a number per game (candidate, baseline): mean of the per-seed
+    differences with a Wald interval from their sample SD. z defaults to the checkpoint's."""
+    n = len(pairs)
+    if n == 0:
+        raise ValueError("no paired games")
+    diffs = [c - b for c, b in pairs]
+    diff = sum(diffs) / n
+    sd = math.sqrt(sum((d - diff) ** 2 for d in diffs) / (n - 1)) if n > 1 else 0.0
+    half = (z_for(checkpoint) if z is None else z) * sd / math.sqrt(n)
     return _verdict(diff, diff - half, diff + half, checkpoint)

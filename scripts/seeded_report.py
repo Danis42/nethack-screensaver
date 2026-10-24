@@ -23,6 +23,7 @@ never changes it. Refs may be branches, tags, short SHAs or full 40-hex SHAs.
 """
 import argparse
 import json
+import math
 import re
 import statistics
 import sys
@@ -33,7 +34,9 @@ from bench import gitrefs, reference
 from bench.cli import DATA, REPO
 from bench.metrics import ANTS, METRICS, RAYS, killer
 from bench.report import ladder_rows
-from bench.stats import CHECKPOINTS, Z95, judge_paired, z_for
+from bench.stats import CHECKPOINTS, Z95, judge_paired, judge_paired_numeric, z_for
+
+Z_BY_CONFIDENCE = {80: 1.2815515655446004, 95: Z95, 99: 2.5758293035489004}
 from bench.store import Store
 
 FULL_SHA = re.compile(r"[0-9a-f]{40}")
@@ -108,28 +111,42 @@ def _pairs(args):
         print(f"missing seeds: {len(missing)} of seeds 0..{(n or CHECKPOINTS[0]) - 1} are not stored on both "
               f"sides (first missing: {missing[:5]})")
         return 2
-    fn = METRICS[args.metric].fn
+    metric = METRICS[args.metric]
     games_c, games_b = store.games_by_seed(cand, range(n)), store.games_by_seed(base, range(n))
+    cast = bool if metric.kind == "rate" else float
     pairs = []
     for seed in range(n):  # exactly as bench/scheduler.py _judge
         try:
-            pairs.append((bool(fn(games_c[seed])), bool(fn(games_b[seed]))))
+            pairs.append((cast(metric.fn(games_c[seed])), cast(metric.fn(games_b[seed]))))
         except KeyError:
             pass
     if not pairs:
         print(f"no game has the fields metric {args.metric} needs")
         return 2
-    verdict = judge_paired(pairs, n)
+    z = z_for(n) if args.confidence is None else Z_BY_CONFIDENCE[args.confidence]
+    values = [v for pair in pairs for v in pair]
+    mean = sum(values) / len(values)
+    sd = math.sqrt(sum((v - mean) ** 2 for v in values) / (len(values) - 1))
+    if metric.kind != "rate":
+        verdict = judge_paired_numeric(pairs, n, z=z)
+        print(f"candidate {cand[:10]} vs baseline {base[:10]}, metric {args.metric} (numeric), seeds 0..{n - 1}")
+        print(f"n={len(pairs)} mean={mean:.3f} sd={sd:.3f}")
+        print(f"diff={verdict.diff:+.3f} lo={verdict.lo:+.3f} hi={verdict.hi:+.3f} "
+              f"half-width={verdict.detectable:.3f} standardized={verdict.detectable / sd if sd else 0:.4f}")
+        print(f"verdict={verdict.state} z={z:.3f}")
+        return 0
+    verdict = judge_paired(pairs, n, z=z)
     size = len(pairs)
     n10 = sum(1 for c, b in pairs if c and not b)
     n01 = sum(1 for c, b in pairs if b and not c)
     half = verdict.detectable
-    z = z_for(n)
     print(f"candidate {cand[:10]} vs baseline {base[:10]}, metric {args.metric}, seeds 0..{n - 1}")
     print(f"n={size} n10={n10} n01={n01} q={(n10 + n01) / size:.3f}")
     print(f"diff={_points(verdict.diff)} points lo={_points(verdict.lo)} hi={_points(verdict.hi)} "
           f"half-width={_points(half, sign=False)} points mde80={_points(2.8 * half / 1.96, sign=False)} points")
-    print(f"verdict={verdict.state} z={z:.3f} ({'95' if z == Z95 else '99'}%)")
+    print(f"sd={sd:.3f} standardized={half / sd if sd else 0:.4f}")
+    label = args.confidence or ('95' if z == Z95 else '99')
+    print(f"verdict={verdict.state} z={z:.3f} ({label}%)")
     return 0
 
 
@@ -335,10 +352,12 @@ def main(argv=None):
     p.add_argument("--forbid", metavar="STATE", help="exit 4 if the newest verdict is STATE")
     p.set_defaults(fn=_verdict)
 
-    p = sub.add_parser("pairs", help="paired comparison of a rate metric over stored seeded games")
+    p = sub.add_parser("pairs", help="paired comparison of a metric (rate or numeric) over stored seeded games")
     p.add_argument("candidate")
     p.add_argument("baseline")
-    p.add_argument("--metric", required=True, choices=sorted(n for n, m in METRICS.items() if m.kind == "rate"))
+    p.add_argument("--metric", required=True, choices=sorted(METRICS))
+    p.add_argument("--confidence", type=int, choices=sorted(Z_BY_CONFIDENCE),
+                   help="interval level (default: the bench's, 99%% early, 95%% at the last checkpoint)")
     p.add_argument("--seeds", type=int, help="seeds 0..N-1 (default: largest checkpoint both have)")
     p.set_defaults(fn=_pairs)
 
