@@ -35,9 +35,9 @@ def test_no_difference_is_only_declared_at_the_last_checkpoint():
 
 
 def test_verdict_reports_the_smallest_detectable_difference():
-    v = judge(500, 1152, 500, 1152, 1152)
+    v = judge(500, 1152, 500, 1152, CHECKPOINTS[-1])
     assert 0.03 < v.detectable < 0.05
-    assert v.as_dict() == {"state": v.state, "checkpoint": 1152, "diff": v.diff, "lo": v.lo,
+    assert v.as_dict() == {"state": v.state, "checkpoint": CHECKPOINTS[-1], "diff": v.diff, "lo": v.lo,
                            "hi": v.hi, "detectable": v.detectable}
 
 
@@ -57,7 +57,7 @@ def test_paired_interval_matches_a_hand_computed_example():
     assert v.diff == pytest.approx(0.10)
     assert v.lo == pytest.approx(0.10 - Z95 * 19 ** 0.5 / 100)
     assert v.hi == pytest.approx(0.10 + Z95 * 19 ** 0.5 / 100)
-    assert v.state == "better" and v.checkpoint == 1152
+    assert v.state == "better" and v.checkpoint == CHECKPOINTS[-1]
 
 
 def test_pairs_cancel_shared_luck():

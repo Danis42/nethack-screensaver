@@ -59,11 +59,11 @@ def test_stored_baseline_games_are_reused(tmp_path):
 def test_no_difference_runs_to_the_last_checkpoint(tmp_path):
     s, store, played, _ = _scheduler(tmp_path, lambda sha, i: _game(10 if i % 2 else 1), slots=8)
     job = _experiment(s)
-    _run(s, ticks=5000)
+    _run(s, ticks=10000)
     result = store.job(job)["result"]
-    assert [c["checkpoint"] for c in result["checkpoints"]] == [192, 384, 576, 1152]
+    assert [c["checkpoint"] for c in result["checkpoints"]] == [192, 384, 576, 1152, 2304]
     assert result["verdict"]["state"] == "no measurable difference"
-    assert store.count("cand") == 1152 and store.count("base") == 1152
+    assert store.count("cand") == 2304 and store.count("base") == 2304
 
 
 def test_dead_worker_is_replaced_and_the_game_replayed(tmp_path):

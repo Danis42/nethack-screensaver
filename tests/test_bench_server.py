@@ -55,9 +55,9 @@ def test_api_runs_an_experiment_end_to_end(bench_app, bench_url):
     assert {r["metric"] for r in job["table"]} >= {"dlvl6", "depth"}
     assert _req(http + "/api/experiments")[1][0]["id"] == job_id
     status, dash = _req(http + "/api/dashboard")
-    assert dash["games"] == 1152
+    assert dash["games"] == 2304
     status, games = _req(http + "/api/games?ref=feature&where=max_depth>3&limit=2")
-    assert games["matches"] == 1152 and len(games["games"]) == 2
+    assert games["matches"] == 2304 and len(games["games"]) == 2
     assert _req(http + "/api/results?ref=main&metric=dlvl6")[1]["hits"] == 0
 
 

@@ -2,7 +2,7 @@
 import math
 from dataclasses import asdict, dataclass
 
-CHECKPOINTS = (192, 384, 576, 1152)
+CHECKPOINTS = (192, 384, 576, 1152, 2304)
 Z95 = 1.959963984540054
 Z99 = 2.5758293035489004
 

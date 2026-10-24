@@ -71,7 +71,7 @@ def bench_baseline(ref: str = "main", games: int = 576) -> dict:
 
 @mcp.tool()
 def bench_experiment(candidate: str, baseline: str = "main", metric: str = "dlvl6") -> dict:
-    """A/B experiment: candidate vs baseline commit, judged on one rate metric at 192/384/576/1152
+    """A/B experiment: candidate vs baseline commit, judged on one rate metric at 192/384/576/1152/2304
     games per side. Commit first; refs resolve to a SHA now. Returns job_id; run
     `uv run screens-bench wait <job_id>` as a background shell command to be notified."""
     return _call("POST", "/api/jobs", {"kind": "experiment", "candidate": candidate,
