@@ -669,6 +669,26 @@ bees 14.1% (10.6 + 3.5), wand users and rays 6.6% (2.0 + 4.6). Order for the fol
   need the zap/prayer context first, so less gain per hour;
 - the three old branches (01-12..01-14, one plan each): prior near zero (PORTING.md control test).
 
+### Ants and bees diagnosis (SURV-04)
+
+`seeded_report.py insects p1-baseline --seeds 2304` (baseline `0b09707`): 253 insect deaths, 56 of them
+while fainted from hunger (starvation's, excluded). The other 197:
+
+| Killer | Games | % of all games | % of Dlvl 4-12 deaths | Median depth | Median XL |
+|---|---|---|---|---|---|
+| soldier ant | 105 | 4.6% | 6.1% | 6 | 7 |
+| giant ant | 16 | 0.7% | 0.9% | 4 | 5 |
+| fire ant | 34 | 1.5% | 1.7% | 6 | 7 |
+| killer bee | 42 | 1.8% | 2.4% | 5 | 6 |
+
+A1 prayer unused (no prayer in the last 1000 turns): 24.4%. A2 poison in the last messages: 26.4%.
+Rule (fixed in plan 01-10 before the numbers): pray-earlier if A1 >= 40%; else poison-resistance if
+A2 >= 25%; else close-door. **Tactic: poison-resistance** (eat fresh killer bee and soldier ant corpses
+when healthy). It differs from the dropped tries: doorway fighting, threat numbers and fleeing upstairs
+change how the fight is fought; this changes the hero before the next fight (3.6 poison can kill
+outright or drain Str; resistance removes both). The guides agree: "Eat any corpse that is safe and has a
+chance of granting poison resistance" (Furey's tips, nethackwiki).
+
 ### Experiments
 
 Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only baseline)

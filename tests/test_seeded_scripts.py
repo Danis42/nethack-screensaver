@@ -602,3 +602,46 @@ def test_starvation_failed_prayer_detail(store, tmp_path, capsys):
     assert code == 0
     assert "failed prayers per game: 1 -> 1, 2+ -> 1" in out
     assert "median gap from the previous prayer to the first failed one: 700 turns" in out
+
+
+# insects
+
+
+def _insect(seed, name="soldier ant", **extra):
+    return _g(seed, **{"turns": 5000, "end_reason": f"DEATH: killed by a {name}", "max_depth": 6, "depth_at_end": 6,
+                       "xp_level": 6, "prayers": [], "last_messages": [], **extra})
+
+
+def test_insects_counts_and_fainted_apart(store, tmp_path, capsys):
+    fill(store, CAND, [
+        _insect(0), _insect(1, name="killer bee"),
+        _insect(2, end_reason="DEATH: killed by a soldier ant, while fainted from lack of food"),
+        _g(3),
+    ])
+    code, out = run(capsys, tmp_path, "insects", CAND, "--seeds", "4")
+    rows = _bucket_rows(out)
+    assert code == 0 and "3 insect deaths, 1 of them killed while fainted" in out
+    assert rows["soldier ant"].split("|")[2].strip() == "1"
+    assert rows["killer bee"].split("|")[2].strip() == "1"
+
+
+def test_insects_prayer_unused_rule(store, tmp_path, capsys):
+    fill(store, CAND, [_insect(0), _insect(1, prayers=[[4500, OK]]), _insect(2, turns=200)])
+    code, out = run(capsys, tmp_path, "insects", CAND, "--seeds", "3")
+    # seed 0 unused; seed 1 prayed in the window; seed 2 too early to pray
+    assert code == 0 and "A1 prayer unused" in out and "33.3%" in out
+    assert "tactic: close-door" in out
+
+
+def test_insects_pray_earlier_when_prayers_unused(store, tmp_path, capsys):
+    fill(store, CAND, [_insect(0), _insect(1)])
+    code, out = run(capsys, tmp_path, "insects", CAND, "--seeds", "2")
+    assert code == 0 and "tactic: pray-earlier" in out
+
+
+def test_insects_poison_resistance_rule(store, tmp_path, capsys):
+    msgs = ["The soldier ant's sting was poisoned!"]
+    fill(store, CAND, [_insect(0, prayers=[[4900, OK]], last_messages=msgs), _insect(1, prayers=[[4900, OK]])])
+    code, out = run(capsys, tmp_path, "insects", CAND, "--seeds", "2")
+    assert code == 0 and "A2 poison in the last messages: 50.0%" in out
+    assert "tactic: poison-resistance" in out

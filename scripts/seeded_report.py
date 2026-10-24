@@ -12,6 +12,8 @@ Commands:
       the 17-rung table: games reaching each rung, our median turn, the real ascenders' median turn
   killers <ref> [--seeds N | --all-games] [--min-depth D] [--max-depth D]
       what ended the games: starved, ants, bees, wands, rays, breath, crashes, watchdog, other killers
+  insects <ref> [--seeds N | --all-games]
+      ant and killer bee deaths: per killer, prayer unused (A1), poison (A2), and the tactic rule
   deaths <ref> (--killer TEXT | --metric NAME) [--seeds N | --all-games] [--min-depth D] [--max-depth D]
       one row per matching game with the context at the end (hp, hunger, food, prayers, last messages)
 
@@ -379,6 +381,64 @@ def _starvation(args):
     return 0
 
 
+# insects
+
+INSECTS = ANTS + ("killer bee",)
+INSECT_PRAYER_WINDOW = 1000  # a prayer this close to the end counts as used against the insects
+
+
+def _insect_prayer_unused(game):
+    end = game["turns"]
+    return end > 300 and not any(turn >= end - INSECT_PRAYER_WINDOW for turn, _ in _prayer_list(game))
+
+
+def _insect_poison(game):
+    return any("poison" in m.lower() for m in game.get("last_messages") or [])
+
+
+def _insect_tactic(a1, a2):
+    """The rule, fixed before reading the numbers (plan 01-10)."""
+    if a1 >= 0.40:
+        return "pray-earlier"
+    if a2 >= 0.25:
+        return "poison-resistance"
+    return "close-door"
+
+
+def _insects(args):
+    store = _store(args)
+    sha = _sha(args.repo, args.ref)
+    games, label = _games(args, store, sha)
+    if games is None:
+        return 2
+    insect = [g for g in games if "end_reason" in g and killer(g) in INSECTS]
+    fainted = [g for g in insect if _safe(METRICS["starved"].fn, g)]
+    fought = [g for g in insect if not _safe(METRICS["starved"].fn, g)]
+    band = [g for g in games if "end_reason" in g and g.get("outcome") != "escaped"
+            and _depth(g) is not None and 4 <= _depth(g) <= 12]
+    print(f"Commit `{sha}`, {len(games)} games ({label}); {len(insect)} insect deaths, "
+          f"{len(fainted)} of them killed while fainted by an insect (excluded below)")
+    print()
+    print("| Killer | Games | % of all games | % of Dlvl 4-12 deaths | Median depth | Median XL |")
+    print("|---|---|---|---|---|---|")
+    for name in INSECTS:
+        members = [g for g in fought if killer(g) == name]
+        depths = [d for d in map(_depth, members) if d is not None]
+        xls = [g["xp_level"] for g in members if "xp_level" in g]
+        in_band = sum(1 for g in members if _depth(g) is not None and 4 <= _depth(g) <= 12)
+        print(f"| {name} | {len(members)} | {_pct(len(members), len(games))} | {_pct(in_band, len(band))} "
+              f"| {_num(statistics.median(depths)) if depths else '-'} "
+              f"| {_num(statistics.median(xls)) if xls else '-'} |")
+    n = len(fought)
+    a1 = sum(_insect_prayer_unused(g) for g in fought) / n if n else 0.0
+    a2 = sum(_insect_poison(g) for g in fought) / n if n else 0.0
+    print()
+    print(f"A1 prayer unused (no prayer in the last {INSECT_PRAYER_WINDOW} turns, turns > 300): {_pct(round(a1 * n), n)}")
+    print(f"A2 poison in the last messages: {_pct(round(a2 * n), n)}")
+    print(f"tactic: {_insect_tactic(a1, a2)}")
+    return 0
+
+
 # deaths
 
 
@@ -458,6 +518,11 @@ def main(argv=None):
     p.add_argument("ref")
     _selection(p)
     p.set_defaults(fn=_starvation)
+
+    p = sub.add_parser("insects", help="ant and killer bee deaths, prayer and poison shares, the tactic rule")
+    p.add_argument("ref")
+    _selection(p)
+    p.set_defaults(fn=_insects)
 
     p = sub.add_parser("deaths", help="one context row per matching game")
     p.add_argument("ref")
