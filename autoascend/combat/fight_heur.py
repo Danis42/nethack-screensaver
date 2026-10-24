@@ -5,7 +5,8 @@ import numpy as np
 from scipy import signal
 
 from ..glyph import G
-from ..utils import adjacent
+from ..level import Level
+from ..utils import adjacent, isin
 from .monster_utils import is_monster_faster, is_dangerous_monster, \
     ONLY_RANGED_SLOW_MONSTERS, EXPLODING_MONSTERS, WEAK_MONSTERS, consider_melee_only_ranged_if_hp_full
 from .movement_priority import draw_monster_priority_positive, draw_monster_priority_negative
@@ -235,6 +236,38 @@ def elbereth_action(agent, monsters):
     return []
 
 
+# Surviving human players went upstairs five times as often as those these killed
+# (NLD-NAO, 3.6 games; docs/superpowers/specs/2026-10-21-flee-upstairs-design.md).
+FAST_INSECTS = ('soldier ant', 'fire ant', 'giant ant', 'killer bee')
+FLEE_SIGHT = 6
+FLEE_STEPS = 8
+FLEE_COOLDOWN = 150
+
+
+def flee_upstairs_action(agent, monsters):
+    level = agent.current_level()
+    if level.dungeon_number not in (Level.DUNGEONS_OF_DOOM, Level.GNOMISH_MINES) or \
+            level.key() == (Level.DUNGEONS_OF_DOOM, 1):
+        return []
+    if agent.blstats.time - agent.fled_from.get(level.key(), -FLEE_COOLDOWN) < FLEE_COOLDOWN:
+        return []
+    if not any(mon.mname in FAST_INSECTS and dis <= FLEE_SIGHT for dis, _, _, mon, _ in monsters):
+        return []
+    here = (agent.blstats.y, agent.blstats.x)
+    stairs = [(int(y), int(x)) for y, x in zip(*isin(level.objects, G.STAIR_UP).nonzero())]
+    if here in stairs:
+        return [(50, ('flee_up',))]
+    dis = agent.bfs()
+    reachable = [(dis[y, x], y, x) for y, x in stairs if 0 < dis[y, x] <= FLEE_STEPS]
+    if not reachable:
+        return []
+    _, y, x = min(reachable)
+    ny, nx = agent.path(agent.blstats.y, agent.blstats.x, y, x)[1]
+    if agent.monster_tracker.monster_mask[ny, nx]:
+        return []
+    return [(40, ('flee_to', ny, nx))]
+
+
 def wait_action(agent, monsters):
     if agent.inventory.engraving_below_me.lower() == 'elbereth':
         player_hp_ratio = agent.blstats.hitpoints / agent.blstats.max_hitpoints
@@ -277,6 +310,7 @@ def get_available_actions(agent, monsters):
 
     actions.extend(elbereth_action(agent, monsters))
     actions.extend(wait_action(agent, monsters))
+    actions.extend(flee_upstairs_action(agent, monsters))
 
     return actions
 
