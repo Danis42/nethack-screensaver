@@ -689,6 +689,22 @@ change how the fight is fought; this changes the hero before the next fight (3.6
 outright or drain Str; resistance removes both). The guides agree: "Eat any corpse that is safe and has a
 chance of granting poison resistance" (Furey's tips, nethackwiki).
 
+### Wand and ray users diagnosis (SURV-03)
+
+`seeded_report.py zappers p1-baseline --seeds 2304`: 209 wand and ray deaths (9.1% of games).
+
+| Class | Games | % of zapper deaths | % of all games | Median depth | Median XL | Top killers |
+|---|---|---|---|---|---|---|
+| Z1 divine (lightning/disintegration within 10 turns of a prayer) | 8 | 3.8% | 0.3% | 6.5 | 7 | bolt of lightning 8 |
+| Z2 warned (2+ zaps seen, or "zaps" before the last message) | 160 | 76.6% | 6.9% | 4 | 4.5 | wand 81, magic missile 38, bolt of fire 20 |
+| Z3 breath ("blast of") | 4 | 1.9% | 0.2% | 11 | 9 | disintegration 2 |
+| Z4 unwarned | 37 | 17.7% | 1.6% | 6 | 7 | bolt of fire 10, death ray 10 |
+
+Rule (fixed in plan 01-11 before the numbers): stop-praying-after-failure if Z1 >= 30% and not on main; else
+leave-breath-line if Z3 is the largest of Z2-Z4; else leave-zap-line. **Tactic: leave-zap-line.** The bench's
+`rays` metric is 96% monster zaps: divine lightning (3.8%) and breath (1.9%) are small. Most zapper deaths are
+early (median Dlvl 4, XL 4-5: gnome lords and dwarves with wands in the Mines) after the bot saw at least two zaps.
+
 ### Experiments
 
 Current baseline: `0b097073adb3071f8e5c2aea954618a3320a5bc7` (pilgrim-only baseline)

@@ -645,3 +645,41 @@ def test_insects_poison_resistance_rule(store, tmp_path, capsys):
     code, out = run(capsys, tmp_path, "insects", CAND, "--seeds", "2")
     assert code == 0 and "A2 poison in the last messages: 50.0%" in out
     assert "tactic: poison-resistance" in out
+
+
+# zappers
+
+
+def _zapped(seed, name="wand", **extra):
+    return _g(seed, **{"turns": 5000, "end_reason": f"DEATH: killed by a {name}", "max_depth": 6, "depth_at_end": 6,
+                       "xp_level": 6, "prayers": [], "last_messages": [], "zaps_seen": 0, **extra})
+
+
+def _class_count(out, cls):
+    return _bucket_rows(out)[cls].split("|")[2].strip()
+
+
+def test_zappers_classes(store, tmp_path, capsys):
+    fill(store, CAND, [
+        _zapped(0, name="bolt of lightning", prayers=[[4995, BAD]]),               # Z1 divine
+        _zapped(1, name="bolt of lightning", prayers=[[4000, BAD]]),               # prayer too early: not Z1
+        _zapped(2, name="blast of frost"),                                          # Z3 breath
+        _zapped(3, zaps_seen=2),                                                    # Z2 warned by count
+        _zapped(4, last_messages=["The gnome lord zaps a wand!", "The wand hits you!"]),  # Z2 by message
+        _zapped(5, last_messages=["The wand hits you!", "The gnome zaps a wand!"]),  # last line only: Z4
+        _g(6),
+    ])
+    code, out = run(capsys, tmp_path, "zappers", CAND, "--seeds", "7")
+    assert code == 0 and "6 wand and ray deaths" in out
+    assert _class_count(out, "Z1 divine") == "1"
+    assert _class_count(out, "Z2 warned") == "2"
+    assert _class_count(out, "Z3 breath") == "1"
+    assert _class_count(out, "Z4 unwarned") == "2"
+
+
+def test_zappers_rule():
+    base = {"Z1 divine": 0.0, "Z2 warned": 0.3, "Z3 breath": 0.2, "Z4 unwarned": 0.5}
+    assert seeded_report._zapper_tactic({**base, "Z1 divine": 0.3}, False) == "stop-praying-after-failure"
+    assert seeded_report._zapper_tactic({**base, "Z1 divine": 0.3}, True) == "leave-zap-line"
+    assert seeded_report._zapper_tactic({**base, "Z3 breath": 0.6}, False) == "leave-breath-line"
+    assert seeded_report._zapper_tactic(base, False) == "leave-zap-line"

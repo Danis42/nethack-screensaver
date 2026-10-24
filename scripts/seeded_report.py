@@ -14,6 +14,8 @@ Commands:
       what ended the games: starved, ants, bees, wands, rays, breath, crashes, watchdog, other killers
   insects <ref> [--seeds N | --all-games]
       ant and killer bee deaths: per killer, prayer unused (A1), poison (A2), and the tactic rule
+  zappers <ref> [--seeds N | --all-games]
+      wand and ray deaths: divine (Z1), warned zaps (Z2), breath (Z3), unwarned (Z4), and the tactic rule
   deaths <ref> (--killer TEXT | --metric NAME) [--seeds N | --all-games] [--min-depth D] [--max-depth D]
       one row per matching game with the context at the end (hp, hunger, food, prayers, last messages)
 
@@ -439,6 +441,67 @@ def _insects(args):
     return 0
 
 
+# zappers
+
+ZAPPER_CLASSES = ("Z1 divine", "Z2 warned", "Z3 breath", "Z4 unwarned")
+
+
+def _zapper_class(game):
+    name, end = killer(game), game["turns"]
+    if ("lightning" in name or "disintegration" in name) and any(t >= end - 10 for t, _ in _prayer_list(game)):
+        return "Z1 divine"
+    if "blast of" in name:
+        return "Z3 breath"
+    zaps = game.get("zaps_seen")
+    earlier = (game.get("last_messages") or [])[:-1]
+    if (isinstance(zaps, int) and zaps >= 2) or any(re.search(r"\bzaps\b", m) for m in earlier):
+        return "Z2 warned"
+    return "Z4 unwarned"
+
+
+def _zapper_tactic(shares, failure_pause_on_main):
+    """The rule, fixed before reading the numbers (plan 01-11)."""
+    if shares["Z1 divine"] >= 0.30 and not failure_pause_on_main:
+        return "stop-praying-after-failure"
+    if shares["Z3 breath"] > max(shares["Z2 warned"], shares["Z4 unwarned"]):
+        return "leave-breath-line"
+    return "leave-zap-line"
+
+
+def _failure_pause_on_main(repo):
+    import subprocess
+    return subprocess.run(["git", "-C", str(repo), "grep", "-q", "prayer_failed_turn", "main", "--",
+                           "autoascend/agent.py"]).returncode == 0
+
+
+def _zappers(args):
+    store = _store(args)
+    sha = _sha(args.repo, args.ref)
+    games, label = _games(args, store, sha)
+    if games is None:
+        return 2
+    zapped = [g for g in games if "end_reason" in g and any(r in killer(g) for r in RAYS)]
+    band = [g for g in games if "end_reason" in g and _depth(g) is not None and 4 <= _depth(g) <= 12]
+    n = len(zapped)
+    by_class = {c: [g for g in zapped if _zapper_class(g) == c] for c in ZAPPER_CLASSES}
+    print(f"Commit `{sha}`, {len(games)} games ({label}); {n} wand and ray deaths")
+    print()
+    print("| Class | Games | % of zapper deaths | % of all games | % of Dlvl 4-12 deaths | Median depth | Median XL | Top killers |")
+    print("|---|---|---|---|---|---|---|---|")
+    for c, members in by_class.items():
+        depths = [d for d in map(_depth, members) if d is not None]
+        xls = [g["xp_level"] for g in members if "xp_level" in g]
+        in_band = sum(1 for g in members if _depth(g) is not None and 4 <= _depth(g) <= 12)
+        top = ", ".join(f"{k} {v}" for k, v in Counter(killer(g) for g in members).most_common(3))
+        print(f"| {c} | {len(members)} | {_pct(len(members), n)} | {_pct(len(members), len(games))} "
+              f"| {_pct(in_band, len(band))} | {_num(statistics.median(depths)) if depths else '-'} "
+              f"| {_num(statistics.median(xls)) if xls else '-'} | {_cell(top) or '-'} |")
+    shares = {c: len(m) / n if n else 0.0 for c, m in by_class.items()}
+    print()
+    print(f"tactic: {_zapper_tactic(shares, _failure_pause_on_main(args.repo))}")
+    return 0
+
+
 # deaths
 
 
@@ -523,6 +586,11 @@ def main(argv=None):
     p.add_argument("ref")
     _selection(p)
     p.set_defaults(fn=_insects)
+
+    p = sub.add_parser("zappers", help="wand and ray deaths by class, and the tactic rule")
+    p.add_argument("ref")
+    _selection(p)
+    p.set_defaults(fn=_zappers)
 
     p = sub.add_parser("deaths", help="one context row per matching game")
     p.add_argument("ref")
