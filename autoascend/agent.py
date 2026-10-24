@@ -25,6 +25,7 @@ from .strategy import Strategy
 
 # steps without game time after which the bot lets a turn pass instead of retrying the same refused action
 UNSTICK_AFTER = 100
+PANIC_HISTORY = 20  # panics kept for the Cyclic Panic report; each holds its frames
 
 # NetHack's answers to #kick when it refuses before asking for a direction
 CANNOT_KICK = ['in no shape for kicking', 'too heavy to balance yourself for a kick',
@@ -1589,6 +1590,7 @@ class Agent:
                 raise exc
             self.stats_logger.log_event('agent_panic')
             self.all_panics.append(exc)
+            del self.all_panics[:-PANIC_HISTORY]
             if self.verbose:
                 print(f'PANIC!!!! : {exc}')
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 import random
 import re
 import signal
+import time
 from dataclasses import dataclass, field
 from typing import Callable
 
@@ -194,6 +195,8 @@ class _ScreenWatchdog:
     def __init__(self, seconds: float | None):
         self.seconds = seconds
         self._old = None
+        self._turn = None
+        self._turn_since = 0.0
 
     def _fire(self, signum, frame):
         raise WatchdogTimeout()
@@ -207,6 +210,17 @@ class _ScreenWatchdog:
     def screen_changed(self):
         if self.seconds:
             signal.setitimer(signal.ITIMER_REAL, self.seconds)
+
+    def check_turn(self, turn: int, now: float | None = None):
+        """A hang can keep the screen changing (a panic loop on a menu); game turns cannot. Raises
+        WatchdogTimeout when the turn has not moved for `seconds` of wall time."""
+        if not self.seconds:
+            return
+        now = time.monotonic() if now is None else now
+        if turn != self._turn:
+            self._turn, self._turn_since = turn, now
+        elif now - self._turn_since > self.seconds:
+            raise WatchdogTimeout()
 
     def __exit__(self, *exc):
         if self.seconds:
@@ -259,6 +273,8 @@ def run_game(
         max_depth = max(max_depth, int(obs["blstats"][DEPTH]))
         turns = max(turns, int(obs["blstats"][TURN]))
         xp_level = max(xp_level, int(obs["blstats"][XP_LEVEL]))
+        if int(obs["blstats"][TURN]):  # the game-over observation has all-zero blstats
+            watchdog.check_turn(int(obs["blstats"][TURN]))
         chars = obs["tty_chars"]
         if prev_chars is None or not (chars == prev_chars).all():
             watchdog.screen_changed()

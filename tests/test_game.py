@@ -25,6 +25,27 @@ def test_watchdog_rearmed_by_changes_does_not_fire():
     assert signal.getitimer(signal.ITIMER_REAL)[0] == 0
 
 
+def test_watchdog_fires_when_turn_stalls_despite_screen_changes():
+    wd = game._ScreenWatchdog(seconds=120)
+    wd.check_turn(500, now=0.0)
+    wd.check_turn(500, now=100.0)
+    with pytest.raises(game.WatchdogTimeout):
+        wd.check_turn(500, now=121.0)
+
+
+def test_watchdog_turn_progress_rearms():
+    wd = game._ScreenWatchdog(seconds=120)
+    wd.check_turn(500, now=0.0)
+    wd.check_turn(501, now=100.0)
+    wd.check_turn(501, now=200.0)  # 100 s since the turn moved
+
+
+def test_watchdog_off_ignores_turns():
+    wd = game._ScreenWatchdog(seconds=None)
+    wd.check_turn(1, now=0.0)
+    wd.check_turn(1, now=1e9)
+
+
 @pytest.mark.slow
 def test_headless_games_complete_without_exceptions():
     for _ in range(2):
