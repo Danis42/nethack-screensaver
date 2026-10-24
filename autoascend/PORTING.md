@@ -825,3 +825,16 @@ mostly these.
   [-0.1, +3.2] (games that live longer starve more); died -0.3; ants +0.5. Crashes: same types (Cyclic Panic
   5 vs 5), watchdog 9 vs 8
 - Decision: kept; merged to `main` (code identical to `3fca503`), 426 tests pass. New current baseline `3fca503`.
+
+#### Experiment 6: `exp/zappers` - leave the zap line of a monster seen zapping
+- Requirement / decisions: SURV-03; tactic leave-zap-line from `### Wand and ray users diagnosis (SURV-03)` (Z2 warned
+  76.6%); after Experiment 5 the target is the unnamed zappers ("The <monster> zaps"): 50 of 2304 games on `0b09707`
+- Change: `drop_zap_line_moves` (`autoascend/combat/fight_heur.py`): in `fight2`, drop moves that end on a row,
+  column or diagonal within 8 squares of a monster seen zapping in the last 300 turns (unless every move would),
+  +10 to kept moves while standing on such a line. Counter `zap_line_dodge`.
+- Candidate `d7d5e6b1442b9467005b1213febc1584c2b31ca3` (36588cb rebased onto the shop-door baseline); baseline
+  `3fca503215e1a3de57e775378a1598fb05a40c20`; primary metric `rung2` (19 of 50 targeted deaths, 38%, had rung >= 2:
+  below the 60% rule); games: screen at 384, then to the last checkpoint
+- Smoke (22 baseline unnamed-zapper death seeds): counter fired in 9 of 22, no exceptions, no watchdog
+- Mechanism metrics: `rays`, `died`, `dlvl6`, `dlvl10`
+- Verdict: pending
