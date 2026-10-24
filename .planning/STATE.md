@@ -4,7 +4,7 @@ milestone: v0.1.0
 current_phase: 01
 current_phase_name: Midgame Survival
 status: executing
-stopped_at: Completed 01-08-PLAN.md
+stopped_at: Completed 01-09-PLAN.md
 last_updated: "2026-10-23T17:17:43.229Z"
 last_activity: 2026-10-24
 last_activity_desc: 01-08 starvation done (2 experiments dropped)
@@ -13,7 +13,7 @@ progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 16
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 ## Current Position
 
 Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 9 of 16
-Status: Executing 01-09 (job 21 on bench); 01-10 task 1 done (tactic: poison-resistance)
+Plan: 10 of 16
+Status: Executing 01-10 (poison resistance, branch exp/ants-bees 9ca4f31); 01-09 dropped
 Last activity: 2026-10-24 — 01-08 done: starvation-1 and -2 dropped; starvers carry no food and are stuck on levels
 
 Progress: [░░░░░░░░░░] 0%
@@ -79,6 +79,7 @@ Full log in PROJECT.md Key Decisions. Recent, affecting current work:
 
 - [Phase 01]: 01-08: starvation is a food-supply and stuck-level problem, not prayer timing; both experiments dropped (PORTING.md experiments 1-2)
 - [Phase 01]: 01-09: rest target scales with food (owner, 2026-10-24): full HP with food or safe prayer, about 85% without food, none when Hungry with no fallback
+- [Phase 01]: 01-09: rest-to-full dropped (-1.5 [-4.2, +1.2]); resting trades ant deaths for starvation while food is short
 - [Phase 1]: pilgrim-only baseline p1-baseline = 0b09707 (dwarvish Valkyrie); bench resolution 2.8 points on rung2 at 2304 (PORTING.md); starvation ends 25% of games
 
 ### Pending Todos
@@ -106,5 +107,5 @@ Tracked but unscheduled (REQUIREMENTS.md v2): ROLE-01 role choice, DEBT-01..05 t
 ## Session Continuity
 
 Last session: 2026-10-23T17:17:43.204Z
-Stopped at: Completed 01-08-PLAN.md
+Stopped at: Completed 01-09-PLAN.md
 Resume file: None
