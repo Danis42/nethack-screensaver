@@ -25,6 +25,7 @@ from .strategy import Strategy
 
 # steps without game time after which the bot lets a turn pass instead of retrying the same refused action
 UNSTICK_AFTER = 100
+CLOSED_SHOP = 'Closed for inventory'  # engraved in front of a closed shop's door
 PANIC_HISTORY = 20  # panics kept for the Cyclic Panic report; each holds its frames
 
 # NetHack's answers to #kick when it refuses before asking for a direction
@@ -671,6 +672,10 @@ class Agent:
 
         self._update_level_items()
         self._update_level_shops()
+
+        if CLOSED_SHOP in self.message:
+            for y, x in self.neighbors(self.blstats.y, self.blstats.x, shuffle=False, diagonal=False):
+                level.closed_shop_door[y, x] = True
         self._update_level_corpses()
 
         for y, x in zip(*utils.isin(level.objects, G.ALTAR).nonzero()):
