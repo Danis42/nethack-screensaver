@@ -422,3 +422,29 @@ time per game is not stored) turn deciles are 2296, 3163, 3914, 4963, 5719, 6702
 | 50k   | 0            | 0.0%                      | 0                            |
 
 The rule needed >= 25% of the time past T: long games are rare and cheap.
+
+### Bench resolution (calibration)
+
+Divergence controls: the bot's own RNG seed 1 instead of 0 (`AGENT_ARGS seed=1`), nothing
+else, against the same seeds (2026-10-24). Valkyrie only; the first control (job 11, all
+roles, `calib/agent-seed-1` vs `p1-aa-base`) gave q 0.317, half-width 3.3 points, before
+the switch.
+
+| Variant | Candidate | Baseline | n | n10 | n01 | q | diff | half-width | MDE80 |
+|---------|-----------|----------|---|-----|-----|---|------|------------|-------|
+| current seeding (job 14) | `calib/valk-agent-seed-1` | `p1-valk-base` | 1152 | 287 | 247 | 0.464 | +3.5 | 3.93 | 5.6 |
+| lgen seeded (job 15) | `calib/valk-lgen-agent-seed-1` | `calib/valk-lgen` | 1152 | 243 | 248 | 0.426 | -0.4 | 3.77 | 5.4 |
+
+A changed bot RNG alone changes the rung2 outcome of 43-46% of Valkyrie seeds: the dungeon
+is the same, the bot's path through it is not, so pairing removes little noise.
+
+- lgen: not adopted. It needed half-width <= 3.73 (h0 - 0.2) and no new exception type; it
+  gave 3.77 and brought ZeroDivisionError and OverflowError cyclic panics that `p1-valk-base`
+  lacks (24 exceptions each). No second A/A: `p1-valk-base` stays the measurement code.
+- 2304 checkpoint: adopted (`b5960c2`), h = 3.93 > 2.0. It changes no game, so the A/A
+  replay proof stands.
+
+`calib/agent-seed-1`, `calib/lgen`, `calib/lgen-agent-seed-1`, `calib/valk-agent-seed-1`,
+`calib/valk-lgen` and `calib/valk-lgen-agent-seed-1` are calibration-only branches, kept unmerged.
+
+Bench resolution: half-width 2.8 points on rung2 at 2304 games per side (MDE80 about 4.0 points; projected for 2304 as h/sqrt(2)); level generation seeded: no; checkpoints: (192, 384, 576, 1152, 2304).
