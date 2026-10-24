@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 
 Phase: 01 (Midgame Survival) — EXECUTING
 Plan: 14 of 16
-Status: 01-13 done (choke-points dropped, +1.2 [-0.1, +2.5]); 01-14 flee-upstairs next (rejudge/flee-upstairs 757aad8, 433 tests pass)
+Status: 01-14 running: job 27 rejudge/flee-upstairs (757aad8) vs 3fca503, screen at 384 -0.3 [-2.4, +1.9]. PAUSED by owner 2026-10-24 after job 27; resume 2026-10-25: read job 27 verdict (seeded_report.py verdict rejudge/flee-upstairs), log Experiment 9 + 01-14-SUMMARY, then 01-15 done bar (main vs p1-baseline: shop-door already better on rung2 at 384; run rung3-6 jobs), then 01-16 branch cleanup (ask owner before deleting)
 Last activity: 2026-10-24 — 01-10 done: exp/ants-bees worse on rung2 -1.5 [-2.6, -0.3], dropped; four experiments, none kept
 
 Progress: [░░░░░░░░░░] 0%
