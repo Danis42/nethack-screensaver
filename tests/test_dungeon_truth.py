@@ -5,7 +5,7 @@ from nethack_screensaver import dungeon_truth
 
 
 def _env(seed):
-    env = nethack.Nethack()
+    env = nethack.Nethack(ttyrec=None)  # no recording file in the working directory
     env.set_initial_seeds(seed, seed, False)
     env.reset()
     return env
