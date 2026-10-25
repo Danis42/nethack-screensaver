@@ -3,6 +3,7 @@ import numpy as np
 from nle.nethack import actions as A
 
 from . import objects as O
+from . import quest_portal
 from . import soko_solver
 from .soko_solver import search as soko_search
 from . import stuck
@@ -30,6 +31,7 @@ WATER = frozenset({SS.S_pool, SS.S_water})
 DRAWBRIDGE = frozenset({SS.S_vodbridge, SS.S_hodbridge, SS.S_vcdbridge, SS.S_hcdbridge})
 MEDUSA = frozenset({MON.fn('Medusa')})
 STUCK_TURNS = 2500  # no new level and no new milestone for this long: give up the route and dive
+PORTAL_HUNT_TURNS = 1500  # on the Quest portal level, this long to walk every square for the portal
 _PRIZES = None
 
 
@@ -212,6 +214,10 @@ class GlobalLogic:
 
         self.oracle_level = None
         self.minetown_level = None
+        self.portal_level = None  # level key where the quest leader's call was heard
+        self._portal_hunt_since = None  # turn the portal hunt began (inf: given up)
+        self._quest_arrival = None  # square the portal put the hero on in the Quest
+        self._quest_left = False
         self.ladder = Ladder()
         self._ladder_broken = False
 
@@ -306,7 +312,80 @@ class GlobalLogic:
                 else:
                     assert self.minetown_level == self.agent.current_level().key()
 
+        self._update_portal()
         self._update_ladder()
+
+    def _update_portal(self):
+        level = self.agent.current_level()
+        if self.portal_level is None and level.dungeon_number == Level.DUNGEONS_OF_DOOM and \
+                quest_portal.is_portal_level_message(self.agent.message):
+            self.portal_level = level.key()
+            self.agent.stats_logger.log_event('quest_portal_level_seen')
+        if level.dungeon_number == Level.QUEST and self._quest_arrival is None:
+            self._quest_arrival = (self.agent.blstats.y, self.agent.blstats.x)
+            self.agent.stats_logger.log_event('quest_portal_entered')
+        if self._quest_arrival is not None and not self._quest_left and level.dungeon_number != Level.QUEST:
+            self._quest_left = True
+            self.agent.stats_logger.log_event('quest_portal_left')
+
+    def _hunting_portal(self):
+        """On the portal level, before the portal was found, within the hunt's turn budget."""
+        if self.portal_level is None or self._quest_arrival is not None or \
+                self.agent.current_level().key() != self.portal_level or self._portal_hunt_since == float('inf'):
+            return False
+        if self._portal_hunt_since is None:
+            self._portal_hunt_since = self.agent.blstats.time
+        if self.agent.blstats.time - self._portal_hunt_since > PORTAL_HUNT_TURNS:
+            self._give_up_portal()
+            return False
+        return True
+
+    def _give_up_portal(self):
+        if self._portal_hunt_since != float('inf'):
+            self._portal_hunt_since = float('inf')
+            self.agent.stats_logger.log_event('quest_portal_gave_up')
+
+    @Strategy.wrap
+    def portal_hunt(self):
+        """Step on every reachable square of the portal level (the portal fires when stepped on), then search
+        its dead ends."""
+        if not self._hunting_portal():
+            yield False
+        yield True
+        while self._hunting_portal():
+            level = self.agent.current_level()
+            pos = (self.agent.blstats.y, self.agent.blstats.x)
+            target = quest_portal.next_portal_square(self.agent.bfs() >= 0, level.was_on, level.search_count, pos)
+            if target is None:
+                self._give_up_portal()
+                return
+            if target == pos:
+                self.agent.search(5)
+            else:
+                self.agent.go_to(*target)
+
+    @Strategy.wrap
+    def leave_quest(self):
+        """Rung 8 needs only the step into the Quest: step off the arrival portal and back onto it."""
+        if self._quest_arrival is None or self._quest_left or \
+                self.agent.current_level().dungeon_number != Level.QUEST:
+            yield False
+        yield True
+        pos = (self.agent.blstats.y, self.agent.blstats.x)
+        try:
+            if pos == self._quest_arrival:
+                dis = self.agent.bfs()
+                steps = [(y, x) for y, x in self.agent.neighbors(*pos) if dis[y, x] == 1]
+                if not steps:
+                    self.agent.search()
+                    return
+                self.agent.move(*steps[0])
+            elif utils.adjacent(pos, self._quest_arrival):
+                self.agent.move(*self._quest_arrival)
+            else:
+                self.agent.go_to(*self._quest_arrival, stop_one_before=True)
+        except AgentPanic:  # the portal moved the hero to another level
+            pass
 
     def _update_ladder(self):
         if not self._ladder_broken:
@@ -890,6 +969,10 @@ class GlobalLogic:
             ])
             .preempt(self.agent, [
                 self.dive().condition(lambda: self.milestone == Milestone.DIVE)
+            ])
+            .preempt(self.agent, [
+                self.leave_quest(),
+                self.portal_hunt(),
             ])
             .preempt(self.agent, [
                 self.offer_corpses().preempt(self.agent, [
