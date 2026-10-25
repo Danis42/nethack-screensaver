@@ -973,7 +973,7 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 
 | # | branch | cause | candidate | baseline | metric | verdict | diff [lo, hi] | decision |
 |---|--------|-------|-----------|----------|--------|---------|---------------|----------|
-| 10 | `exp/mines-end` | Mines' End goal ends on the real bottom (screen) | `b06d9fe` | `6502ae3` | rung7 | pending | - | - |
+| 10 | `exp/mines-end` | Mines' End goal ends on the real bottom (screen) | `b06d9fe` | `6502ae3` | rung7 | no measurable difference @ 2304 | +0.0 [-0.2, +0.3] | dropped |
 
 #### Experiment 10: `exp/mines-end` - Mines' End goal ends on the real bottom, judged from the screen
 - Requirement / decisions: DESC-01 (D-04: screen only, no memory)
@@ -984,5 +984,10 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   (diagnosis-backed)
 - Smoke (19 seeds with an 8-level Mines and rung 6 in p2-baseline): counter fired in 3; exceptions 2
   (monster_tracker ValueError, item_manager AssertionError: both types in p2-baseline), watchdog 1
-- Mechanism (planned): rung6, starved, free5, turns, counter `mines_end_by_screen`
-- Verdict: pending
+- Job 34: Verdict: no measurable difference at 2304 games per side, diff +0.0 points, 95% interval [-0.2, +0.3]
+  (9 discordant pairs)
+- Mechanism: rung6 -0.1 [-0.2, +0.0]; starved +0.0 [+0.0, +0.0]; free5 -0.1 [-0.4, +0.1]; counter
+  `mines_end_by_screen` fired in 22 of 2304 games; crashes: same types, exception 52 vs 50, watchdog 49 vs 49
+- Why so small: few games still follow FIND_MINES_END (63 stuck events in the baseline); most reach the Mines
+  bottom while diving, where the stuck watch already sends them back up
+- Decision: dropped (branch `exp/mines-end` kept at `b06d9fe4e48afa9436080f8bcbe43293a4778fdc`)
