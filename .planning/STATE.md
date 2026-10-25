@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-25)
 
 Phase: 2 (Real Descent) — READY TO EXECUTE
 Plan: 3 of 8
-Status: EXECUTING - 02-01..02-04 done (exp 10 mines-end dropped, no measurable difference); Current baseline still 6502ae3. Next: 02-05 exp/stuck-1 frontier-first (73c4584): full suite, smoke, pre-register free5, submit
+Status: EXECUTING - 02-01..02-04 done (exp 10 dropped); 02-05 exp 11 exp/stuck-1 (73c4584, frontier-first) vs 6502ae3, metric free5, bench job 35 running (server restarted 2026-10-25 for free5). Next: verdict, decide, log; then 02-06
 Last activity: 2026-10-25 — 02-01 exact Mines End rung, 02-02 stuck reports/free5; p2-baseline job 33 running
 
 Progress: [█░░░░░░░░░] 13%
