@@ -992,7 +992,7 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 |---|--------|-------|-----------|----------|--------|---------|---------------|----------|
 | 10 | `exp/mines-end` | Mines' End goal ends on the real bottom (screen) | `b06d9fe` | `6502ae3` | rung7 | no measurable difference @ 2304 | +0.0 [-0.2, +0.3] | dropped |
 | 11 | `exp/stuck-1` | frontier-first when stuck (DESC-03 rule) | `73c4584` | `6502ae3` | free5 | no measurable difference @ 2304 | +0.9 [-0.4, +2.2] | dropped |
-| 12 | `exp/stuck-2` | clear-way: cross known traps, wait out peacefuls (DESC-03 rule 2) | `609ca19` | `6502ae3` | free5 | pending | - | - |
+| 12 | `exp/stuck-2` | clear-way: cross known traps, wait out peacefuls (DESC-03 rule 2) | `609ca19` | `6502ae3` | free5 | no measurable difference @ 2304 | +0.6 [-0.2, +1.4] | dropped |
 
 #### Experiment 10: `exp/mines-end` - Mines' End goal ends on the real bottom, judged from the screen
 - Requirement / decisions: DESC-01 (D-04: screen only, no memory)
@@ -1040,5 +1040,10 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Smoke (22 stairs-unreachable seeds): fired in 11, crossed traps in 9, reached the stairs in 6; max depth
   deeper in 5, shallower in 2 (seed 88 killed by the watch, 76 of 2304 baseline games die to the watch);
   no exception, no watchdog
-- Mechanism (planned): starved, rung2, rung6, rung7, watch deaths, counters `clear_way`, `clear_way_opened`
-- Verdict: pending
+- Mechanism: clear-way fired in 252 games, crossed traps in 220, reached the stairs in 168, panicked
+  (trap displacement) in 99; rung2 +0.9 [+0.2, +1.6], rung6 -0.6 [-1.3, +0.2], rung7 -0.0 [-0.7, +0.6],
+  starved -0.9 [-1.7, -0.1] (fewer), died +0.1 [-0.4, +0.6]; watch deaths 74 vs 76; exceptions 53 vs 50,
+  watchdog 44 vs 49
+- Verdict: no measurable difference @ 2304 (job 36), free5 +0.6 [-0.2, +1.4], detectable 0.8 -> dropped.
+  The way opens in 168 games but most of them get stuck again further down; the secondary rung2 gain
+  is not a keep reason under the protocol (primary only)
