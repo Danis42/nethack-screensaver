@@ -992,6 +992,7 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 |---|--------|-------|-----------|----------|--------|---------|---------------|----------|
 | 10 | `exp/mines-end` | Mines' End goal ends on the real bottom (screen) | `b06d9fe` | `6502ae3` | rung7 | no measurable difference @ 2304 | +0.0 [-0.2, +0.3] | dropped |
 | 11 | `exp/stuck-1` | frontier-first when stuck (DESC-03 rule) | `73c4584` | `6502ae3` | free5 | no measurable difference @ 2304 | +0.9 [-0.4, +2.2] | dropped |
+| 12 | `exp/stuck-2` | clear-way: cross known traps, wait out peacefuls (DESC-03 rule 2) | `609ca19` | `6502ae3` | free5 | pending | - | - |
 
 #### Experiment 10: `exp/mines-end` - Mines' End goal ends on the real bottom, judged from the screen
 - Requirement / decisions: DESC-01 (D-04: screen only, no memory)
@@ -1022,3 +1023,22 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Mechanism: starved +0.2 [-1.0, +1.3]; rung2 +0.9 [-0.2, +1.9]; rung6 +0.3 [-0.8, +1.4]; rung7 +0.1 [-0.8, +1.1];
   counter `frontier_first` fired in 719 of 2304 games; crashes: same types, exception 54 vs 50, watchdog 44 vs 49
 - Decision: dropped (branch `exp/stuck-1` kept at `73c45844eb41c36e3970a2c08340f746dd492684`)
+
+#### Experiment 12: `exp/stuck-2` - clear-way: cross known traps and wait out peacefuls on the way to the stairs
+- Requirement / decisions: DESC-03, DESC-02 (plan 02-06 rule: explore-left left out, 20% threshold;
+  stairs-unreachable 26.1% -> clear-way)
+- Obstacle (deviation from the plan's "the obstacle the reports name most", which only knew doors and boulders):
+  10 replayed stairs-unreachable seeds at their first stuck report - the needed staircase becomes reachable
+  over known traps in 6 (the bot never steps on a known trap; one trap in a 1-wide Mines passage cuts the
+  level), past peaceful monsters in 2 (Minetown corridors), neither in 2; boulders blocked none of them
+- Change: `GlobalLogic._clear_way` in `autoascend/global_logic.py`: when stuck and the needed staircase is
+  cut off only by known traps or peacefuls, walk to it over the traps and wait beside a blocking peaceful,
+  up to 1000 turns per level (resumed after fights), then retry the level; `Agent.bfs(through_peacefuls,
+  through_traps)`
+- Candidate `609ca194cc115de0879e9e2b4751ed2b93940f11`; baseline `6502ae339853c3d24570865816b1ddedfe19b566`; primary metric `free5`; games: to the
+  last checkpoint (diagnosis-backed)
+- Smoke (22 stairs-unreachable seeds): fired in 11, crossed traps in 9, reached the stairs in 6; max depth
+  deeper in 5, shallower in 2 (seed 88 killed by the watch, 76 of 2304 baseline games die to the watch);
+  no exception, no watchdog
+- Mechanism (planned): starved, rung2, rung6, rung7, watch deaths, counters `clear_way`, `clear_way_opened`
+- Verdict: pending
