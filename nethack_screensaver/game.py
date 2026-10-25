@@ -16,7 +16,7 @@ from autoascend.global_logic import Milestone
 from autoascend.glyph import MON
 from autoascend.item import flatten_items
 from autoascend.plans import DEFAULT_STRATEGY, STRATEGIES, choose_strategy, plan_for, race_from_welcome
-from nethack_screensaver import fixed_clock
+from nethack_screensaver import dungeon_truth, fixed_clock
 
 HP = 10
 MAX_HP = 11
@@ -177,6 +177,21 @@ class _DeathContext:
         del self.last_messages[:-self.keep]
 
 
+def _give_ladder_truth(wrapper, env) -> bool:
+    """Hand the real Mines' End level to the ladder (measuring only, never to the bot's decisions).
+
+    False until the agent exists; True once handed over or found unreadable (counted, game goes on)."""
+    agent = getattr(wrapper, "agent", None)
+    if agent is None:
+        return False
+    try:
+        seeds = type(env.nethack).get_current_seeds(env.nethack)[:2]
+        agent.global_logic.truth_mines_end_level = dungeon_truth.read(seeds).mines_end[1]
+    except Exception:  # the ladder falls back to its proxy
+        agent.stats_logger.log_event("ladder_truth_error")
+    return True
+
+
 def _food_at_end(wrapper) -> int:
     try:
         return sum(1 for item in flatten_items(wrapper.agent.inventory.items) if _edible_food(item))
@@ -265,10 +280,14 @@ def run_game(
     prev_chars = None
     watchdog = _ScreenWatchdog(watchdog_seconds)
     ctx = _DeathContext()
+    truth_for = set()  # agents that got the layout (a pinned role resets the env and makes a new agent)
 
     def on_step(obs):
         nonlocal max_depth, turns, xp_level, prev_chars
         ctx.observe(obs)
+        agent = getattr(wrapper, "agent", None)
+        if agent is not None and id(agent) not in truth_for and _give_ladder_truth(wrapper, env):
+            truth_for.add(id(agent))
         # The final (game-over) observation has all-zero blstats; keep the last real values.
         max_depth = max(max_depth, int(obs["blstats"][DEPTH]))
         turns = max(turns, int(obs["blstats"][TURN]))

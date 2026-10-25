@@ -6,7 +6,7 @@ level numbers inside each dungeon (Sokoban 1 is its top level, Astral is Planes 
 from dataclasses import dataclass
 
 DOOM, GEHENNOM, MINES, QUEST, SOKOBAN, LUDIOS, VLAD, PLANES = range(8)  # dungeon.def order
-MINES_END_WAIT = 1000  # turns on Mines level 8 without a down staircase before it counts as the bottom
+MINES_END_WAIT = 1000  # proxy, when the layout is unknown: turns on Mines level 8 without a down staircase
 SOKOBAN_DRAWN = 100  # squares seen before "no trap left" means anything (Sokoban levels are lit)
 VIBRATION = "You feel a strange vibration"
 
@@ -56,6 +56,7 @@ class Facts:
     down_stairs_seen: bool = False
     inventory: tuple[str, ...] = ()
     message: str = ""
+    mines_end_level: int | None = None  # the game's real last Mines level, when the measuring side knows it
 
 
 @dataclass
@@ -69,6 +70,8 @@ class _Memory:
 def _mines_end(f, m):
     if f.dungeon != MINES:
         return False
+    if f.mines_end_level is not None:
+        return f.level == f.mines_end_level
     return f.level >= 9 or (f.level == 8 and not f.down_stairs_seen and f.turn - m.arrived >= MINES_END_WAIT)
 
 

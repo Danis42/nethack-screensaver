@@ -357,3 +357,57 @@ def test_events_are_the_non_zero_counters():
     wrapper = SimpleNamespace(agent=SimpleNamespace(stats_logger=logger))
     assert game._events(wrapper) == {"elbereth_write": 2}
     assert game._events(SimpleNamespace(agent=None)) == {}
+
+
+# --- the ladder's view of the real dungeon layout (measuring only) ------------------------------
+
+def _truth_fakes(read):
+    from types import SimpleNamespace
+    events = []
+
+    class FakeNethack:
+        def get_current_seeds(self):
+            return (11, 22, False, None)
+
+    agent = SimpleNamespace(global_logic=SimpleNamespace(truth_mines_end_level=None),
+                            stats_logger=SimpleNamespace(log_event=events.append))
+    return SimpleNamespace(agent=agent), SimpleNamespace(nethack=FakeNethack()), events
+
+
+def test_ladder_gets_the_real_mines_end(monkeypatch):
+    from nethack_screensaver import dungeon_truth
+    seen = []
+
+    def read(seeds):
+        seen.append(tuple(seeds))
+        return dungeon_truth.DungeonTruth(9, (2, 9), 3, 14)
+    monkeypatch.setattr(game.dungeon_truth, "read", read)
+    wrapper, env, events = _truth_fakes(read)
+    assert game._give_ladder_truth(wrapper, env)
+    assert wrapper.agent.global_logic.truth_mines_end_level == 9 and seen == [(11, 22)] and events == []
+
+
+def test_unreadable_layout_is_counted_and_the_game_goes_on(monkeypatch):
+    from nethack_screensaver import dungeon_truth
+
+    def read(seeds):
+        raise dungeon_truth.TruthUnavailable("no game")
+    monkeypatch.setattr(game.dungeon_truth, "read", read)
+    wrapper, env, events = _truth_fakes(read)
+    assert game._give_ladder_truth(wrapper, env)
+    assert wrapper.agent.global_logic.truth_mines_end_level is None and events == ["ladder_truth_error"]
+
+
+def test_no_layout_before_the_agent_exists():
+    from types import SimpleNamespace
+    assert not game._give_ladder_truth(SimpleNamespace(agent=None), None)
+
+
+def test_a_seeded_game_hands_its_own_layout_to_the_ladder(monkeypatch):
+    from nethack_screensaver import dungeon_truth
+    got = []
+    real = dungeon_truth.read
+    monkeypatch.setattr(game.dungeon_truth, "read", lambda seeds: got.append(real(seeds)) or got[-1])
+    result = game.run_game(seed=1, max_steps=30)
+    assert [t.mines_levels for t in got] == [8]
+    assert "ladder_truth_error" not in result.events

@@ -61,6 +61,20 @@ def test_mines_end_is_level_nine_or_a_level_eight_without_down_stairs():
     assert "mines_end" not in reached(*stairs).reached
 
 
+@pytest.mark.parametrize("bottom", [8, 9])
+def test_mines_end_is_the_real_last_level_when_the_layout_is_known(bottom):
+    assert "mines_end" not in reached(Facts(turn=5, dungeon=MINES, level=bottom - 1,
+                                            mines_end_level=bottom)).reached
+    assert reached(Facts(turn=7, dungeon=MINES, level=bottom, mines_end_level=bottom)).reached["mines_end"] == 7
+
+
+def test_known_layout_switches_the_waiting_proxy_off():
+    stay = (Facts(turn=100, dungeon=MINES, level=8, mines_end_level=9),
+            Facts(turn=100 + 5 * MINES_END_WAIT, dungeon=MINES, level=8, mines_end_level=9))
+    assert "mines_end" not in reached(*stay).reached
+    assert "mines_end" not in reached(Facts(turn=1, dungeon=DOOM, level=8, mines_end_level=8)).reached
+
+
 def test_leaving_mines_level_eight_restarts_the_wait():
     visits = [Facts(turn=100, dungeon=MINES, level=8), Facts(turn=900, dungeon=MINES, level=7),
               Facts(turn=1000, dungeon=MINES, level=8), Facts(turn=1500, dungeon=MINES, level=8)]
@@ -135,6 +149,13 @@ def test_facts_see_water_and_medusa_but_not_while_hallucinating():
     assert facts.water_share == 1.0 and facts.medusa_seen
     tripping = _fake_logic(hallu=True, objects=objects, glyphs=glyphs).ladder_facts()
     assert tripping.water_share == 0.0 and not tripping.medusa_seen and not tripping.drawbridge_seen
+
+
+def test_facts_carry_the_layout_only_when_measuring_code_set_it():
+    logic = _fake_logic(key=(2, 8))
+    assert logic.ladder_facts().mines_end_level is None
+    logic.truth_mines_end_level = 8
+    assert logic.ladder_facts().mines_end_level == 8
 
 
 def test_facts_on_an_undrawn_sokoban_top_level_are_not_solved():

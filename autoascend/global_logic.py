@@ -190,6 +190,10 @@ class ItemPriority(ItemPriorityBase):
 
 
 class GlobalLogic:
+    # The real last Mines level, set from outside by measuring code (the screensaver's layout reader).
+    # Only ladder_facts may read it: the bot's own decisions come from the screen (Phase 2 CONTEXT D-04).
+    truth_mines_end_level = None
+
     def __init__(self, agent, plan=None):
         self.agent = agent
         self.plan = Plan(plan or DEFAULT_PLAN)
@@ -313,7 +317,7 @@ class GlobalLogic:
             drawbridge_seen=not hallu and bool(utils.isin(level.objects, DRAWBRIDGE).any()),
             down_stairs_seen=bool(utils.isin(level.objects, G.STAIR_DOWN).any()),
             inventory=tuple(item.text for item in flatten_items(self.agent.inventory.items)),
-            message=self.agent.message)
+            message=self.agent.message, mines_end_level=self.truth_mines_end_level)
 
     @utils.debug_log('solving sokoban')
     @Strategy.wrap
