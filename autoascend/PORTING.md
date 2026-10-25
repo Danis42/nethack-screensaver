@@ -991,6 +991,7 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 | # | branch | cause | candidate | baseline | metric | verdict | diff [lo, hi] | decision |
 |---|--------|-------|-----------|----------|--------|---------|---------------|----------|
 | 10 | `exp/mines-end` | Mines' End goal ends on the real bottom (screen) | `b06d9fe` | `6502ae3` | rung7 | no measurable difference @ 2304 | +0.0 [-0.2, +0.3] | dropped |
+| 11 | `exp/stuck-1` | frontier-first when stuck (DESC-03 rule) | `73c4584` | `6502ae3` | free5 | pending | - | - |
 
 #### Experiment 10: `exp/mines-end` - Mines' End goal ends on the real bottom, judged from the screen
 - Requirement / decisions: DESC-01 (D-04: screen only, no memory)
@@ -1008,3 +1009,14 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Why so small: few games still follow FIND_MINES_END (63 stuck events in the baseline); most reach the Mines
   bottom while diving, where the stuck watch already sends them back up
 - Decision: dropped (branch `exp/mines-end` kept at `b06d9fe4e48afa9436080f8bcbe43293a4778fdc`)
+
+#### Experiment 11: `exp/stuck-1` - frontier-first when the stuck watch fires
+- Requirement / decisions: DESC-03, DESC-02 (rule in `### Stuck diagnosis (DESC-03)`)
+- Change: `GlobalLogic._frontier_first` in `autoascend/global_logic.py`: when stuck, walk to the nearest reachable
+  square beside unexplored map until none is left or 1000 turns pass (once per level), then retry the level
+- Candidate `73c45844eb41c36e3970a2c08340f746dd492684`; baseline `6502ae339853c3d24570865816b1ddedfe19b566`; primary metric `free5` (the tactic
+  targets games that end stuck on Dlvl 5+); games: to the last checkpoint (diagnosis-backed)
+- Smoke (12 explore-left seeds + seeds 0-9): counter fired in 15 of 22; 1 exception (inventory.py
+  AssertionError, a type in p2-baseline), no watchdog
+- Mechanism (planned): starved, rung2, rung6, rung7, turns, counter `frontier_first`
+- Verdict: pending
