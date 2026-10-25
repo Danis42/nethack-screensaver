@@ -97,3 +97,9 @@ def test_numeric_paired_judge_rejects_empty_input():
     from bench.stats import judge_paired_numeric
     with pytest.raises(ValueError):
         judge_paired_numeric([], 192)
+
+
+def test_numeric_paired_judge_rejects_a_single_pair():
+    from bench.stats import judge_paired_numeric
+    with pytest.raises(ValueError):
+        judge_paired_numeric([(3, 1)], 192)

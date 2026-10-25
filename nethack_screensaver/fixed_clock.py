@@ -45,11 +45,15 @@ def shim_path(cache: Path | None = None) -> Path:
     lib = cache / f"fixtime-{digest}.so"
     if not lib.exists():
         cache.mkdir(parents=True, exist_ok=True)
-        src = cache / f"fixtime-{digest}.c"
+        # per-process source and output: workers that start together never read each other's half-written file
+        src = cache / f"fixtime-{digest}.{os.getpid()}.c"
         src.write_text(SOURCE)
         tmp = lib.with_suffix(f".{os.getpid()}.tmp")
-        subprocess.run(["cc", "-O2", "-shared", "-fPIC", "-o", str(tmp), str(src), "-ldl"], check=True)
-        tmp.replace(lib)
+        try:
+            subprocess.run(["cc", "-O2", "-shared", "-fPIC", "-o", str(tmp), str(src), "-ldl"], check=True)
+            tmp.replace(lib)
+        finally:
+            src.unlink(missing_ok=True)
     return lib
 
 

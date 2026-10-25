@@ -88,8 +88,10 @@ def judge_paired_numeric(pairs, checkpoint, z=None):
     n = len(pairs)
     if n == 0:
         raise ValueError("no paired games")
+    if n == 1:  # one game has no spread: the interval would collapse onto it
+        raise ValueError("need at least 2 paired games")
     diffs = [c - b for c, b in pairs]
     diff = sum(diffs) / n
-    sd = math.sqrt(sum((d - diff) ** 2 for d in diffs) / (n - 1)) if n > 1 else 0.0
+    sd = math.sqrt(sum((d - diff) ** 2 for d in diffs) / (n - 1))
     half = (z_for(checkpoint) if z is None else z) * sd / math.sqrt(n)
     return _verdict(diff, diff - half, diff + half, checkpoint)

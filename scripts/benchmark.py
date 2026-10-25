@@ -124,6 +124,6 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    if "--seeds" in " ".join(sys.argv):
+    if any(a == "--seeds" or a.startswith("--seeds=") for a in sys.argv[1:]):
         fixed_clock.ensure_preloaded()  # seeded games need the pinned start time to replay the bench's games
     main()

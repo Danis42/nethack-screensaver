@@ -42,3 +42,9 @@ def test_preload_env_keeps_other_preloads(tmp_path, monkeypatch):
     env = fixed_clock.preload_env({"LD_PRELOAD": "/x/other.so"})
     assert env["LD_PRELOAD"].split(":")[1] == "/x/other.so"
     assert "fixtime-" in env["LD_PRELOAD"].split(":")[0]
+
+
+def test_shim_build_leaves_only_the_library(tmp_path):
+    lib = fixed_clock.shim_path(tmp_path)
+    assert lib.exists()
+    assert sorted(p.name for p in tmp_path.iterdir()) == [lib.name]
