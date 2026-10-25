@@ -4,16 +4,16 @@ milestone: v0.1.0
 current_phase: 01
 current_phase_name: Midgame Survival
 status: executing
-stopped_at: Completed 01-14-PLAN.md
+stopped_at: Completed 01-15-PLAN.md
 last_updated: "2026-10-23T17:17:43.229Z"
 last_activity: 2026-10-25
-last_activity_desc: 01-14 done (flee-upstairs dropped); starting 01-15 done bar
+last_activity_desc: 01-15 done - Phase 1 result met
 state_head: e0691aa5c2b7540d1a588a329e8191df315a297e
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 16
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 ## Current Position
 
 Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 15 of 16
-Status: PAUSED by owner after job 27 (2026-10-24). 01-14 done (flee-upstairs dropped, +0.5 [-0.9, +1.9]); all three old branches judged, none kept. Resume: 01-15 done bar (main = 3fca503 code vs p1-baseline 0b09707: rung2 already better at 384 in job 23; run rung3-rung6 jobs on the same pair, stored games), then 01-16 branch cleanup (ask owner before deleting)
-Last activity: 2026-10-24 — 01-10 done: exp/ants-bees worse on rung2 -1.5 [-2.6, -0.3], dropped; four experiments, none kept
+Plan: 16 of 16
+Status: 01-15 done 2026-10-25 - Phase 1 result: met (p1-final 3fca503 vs p1-baseline 0b09707, jobs 28-32: rung2 +3.1 [+0.8, +5.4], rungs 3-6 all better). Next: 01-16 branch cleanup (ask owner before deleting), then Phase 2 can start
+Last activity: 2026-10-25 — 01-15 done: Phase 1 result met; five paired verdicts, all better
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -80,6 +80,7 @@ Full log in PROJECT.md Key Decisions. Recent, affecting current work:
 - [Phase 01]: 01-08: starvation is a food-supply and stuck-level problem, not prayer timing; both experiments dropped (PORTING.md experiments 1-2)
 - [Phase 01]: 01-09: rest target scales with food (owner, 2026-10-24): full HP with food or safe prayer, about 85% without food, none when Hungry with no fallback
 - [Phase 01]: 01-09: rest-to-full dropped (-1.5 [-4.2, +1.2]); resting trades ant deaths for starvation while food is short
+- [Phase 1]: 01-15: Phase 1 result: met - p1-final (3fca503, exp/shop-door the only kept change) better than p1-baseline on rung2..rung6 (jobs 28-32); Phase 2 can start after 01-16
 - [Phase 1]: pilgrim-only baseline p1-baseline = 0b09707 (dwarvish Valkyrie); bench resolution 2.8 points on rung2 at 2304 (PORTING.md); starvation ends 25% of games
 
 ### Pending Todos

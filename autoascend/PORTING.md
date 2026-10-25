@@ -906,3 +906,12 @@ PORTING.md) against the pilgrim-only baseline `p1-baseline` = `0b097073adb3071f8
 | metric | job | verdict | checkpoint | diff [lo, hi] in points |
 |--------|-----|---------|------------|-------------------------|
 | rung2 | 28 | better | 384 | +3.1 [+0.8, +5.4] |
+| rung3 | 29 | better | 576 | +1.7 [+0.2, +3.3] |
+| rung4 | 30 | better | 1152 | +0.9 [+0.2, +1.6] |
+| rung5 | 31 | better | 1152 | +1.0 [+0.2, +1.8] |
+| rung6 | 32 | better | 384 | +1.8 [+0.1, +3.6] |
+
+Each row is its own paired job on stored games (D-14 decision rule: rung2 `better` and no rung3-6 `worse`).
+The single kept change is exp/shop-door; the gain is small (1-3 points per rung) but is seen on every rung.
+
+Phase 1 result: met (rung2 +3.1 [+0.8, +5.4] points; rungs 3-6 not worse)
