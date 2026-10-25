@@ -1,43 +1,44 @@
 ---
 gsd_state_version: "1.0"
 milestone: v0.1.0
-current_phase: 01
-current_phase_name: Midgame Survival
-status: executing
-stopped_at: Completed 01-16-PLAN.md
-last_updated: "2026-10-23T17:17:43.229Z"
+current_phase: 2
+current_phase_name: Real Descent
+status: planning
+stopped_at: Phase 01 complete, ready to plan Phase 2
+last_updated: "2026-10-25T12:43:10.169Z"
 last_activity: 2026-10-25
-last_activity_desc: 01-16 done - all Phase 1 plans complete
-state_head: e0691aa5c2b7540d1a588a329e8191df315a297e
+last_activity_desc: Phase 01 complete, transitioned to Phase 2
+state_head: 05a19db8b5dc504f68cee5978bb4a770334a1cea
 progress:
   total_phases: 8
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 16
   completed_plans: 16
+  percent: 13
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-22)
+See: .planning/PROJECT.md (updated 2026-10-25)
 
 **Core value:** The bot achieves a real ascension on the pilgrim route (the only priority).
-**Current focus:** Phase 01 — Midgame Survival
+**Current focus:** Phase 2 — Real Descent (rungs 6-8)
 
 ## Current Position
 
-Phase: 01 (Midgame Survival) — EXECUTING
-Plan: 16 of 16
-Status: 01-15 done 2026-10-25 - Phase 1 result: met (p1-final 3fca503 vs p1-baseline 0b09707, jobs 28-32: rung2 +3.1 [+0.8, +5.4], rungs 3-6 all better). 01-16 done 2026-10-25 (owner chose archive-tags: six old branches tagged archive/<name> and deleted). All 16 plans done; next: verify/close Phase 1, then Phase 2 (Real Descent)
-Last activity: 2026-10-25 — 01-15 done: Phase 1 result met; five paired verdicts, all better
+Phase: 2 — Real Descent
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-25 — Phase 01 complete, transitioned to Phase 2
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 13%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
+- Total plans completed: 16
 - Average duration: -
 - Total execution time: 0.0 hours
 
@@ -45,7 +46,7 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01 | 16 | - | - |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -81,18 +82,20 @@ Full log in PROJECT.md Key Decisions. Recent, affecting current work:
 - [Phase 01]: 01-09: rest target scales with food (owner, 2026-10-24): full HP with food or safe prayer, about 85% without food, none when Hungry with no fallback
 - [Phase 01]: 01-09: rest-to-full dropped (-1.5 [-4.2, +1.2]); resting trades ant deaths for starvation while food is short
 - [Phase 1]: 01-15: Phase 1 result: met - p1-final (3fca503, exp/shop-door the only kept change) better than p1-baseline on rung2..rung6 (jobs 28-32); Phase 2 can start after 01-16
+- [Phase 1]: COMPLETE 2026-10-25 - UAT 17/17, SECURITY threats_open 0, VERIFICATION passed; Phase 2 baseline to start from = p1-final (3fca503)
 - [Phase 1]: pilgrim-only baseline p1-baseline = 0b09707 (dwarvish Valkyrie); bench resolution 2.8 points on rung2 at 2304 (PORTING.md); starvation ends 25% of games
 
 ### Pending Todos
 
-None yet.
+- [Phase 2 start] Fix the 01-REVIEW.md findings (WR-01 shim build race, IN-01..04) in one docs-free commit, then re-tag the baseline if code changed (01-REVIEW-DISPOSITION.md)
+- [Idea, owner 2026-10-25] Food-stock experiment: keep 1-2 non-perishable food items (rations, lembas, cram, tins), take or buy them when none; first check with nld_study.py whether human survivors eat more non-corpse food (meal text names the food)
+- [Phase 1 leftover] 01-VALIDATION.md is still a draft (/gsd-validate-phase 1 not run); non-blocking
 
 ### Blockers/Concerns
 
-- [Phase 1] Every game is a dwarvish Valkyrie since `0b09707` (owner, until the first ascension). Baseline `p1-baseline` = `0b09707` (2304 seeds stored); older numbers are not comparable.
+- [Phase 2] Every game is a dwarvish Valkyrie since `0b09707` (owner, until the first ascension). Baseline `p1-baseline` = `0b09707` (2304 seeds stored); older numbers are not comparable.
 - [Phase 1+] 46/2304 baseline games (median Dlvl 24) end on the 120 s watchdog: the bot hangs deep in the dungeon. Needs a stack dump on watchdog and a fix before the deep rungs can be measured.
 - [Phase 1] 2026-10-24 fix `16a6cb8`: a panic loop that keeps the screen changing (empty-bag loot menu) grew workers to 11 GB; the watchdog now also fires when the game turn stalls for 120 s and only 20 panics are kept. The empty-bag menu itself is not fixed (parse in item_manager / loot).
-- [Phase 1] Old survival branches resolved 2026-10-25 (01-16): judged, dropped, kept only as local archive/ tags.
 - [Phases 4-8] Nothing above rung 9 (Medusa, 14 of 2304 games) has been reached; these phases depend on the staged-start harness (STAGE-01, whose `wizard=True` route is unvalidated against `NetHackChallenge` and seeding).
 
 ## Deferred Items
@@ -107,6 +110,6 @@ Tracked but unscheduled (REQUIREMENTS.md v2): ROLE-01 role choice, DEBT-01..05 t
 
 ## Session Continuity
 
-Last session: 2026-10-23T17:17:43.204Z
-Stopped at: Completed 01-09-PLAN.md
+Last session: 2026-10-25T12:45:00Z
+Stopped at: Phase 01 complete, ready to plan Phase 2
 Resume file: None

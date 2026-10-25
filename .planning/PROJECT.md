@@ -33,13 +33,13 @@ climbing rungs, judged on the seeded paired bench; the end state is rung 17 ("as
 - ✓ Real-ascension import: 687 hardfought.org ascensions in the bench database as the yardstick, with dumplog parsing and an Ascenders summary — 2026-10-20
 - ✓ Ascension ladder (roadmap sub-project 0): 17 rungs in `autoascend/ladder.py`, `GameResult.ladder` / `rung`, bench metrics `rung` and `rung1`..`rung17`, ladder table against the yardstick; first baseline (mixed strategies, 576 games) recorded in `PORTING.md` — 2026-10-21 (main `2653410`)
 - ✓ Ascension-only switch: `Config.strategy` defaults to `"pilgrim"`; `strategy = "random"` brings the other plans back — 2026-10-21 (`dbab398`)
-- ✓ Seeded, paired bench: `run_game(seed=...)`, worker protocol `play <seed>`, scheduler hands out seeds 0..N-1 per commit, paired (Wald) verdict — merged 2026-10-22 (`9ff6a6f`). Its own acceptance check (the seeded A/A control) has not been run yet; that is Phase 1 work.
+- ✓ Seeded, paired bench: `run_game(seed=...)`, worker protocol `play <seed>`, scheduler hands out seeds 0..N-1 per commit, paired (Wald) verdict — merged 2026-10-22 (`9ff6a6f`); A/A control passed in Phase 1 (jobs 10, 13)
+- ✓ Phase 1 — Midgame survival (MEAS-01..03, SURV-01..06): seeded games replay exactly (moon and start time from the seed, state-only Sokoban budget, fixed hash seed); A/A control 0.0 [0.0, 0.0]; Valkyrie pilgrim baseline `p1-baseline` = `0b09707` (2304 seeds); nine paired experiments, one kept (exp/shop-door); done bar met: `p1-final` = `3fca503` better on rung2 +3.1 [+0.8, +5.4] and on rungs 3-6 (jobs 28-32) — 2026-10-25
 
 ### Active
 
 <!-- Roadmap sub-projects 1-8 from docs/ROADMAP.md, one phase each. Detail: REQUIREMENTS.md. -->
 
-- [ ] Phase 1 — Midgame survival, Dlvl 4-12: sharpen-and-baseline the bench, then cut the deaths that end most games on Dlvl 4-8 (rungs 2-6)
 - [ ] Phase 2 — Real descent past Mines' End and the Big Room, reliably finding downstairs (rungs 6-8)
 - [ ] Phase 3 — Gearing up: wands, rings, armour, protection, reflection, magic resistance (rungs 7-9)
 - [ ] Phase 4 — Medusa's level (rung 9)
@@ -126,13 +126,15 @@ sub-projects) exists but was left out of the ingest on purpose; read it as backg
 | Main objective is a real ascension (2026-10-20); ascension is the only priority (2026-10-21) | The screensaver is eye candy; the bot's strength is the interesting problem | — Pending |
 | Success is a 17-rung ladder in the median order of 687 real ascensions | A binary "ascended" signal is too rare to steer by; rungs give partial credit | ✓ Good (recorded live, baseline measured) |
 | Every game plays the pilgrim route; other plans behind `strategy = "random"` | Mixed strategies diluted every measurement (pilgrim 35% vs others 20% Minetown+) | ✓ Good |
-| Every game is a dwarvish Valkyrie until the first ascension (2026-10-23, `0b09707`); `CHARACTER = "@"` brings random roles back | Melee roles reach Minetown 45-51% vs 8-17% for weak starts; BotHack (first bot ascension, 2015) also played only dwarvish Valkyries; Mines natives are peaceful to dwarves | — Pending (new baseline and A/A) |
+| Every game is a dwarvish Valkyrie until the first ascension (2026-10-23, `0b09707`); `CHARACTER = "@"` brings random roles back | Melee roles reach Minetown 45-51% vs 8-17% for weak starts; BotHack (first bot ascension, 2015) also played only dwarvish Valkyries; Mines natives are peaceful to dwarves | ✓ Good (A/A passed job 13; Minetown 43% vs 26% for all roles) |
 | Vendor rule-based AutoAscend rather than write or train a bot | Upstream won the NeurIPS 2021 challenge; no ML dependencies | ✓ Good |
 | Every change measured on the local bench; one change per experiment | Intuition about bot changes was repeatedly wrong (threat model, flee, choke-points) | ✓ Good |
 | Seeded, paired experiments replace independent samples | Unseeded noise (about 3.5 points) hid real 1-3 point gains | ✓ Replays exactly (A/A job 10); resolution weaker than hoped: a bot-RNG change alone flips 32% of seeds on rung2 (job 11) |
 | Code under test is always a git commit run from a worktree | Reproducible, baselines reusable per SHA | ✓ Good |
 | Rungs 9-17 start as simple proxies, refined when their phase arrives | Rungs 1-8 must be accurate now; later ones cannot be exercised yet | — Pending |
 | Local git only; merge finished tested branches to `main` | Owner's standing rule | ✓ Good |
+| Starvation is a food-supply problem, not prayer timing (Phase 1, 2026-10-24) | 98% of bot starvers carry no food; pausing prayer after a failure changed nothing (experiment 1); human survivors are Hungry 3.9% of turns and pray mostly for HP | — Pending (no food-stock experiment yet) |
+| Old survival branches judged once and archived (Phase 1, 2026-10-25) | threat-model, choke-points, flee-upstairs: no measurable difference on the seeded bench (jobs 25-27) | ✓ Done (local `archive/*` tags, branches deleted) |
 | Workflow is superpowers (brainstorm, spec, plan, build) per `docs/STATUS.md` | Owner's method before the GSD ingest | ⚠️ Revisit (GSD now also tracks the roadmap) |
 
 ## Evolution
@@ -147,4 +149,4 @@ Is" still accurate?
 Context with the latest ladder numbers.
 
 ---
-*Last updated: 2026-10-22 after roadmap creation from the doc ingest*
+*Last updated: 2026-10-25 after Phase 1*

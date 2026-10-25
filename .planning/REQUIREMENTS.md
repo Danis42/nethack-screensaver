@@ -18,18 +18,18 @@ the roadmap sub-project text, rung targets, yardstick, or codebase concerns, and
 
 ### Measurement Foundation (MEAS)
 
-- [ ] **MEAS-01**: A seeded A/A control (the same commit on both sides of a `screens-bench` experiment) reads "no measurable difference" with a paired interval clearly narrower than the unseeded bench's ~3.5-point smallest detectable difference.
-- [ ] **MEAS-02**: A pilgrim-only baseline of current `main` (seeds 0..575) is stored on the bench, and its 17-rung table (games reaching each rung, median turn against the real-ascension yardstick) is written into `autoascend/PORTING.md`, with earlier mixed-strategy numbers marked not comparable.
-- [ ] **MEAS-03** *(derived)*: Playing the same seed twice on the same commit gives the same game; any source of non-replay the A/A control exposes (module-level caches such as `_PRIZES` in `autoascend/global_logic.py` and the shared `STRATEGIES` in `autoascend/plans.py`, wall-clock effects) is fixed or documented.
+- [x] **MEAS-01**: A seeded A/A control (the same commit on both sides of a `screens-bench` experiment) reads "no measurable difference" with a paired interval clearly narrower than the unseeded bench's ~3.5-point smallest detectable difference.
+- [x] **MEAS-02**: A pilgrim-only baseline of current `main` (seeds 0..575) is stored on the bench, and its 17-rung table (games reaching each rung, median turn against the real-ascension yardstick) is written into `autoascend/PORTING.md`, with earlier mixed-strategy numbers marked not comparable.
+- [x] **MEAS-03** *(derived)*: Playing the same seed twice on the same commit gives the same game; any source of non-replay the A/A control exposes (module-level caches such as `_PRIZES` in `autoascend/global_logic.py` and the shared `STRATEGIES` in `autoascend/plans.py`, wall-clock effects) is fixed or documented.
 
 ### Midgame Survival (SURV)
 
-- [ ] **SURV-01**: The bot rests to full HP before exploring on (human games: survivors met a soldier ant at full HP in 100% of cases vs 80% of the dead).
-- [ ] **SURV-02**: Starvation deaths (about 13% of games) are addressed.
-- [ ] **SURV-03**: Deaths to wand and ray users (about 8% of games) are addressed.
-- [ ] **SURV-04**: Deaths to soldier ants, fire ants, giant ants and killer bees (about 8% of games) are addressed with an approach not already dropped (doorway fighting, threat numbers, fleeing upstairs).
-- [ ] **SURV-05** *(derived)*: The unmerged survival branches `threat-model`, `flee-upstairs` and `choke-points` are each re-judged once on the seeded bench against the pilgrim-only baseline (their earlier "no measurable difference" came from a bench that could not see 1-3 point effects); any `better` result is merged, the rest stay dropped.
-- [ ] **SURV-06**: More games reach Minetown and beyond: the final `main` of this phase against the pilgrim-only baseline gives a paired `better` verdict on `rung2` (Minetown+), with rungs 3-6 not worse.
+- [x] **SURV-01**: The bot rests to full HP before exploring on (human games: survivors met a soldier ant at full HP in 100% of cases vs 80% of the dead).
+- [x] **SURV-02**: Starvation deaths (about 13% of games) are addressed.
+- [x] **SURV-03**: Deaths to wand and ray users (about 8% of games) are addressed.
+- [x] **SURV-04**: Deaths to soldier ants, fire ants, giant ants and killer bees (about 8% of games) are addressed with an approach not already dropped (doorway fighting, threat numbers, fleeing upstairs).
+- [x] **SURV-05** *(derived)*: The unmerged survival branches `threat-model`, `flee-upstairs` and `choke-points` are each re-judged once on the seeded bench against the pilgrim-only baseline (their earlier "no measurable difference" came from a bench that could not see 1-3 point effects); any `better` result is merged, the rest stay dropped.
+- [x] **SURV-06**: More games reach Minetown and beyond: the final `main` of this phase against the pilgrim-only baseline gives a paired `better` verdict on `rung2` (Minetown+), with rungs 3-6 not worse.
 
 ### Real Descent (DESC)
 
@@ -120,15 +120,15 @@ Which phases cover which requirements. Each requirement maps to exactly one phas
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MEAS-01 | Phase 1 | Pending |
-| MEAS-02 | Phase 1 | Pending |
-| MEAS-03 | Phase 1 | Pending |
-| SURV-01 | Phase 1 | Pending |
-| SURV-02 | Phase 1 | Pending |
-| SURV-03 | Phase 1 | Pending |
-| SURV-04 | Phase 1 | Pending |
-| SURV-05 | Phase 1 | Pending |
-| SURV-06 | Phase 1 | Pending |
+| MEAS-01 | Phase 1 | Complete |
+| MEAS-02 | Phase 1 | Complete |
+| MEAS-03 | Phase 1 | Complete |
+| SURV-01 | Phase 1 | Complete |
+| SURV-02 | Phase 1 | Complete |
+| SURV-03 | Phase 1 | Complete |
+| SURV-04 | Phase 1 | Complete |
+| SURV-05 | Phase 1 | Complete |
+| SURV-06 | Phase 1 | Complete |
 | DESC-01 | Phase 2 | Pending |
 | DESC-02 | Phase 2 | Pending |
 | DESC-03 | Phase 2 | Pending |
