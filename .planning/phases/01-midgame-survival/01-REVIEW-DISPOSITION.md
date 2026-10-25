@@ -5,25 +5,25 @@ titles: json
 findings:
   - id: WR-01
     severity: warning
-    disposition: open
+    disposition: fixed
     title: "Concurrent first build of the time() shim can read a half-written C file"
   - id: IN-01
     severity: info
-    disposition: open
+    disposition: fixed
     title: "judge_paired_numeric gives a zero-width interval for a single pair"
   - id: IN-02
     severity: info
-    disposition: open
+    disposition: fixed
     title: "benchmark.py detects --seeds by substring over the whole command line"
   - id: IN-03
     severity: info
-    disposition: open
+    disposition: deferred
     title: "meal \"open\" pattern can count non-food lines"
   - id: IN-04
     severity: info
-    disposition: open
+    disposition: skipped
     title: "cohort WHERE clause is interpolated into SQL"
-open: 5
+open: 0
 total: 5
 recorded: 2026-10-25T12:40:21.968Z
 ---
@@ -32,11 +32,11 @@ recorded: 2026-10-25T12:40:21.968Z
 
 | Finding | Severity | Disposition | Source |
 |---------|----------|-------------|--------|
-| WR-01 | warning | open | - |
-| IN-01 | info | open | - |
-| IN-02 | info | open | - |
-| IN-03 | info | open | - |
-| IN-04 | info | open | - |
+| WR-01 | warning | fixed | commit 2f9f211 |
+| IN-01 | info | fixed | commit 2f9f211 |
+| IN-02 | info | fixed | commit 2f9f211 |
+| IN-03 | info | deferred | changing the meal pattern changes the recorded study numbers; revisit with the food-stock check (STATE todo) |
+| IN-04 | info | skipped | where already comes only from COHORTS keys (nld_study.py:581) or constants; read-only DB |
 
 Dispositions: `open` (recorded, not yet triaged), `fixed`, `skipped`, `deferred`.
 Set `deferred` by hand and put the reason in the Source cell; both are preserved. A `|` in the reason is kept as prose and escaped on the next run.
