@@ -399,3 +399,91 @@ def test_pilgrim_does_sokoban_first_unless_the_mines_are_peaceful():
         assert plan_for("pilgrim", race) == STRATEGIES["pilgrim"].milestones
     assert set(plan_for("pilgrim", "hum")) == set(STRATEGIES["pilgrim"].milestones)
     assert plan_for("sightseer", "hum") == STRATEGIES["sightseer"].milestones
+
+
+# --- stuck reports (measuring only) -----------------------------------------------------------
+
+def _stuck_map():
+    import numpy as np
+    from autoascend.glyph import C
+    objects = np.full((C.SIZE_Y, C.SIZE_X), -1, np.int16)
+    seen = np.zeros((C.SIZE_Y, C.SIZE_X), bool)
+    walkable = np.zeros((C.SIZE_Y, C.SIZE_X), bool)
+    seen[5, 5:12] = walkable[5, 5:12] = True  # a corridor, all seen
+    dis = np.full((C.SIZE_Y, C.SIZE_X), -1, np.int32)
+    dis[5, 5:12] = range(7)
+    glyphs = np.zeros((C.SIZE_Y, C.SIZE_X), np.int16)
+    return objects, seen, walkable, dis, glyphs
+
+
+def _report(objects, seen, walkable, dis, glyphs):
+    from autoascend.stuck import stuck_report
+    return stuck_report(turn=900, dungeon=0, level=7, dlvl=7, milestone="DIVE", objects=objects, seen=seen,
+                        walkable=walkable, dis=dis, glyphs=glyphs)
+
+
+def test_stuck_report_sees_a_reachable_down_staircase():
+    from autoascend.glyph import SS
+    objects, seen, walkable, dis, glyphs = _stuck_map()
+    objects[5, 11] = SS.S_dnstair
+    row = _report(objects, seen, walkable, dis, glyphs)
+    assert row["down_seen"] and row["down_reachable"]
+    assert {k: row[k] for k in ("turn", "dungeon", "level", "dlvl", "milestone")} == \
+        {"turn": 900, "dungeon": 0, "level": 7, "dlvl": 7, "milestone": "DIVE"}
+    assert all(type(row[k]) in (int, bool, str) for k in row)
+
+
+def test_stuck_report_sees_a_down_staircase_behind_a_wall():
+    from autoascend.glyph import SS
+    objects, seen, walkable, dis, glyphs = _stuck_map()
+    objects[9, 20] = SS.S_dnstair
+    seen[9, 20] = True
+    row = _report(objects, seen, walkable, dis, glyphs)
+    assert row["down_seen"] and not row["down_reachable"]
+
+
+def test_stuck_report_counts_the_frontier():
+    objects, seen, walkable, dis, glyphs = _stuck_map()
+    row = _report(objects, seen, walkable, dis, glyphs)
+    assert row["frontier"] == 7  # every corridor square has unseen squares above and below
+    seen[4, 4:13] = seen[6, 4:13] = True
+    seen[5, 4] = seen[5, 12] = True
+    assert _report(objects, seen, walkable, dis, glyphs)["frontier"] == 0
+    seen[4, 6] = seen[6, 7] = False
+    seen[5, 12] = False
+    assert _report(objects, seen, walkable, dis, glyphs)["frontier"] == 3
+
+
+def _stuck_logic():
+    from types import SimpleNamespace
+
+    import numpy as np
+
+    from autoascend.global_logic import GlobalLogic
+    from autoascend.plans import Plan
+    objects, seen, walkable, dis, glyphs = _stuck_map()
+    level = SimpleNamespace(dungeon_number=0, level_number=7, objects=objects, seen=seen, walkable=walkable)
+    logic = GlobalLogic.__new__(GlobalLogic)
+    logic.plan = Plan(DEFAULT_PLAN)
+    logic.stuck_reports = []
+    events = []
+    logic.agent = SimpleNamespace(current_level=lambda: level, blstats=SimpleNamespace(time=np.int64(5), depth=7),
+                                  bfs=lambda: dis, glyphs=glyphs,
+                                  stats_logger=SimpleNamespace(log_event=events.append))
+    return logic, events
+
+
+def test_stuck_reports_keep_the_newest_fifty():
+    from autoascend.stuck import KEEP
+    logic, events = _stuck_logic()
+    for t in range(KEEP + 5):
+        logic.agent.blstats.time = t
+        logic._report_stuck()
+    assert len(logic.stuck_reports) == KEEP and logic.stuck_reports[0]["turn"] == 5 and events == []
+
+
+def test_a_failing_stuck_report_is_counted_not_raised():
+    logic, events = _stuck_logic()
+    logic.agent.bfs = lambda: 1 / 0
+    logic._report_stuck()
+    assert logic.stuck_reports == [] and events == ["stuck_report_error"]

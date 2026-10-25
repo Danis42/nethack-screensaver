@@ -411,3 +411,8 @@ def test_a_seeded_game_hands_its_own_layout_to_the_ladder(monkeypatch):
     result = game.run_game(seed=1, max_steps=30)
     assert [t.mines_levels for t in got] == [8]
     assert "ladder_truth_error" not in result.events
+
+
+def test_stuck_reports_survive_a_missing_agent(monkeypatch):
+    _fake_env_and_wrapper(monkeypatch)
+    assert game.run_game(seed=2).stuck_reports == []

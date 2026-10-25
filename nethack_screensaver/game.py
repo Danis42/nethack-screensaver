@@ -70,6 +70,7 @@ class GameResult:
     depth_at_end: int = 0
     food_at_end: int = -1  # edible food items in the inventory after the game, -1 if unreadable
     events: dict = field(default_factory=dict)  # the bot's non-zero event counters
+    stuck_reports: list = field(default_factory=list)  # one row per stuck-watch firing (autoascend/stuck.py)
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -197,6 +198,13 @@ def _food_at_end(wrapper) -> int:
         return sum(1 for item in flatten_items(wrapper.agent.inventory.items) if _edible_food(item))
     except Exception:  # agent never started, or crashed with its inventory half-parsed
         return -1
+
+
+def _stuck_reports(wrapper) -> list:
+    try:
+        return list(wrapper.agent.global_logic.stuck_reports)
+    except Exception:  # agent never started
+        return []
 
 
 def _events(wrapper) -> dict:
@@ -333,6 +341,7 @@ def run_game(
                       hp_at_end=ctx.hp_at_end, max_hp_at_end=ctx.max_hp_at_end,
                       hunger_at_end=ctx.hunger_at_end, depth_at_end=ctx.depth_at_end,
                       food_at_end=_food_at_end(wrapper), events=_events(wrapper),
+                      stuck_reports=_stuck_reports(wrapper),
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 

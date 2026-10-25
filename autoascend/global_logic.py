@@ -5,6 +5,7 @@ from nle.nethack import actions as A
 from . import objects as O
 from . import soko_solver
 from .soko_solver import search as soko_search
+from . import stuck
 from . import utils
 from .character import Character
 from .exceptions import AgentPanic
@@ -202,6 +203,7 @@ class GlobalLogic:
         self._live_blocked = 0
         self._progress = ProgressWatch(STUCK_TURNS)
         self._mines_dive_over = False  # a diver in the Mines heads down them until stuck (Mines' End)
+        self.stuck_reports = []  # one row per stuck-watch firing (autoascend/stuck.py), for the results
         self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
         self._prize_found = False
         self.step_completion_log = {}  # Milestone -> (step, turn)
@@ -245,6 +247,18 @@ class GlobalLogic:
 
     def _stuck(self):
         return self._progress.stuck(self.agent.current_level().key(), self.milestone, self.agent.blstats.time)
+
+    def _report_stuck(self):
+        """Record the level the stuck watch gave up on; reads state only, so it never changes a game."""
+        try:
+            level = self.agent.current_level()
+            self.stuck_reports.append(stuck.stuck_report(
+                turn=self.agent.blstats.time, dungeon=level.dungeon_number, level=level.level_number,
+                dlvl=self.agent.blstats.depth, milestone=self.milestone.name, objects=level.objects,
+                seen=level.seen, walkable=level.walkable, dis=self.agent.bfs(), glyphs=self.agent.glyphs))
+            del self.stuck_reports[:-stuck.KEEP]
+        except Exception:  # measuring must never end a game
+            self.agent.stats_logger.log_event('stuck_report_error')
 
     def _minetown_found(self):
         return self.minetown_level is not None or self._elapsed(MINETOWN_SEARCH_TURNS)
@@ -801,6 +815,7 @@ class GlobalLogic:
                 continue
             if self._stuck():
                 self.agent.stats_logger.log_event('stuck_dive')
+                self._report_stuck()
                 if self.milestone != Milestone.DIVE:
                     self.plan.dive_instead()
                 elif self._diving_in_mines():
