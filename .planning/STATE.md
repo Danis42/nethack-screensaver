@@ -4,16 +4,16 @@ milestone: v0.1.0
 current_phase: 01
 current_phase_name: Midgame Survival
 status: executing
-stopped_at: Completed 01-15-PLAN.md
+stopped_at: Completed 01-16-PLAN.md
 last_updated: "2026-10-23T17:17:43.229Z"
 last_activity: 2026-10-25
-last_activity_desc: 01-15 done - Phase 1 result met
+last_activity_desc: 01-16 done - all Phase 1 plans complete
 state_head: e0691aa5c2b7540d1a588a329e8191df315a297e
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-22)
 
 Phase: 01 (Midgame Survival) — EXECUTING
 Plan: 16 of 16
-Status: 01-15 done 2026-10-25 - Phase 1 result: met (p1-final 3fca503 vs p1-baseline 0b09707, jobs 28-32: rung2 +3.1 [+0.8, +5.4], rungs 3-6 all better). Next: 01-16 branch cleanup (ask owner before deleting), then Phase 2 can start
+Status: 01-15 done 2026-10-25 - Phase 1 result: met (p1-final 3fca503 vs p1-baseline 0b09707, jobs 28-32: rung2 +3.1 [+0.8, +5.4], rungs 3-6 all better). 01-16 done 2026-10-25 (owner chose archive-tags: six old branches tagged archive/<name> and deleted). All 16 plans done; next: verify/close Phase 1, then Phase 2 (Real Descent)
 Last activity: 2026-10-25 — 01-15 done: Phase 1 result met; five paired verdicts, all better
 
 Progress: [░░░░░░░░░░] 0%
@@ -92,7 +92,7 @@ None yet.
 - [Phase 1] Every game is a dwarvish Valkyrie since `0b09707` (owner, until the first ascension). Baseline `p1-baseline` = `0b09707` (2304 seeds stored); older numbers are not comparable.
 - [Phase 1+] 46/2304 baseline games (median Dlvl 24) end on the 120 s watchdog: the bot hangs deep in the dungeon. Needs a stack dump on watchdog and a fix before the deep rungs can be measured.
 - [Phase 1] 2026-10-24 fix `16a6cb8`: a panic loop that keeps the screen changing (empty-bag loot menu) grew workers to 11 GB; the watchdog now also fires when the game turn stalls for 120 s and only 20 panics are kept. The empty-bag menu itself is not fixed (parse in item_manager / loot).
-- [Phase 1] Unmerged branches await SURV-05 (plan 01-16): `threat-model`, `flee-upstairs`, `choke-points`; they predate pilgrim-only, seeding and Valkyrie-only, so a rebase may be needed. `survival-tuning` deleted (merged, 2026-10-24).
+- [Phase 1] Old survival branches resolved 2026-10-25 (01-16): judged, dropped, kept only as local archive/ tags.
 - [Phases 4-8] Nothing above rung 9 (Medusa, 14 of 2304 games) has been reached; these phases depend on the staged-start harness (STAGE-01, whose `wizard=True` route is unvalidated against `NetHackChallenge` and seeding).
 
 ## Deferred Items
