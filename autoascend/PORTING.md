@@ -991,7 +991,7 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 | # | branch | cause | candidate | baseline | metric | verdict | diff [lo, hi] | decision |
 |---|--------|-------|-----------|----------|--------|---------|---------------|----------|
 | 10 | `exp/mines-end` | Mines' End goal ends on the real bottom (screen) | `b06d9fe` | `6502ae3` | rung7 | no measurable difference @ 2304 | +0.0 [-0.2, +0.3] | dropped |
-| 11 | `exp/stuck-1` | frontier-first when stuck (DESC-03 rule) | `73c4584` | `6502ae3` | free5 | pending | - | - |
+| 11 | `exp/stuck-1` | frontier-first when stuck (DESC-03 rule) | `73c4584` | `6502ae3` | free5 | no measurable difference @ 2304 | +0.9 [-0.4, +2.2] | dropped |
 
 #### Experiment 10: `exp/mines-end` - Mines' End goal ends on the real bottom, judged from the screen
 - Requirement / decisions: DESC-01 (D-04: screen only, no memory)
@@ -1018,5 +1018,7 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   targets games that end stuck on Dlvl 5+); games: to the last checkpoint (diagnosis-backed)
 - Smoke (12 explore-left seeds + seeds 0-9): counter fired in 15 of 22; 1 exception (inventory.py
   AssertionError, a type in p2-baseline), no watchdog
-- Mechanism (planned): starved, rung2, rung6, rung7, turns, counter `frontier_first`
-- Verdict: pending
+- Job 35: Verdict: no measurable difference at 2304 games per side, diff +0.9 points, 95% interval [-0.4, +2.2]
+- Mechanism: starved +0.2 [-1.0, +1.3]; rung2 +0.9 [-0.2, +1.9]; rung6 +0.3 [-0.8, +1.4]; rung7 +0.1 [-0.8, +1.1];
+  counter `frontier_first` fired in 719 of 2304 games; crashes: same types, exception 54 vs 50, watchdog 44 vs 49
+- Decision: dropped (branch `exp/stuck-1` kept at `73c45844eb41c36e3970a2c08340f746dd492684`)
