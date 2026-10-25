@@ -705,6 +705,23 @@ leave-breath-line if Z3 is the largest of Z2-Z4; else leave-zap-line. **Tactic: 
 `rays` metric is 96% monster zaps: divine lightning (3.8%) and breath (1.9%) are small. Most zapper deaths are
 early (median Dlvl 4, XL 4-5: gnome lords and dwarves with wands in the Mines) after the bot saw at least two zaps.
 
+### Stuck diagnosis (DESC-03)
+Rule (plan 02-05, fixed before the numbers): among the Current baseline games failing `free5`, the bucket of
+their last stuck report; stairs-unreachable >= 35% -> clear-way; else stairs-reachable >= 35% -> take-it;
+else no-way-found >= 35% -> escape-cheese; else -> frontier-first.
+
+Shares (410 games of `6502ae3`): explore-left 27.6%, stairs-unreachable 26.1%, stairs-reachable 24.9%,
+no-way-found 19.3%, no-report 2.2%. No bucket reaches 35% -> **frontier-first**.
+
+Sub-causes seen in a replay (seed 2242, Mines level 2, Dlvl 5): the stuck watch counts turns since the last new
+level, so it fired while the bot was still uncovering a part of the level it had just found (frontier 10 at
+distance 7-17); about 1400 of the 2500 turns before were searches at one dead end, useless in the Mines.
+
+Tactic: when the stuck watch fires and the reachable map has squares beside unexplored map, walk to the nearest
+one directly (ignoring the explorer's search scoring), until none is left or 1000 turns pass, once per level;
+then try the level again. New: the dropped ideas searched harder for hidden passages; this stops giving up on
+a level whose known map is not finished.
+
 ### Experiments
 
 Phase 1 final baseline: `3fca503215e1a3de57e775378a1598fb05a40c20` (exp/shop-door, kept 2026-10-24; before: `0b097073adb3071f8e5c2aea954618a3320a5bc7` pilgrim-only baseline)
