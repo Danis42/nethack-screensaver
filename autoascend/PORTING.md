@@ -915,3 +915,16 @@ Each row is its own paired job on stored games (D-14 decision rule: rung2 `bette
 The single kept change is exp/shop-door; the gain is small (1-3 points per rung) but is seen on every rung.
 
 Phase 1 result: met (rung2 +3.1 [+0.8, +5.4] points; rungs 3-6 not worse)
+
+### Branch cleanup (D-13)
+All three old survival branches were judged once (experiments 7-9) and none was kept, so both the original and
+its `rejudge/` copy are due for deletion.
+
+| branch | full SHA | verdict | interval (points) | status |
+|--------|----------|---------|-------------------|--------|
+| threat-model | `fdf6b48e7ca9792c5944d6f969fc51f7adf434d9` | no measurable difference (job 25) | +0.3 [-1.2, +1.7] | pending owner decision |
+| rejudge/threat-model | `82848115dd0faad1d2e48dba3142bb1a484947f2` | no measurable difference (job 25) | +0.3 [-1.2, +1.7] | pending owner decision |
+| choke-points | `b31e9266c67b6dff19d0bf576577d887e9809adb` | no measurable difference (job 26) | +1.2 [-0.1, +2.5] | pending owner decision |
+| rejudge/choke-points | `339a63c5c31f5891d4dcfb1c87d556ab25600272` | no measurable difference (job 26) | +1.2 [-0.1, +2.5] | pending owner decision |
+| flee-upstairs | `a535f7a872d0bf9fd790cddeddacaad781cf3c90` | no measurable difference (job 27) | +0.5 [-0.9, +1.9] | pending owner decision |
+| rejudge/flee-upstairs | `757aad8893bfd9155f14e9122aec1e122b8b51c5` | no measurable difference (job 27) | +0.5 [-0.9, +1.9] | pending owner decision |
