@@ -968,3 +968,21 @@ watchdog 49, exception 11. Watchdog stacks sit in exploration searches (`to_sear
 
 Plan 02-05 rule (35%): no bucket reaches 35% -> **frontier-first** (explore-left is also the largest bucket).
 About half of the stairs buckets are going up (out of the Mines), which the stuck tactics must cover.
+
+### Experiments
+
+| # | branch | cause | candidate | baseline | metric | verdict | diff [lo, hi] | decision |
+|---|--------|-------|-----------|----------|--------|---------|---------------|----------|
+| 10 | `exp/mines-end` | Mines' End goal ends on the real bottom (screen) | `b06d9fe` | `6502ae3` | rung7 | pending | - | - |
+
+#### Experiment 10: `exp/mines-end` - Mines' End goal ends on the real bottom, judged from the screen
+- Requirement / decisions: DESC-01 (D-04: screen only, no memory)
+- Change: `mines_bottom_reached` in `autoascend/global_logic.py` (Mines level >= 9, or level 8 with no `>` and
+  no frontier) is the FIND_MINES_END condition, replacing "Mines level 9", which an 8-level Mines never meets
+- Candidate `b06d9fe4e48afa9436080f8bcbe43293a4778fdc`; baseline `6502ae339853c3d24570865816b1ddedfe19b566`; primary metric `rung7` (the
+  change ends the Mines' End stay early, so more games should reach Dlvl 15+); games: to the last checkpoint
+  (diagnosis-backed)
+- Smoke (19 seeds with an 8-level Mines and rung 6 in p2-baseline): counter fired in 3; exceptions 2
+  (monster_tracker ValueError, item_manager AssertionError: both types in p2-baseline), watchdog 1
+- Mechanism (planned): rung6, starved, free5, turns, counter `mines_end_by_screen`
+- Verdict: pending
