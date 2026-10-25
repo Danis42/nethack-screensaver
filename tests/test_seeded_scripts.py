@@ -683,3 +683,81 @@ def test_zappers_rule():
     assert seeded_report._zapper_tactic({**base, "Z1 divine": 0.3}, True) == "leave-zap-line"
     assert seeded_report._zapper_tactic({**base, "Z3 breath": 0.6}, False) == "leave-breath-line"
     assert seeded_report._zapper_tactic(base, False) == "leave-zap-line"
+
+
+# stuck
+
+
+def _report_row(dungeon=0, level=7, dlvl=7, milestone="DIVE", down_seen=False, down_reachable=False, frontier=0,
+                closed_doors=0, boulders=0, wants_up=False, up_seen=False, up_reachable=False):
+    return {"turn": 5000, "dungeon": dungeon, "level": level, "dlvl": dlvl, "milestone": milestone,
+            "target": [0, 100], "wants_up": wants_up, "down_seen": down_seen, "down_reachable": down_reachable,
+            "up_seen": up_seen, "up_reachable": up_reachable, "frontier": frontier,
+            "closed_doors": closed_doors, "boulders": boulders}
+
+
+def _stuck_g(seed, reports, depth=7, at=(0, 7), **extra):
+    return _g(seed, **{"depth_at_end": depth, "max_depth": depth, "unsticks": 0, "stuck_reports": reports,
+                       "dungeon_at_end": at[0], "level_at_end": at[1], "watchdog_stack": [], **extra})
+
+
+def _stuck_store(store):
+    fill(store, CAND, [
+        _stuck_g(0, [_report_row(down_seen=True, closed_doors=2)]),            # stairs-unreachable
+        _stuck_g(1, [_report_row(down_seen=True, down_reachable=True)]),       # stairs-reachable
+        _stuck_g(2, [_report_row(frontier=4, milestone="FIND_MINETOWN")]),     # explore-left
+        _stuck_g(3, [_report_row()], end_reason="DEATH: starved to death"),  # no-way-found
+        _stuck_g(4, [], end_reason="watchdog", depth=24, at=(0, 24),
+                 watchdog_stack=["autoascend/agent.py:10 a", "autoascend/agent.py:20 b", "autoascend/level.py:5 c"]),
+        _stuck_g(5, [_report_row(level=6, dlvl=6)]),                           # left that level: free
+        _g(6),                                                                 # older commit: not recorded
+    ])
+
+
+def test_stuck_buckets_of_the_stuck_endings(store, tmp_path, capsys):
+    _stuck_store(store)
+    code, out = run(capsys, tmp_path, "stuck", CAND, "--seeds", "7")
+    rows = _bucket_rows(out)
+    assert code == 0
+    assert "1 not recorded" in out and "free5 16.7% (1 of 6)" in out and "ended stuck at Dlvl 5+: 5" in out
+    for bucket in ("stairs-unreachable", "stairs-reachable", "explore-left", "no-way-found", "no-report"):
+        assert rows[bucket].split("|")[2].strip() == "1", bucket
+    assert rows["stairs-unreachable"].split("|")[5].strip() == "1"  # closed doors seen
+
+
+def test_stuck_events_by_milestone_and_dungeon(store, tmp_path, capsys):
+    _stuck_store(store)
+    code, out = run(capsys, tmp_path, "stuck", CAND, "--seeds", "7")
+    rows = _bucket_rows(out)
+    assert code == 0 and "5 events in 5 games" in out
+    assert rows["DIVE"].split("|")[2].strip() == "4" and rows["FIND_MINETOWN"].split("|")[2].strip() == "1"
+    assert rows["Doom"].split("|")[2].strip() == "5"
+    assert "Stuck endings by end type:" in out and "starved 1" in out and "watchdog 1" in out
+
+
+def test_stuck_groups_watchdog_games_by_their_innermost_frames(store, tmp_path, capsys):
+    _stuck_store(store)
+    code, out = run(capsys, tmp_path, "stuck", CAND, "--seeds", "7")
+    assert code == 0 and "Watchdog games (1)" in out
+    assert "autoascend/agent.py:10 a < autoascend/agent.py:20 b < autoascend/level.py:5 c" in out
+
+
+def test_stuck_rows_list_one_bucket(store, tmp_path, capsys):
+    _stuck_store(store)
+    code, out = run(capsys, tmp_path, "stuck", CAND, "--seeds", "7", "--rows", "explore-left")
+    assert code == 0
+    assert out.strip().splitlines() == [
+        "seed=2 dlvl=7 milestone=FIND_MINETOWN bucket=explore-left end=DEATH: killed by a newt"]
+
+
+def test_stuck_buckets_judge_the_up_staircase_when_the_bot_wanted_to_go_up(store, tmp_path, capsys):
+    fill(store, CAND, [
+        _stuck_g(0, [_report_row(wants_up=True, down_seen=True, down_reachable=True, up_seen=True)]),
+        _stuck_g(1, [_report_row(wants_up=True, up_seen=True, up_reachable=True)]),
+    ])
+    code, out = run(capsys, tmp_path, "stuck", CAND, "--seeds", "2")
+    rows = _bucket_rows(out)
+    assert code == 0
+    assert rows["stairs-unreachable"].split("|")[2].strip() == "1"
+    assert rows["stairs-reachable"].split("|")[2].strip() == "1"
+    assert rows["stairs-reachable"].split("|")[7].strip() == "1"  # going up

@@ -16,6 +16,9 @@ Commands:
       ant and killer bee deaths: per killer, prayer unused (A1), poison (A2), and the tactic rule
   zappers <ref> [--seeds N | --all-games]
       wand and ray deaths: divine (Z1), warned zaps (Z2), breath (Z3), unwarned (Z4), and the tactic rule
+  stuck <ref> [--seeds N | --all-games] [--rows BUCKET]
+      stuck-watch reports: games ending stuck at Dlvl 5+ by cause bucket, events by milestone and
+      dungeon, end types, watchdog stacks; --rows lists the games of one bucket
   deaths <ref> (--killer TEXT | --metric NAME) [--seeds N | --all-games] [--min-depth D] [--max-depth D]
       one row per matching game with the context at the end (hp, hunger, food, prayers, last messages)
 
@@ -37,7 +40,7 @@ from pathlib import Path
 from bench import gitrefs, reference
 from bench.cli import DATA, REPO
 from autoascend.prayer import prayer_outcome
-from bench.metrics import ANTS, METRICS, RAYS, killer
+from bench.metrics import ANTS, METRICS, RAYS, ended_stuck, killer
 from bench.report import ladder_rows
 from bench.stats import CHECKPOINTS, Z95, judge_paired, judge_paired_numeric, z_for
 
@@ -502,6 +505,99 @@ def _zappers(args):
     return 0
 
 
+# stuck
+
+STUCK_BUCKETS = ("stairs-unreachable", "stairs-reachable", "explore-left", "no-way-found")
+DUNGEON_NAMES = {0: "Doom", 2: "Mines", 4: "Sokoban"}
+
+
+def _stuck_bucket(report):
+    """Why the stuck watch gave up on a level, first match wins; "stairs" are the ones the bot needed
+    (up stairs when its target was above, else down stairs)."""
+    way = "up" if report.get("wants_up") else "down"
+    if report[f"{way}_seen"] and not report[f"{way}_reachable"]:
+        return "stairs-unreachable"
+    if report[f"{way}_reachable"]:
+        return "stairs-reachable"
+    if report["frontier"] > 0:
+        return "explore-left"
+    return "no-way-found"
+
+
+def _end_type(game):
+    reason = game["end_reason"]
+    if reason == "watchdog":
+        return "watchdog"
+    if _safe(METRICS["starved"].fn, game):
+        return "starved"
+    if reason.startswith("DEATH"):
+        return "death"
+    return "exception" if reason.startswith("exception") else "other"
+
+
+def _last_bucket(game):
+    return _stuck_bucket(game["stuck_reports"][-1]) if game["stuck_reports"] else "no-report"
+
+
+def _stuck(args):
+    store = _store(args)
+    sha = _sha(args.repo, args.ref)
+    games, label = _games(args, store, sha)
+    if games is None:
+        return 2
+    recorded = [g for g in games if "stuck_reports" in g and "level_at_end" in g]
+    failing = [g for g in recorded if ended_stuck(g)]
+    if args.rows:
+        for g in failing:
+            if _last_bucket(g) == args.rows:
+                last = g["stuck_reports"][-1] if g["stuck_reports"] else {}
+                print(f"seed={g.get('seed')} dlvl={g['depth_at_end']} milestone={last.get('milestone', '-')} "
+                      f"bucket={args.rows} end={_cell(g['end_reason'], 70)}")
+        return 0
+    n, k = len(recorded), len(failing)
+    print(f"Commit `{sha}`, {len(games)} games ({label}); {len(games) - n} not recorded (older commit); "
+          f"free5 {_pct(n - k, n)} ({n - k} of {n}); ended stuck at Dlvl 5+: {k}")
+    print()
+    print("Games ending stuck at Dlvl 5+, by the cause of their last stuck report (the tactic rules read this):")
+    print()
+    print("| Bucket | Games | % of stuck endings | Median Dlvl | closed doors > 0 | boulders > 0 | going up |")
+    print("|---|---|---|---|---|---|---|")
+    for bucket in STUCK_BUCKETS + ("no-report",):
+        members = [g for g in failing if _last_bucket(g) == bucket]
+        lasts = [g["stuck_reports"][-1] for g in members if g["stuck_reports"]]
+        median = _num(statistics.median(g["depth_at_end"] for g in members)) if members else "-"
+        print(f"| {bucket} | {len(members)} | {_pct(len(members), k)} | {median} "
+              f"| {sum(r['closed_doors'] > 0 for r in lasts)} | {sum(r['boulders'] > 0 for r in lasts)} "
+              f"| {sum(bool(r.get('wants_up')) for r in lasts)} |")
+    events = [r for g in recorded for r in g["stuck_reports"]]
+    for title, key in (("milestone", lambda r: r["milestone"]),
+                       ("dungeon", lambda r: DUNGEON_NAMES.get(r["dungeon"], "other"))):
+        print()
+        print(f"All stuck events by {title} and bucket ({len(events)} events in {sum(bool(g['stuck_reports']) for g in recorded)} games):")
+        print()
+        print(f"| {title} | events | median Dlvl | " + " | ".join(STUCK_BUCKETS) + " |")
+        print("|" + "---|" * (3 + len(STUCK_BUCKETS)))
+        for name, _ in Counter(map(key, events)).most_common():
+            rows = [r for r in events if key(r) == name]
+            buckets = Counter(map(_stuck_bucket, rows))
+            print(f"| {name} | {len(rows)} | {_num(statistics.median(r['dlvl'] for r in rows))} | "
+                  + " | ".join(str(buckets[b]) for b in STUCK_BUCKETS) + " |")
+    print()
+    print("Stuck endings by end type: " + ", ".join(f"{t} {c}" for t, c in Counter(map(_end_type, failing)).most_common()))
+    hung = [g for g in recorded if g["end_reason"] == "watchdog"]
+    if hung:
+        print()
+        print(f"Watchdog games ({len(hung)}) by their innermost 3 frames:")
+        print()
+        print("| Games | Median Dlvl | Frames (innermost last) |")
+        print("|---|---|---|")
+        groups = Counter(" < ".join(g.get("watchdog_stack", [])[-3:]) or "(no stack)" for g in hung)
+        for frames, count in groups.most_common(10):
+            members = [g for g in hung if (" < ".join(g.get("watchdog_stack", [])[-3:]) or "(no stack)") == frames]
+            print(f"| {count} | {_num(statistics.median(g['depth_at_end'] for g in members))} | {_cell(frames)} |")
+    return 0
+
+
 # deaths
 
 
@@ -591,6 +687,12 @@ def main(argv=None):
     p.add_argument("ref")
     _selection(p)
     p.set_defaults(fn=_zappers)
+
+    p = sub.add_parser("stuck", help="stuck-watch reports: stuck endings by cause, events, watchdog stacks")
+    p.add_argument("ref")
+    _selection(p)
+    p.add_argument("--rows", choices=STUCK_BUCKETS + ("no-report",), help="list the stuck-ending games of one bucket")
+    p.set_defaults(fn=_stuck)
 
     p = sub.add_parser("deaths", help="one context row per matching game")
     p.add_argument("ref")
