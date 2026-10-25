@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-25)
 
 Phase: 2 (Real Descent) — READY TO EXECUTE
 Plan: 3 of 8
-Status: EXECUTING - 02-01 and 02-02 done; 02-03 task 1 (stuck report) done; bench job 33 = p2-baseline (6502ae3) 2304 games running (started 2026-10-25). Next: replay_check p1-final vs p2-baseline, PORTING Phase 2 section, then 02-04
+Status: EXECUTING - 02-01..02-03 done; p2-baseline = 6502ae3 (job 33, free5 82.2%, rung7 9.1%, rung8 1.6%); 02-05 rule -> frontier-first. Next: 02-04 smoke + experiment exp/mines-end (b06d9fe)
 Last activity: 2026-10-25 — 02-01 exact Mines End rung, 02-02 stuck reports/free5; p2-baseline job 33 running
 
 Progress: [█░░░░░░░░░] 13%

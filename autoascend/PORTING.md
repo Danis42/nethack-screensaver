@@ -707,7 +707,7 @@ early (median Dlvl 4, XL 4-5: gnome lords and dwarves with wands in the Mines) a
 
 ### Experiments
 
-Current baseline: `3fca503215e1a3de57e775378a1598fb05a40c20` (exp/shop-door, kept 2026-10-24; before: `0b097073adb3071f8e5c2aea954618a3320a5bc7` pilgrim-only baseline)
+Phase 1 final baseline: `3fca503215e1a3de57e775378a1598fb05a40c20` (exp/shop-door, kept 2026-10-24; before: `0b097073adb3071f8e5c2aea954618a3320a5bc7` pilgrim-only baseline)
 
 | # | Branch | Cause | Candidate | Baseline | Metric | Verdict | Diff [lo, hi] (points) | Decision |
 |---|--------|-------|-----------|----------|--------|---------|------------------------|----------|
@@ -929,3 +929,42 @@ local `archive/` tag (restore with `git branch <name> archive/<name>`), then the
 | `rejudge/choke-points` | `339a63c5c31f5891d4dcfb1c87d556ab25600272` | no measurable difference (job 26) | +1.2 [-0.1, +2.5] | archived as tag `archive/rejudge-choke-points`, branch deleted 2026-10-25 |
 | `flee-upstairs` | `a535f7a872d0bf9fd790cddeddacaad781cf3c90` | no measurable difference (job 27) | +0.5 [-0.9, +1.9] | archived as tag `archive/flee-upstairs`, branch deleted 2026-10-25 |
 | `rejudge/flee-upstairs` | `757aad8893bfd9155f14e9122aec1e122b8b51c5` | no measurable difference (job 27) | +0.5 [-0.9, +1.9] | archived as tag `archive/rejudge-flee-upstairs`, branch deleted 2026-10-25 |
+
+## Phase 2: real descent
+
+Phase 2 baseline: `6502ae339853c3d24570865816b1ddedfe19b566` (tag `p2-baseline`, job 33, 2304 seeded games)
+Current baseline: `6502ae339853c3d24570865816b1ddedfe19b566`
+
+Measurement only on top of `p1-final`: exact Mines' End rung from the game's own dungeon table (02-01), a stuck
+report each time the stuck watch gives up, end level, watchdog stack, metric `free5` (02-02/02-03).
+
+**Replay against p1-final** (`replay_check.py p1-final p2-baseline --fields <shared> --skip-end watchdog`):
+2255 seeds compared, 1 mismatched, exit 1. The one mismatch is seed 689, whose crash text names
+`global_logic.py:458` versus `:476`: the file grew by the stuck-report lines, the crash is the same. With
+`end_reason` left out: 2255 compared, 0 mismatched, exit 0. Play is unchanged; the gate's exit 1 is accepted
+for this reason (deviation from plan 02-03, which asked for exit 0 on the full list).
+
+**Ladder** (2304 games): Mines 1770 (77%), Minetown 1074 (47%), Oracle 748 (32%), Sokoban 466 (20%), Sokoban
+solved 407 (18%), Mines' End 395 (17%), Dlvl 15+ 210 (9.1%), Quest 38 (1.6%), Medusa 18 (0.8%), Castle 0.
+
+**DESC-01 evidence:** seed 0 has a 9-level Mines and records Mines' End at turn 12583; seed 2 has an 8-level
+Mines and records it at turn 13010 (sizes read with `dungeon_truth`). The old proxy could not fire on an
+8-level Mines before 1000 turns without a `>`; rung 6 now counts arrivals on the real bottom.
+
+**free5** = 82.2% (1894 of 2304); 410 games end stuck at Dlvl 5+. By the cause of their last stuck report:
+
+| Bucket | Games | % | Median Dlvl | closed doors > 0 | boulders > 0 | going up |
+|---|---|---|---|---|---|---|
+| stairs-unreachable | 107 | 26.1% | 6 | 23 | 59 | 56 |
+| stairs-reachable | 102 | 24.9% | 6.5 | 37 | 66 | 55 |
+| explore-left | 113 | 27.6% | 9 | 35 | 57 | 2 |
+| no-way-found | 79 | 19.3% | 7 | 26 | 26 | 11 |
+| no-report | 9 | 2.2% | 7 | 0 | 0 | 0 |
+
+All 3088 stuck events: DIVE 1673, FIND_GNOMISH_MINES 504, FIND_MINETOWN 441, FIND_SOKOBAN 390, FIND_MINES_END
+63; by dungeon Mines 1800, Dungeons of Doom 1209, Sokoban 79. Stuck endings: death 221, starved 128,
+watchdog 49, exception 11. Watchdog stacks sit in exploration searches (`to_search_func`, `_level_dfs`,
+`open_visit_search`) at median Dlvl 24: slow searches on big deep levels, not one loop.
+
+Plan 02-05 rule (35%): no bucket reaches 35% -> **frontier-first** (explore-left is also the largest bucket).
+About half of the stairs buckets are going up (out of the Mines), which the stuck tactics must cover.
