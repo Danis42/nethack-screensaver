@@ -87,7 +87,7 @@ Full log in PROJECT.md Key Decisions. Recent, affecting current work:
 
 ### Pending Todos
 
-- [Phase 2 start] Fix the 01-REVIEW.md findings (WR-01 shim build race, IN-01..04) in one docs-free commit, then re-tag the baseline if code changed (01-REVIEW-DISPOSITION.md)
+- [done 2026-10-25] 01-REVIEW.md findings: WR-01, IN-01, IN-02 fixed; IN-03 deferred to the food-stock check; IN-04 no change needed
 - [Idea, owner 2026-10-25] Food-stock experiment: keep 1-2 non-perishable food items (rations, lembas, cram, tins), take or buy them when none; first check with nld_study.py whether human survivors eat more non-corpse food (meal text names the food)
 - [Phase 1 leftover] 01-VALIDATION.md is still a draft (/gsd-validate-phase 1 not run); non-blocking
 
