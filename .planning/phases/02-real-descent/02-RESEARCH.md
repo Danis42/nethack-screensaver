@@ -76,6 +76,12 @@ and are superseded (CONTEXT D-05).
   "entered Home 1"). The portal is on Dlvl 11-16. Below XL 14 the leader only says to come back; the hero
   can step back through the arrival portal. Plan 02-07 must verify the wording against a recorded game
   (`last_messages`) or `nld_study.py` text from human games before relying on it.
+- **Quest portal wording (verified 2026-10-25, NLD-NAO, 40 games with maxlvl >= 12, read-only):**
+  first visit: "You receive a faint telepathic message from <leader>:" then "Your help is urgently needed at
+  <place>!" then "Look for a ...ic transporter." then "You couldn't quite make out that last message."
+  (split over --More-- pages). Entering: "You activated a magic portal!  You feel dizzy for a moment, but
+  the sensation passes." (85 + 84 + 63 lines). The reminder on later visits did not appear in the sample;
+  plan 02-07 keys on "faint telepathic message" and "...ic transporter" and treats a reminder as unknown.
 - **Bottom of a dungeon:** no `>` exists on Mines' End; holes and trap doors cannot exist there.
 
 ## Candidate experiments (ranked by expected gain per bench hour; the diagnosis may reorder)
