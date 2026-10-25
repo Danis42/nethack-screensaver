@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-25)
 
 Phase: 2 (Real Descent) — READY TO EXECUTE
 Plan: 3 of 8
-Status: EXECUTING - 02-01..02-05 done (exp 10, 11 dropped); Current baseline still 6502ae3. Next: 02-06 rule (exclude explore-left, 20%) -> stairs-unreachable 26.1% -> clear-way; then gap experiment exp/standoff (99b0a2b)
+Status: EXECUTING - 02-01..02-05 done (exp 10, 11 dropped); 02-06 exp 12 exp/stuck-2 (609ca19, clear-way over traps/peacefuls) vs 6502ae3, free5, bench job 36 running. Then gap experiment exp/standoff (99b0a2b), then 02-07 quest portal
 Last activity: 2026-10-25 — 02-01 exact Mines End rung, 02-02 stuck reports/free5; p2-baseline job 33 running
 
 Progress: [█░░░░░░░░░] 13%
