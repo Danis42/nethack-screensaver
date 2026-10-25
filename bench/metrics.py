@@ -25,6 +25,17 @@ def killer(game):
     return name
 
 
+def ended_stuck(game):
+    """The game ended on a Dlvl 5+ level it could not leave: the watchdog, the unstick safety net, or a
+    stuck-watch report on the level it ended on. KeyError for games older than these fields."""
+    if game["depth_at_end"] < 5:
+        return False
+    if game["end_reason"] == "watchdog" or game["unsticks"] > 0:
+        return True
+    reports, here = game["stuck_reports"], (game["dungeon_at_end"], game["level_at_end"])
+    return bool(reports) and (reports[-1]["dungeon"], reports[-1]["level"]) == here
+
+
 @dataclass(frozen=True)
 class Metric:
     name: str
@@ -44,6 +55,8 @@ METRICS = {m.name: m for m in [
     Metric("ants", "killed by an ant", "rate", lambda g: killer(g) in ANTS),
     Metric("rays", "killed by a wand or ray", "rate", lambda g: any(r in killer(g) for r in RAYS)),
     Metric("unstuck", "needed the unstick safety net", "rate", lambda g: g["unsticks"] > 0),
+    Metric("free5", "did not end stuck on a Dlvl 5+ level (higher is better)", "rate",
+           lambda g: not ended_stuck(g)),
     Metric("depth", "max depth", "median", lambda g: g["max_depth"]),
     Metric("turns", "turns played", "median", lambda g: g["turns"]),
     Metric("score", "score", "median", lambda g: g["score"]),

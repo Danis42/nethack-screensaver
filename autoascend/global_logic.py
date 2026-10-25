@@ -248,13 +248,13 @@ class GlobalLogic:
     def _stuck(self):
         return self._progress.stuck(self.agent.current_level().key(), self.milestone, self.agent.blstats.time)
 
-    def _report_stuck(self):
+    def _report_stuck(self, target):
         """Record the level the stuck watch gave up on; reads state only, so it never changes a game."""
         try:
             level = self.agent.current_level()
             self.stuck_reports.append(stuck.stuck_report(
                 turn=self.agent.blstats.time, dungeon=level.dungeon_number, level=level.level_number,
-                dlvl=self.agent.blstats.depth, milestone=self.milestone.name, objects=level.objects,
+                dlvl=self.agent.blstats.depth, milestone=self.milestone.name, target=target, objects=level.objects,
                 seen=level.seen, walkable=level.walkable, dis=self.agent.bfs(), glyphs=self.agent.glyphs))
             del self.stuck_reports[:-stuck.KEEP]
         except Exception:  # measuring must never end a game
@@ -815,7 +815,7 @@ class GlobalLogic:
                 continue
             if self._stuck():
                 self.agent.stats_logger.log_event('stuck_dive')
-                self._report_stuck()
+                self._report_stuck(level)
                 if self.milestone != Milestone.DIVE:
                     self.plan.dive_instead()
                 elif self._diving_in_mines():

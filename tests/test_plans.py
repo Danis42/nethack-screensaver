@@ -418,8 +418,8 @@ def _stuck_map():
 
 def _report(objects, seen, walkable, dis, glyphs):
     from autoascend.stuck import stuck_report
-    return stuck_report(turn=900, dungeon=0, level=7, dlvl=7, milestone="DIVE", objects=objects, seen=seen,
-                        walkable=walkable, dis=dis, glyphs=glyphs)
+    return stuck_report(turn=900, dungeon=0, level=7, dlvl=7, milestone="DIVE", target=(0, 100), objects=objects,
+                        seen=seen, walkable=walkable, dis=dis, glyphs=glyphs)
 
 
 def test_stuck_report_sees_a_reachable_down_staircase():
@@ -430,7 +430,8 @@ def test_stuck_report_sees_a_reachable_down_staircase():
     assert row["down_seen"] and row["down_reachable"]
     assert {k: row[k] for k in ("turn", "dungeon", "level", "dlvl", "milestone")} == \
         {"turn": 900, "dungeon": 0, "level": 7, "dlvl": 7, "milestone": "DIVE"}
-    assert all(type(row[k]) in (int, bool, str) for k in row)
+    assert all(type(row[k]) in (int, bool, str) for k in row if k != "target")
+    assert all(type(v) is int for v in row["target"])
 
 
 def test_stuck_report_sees_a_down_staircase_behind_a_wall():
@@ -478,12 +479,31 @@ def test_stuck_reports_keep_the_newest_fifty():
     logic, events = _stuck_logic()
     for t in range(KEEP + 5):
         logic.agent.blstats.time = t
-        logic._report_stuck()
+        logic._report_stuck((0, 100))
     assert len(logic.stuck_reports) == KEEP and logic.stuck_reports[0]["turn"] == 5 and events == []
 
 
 def test_a_failing_stuck_report_is_counted_not_raised():
     logic, events = _stuck_logic()
     logic.agent.bfs = lambda: 1 / 0
-    logic._report_stuck()
+    logic._report_stuck((0, 100))
     assert logic.stuck_reports == [] and events == ["stuck_report_error"]
+
+
+def test_stuck_report_knows_when_the_way_starts_upwards():
+    from autoascend.stuck import wants_up
+    assert wants_up(2, 5, (0, 100))          # Mines -> main dungeon: up
+    assert not wants_up(2, 3, (2, 9))        # deeper in the Mines
+    assert wants_up(0, 7, (0, 1))            # back to Dlvl 1
+    assert wants_up(4, 3, (4, 1))            # Sokoban: level 1 is the top
+    assert not wants_up(4, 2, (0, 100))      # leaving Sokoban goes down
+    assert not wants_up(0, 5, (2, 9))        # main dungeon -> Mines: not clear from the keys
+
+
+def test_stuck_report_sees_the_up_staircase():
+    from autoascend.glyph import SS
+    objects, seen, walkable, dis, glyphs = _stuck_map()
+    objects[5, 5] = SS.S_upstair
+    row = _report(objects, seen, walkable, dis, glyphs)
+    assert row["up_seen"] and row["up_reachable"] and not row["down_seen"]
+    assert row["target"] == [0, 100] and not row["wants_up"]

@@ -5,7 +5,9 @@ import random
 import re
 import signal
 import time
+import traceback
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Callable
 
 import nle.nethack as nh
@@ -23,6 +25,9 @@ MAX_HP = 11
 DEPTH = 12
 TURN = 20
 HUNGER = 21
+DUNGEON_NUMBER = 23
+LEVEL_NUMBER = 24
+WATCHDOG_FRAMES = 12  # innermost frames kept from a watchdog-ended game's stack
 XP_LEVEL = 18
 FARMING = (Milestone.BE_ON_FIRST_LEVEL,)
 
@@ -68,9 +73,12 @@ class GameResult:
     max_hp_at_end: int = 0
     hunger_at_end: int = 0
     depth_at_end: int = 0
+    dungeon_at_end: int = 0  # NetHack dungeon number (0 Dungeons of Doom, 2 Gnomish Mines, ...)
+    level_at_end: int = 0  # level number inside that dungeon
     food_at_end: int = -1  # edible food items in the inventory after the game, -1 if unreadable
     events: dict = field(default_factory=dict)  # the bot's non-zero event counters
     stuck_reports: list = field(default_factory=list)  # one row per stuck-watch firing (autoascend/stuck.py)
+    watchdog_stack: list = field(default_factory=list)  # "dir/file.py:line function", innermost last
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -148,6 +156,7 @@ class _DeathContext:
         self.last_messages: list[str] = []
         self.zaps_seen = 0
         self.hp_at_end = self.max_hp_at_end = self.hunger_at_end = self.depth_at_end = 0
+        self.dungeon_at_end = self.level_at_end = 0
         self._prayers: list[list] = []  # [turn, lines]
         self._row0 = None
 
@@ -160,6 +169,7 @@ class _DeathContext:
         if bl.any():  # the final (game-over) observation is all zero
             self.hp_at_end, self.max_hp_at_end = int(bl[HP]), int(bl[MAX_HP])
             self.hunger_at_end, self.depth_at_end = int(bl[HUNGER]), int(bl[DEPTH])
+            self.dungeon_at_end, self.level_at_end = int(bl[DUNGEON_NUMBER]), int(bl[LEVEL_NUMBER])
         row = obs["tty_chars"][0]
         if self._row0 is not None and (row == self._row0).all():
             return
@@ -198,6 +208,12 @@ def _food_at_end(wrapper) -> int:
         return sum(1 for item in flatten_items(wrapper.agent.inventory.items) if _edible_food(item))
     except Exception:  # agent never started, or crashed with its inventory half-parsed
         return -1
+
+
+def _stack(exc: BaseException) -> list:
+    """Where the game was when the watchdog fired: the innermost frames of the interrupted stack."""
+    frames = traceback.extract_tb(exc.__traceback__)[-WATCHDOG_FRAMES:]
+    return [f"{Path(f.filename).parent.name}/{Path(f.filename).name}:{f.lineno} {f.name}" for f in frames]
 
 
 def _stuck_reports(wrapper) -> list:
@@ -317,12 +333,14 @@ def run_game(
 
     wrapper = EnvWrapper(env, on_step=on_step, step_limit=max_steps, role=role, choose_plan=choose_plan,
                          agent_args=dict(AGENT_ARGS))
+    watchdog_stack = []
     try:
         with watchdog:
             wrapper.main()
         end_reason = wrapper.end_reason or "finished"
-    except WatchdogTimeout:
+    except WatchdogTimeout as e:
         end_reason = "watchdog"
+        watchdog_stack = _stack(e)
     except Exception as e:  # never let one bad game kill the screensaver
         end_reason = f"exception: {type(e).__name__}: {e}"
     finally:
@@ -341,7 +359,8 @@ def run_game(
                       hp_at_end=ctx.hp_at_end, max_hp_at_end=ctx.max_hp_at_end,
                       hunger_at_end=ctx.hunger_at_end, depth_at_end=ctx.depth_at_end,
                       food_at_end=_food_at_end(wrapper), events=_events(wrapper),
-                      stuck_reports=_stuck_reports(wrapper),
+                      stuck_reports=_stuck_reports(wrapper), dungeon_at_end=ctx.dungeon_at_end,
+                      level_at_end=ctx.level_at_end, watchdog_stack=watchdog_stack,
                       outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
 
 

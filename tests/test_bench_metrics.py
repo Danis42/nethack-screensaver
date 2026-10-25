@@ -92,3 +92,24 @@ def test_ladder_rows_compare_with_the_yardstick():
     assert rows["ascended"]["hits"] == 0 and rows["ascended"]["yardstick_turn"] is None
     assert summary(games)["ladder"][0]["n"] == 2
     assert summary([])["ladder"][0]["n"] == 0
+
+
+def _stuck_game(depth=7, reason="DEATH: killed by a troll", unsticks=0, reports=(), at=(0, 7)):
+    return _g(depth=depth, reason=reason, depth_at_end=depth, unsticks=unsticks, stuck_reports=list(reports),
+              dungeon_at_end=at[0], level_at_end=at[1])
+
+
+def test_free5_counts_games_that_did_not_end_stuck_deep():
+    free5 = METRICS["free5"].fn
+    here = {"dungeon": 0, "level": 7}
+    assert free5(_stuck_game())
+    assert not free5(_stuck_game(reason="watchdog"))
+    assert not free5(_stuck_game(unsticks=2))
+    assert not free5(_stuck_game(reports=[{"dungeon": 2, "level": 3}, here]))
+    assert free5(_stuck_game(reports=[here, {"dungeon": 0, "level": 6}]))  # got off that level
+    assert free5(_stuck_game(depth=4, reason="watchdog", reports=[here], at=(0, 4)))  # shallow: not counted
+
+
+def test_free5_skips_games_without_the_stuck_fields():
+    with pytest.raises(KeyError):
+        METRICS["free5"].fn(_g(depth_at_end=7, unsticks=0))

@@ -416,3 +416,34 @@ def test_a_seeded_game_hands_its_own_layout_to_the_ladder(monkeypatch):
 def test_stuck_reports_survive_a_missing_agent(monkeypatch):
     _fake_env_and_wrapper(monkeypatch)
     assert game.run_game(seed=2).stuck_reports == []
+
+
+def test_death_context_keeps_the_end_dungeon_and_level():
+    import numpy as np
+    ctx = game._DeathContext()
+    bl = np.zeros(27, np.int64)
+    bl[game.DEPTH], bl[game.DUNGEON_NUMBER], bl[game.LEVEL_NUMBER], bl[game.TURN] = 12, 2, 9, 300
+    ctx.observe({"blstats": bl, "tty_chars": np.full((24, 80), ord(" "), np.uint8)})
+    ctx.observe({"blstats": np.zeros(27, np.int64), "tty_chars": np.full((24, 80), ord(" "), np.uint8)})
+    assert (ctx.depth_at_end, ctx.dungeon_at_end, ctx.level_at_end) == (12, 2, 9)
+
+
+def test_a_watchdog_game_records_where_it_hung(monkeypatch):
+    calls = _fake_env_and_wrapper(monkeypatch)
+
+    def stuck_deep_in_the_bot():
+        raise game.WatchdogTimeout()
+
+    def main(self):
+        stuck_deep_in_the_bot()
+    monkeypatch.setattr(game.EnvWrapper, "main", main)
+    result = game.run_game(seed=4)
+    assert result.end_reason == "watchdog"
+    assert result.watchdog_stack[-1].endswith(" stuck_deep_in_the_bot")
+    assert result.watchdog_stack[-1].startswith("tests/test_game.py:")
+    assert calls["seeds"] == (4, 4, False)
+
+
+def test_other_games_have_no_watchdog_stack(monkeypatch):
+    _fake_env_and_wrapper(monkeypatch)
+    assert game.run_game(seed=4).watchdog_stack == []
