@@ -26,6 +26,7 @@ from .strategy import Strategy
 # steps without game time after which the bot lets a turn pass instead of retrying the same refused action
 UNSTICK_AFTER = 100
 CLOSED_SHOP = 'Closed for inventory'  # engraved in front of a closed shop's door
+STANDOFF_TURNS = 20  # a monster that stood this long on one square is not coming: stop waiting to strike first
 PANIC_HISTORY = 20  # panics kept for the Cyclic Panic report; each holds its frames
 
 # NetHack's answers to #kick when it refuses before asking for a direction
@@ -128,6 +129,7 @@ class Agent:
         # when (number of turn) there was last decision about allowing these actions (e.g. agent is somewhat stuck)
         self._allow_walking_through_traps_turn = -float('inf')
         self._allow_attack_all_turn = -float('inf')
+        self._monster_since = {}  # (level, y, x, glyph) -> first turn fight2 saw that monster there
 
         self.last_cast_fail_turn = defaultdict(lambda: -float('inf'))
 
@@ -1174,6 +1176,26 @@ class Agent:
         ret.sort()
         return ret
 
+    def _coming_monsters(self, monsters):
+        """The monsters worth fighting now: adjacent ones, and any that moved within STANDOFF_TURNS.
+
+        The fight waits at distance 2 to strike first; a sleeping or rooted monster never comes, and waiting
+        for it cost stuck games over a thousand turns (an asleep water nymph, a spotted jelly)."""
+        level = self.current_level().key()
+        now = self.blstats.time
+        since = {}
+        coming = []
+        for monster in monsters:
+            _, y, x, _, glyph = monster
+            key = (level, y, x, int(glyph))
+            since[key] = self._monster_since.get(key, now)
+            if now - since[key] < STANDOFF_TURNS or utils.adjacent((self.blstats.y, self.blstats.x), (y, x)):
+                coming.append(monster)
+        if len(coming) < len(monsters):
+            self.stats_logger.log_event('standoff_ignored')
+        self._monster_since = since
+        return coming
+
     @utils.debug_log('fight2')
     @Strategy.wrap
     def fight2(self):
@@ -1181,6 +1203,7 @@ class Agent:
         wait_counter = 0
         while 1:
             monsters = self.get_visible_monsters()
+            coming = self._coming_monsters(monsters)
             allow_attack_all = self._last_turn - self._allow_attack_all_turn < 3
             only_ranged_slow_monsters = all([monster[3].mname in combat.monster_utils.ONLY_RANGED_SLOW_MONSTERS
                                              and not combat.monster_utils.consider_melee_only_ranged_if_hp_full(self,
@@ -1189,7 +1212,7 @@ class Agent:
 
             dis = self.bfs()
 
-            if not monsters or all(dis > 7 for dis, *_ in monsters) or \
+            if not coming or all(dis > 7 for dis, *_ in coming) or \
                     (only_ranged_slow_monsters and not self.inventory.get_ranged_combinations()
                      and np.sum(dis != -1) > 1 and not allow_attack_all):
                 if wait_counter:
