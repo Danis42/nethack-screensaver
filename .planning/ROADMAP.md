@@ -95,7 +95,17 @@ Plans:
   3. The share of games reaching Dlvl 15+ (`rung7`, baseline 2%) is higher than in the Phase 1 result, paired verdict `better`.
   4. Rung 8 is recorded in more games than the single accidental baseline game, with a recorded game showing the bot recognising the Quest portal level and stepping through on purpose.
 
-**Plans**: TBD
+**Plans:** 0/8 plans executed
+
+Plans:
+- [ ] 02-01-PLAN.md — Exact Mines' End rung from NetHack's dungeon layout (measuring only)
+- [ ] 02-02-PLAN.md — Stuck reports, end level, watchdog stack, free5 metric
+- [ ] 02-03-PLAN.md — p2-baseline (2304 seeds), replay check vs p1-final, stuck diagnosis
+- [ ] 02-04-PLAN.md — exp/mines-end: finish FIND_MINES_END on the real bottom (screen only)
+- [ ] 02-05-PLAN.md — exp/stuck-1: stuck cause #1 by a pre-stated rule
+- [ ] 02-06-PLAN.md — exp/stuck-2: stuck cause #2 or the stuck milestone
+- [ ] 02-07-PLAN.md — exp/quest-portal: enter the Quest portal on purpose
+- [ ] 02-08-PLAN.md — Phase 2 done bar: p2-final vs p2-baseline
 
 ### Phase 3: Gearing Up
 
