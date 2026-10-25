@@ -993,6 +993,7 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 | 10 | `exp/mines-end` | Mines' End goal ends on the real bottom (screen) | `b06d9fe` | `6502ae3` | rung7 | no measurable difference @ 2304 | +0.0 [-0.2, +0.3] | dropped |
 | 11 | `exp/stuck-1` | frontier-first when stuck (DESC-03 rule) | `73c4584` | `6502ae3` | free5 | no measurable difference @ 2304 | +0.9 [-0.4, +2.2] | dropped |
 | 12 | `exp/stuck-2` | clear-way: cross known traps, wait out peacefuls (DESC-03 rule 2) | `609ca19` | `6502ae3` | free5 | no measurable difference @ 2304 | +0.6 [-0.2, +1.4] | dropped |
+| 13 | `exp/standoff` | fight standoff: ignore far monsters that stood still 20+ turns | `99b0a2b` | `6502ae3` | free5 | pending | - | - |
 
 #### Experiment 10: `exp/mines-end` - Mines' End goal ends on the real bottom, judged from the screen
 - Requirement / decisions: DESC-01 (D-04: screen only, no memory)
@@ -1047,3 +1048,17 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Verdict: no measurable difference @ 2304 (job 36), free5 +0.6 [-0.2, +1.4], detectable 0.8 -> dropped.
   The way opens in 168 games but most of them get stuck again further down; the secondary rung2 gain
   is not a keep reason under the protocol (primary only)
+
+#### Experiment 13: `exp/standoff` - stop the strike-first standoff with monsters that never come
+- Requirement / decisions: DESC-03 gap (02-05 replays: seeds 75, 896, 760)
+- Evidence: in 2 of 6 replayed stuck seeds the bot lost 1100-1350 of 2500 stuck turns at distance 2 from a
+  monster that never moved (asleep water nymph 709 turns, spotted jelly 1305 turns); fight2's "strike first"
+  movement waits for it to step in
+- Change: `Agent._coming_monsters` in `autoascend/agent.py`: fight2 starts and keeps going only for monsters
+  that are adjacent or moved within the last 20 turns (`STANDOFF_TURNS`); counter `standoff_ignored`
+- Candidate `99b0a2b99a1597ddde2f1406f6beecb3fce8dc37`; baseline `6502ae339853c3d24570865816b1ddedfe19b566`; primary metric `free5`; games: to the
+  last checkpoint
+- Smoke (seeds 75, 896, 760, 0-18): fired in 19 of 22; no exception, no watchdog; seed 896 Dlvl 7 -> 11,
+  760 6 -> 7, 75 5 -> 5
+- Mechanism (planned): starved, died, rung2, rung6, rung7, exceptions/watchdog, counter `standoff_ignored`
+- Verdict: pending
