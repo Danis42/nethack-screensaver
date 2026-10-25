@@ -4,16 +4,16 @@ milestone: v0.1.0
 current_phase: 01
 current_phase_name: Midgame Survival
 status: executing
-stopped_at: Completed 01-09-PLAN.md
+stopped_at: Completed 01-14-PLAN.md
 last_updated: "2026-10-23T17:17:43.229Z"
-last_activity: 2026-10-24
-last_activity_desc: 01-08 starvation done (2 experiments dropped)
+last_activity: 2026-10-25
+last_activity_desc: 01-14 done (flee-upstairs dropped); starting 01-15 done bar
 state_head: e0691aa5c2b7540d1a588a329e8191df315a297e
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 16
-  completed_plans: 9
+  completed_plans: 14
 ---
 
 # Project State
