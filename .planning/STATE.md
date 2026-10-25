@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-25)
 
 Phase: 2 (Real Descent) — READY TO EXECUTE
 Plan: 3 of 8
-Status: EXECUTING - 02-01..02-06 done (exp 10, 11, 12 dropped; baseline stays 6502ae3); gap experiment exp/standoff (99b0a2b) next, then 02-07 exp/quest-portal (84ec9b9)
+Status: EXECUTING - 02-01..02-06 done (exp 10, 11, 12 dropped; baseline stays 6502ae3); gap exp 13 exp/standoff (99b0a2b) vs 6502ae3, free5, bench job 37 running; then 02-07 exp/quest-portal (84ec9b9): full suite, smoke on Dlvl 11+ seeds, rung8
 Last activity: 2026-10-25 — 02-01 exact Mines End rung, 02-02 stuck reports/free5; p2-baseline job 33 running
 
 Progress: [█░░░░░░░░░] 13%
