@@ -898,3 +898,11 @@ mostly these.
 - Mechanism: died +0.4 [-0.5, +1.3]; ants +0.3 [-0.7, +1.3]; dlvl6 +0.4 [-0.7, +1.4]; dlvl10 +0.3 [-1.2, +1.8];
   crashes: same types, exception 46 vs 50, watchdog 43 vs 49
 - Decision: dropped (branches `flee-upstairs` `a535f7a` and `rejudge/flee-upstairs` `757aad8` kept for plan 01-16)
+
+### Phase 1 result (SURV-06)
+Final main `p1-final` = `3fca503215e1a3de57e775378a1598fb05a40c20` (Current baseline; main differs only in
+PORTING.md) against the pilgrim-only baseline `p1-baseline` = `0b097073adb3071f8e5c2aea954618a3320a5bc7`.
+
+| metric | job | verdict | checkpoint | diff [lo, hi] in points |
+|--------|-----|---------|------------|-------------------------|
+| rung2 | 28 | better | 384 | +3.1 [+0.8, +5.4] |
