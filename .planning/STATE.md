@@ -4,7 +4,7 @@ milestone: v0.1.0
 current_phase: 2
 current_phase_name: Real Descent
 status: executing
-stopped_at: Phase 2 planned, ready to execute 02-01
+stopped_at: 02-03 task 2 (bench job 33 running)
 last_updated: "2026-10-25T13:04:19.487Z"
 last_activity: 2026-10-25
 last_activity_desc: Phase 2 planned (8 plans)
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-10-25)
 ## Current Position
 
 Phase: 2 (Real Descent) — READY TO EXECUTE
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-10-25 — Phase 2 planned: 8 plans (02-01..02-08), next 02-01
+Plan: 3 of 8
+Status: EXECUTING - 02-01 and 02-02 done; 02-03 task 1 (stuck report) done; bench job 33 = p2-baseline (6502ae3) 2304 games running (started 2026-10-25). Next: replay_check p1-final vs p2-baseline, PORTING Phase 2 section, then 02-04
+Last activity: 2026-10-25 — 02-01 exact Mines End rung, 02-02 stuck reports/free5; p2-baseline job 33 running
 
 Progress: [█░░░░░░░░░] 13%
 
