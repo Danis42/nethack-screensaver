@@ -1158,3 +1158,9 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   corpse (common, never rots) and so changed half the games for one cure eaten; the free5/starved moves come from
   those diverged games (stuck flips mostly died->died). Not merged.
 - Rerun as `3be8413` (only lizard corpses picked up as cure; carried acid blobs still eaten): job 44.
+- Bench @ 384 (job 44, `3be8413` vs `893797a6`, stopped early): petrified -2.6 [-4.5, -0.7] -> better.
+  270 of 384 paired games identical (was 585 of 1152). Mechanism (95%): free5 -3.1 [-6.5, +0.2], died -2.1
+  [-4.6, +0.4], starved -0.8 [-3.0, +1.4], dlvl10 +0.5, rung7 +0.3, crashed +1.3 [-0.7, +3.3]: all open.
+  Crashes: inventory.py:91 assertion (items_below_me unset after "Pick up what?" on big piles) 8 games vs 2 in
+  the baseline: an existing bug hit more often, not a new type; follow-up.
+- Decision: kept; merged to main (c8792f3, bot code identical to `3be8413`), 474 tests pass. New baseline `3be8413`.
