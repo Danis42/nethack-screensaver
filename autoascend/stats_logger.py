@@ -35,6 +35,8 @@ class StatsLogger:
             "quest_portal_entered": 0,
             "quest_portal_left": 0,
             "quest_portal_gave_up": 0,
+            "boulder_push_try": 0,
+            "boulder_pushed": 0,
             **{f"cast_{n}": 0 for n in character.ALL_SPELL_NAMES},
             **{f"cast_fail_{n}": 0 for n in character.ALL_SPELL_NAMES},
         }
