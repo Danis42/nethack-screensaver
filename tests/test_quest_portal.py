@@ -52,3 +52,68 @@ def test_unreachable_squares_are_ignored():
     visited[1, :3] = True
     searched = np.full(walkable.shape, qp.DEAD_END_SEARCHES)
     assert qp.next_portal_square(walkable, visited, searched, (1, 0)) is None
+
+
+class _Hero:
+    def __init__(self):
+        from types import SimpleNamespace
+        self.dungeon, self.depth = 0, 12
+        self.message = ""
+        self.blstats = SimpleNamespace(time=1000, y=5, x=5)
+        self.events = []
+        self.stats_logger = SimpleNamespace(log_event=self.events.append)
+
+    def current_level(self):
+        from types import SimpleNamespace
+        return SimpleNamespace(dungeon_number=self.dungeon, key=lambda: (self.dungeon, self.depth))
+
+
+def _portal_logic():
+    from autoascend.global_logic import GlobalLogic
+    logic = GlobalLogic.__new__(GlobalLogic)
+    logic.agent = _Hero()
+    logic.portal_level, logic._portal_hunt_since, logic._quest_arrival, logic._quest_left = None, None, None, False
+    return logic
+
+
+def test_hunt_starts_only_on_the_level_of_the_message():
+    logic = _portal_logic()
+    assert not logic._hunting_portal()
+    logic.agent.message = "You receive a faint telepathic message from the Norn:"
+    logic._update_portal()
+    assert logic.portal_level == (0, 12) and logic._hunting_portal()
+    logic.agent.depth = 13
+    assert not logic._hunting_portal()
+
+
+def test_hunt_gives_up_after_its_budget():
+    from autoascend.global_logic import PORTAL_HUNT_TURNS
+    logic = _portal_logic()
+    logic.agent.message = "You again sense the Norn pleading for help."
+    logic._update_portal()
+    assert logic._hunting_portal()
+    logic.agent.blstats.time += PORTAL_HUNT_TURNS + 1
+    assert not logic._hunting_portal() and not logic._hunting_portal()
+    assert logic.agent.events == ['quest_portal_level_seen', 'quest_portal_gave_up']
+
+
+def test_entering_and_leaving_the_quest_is_counted_once():
+    logic = _portal_logic()
+    logic.agent.message = "You receive a faint telepathic message from the Norn:"
+    logic._update_portal()
+    logic.agent.dungeon, logic.agent.depth = 3, 1
+    logic._update_portal()
+    logic._update_portal()
+    assert logic._quest_arrival == (5, 5)
+    logic.agent.dungeon, logic.agent.depth = 0, 12
+    logic._update_portal()
+    assert not logic._hunting_portal()
+    assert logic.agent.events == ['quest_portal_level_seen', 'quest_portal_entered', 'quest_portal_left']
+
+
+def test_message_in_another_dungeon_does_not_mark_a_level():
+    logic = _portal_logic()
+    logic.agent.dungeon = 2
+    logic.agent.message = "You again sense the Norn pleading for help."
+    logic._update_portal()
+    assert logic.portal_level is None
