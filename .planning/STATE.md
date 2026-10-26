@@ -4,7 +4,7 @@ milestone: v0.1.0
 current_phase: 2
 current_phase_name: Real Descent
 status: executing
-stopped_at: 02-07 task 3 (bench job 38 running)
+stopped_at: gap experiment 15 exp/passive (bench)
 last_updated: "2026-10-25T13:04:19.487Z"
 last_activity: 2026-10-26
 last_activity_desc: knowledge sweep; job 38 exp/quest-portal
@@ -13,7 +13,7 @@ progress:
   total_phases: 8
   completed_phases: 1
   total_plans: 24
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-25)
 
 Phase: 2 (Real Descent) — READY TO EXECUTE
 Plan: 3 of 8
-Status: EXECUTING 02-07 (2026-10-26) - knowledge sweep done (02-KNOWLEDGE-SWEEP.md, fbe9f6a, 9 ranked candidates). exp/quest-portal rebased onto c429830 (75848a8), suite green, smoke 22 deep seeds: portal message 20/22, Quest entered 10/22 (baseline 45/2304), gave up 8/22, no new exception type; job 38 running (rung8, vs main a208903). Built ahead: exp/passive (cda4808, candidate #1: never melee spotted/ochre jellies, 32 baseline deaths), smoke on the 22 jelly-death seeds (170,226,277,333,349,392,444,473,597,588,590,641,661,678,911,977,1156,1221,1267,1285,1545,1627) when the bench is idle, rebase onto main if quest-portal is kept. Next after that: #2 Elbereth filter (@/minotaur/peaceful), #3 angry god. Follow-up: 3 new one-game exception types in job 37 (OverflowError global_logic, AssertionError monster_tracker, AssertionError agent)
+Status: EXECUTING Phase 2 gap experiments (2026-10-26) - 02-07 DONE: exp/quest-portal KEPT (rung8 +6.2 [+1.8, +10.7] @192, job 38), merged 6a840f2 = Current baseline. Knowledge sweep done (02-KNOWLEDGE-SWEEP.md). Gap experiment 15 exp/passive (ae16092, never melee spotted/ochre jellies): pre-registered primary dlvl10, mechanism died/starved/free5/acid_jelly_spared; smoke 22 jelly-death seeds: fired 18/22, jelly deaths 22 -> 3 (blind 'it' fight, 2 ochre engulfers), 0 exceptions, 1 watchdog; job running. Then exp/elbereth-respect (efecefb, rebased on 6a840f2, suite green): smoke seeds 30,81,109,117,144,179 + 0-15, primary free5. Then 02-08. Follow-up: 3 new one-game exception types in job 37 (OverflowError global_logic, AssertionError monster_tracker, AssertionError agent)
 Last activity: 2026-10-25 — 02-01 exact Mines End rung, 02-02 stuck reports/free5; p2-baseline job 33 running
 
 Progress: [█░░░░░░░░░] 13%
