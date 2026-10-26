@@ -4,10 +4,10 @@ milestone: v0.1.0
 current_phase: 2
 current_phase_name: Real Descent
 status: executing
-stopped_at: 02-03 task 2 (bench job 33 running)
+stopped_at: 02-07 task 3 (bench job 38 running)
 last_updated: "2026-10-25T13:04:19.487Z"
-last_activity: 2026-10-25
-last_activity_desc: Phase 2 planned (8 plans)
+last_activity: 2026-10-26
+last_activity_desc: knowledge sweep; job 38 exp/quest-portal
 state_head: dabd11d7d8e36e84ba2fce3ab57e36dc6084f538
 progress:
   total_phases: 8
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-25)
 
 Phase: 2 (Real Descent) — READY TO EXECUTE
 Plan: 3 of 8
-Status: PAUSED (owner, 2026-10-26) - 02-01..02-06 done (exp 10, 11, 12 dropped); gap exp 13 exp/standoff KEPT (free5 +1.9 [+0.1, +3.7], job 37), merged, Current baseline c429830. NEXT SESSION: 1) knowledge sweep over reference/ (wiki pages + 3.6.6 source) -> 02-KNOWLEDGE-SWEEP.md with ranked candidates (owner request); 2) rebase exp/quest-portal (84ec9b9) onto c429830, full suite, smoke on Dlvl 11+ seeds, pre-register rung8 (02-07). Follow-up: 3 new one-game exception types in job 37 (OverflowError global_logic, AssertionError monster_tracker, AssertionError agent)
+Status: EXECUTING 02-07 (2026-10-26) - knowledge sweep done (02-KNOWLEDGE-SWEEP.md, fbe9f6a, 9 ranked candidates). exp/quest-portal rebased onto c429830 (75848a8), suite green, smoke 22 deep seeds: portal message 20/22, Quest entered 10/22 (baseline 45/2304), gave up 8/22, no new exception type; job 38 running (rung8, vs main a208903). Built ahead: exp/passive (cda4808, candidate #1: never melee spotted/ochre jellies, 32 baseline deaths), smoke on the 22 jelly-death seeds (170,226,277,333,349,392,444,473,597,588,590,641,661,678,911,977,1156,1221,1267,1285,1545,1627) when the bench is idle, rebase onto main if quest-portal is kept. Next after that: #2 Elbereth filter (@/minotaur/peaceful), #3 angry god. Follow-up: 3 new one-game exception types in job 37 (OverflowError global_logic, AssertionError monster_tracker, AssertionError agent)
 Last activity: 2026-10-25 — 02-01 exact Mines End rung, 02-02 stuck reports/free5; p2-baseline job 33 running
 
 Progress: [█░░░░░░░░░] 13%
