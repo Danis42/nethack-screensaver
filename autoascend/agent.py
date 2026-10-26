@@ -67,6 +67,23 @@ def prayer_trouble(blstats, safe_hp, safe_hunger, has_food=False):
     return (safe_hp and low_hp) or (safe_hunger and not has_food and blstats.hunger_state >= Hunger.WEAK)
 
 
+# A successful prayer sets the prayer timeout to rnz(350); with major trouble a prayer works once it is
+# down to 200 (pray.c can_pray, -1 per turn in allmain.c). Simulated rnz: a gap of 400 turns is too soon
+# 23% of the time, 1000 turns 5%. A too-soon prayer angers the god (gods_upset), so every later prayer
+# fails too. Hunger leaves time: Weak to death is about 50 + 100 + 10 * Con turns (eat.c newuhs), so the
+# required gap falls from HUNGER_PRAYER_GAP_START to HUNGER_PRAYER_GAP_END over HUNGER_PRAYER_EASE turns.
+HUNGER_PRAYER_GAP_START = 1000
+HUNGER_PRAYER_GAP_END = 400
+HUNGER_PRAYER_EASE = 200
+
+
+def hunger_prayer_gap(weak_turns):
+    """Turns since the last prayer needed before praying for hunger, after weak_turns turns at Weak or worse."""
+    eased = (HUNGER_PRAYER_GAP_START - HUNGER_PRAYER_GAP_END) * min(weak_turns, HUNGER_PRAYER_EASE) \
+        // HUNGER_PRAYER_EASE
+    return HUNGER_PRAYER_GAP_START - eased
+
+
 def diagonal_blocked_square(message, here, target):
     """ Square NetHack would not let us cross diagonally, judging by its refusal message """
     if "move diagonally out of an intact doorway" in message:
@@ -112,6 +129,7 @@ class Agent:
         self.last_bfs_dis = None
         self.last_bfs_step = None
         self.last_prayer_turn = None
+        self.weak_since = None  # game turn the hero became Weak, None while better fed
         self._previous_glyphs = None
         self._last_turn = -1
         self._inactivity_counter = 0
@@ -1537,8 +1555,15 @@ class Agent:
             self.inventory.quaff(items[0])
             return
 
+        if self.blstats.hunger_state < Hunger.WEAK:
+            self.weak_since = None
+        elif self.weak_since is None:
+            self.weak_since = self.blstats.time
+        weak_turns = 0 if self.weak_since is None else self.blstats.time - self.weak_since
+
         food = self.edible_inventory_food()
-        if prayer_trouble(self.blstats, self.is_safe_to_pray(500), self.is_safe_to_pray(400),
+        hunger_gap = hunger_prayer_gap(weak_turns)
+        if prayer_trouble(self.blstats, self.is_safe_to_pray(500), self.is_safe_to_pray(hunger_gap),
                           has_food=food is not None):
             yield True
             self.pray()

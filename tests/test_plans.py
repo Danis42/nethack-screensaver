@@ -507,3 +507,11 @@ def test_stuck_report_sees_the_up_staircase():
     row = _report(objects, seen, walkable, dis, glyphs)
     assert row["up_seen"] and row["up_reachable"] and not row["down_seen"]
     assert row["target"] == [0, 100] and not row["wants_up"]
+
+
+def test_hunger_prayer_gap_eases_while_weak():
+    from autoascend.agent import hunger_prayer_gap
+    assert hunger_prayer_gap(0) == 1000  # just turned Weak: wait for a safe timeout
+    assert hunger_prayer_gap(100) == 700
+    assert hunger_prayer_gap(200) == 400  # near starvation: the old gap
+    assert hunger_prayer_gap(5000) == 400

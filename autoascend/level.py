@@ -50,6 +50,9 @@ class Level:
         # doorways the game refused a diagonal move through, though the map showed no door
         self.no_diagonal = np.zeros((C.SIZE_Y, C.SIZE_X), bool)
 
+        # (boulder, beyond) pushes already tried outside Sokoban, so a stuck bot never repeats one
+        self.boulder_pushes_tried = set()
+
     def key(self):
         return (self.dungeon_number, self.level_number)
 
