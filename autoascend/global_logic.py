@@ -31,6 +31,7 @@ LIVE_SOKOBAN_BLOCKED_TRIES = 20  # times a monster may block a push square befor
 WATER = frozenset({SS.S_pool, SS.S_water})
 DRAWBRIDGE = frozenset({SS.S_vodbridge, SS.S_hodbridge, SS.S_vcdbridge, SS.S_hcdbridge})
 MEDUSA = frozenset({MON.fn('Medusa')})
+BOULDER_PUSHES_PER_LEVEL = 30
 STUCK_TURNS = 2500  # no new level and no new milestone for this long: give up the route and dive
 PORTAL_HUNT_TURNS = 1500  # on the Quest portal level, this long to walk every square for the portal
 _PRIZES = None
@@ -368,7 +369,8 @@ class GlobalLogic:
     def _boulder_pushes(self):
         """Pushes worth a try on this level, best first (none in Sokoban, which has its own solver)"""
         level = self.agent.current_level()
-        if level.dungeon_number == Level.SOKOBAN:
+        # a pushed boulder makes new (boulder, beyond) pairs, so cap the tries per level (smoke seed 9 pushed 107)
+        if level.dungeon_number == Level.SOKOBAN or len(level.boulder_pushes_tried) >= BOULDER_PUSHES_PER_LEVEL:
             return []
         boulder_map = utils.isin(self.agent.glyphs, G.BOULDER)
         if not boulder_map.any():
