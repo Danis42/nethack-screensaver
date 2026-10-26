@@ -1067,3 +1067,20 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Verdict: better @ 2304 (job 37), free5 +1.9 [+0.1, +3.7], detectable 1.8 -> kept; merged to main
   (`c429830`, play code equal to the candidate, full suite 470 passed); Current baseline `c429830`.
   The first Phase 2 keep: the fix saves turns on every level, not only at one obstacle
+
+#### Experiment 14: `exp/quest-portal` - the Quest portal on purpose
+- Requirement / decisions: DESC-05 (plan 02-07); rung 8 needs only the step through the portal
+- Change: `autoascend/quest_portal.py` (message recognition from NLD-NAO wording, `next_portal_square`) and, in
+  `autoascend/global_logic.py`, a `portal_hunt` strategy on the level where the quest leader's call was heard
+  (walk every reachable square, then search dead ends, 1500-turn cap) and `leave_quest` (step off and back onto
+  the arrival portal); counters `quest_portal_level_seen`, `quest_portal_entered`, `quest_portal_left`,
+  `quest_portal_gave_up`
+- Candidate `75848a884e5411f1dfa8371916faa4e527f1daab` (rebased onto `a208903`); baseline
+  `a208903379ccbd3181b9e0e9db7a7d75bb99c40a` (play code of `c429830`); primary metric `rung8`; games: to the last
+  checkpoint (the scheduler ended it at 192: 99% interval clear of zero)
+- Smoke (22 seeds that reached Dlvl 14+ in the baseline): message seen 20, Quest entered 10, left again 8, hunt
+  given up 8; exceptions 3 + 1 watchdog, all baseline types. Deliberate entry: seed 112 (Dlvl 17, XL 10)
+- Mechanism @ 192: rung7 +0.5 [-0.8, +1.9], rung9 -0.5 [-1.9, +0.8], died +1.0 [-2.2, +4.3], starved +0.0
+  [-2.7, +2.7]; exceptions 6 vs 6, same types (seed 82 crashes the same way on both sides)
+- Verdict: better @ 192 (job 38), rung8 +6.2 [+1.8, +10.7], detectable 4.5 -> kept; merged to main (`6a840f2`,
+  play code equal to the candidate, full suite 464 passed); Current baseline `6a840f2`
