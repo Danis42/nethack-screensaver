@@ -1142,3 +1142,19 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   correctly: better -> kept, merged to main (8ae7686).
 - Note: job 41 (boulder-push alone, starved -1.4 [-2.9, +0.1]) is unaffected by the label bug: its interval
   touches 0.
+
+#### Experiment 19: `exp/deadly-trouble` - pray or eat a lizard against deadly conditions
+- Requirement / decisions: items audit (.planning/research/ITEMS-EFFECTS-AUDIT.md): 82 petrification deaths,
+  47 saw the warning, ~21 from picking up cockatrice corpses for sacrifice. pray.c fixes TROUBLE_STONED, _SLIMED,
+  _STRANGLED, _SICK; death is certain without help, so a too-soon prayer costs nothing.
+- Change: `emergency_strategy` eats a carried lizard/acid blob corpse on Stone, else prays (once per 50 turns) on
+  Stone/Slime/Strangled/FoodPois/TermIll (NLE status mask); lizards kept as medicine, not food; no cockatrice
+  corpse sacrifice pickup; no bare-handed melee against cockatrices.
+- Candidate `bd8ab3d`; baseline `893797a6`; primary metric `petrified` (new, lower is better)
+- Bench @ 1152 (job 43, stopped early): petrified -2.2 [-3.3, -1.0] -> better; 24 games prayed, 1 ate a cure.
+- Mechanism @ 1152 (95%): free5 -2.2 [-4.3, -0.1] worse, starved +1.9 [-0.1, +4.0], died -0.2, dlvl10 -1.0,
+  rung7 +0.4, crashed +0.1.
+- Diagnosis: only 585 of 1152 paired games played out identically. The pickup rule also kept every acid blob
+  corpse (common, never rots) and so changed half the games for one cure eaten; the free5/starved moves come from
+  those diverged games (stuck flips mostly died->died). Not merged.
+- Rerun as `3be8413` (only lizard corpses picked up as cure; carried acid blobs still eaten): job 44.
