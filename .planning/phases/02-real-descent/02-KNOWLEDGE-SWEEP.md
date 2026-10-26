@@ -116,3 +116,16 @@ feed into #6/#8 and #9.
 3. #3 angry god.
 4. Counters for #5-#7 (trap doors seen, digging tool carried, Excalibur turn) in one instrumentation commit;
    pick among #5-#7 from the numbers.
+
+## Full wiki pass (local model, 2026-10-26)
+- qwen2.5:14b (Ollama, local GPU) summarised all 2058 pages kept by the ledger into `sweep/wiki-facts.jsonl`:
+  8095 facts, danger 5: 530, of which 332 come from pages the bot code never names. Read inline.
+- Quality: much of it is noise (variant monsters such as tannin/ancients, Astral/Gehennom bosses, some invented
+  key commands). Nothing new for the current bottleneck except prayer: a prayer also fails with Luck < 0 or a
+  negative alignment record (pray.c can_pray p_type 1), e.g. after killing peacefuls.
+- Checked on the 6a840f2 bench games: the gap before each game's first failed prayer is 500-999 turns in 388
+  of 564 games, under 500 in 44, 1000+ in 101, first prayer ever in 31. So timing (rnz(350) timeout) explains
+  most first failures; Luck/alignment at most ~1 in 4. Games where the bot attacked everything in reach
+  (`allow_attack_all`, 370) fail a prayer slightly more often (26.2% vs 24.1%): not a lever.
+- Consequence: exp/prayer-timing (job 42) targets the main cause. Later, cheap follow-ups: Minetown watch
+  (attacking peacefuls in sight angers them), pyrolisk eggs / wererat corpses in the food filter (verify).
