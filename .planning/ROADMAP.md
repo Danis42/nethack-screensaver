@@ -42,6 +42,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Midgame Survival** - Sharpen the bench, baseline the pilgrim route, then cut the deaths on Dlvl 4-12 (rungs 2-6) (completed 2026-10-25)
 - [ ] **Phase 2: Real Descent** - Finish the Mines, keep descending past the Big Room, find downstairs reliably, reach the Quest on purpose (rungs 6-8)
+Route audit (every mandatory level vs. the bot, digging map, Castle entry, invocation rules): `.planning/research/ASCENSION-ROUTE-AUDIT.md` - fold its "missing" list into phases 3-8 when they are planned.
+
 - [ ] **Phase 3: Gearing Up** - Wands, rings, armour, protection, reflection, magic resistance (rungs 7-9)
 - [ ] **Phase 4: Medusa's Level** - Late-game test harness, then survive and cross Medusa (rung 9)
 - [ ] **Phase 5: Castle and Wishes** - Get into the Castle, take the wand of wishing, wish well (rung 10)
