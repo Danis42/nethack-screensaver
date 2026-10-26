@@ -113,6 +113,18 @@ Tracked but unscheduled (REQUIREMENTS.md v2): ROLE-01 role choice, DEBT-01..05 t
 
 ## Session Continuity
 
-Last session: 2026-10-25T12:45:00Z
-Stopped at: Phase 01 complete, ready to plan Phase 2
+Last session: 2026-10-26T23:20 (local). PC shuts down at 05:45; resume 2026-10-27.
+Stopped at: Exp 20 exp/poison-resistance (d83ed40) vs 3be8413 running as bench job 45, primary `poisoned`.
+Resume steps:
+1. Job state: MCP `bench_status` / `bench_results`, or `uv run screens-bench wait 45`. If the shutdown cut it off
+   (the server marks it interrupted), resubmit the same experiment: candidate `exp/poison-resistance`, baseline
+   `3be8413`, metric `poisoned`; stored games are reused, only the rest is played.
+2. Evaluate (95%): `uv run python scripts/seeded_report.py pairs --metric M --confidence 95 d83ed40 3be8413` for
+   M = poisoned, died, free5, dlvl10, rung7, starved, crashed. Per-seed flips, identical-game count, exception
+   types: scratchpad script pattern (Store(DATA/results.db).games_by_seed); events poisonous_corpse_eaten,
+   poison_resistance_gained. Watch Str loss side effects (died/dlvl10).
+3. Better and mechanism not worse -> merge exp/poison-resistance to main, run tests, log PORTING Experiment 20,
+   new baseline = d83ed40. Otherwise log as dropped.
+4. Next candidates: fix inventory.py:91 assertion on big piles ("Pick up what?"; top crash, 8/384 in job 44);
+   then pick-axe: keep one and dig down when stuck (ASCENSION-ROUTE-AUDIT.md).
 Resume file: None
