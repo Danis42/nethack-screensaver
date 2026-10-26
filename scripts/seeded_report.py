@@ -40,7 +40,7 @@ from pathlib import Path
 from bench import gitrefs, reference
 from bench.cli import DATA, REPO
 from autoascend.prayer import prayer_outcome
-from bench.metrics import ANTS, METRICS, RAYS, ended_stuck, killer
+from bench.metrics import ANTS, METRICS, RAYS, ended_stuck, killer, orient
 from bench.report import ladder_rows
 from bench.stats import CHECKPOINTS, Z95, judge_paired, judge_paired_numeric, z_for
 
@@ -154,7 +154,8 @@ def _pairs(args):
           f"half-width={_points(half, sign=False)} points mde80={_points(2.8 * half / 1.96, sign=False)} points")
     print(f"sd={sd:.3f} standardized={half / sd if sd else 0:.4f}")
     label = args.confidence or ('95' if z == Z95 else '99')
-    print(f"verdict={verdict.state} z={z:.3f} ({label}%)")
+    state = orient(verdict.state, METRICS[args.metric]) if args.metric in METRICS else verdict.state
+    print(f"verdict={state} z={z:.3f} ({label}%)")
     return 0
 
 

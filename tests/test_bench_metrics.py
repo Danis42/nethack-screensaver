@@ -113,3 +113,11 @@ def test_free5_counts_games_that_did_not_end_stuck_deep():
 def test_free5_skips_games_without_the_stuck_fields():
     with pytest.raises(KeyError):
         METRICS["free5"].fn(_g(depth_at_end=7, unsticks=0))
+
+
+def test_orient_flips_lower_is_better_rates():
+    from bench.metrics import METRICS, orient
+    assert orient("worse", METRICS["starved"]) == "better"  # fewer starvations
+    assert orient("better", METRICS["died"]) == "worse"
+    assert orient("worse", METRICS["dlvl10"]) == "worse"
+    assert orient("no measurable difference", METRICS["starved"]) == "no measurable difference"

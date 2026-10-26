@@ -5,7 +5,7 @@ play the same characters and dungeons and are compared seed by seed."""
 import time
 from collections import defaultdict, deque
 
-from .metrics import METRICS
+from .metrics import METRICS, orient
 from .stats import CHECKPOINTS, judge_paired
 
 MAX_DEATHS_IN_ROW = 3
@@ -139,6 +139,7 @@ class Scheduler:
             self._end("failed", {**self.job["result"], "error": self.error})
             return True
         verdict = judge_paired(pairs, need).as_dict()
+        verdict["state"] = orient(verdict["state"], METRICS[spec["metric"]])
         verdict["pairs"] = len(pairs)
         result = self.job["result"]
         result["checkpoints"].append(verdict)

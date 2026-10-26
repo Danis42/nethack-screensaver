@@ -42,19 +42,22 @@ class Metric:
     description: str
     kind: str  # "rate" or "median"
     fn: Callable[[dict], Any]
+    lower_is_better: bool = False  # diff stays candidate - baseline; only the better/worse label flips
 
 
 METRICS = {m.name: m for m in [
     Metric("dlvl6", "reached Dlvl 6+", "rate", lambda g: g["max_depth"] >= 6),
     Metric("dlvl10", "reached Dlvl 10+", "rate", lambda g: g["max_depth"] >= 10),
     Metric("escaped", "escaped the dungeon", "rate", lambda g: g["outcome"].startswith("escaped")),
-    Metric("crashed", "bot crashed", "rate", lambda g: g["end_reason"].startswith("exception")),
-    Metric("died", "died", "rate", lambda g: g["end_reason"].startswith("DEATH")),
+    Metric("crashed", "bot crashed", "rate", lambda g: g["end_reason"].startswith("exception"), lower_is_better=True),
+    Metric("died", "died", "rate", lambda g: g["end_reason"].startswith("DEATH"), lower_is_better=True),
     Metric("starved", "starved, or killed while fainted", "rate",
-           lambda g: "starved" in g["end_reason"] or "fainted from lack of food" in g["end_reason"]),
-    Metric("ants", "killed by an ant", "rate", lambda g: killer(g) in ANTS),
-    Metric("rays", "killed by a wand or ray", "rate", lambda g: any(r in killer(g) for r in RAYS)),
-    Metric("unstuck", "needed the unstick safety net", "rate", lambda g: g["unsticks"] > 0),
+           lambda g: "starved" in g["end_reason"] or "fainted from lack of food" in g["end_reason"],
+           lower_is_better=True),
+    Metric("ants", "killed by an ant", "rate", lambda g: killer(g) in ANTS, lower_is_better=True),
+    Metric("rays", "killed by a wand or ray", "rate", lambda g: any(r in killer(g) for r in RAYS),
+           lower_is_better=True),
+    Metric("unstuck", "needed the unstick safety net", "rate", lambda g: g["unsticks"] > 0, lower_is_better=True),
     Metric("free5", "did not end stuck on a Dlvl 5+ level (higher is better)", "rate",
            lambda g: not ended_stuck(g)),
     Metric("depth", "max depth", "median", lambda g: g["max_depth"]),
@@ -63,6 +66,13 @@ METRICS = {m.name: m for m in [
     Metric("rung", "highest ascension-ladder rung", "median", lambda g: g["rung"]),
 ] + [Metric(f"rung{r.number}", f"reached rung {r.number}+ ({r.title})", "rate",
             lambda g, n=r.number: g["rung"] >= n) for r in RUNGS]}
+
+
+def orient(state, metric):
+    """Verdict label from the metric's point of view: for a lower-is-better rate a drop is "better"."""
+    if metric.lower_is_better:
+        return {"better": "worse", "worse": "better"}.get(state, state)
+    return state
 
 
 def evaluate(metric, games):
