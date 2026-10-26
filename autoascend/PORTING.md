@@ -1098,3 +1098,14 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Verdict: no measurable difference @ 2304 (job 39), dlvl10 +0.3 [-0.7, +1.3], detectable 1.0 -> dropped. Jelly
   deaths are about 1% of games; saving them does not show at Dlvl 10, and free5 got worse (walking around a jelly
   that blocks a corridor may leave the bot stuck)
+
+#### Experiment 16: `exp/elbereth-respect` - no Elbereth against monsters that ignore it
+- Requirement / decisions: knowledge sweep candidate 2; Elbereth is ignored by every @ and by minotaurs
+  (`monmove.c` onscary)
+- Change: `monster_utils.ignores_elbereth`; `fight_heur.elbereth_action` skips such monsters and `wait_action`
+  does not wait on Elbereth next to one; counter `elbereth_not_respected`
+- Candidate `efecefbcb7bb06a6403d5d40555c9af31b4c07af`; baseline `6a840f2`; primary metric `free5`
+- Smoke (22 seeds, 6 with @ deaths): fired in 7/22, 0 exceptions, 0 watchdog
+- Mechanism @ 2304 (95%): died +0.0 [-0.2, +0.2], starved -0.1 [-0.4, +0.1], rung7 +0.2 [-0.1, +0.5], dlvl10 +0.2
+  [-0.1, +0.4]; the narrow intervals show that most paired games play out identically (the rule rarely fires)
+- Verdict: no measurable difference @ 2304 (job 40), free5 +0.0 [-0.1, +0.2] -> dropped
