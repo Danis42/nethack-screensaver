@@ -37,6 +37,14 @@ PORTAL_HUNT_TURNS = 1500  # on the Quest portal level, this long to walk every s
 _PRIZES = None
 
 
+STONING_CURE_CORPSES = ('lizard', 'acid blob')  # eating one stops petrification (eat.c fix_petrification)
+
+
+def is_stoning_cure(item):
+    return item.is_unambiguous() and item.is_corpse() and \
+        item.monster_id in [MON.from_name(n) - nh.GLYPH_MON_OFF for n in STONING_CURE_CORPSES]
+
+
 def _prize_objects():
     """Bag of holding, amulet of reflection; O.from_name scans the table, so look up once."""
     global _PRIZES
@@ -156,6 +164,9 @@ class ItemPriority(ItemPriorityBase):
         for item in sorted(filter(lambda i: i.is_food() and not i.is_corpse(), items),
                            key=lambda x: -x.nutrition_per_weight() - 1000 * (x.objs[0].name == 'sprig of wolfsbane')):
             add_item(item)
+
+        for item in filter(is_stoning_cure, items):  # medicine against petrification; never rots
+            add_item(item, count=2)
 
         if self._take_sacrificial_corpses:
             for item in filter(self.agent.global_logic.can_sacrify, items):
@@ -759,6 +770,9 @@ class GlobalLogic:
     def can_sacrify(self, item):
         if not item.is_corpse() or item.comment == 'old':
             return False
+
+        if ord(MON.permonst(item.monster_id + nh.GLYPH_MON_OFF).mlet) == MON.S_COCKATRICE:
+            return False  # picking it up bare-handed petrifies (pickup.c)
 
         mname = MON.permonst(item.monster_id + nh.GLYPH_MON_OFF).mname
         if (mname == 'pony' and self.agent.character.role in [Character.KNIGHT, Character.BARBARIAN]) or \

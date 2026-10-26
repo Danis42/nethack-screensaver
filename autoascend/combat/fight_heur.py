@@ -4,7 +4,7 @@ from itertools import product
 import numpy as np
 from scipy import signal
 
-from ..glyph import G
+from ..glyph import G, MON
 from ..utils import adjacent
 from .monster_utils import is_monster_faster, is_dangerous_monster, \
     ONLY_RANGED_SLOW_MONSTERS, EXPLODING_MONSTERS, WEAK_MONSTERS, consider_melee_only_ranged_if_hp_full
@@ -205,6 +205,15 @@ def drop_floating_eye_melee(actions, monsters, player_pos, blind):
     py, px = player_pos
     eyes = {(y - py, x - px) for _, y, x, mon, _ in monsters if mon.mname == 'floating eye'}
     return [a for a in actions if not (a[1][0] == 'melee' and (a[1][1], a[1][2]) in eyes)]
+
+
+def drop_bare_handed_cockatrice_melee(actions, monsters, player_pos, bare_handed):
+    """ Hitting a cockatrice or chickatrice with neither weapon nor gloves petrifies at once (uhitm.c) """
+    if not bare_handed:
+        return actions
+    py, px = player_pos
+    footrices = {(y - py, x - px) for _, y, x, mon, _ in monsters if ord(mon.mlet) == MON.S_COCKATRICE}
+    return [a for a in actions if not (a[1][0] == 'melee' and (a[1][1], a[1][2]) in footrices)]
 
 
 def elbereth_action(agent, monsters):
