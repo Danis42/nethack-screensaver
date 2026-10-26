@@ -45,6 +45,11 @@ def is_stoning_cure(item):
         item.monster_id in [MON.from_name(n) - nh.GLYPH_MON_OFF for n in STONING_CURE_CORPSES]
 
 
+def is_kept_stoning_cure(item):
+    """ Lizard corpses only: acid blobs are common, and carrying their corpses changed half the games for one cure """
+    return is_stoning_cure(item) and item.monster_id == MON.from_name('lizard') - nh.GLYPH_MON_OFF
+
+
 def _prize_objects():
     """Bag of holding, amulet of reflection; O.from_name scans the table, so look up once."""
     global _PRIZES
@@ -165,7 +170,7 @@ class ItemPriority(ItemPriorityBase):
                            key=lambda x: -x.nutrition_per_weight() - 1000 * (x.objs[0].name == 'sprig of wolfsbane')):
             add_item(item)
 
-        for item in filter(is_stoning_cure, items):  # medicine against petrification; never rots
+        for item in filter(is_kept_stoning_cure, items):  # medicine against petrification; never rots
             add_item(item, count=2)
 
         if self._take_sacrificial_corpses:

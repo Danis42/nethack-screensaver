@@ -539,6 +539,12 @@ def test_stoning_cures_are_lizard_and_acid_blob_corpses():
     assert not is_stoning_cure(_Corpse('lizard', unambiguous=False))
 
 
+def test_only_lizard_corpses_are_kept_as_stoning_cure():
+    from autoascend.global_logic import is_kept_stoning_cure
+    assert is_kept_stoning_cure(_Corpse('lizard'))
+    assert not is_kept_stoning_cure(_Corpse('acid blob'))
+
+
 def test_deadly_conditions_are_the_prayer_fixable_ones():
     import nle.nethack as nh
     from autoascend.agent import DEADLY_CONDITIONS
