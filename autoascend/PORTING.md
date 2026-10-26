@@ -1124,3 +1124,21 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   [-1.2, +1.5]; all in the right direction, none significant
 - Verdict: no measurable difference @ 2304 (job 41), starved -1.4 [-2.9, +0.1] (upper bound just above 0) ->
   dropped by protocol; branch kept as a near-miss to combine with a later food/prayer fix
+
+#### Experiment 18: `exp/prayer-timing` - wait longer before a hunger prayer (on top of boulder-push)
+- Requirement / decisions: starvation analysis; pray.c can_pray: with major trouble a prayer works once the
+  timeout (rnz(350) after a success) is <= 200. Simulated rnz: a 400-turn gap is too soon 23%, 1000 turns 5%.
+  Weak to death is ~50 + 100 + 10 * Con turns (eat.c newuhs), so the bot can afford to wait.
+- Change: `agent.hunger_prayer_gap(weak_turns)`: required gap 1000 turns when Weak, falling linearly to 400 over
+  200 Weak turns; `Agent.weak_since`. Plus experiment 17 (boulder pushes).
+- Candidate `893797a6`; baseline `6a840f2`; primary metric `starved` (lower is better)
+- Smoke (22 starver seeds from job 41): starved/fainted 22 -> 13, 0 exceptions
+- Bench @ 2304: starved 122 -> 106, killed while fainted 448 -> 410; crashes 65 -> 56, same Cyclic Panic type
+  (2 games at item_manager.py:277 and 1 at agent.py:1125 not seen in the baseline, item parsing / quest leave)
+- Mechanism @ 2304 (95%): free5 +1.4 [-0.4, +3.2], died +0.1 [-1.0, +1.2], dlvl10 +1.9 [-0.3, +4.0], rung7 +1.1
+  [-0.4, +2.7]
+- Verdict: starved -2.3 [-4.3, -0.4] points @ 2304 (job 42). The bench printed "worse": it labelled every
+  negative diff "worse", also for lower-is-better metrics; fixed in f867d84 (`bench.metrics.orient`). Read
+  correctly: better -> kept, merged to main (8ae7686).
+- Note: job 41 (boulder-push alone, starved -1.4 [-2.9, +0.1]) is unaffected by the label bug: its interval
+  touches 0.
