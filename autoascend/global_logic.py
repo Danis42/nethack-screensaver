@@ -3,6 +3,7 @@ import numpy as np
 from nle.nethack import actions as A
 
 from . import objects as O
+from . import boulders
 from . import quest_portal
 from . import soko_solver
 from .soko_solver import search as soko_search
@@ -363,6 +364,46 @@ class GlobalLogic:
                 self.agent.search(5)
             else:
                 self.agent.go_to(*target)
+
+    def _boulder_pushes(self):
+        """Pushes worth a try on this level, best first (none in Sokoban, which has its own solver)"""
+        level = self.agent.current_level()
+        if level.dungeon_number == Level.SOKOBAN:
+            return []
+        boulder_map = utils.isin(self.agent.glyphs, G.BOULDER)
+        if not boulder_map.any():
+            return []
+        dis = self.agent.bfs()
+        if not boulders.nothing_left(level.seen, level.walkable, dis, utils.isin(level.objects, G.STAIR_DOWN)):
+            return []
+        doors = utils.isin(level.objects, G.DOORS | {SS.S_ndoor}) | level.no_diagonal
+        blocked = boulder_map | utils.isin(self.agent.glyphs, G.MONS)
+        return boulders.push_candidates(boulder_map, level.walkable, blocked, doors, level.seen, dis,
+                                        level.boulder_pushes_tried)
+
+    @Strategy.wrap
+    def push_boulders(self):
+        """When the level looks finished, walk into boulders: the way on is often behind one."""
+        if not self._boulder_pushes():
+            yield False
+        yield True
+        level = self.agent.current_level()
+        while True:
+            pushes = self._boulder_pushes()
+            if not pushes:
+                return
+            stand, boulder, beyond = pushes[0]
+            level.boulder_pushes_tried.add((boulder, beyond))
+            if (self.agent.blstats.y, self.agent.blstats.x) != stand:
+                self.agent.go_to(*stand)
+                if (self.agent.blstats.y, self.agent.blstats.x) != stand:
+                    continue
+            if self.agent.glyphs[boulder] not in G.BOULDER:
+                continue
+            self.agent.stats_logger.log_event('boulder_push_try')
+            self.agent.direction(*boulder)
+            if (self.agent.blstats.y, self.agent.blstats.x) == boulder:
+                self.agent.stats_logger.log_event('boulder_pushed')
 
     @Strategy.wrap
     def leave_quest(self):
@@ -973,6 +1014,7 @@ class GlobalLogic:
             .preempt(self.agent, [
                 self.leave_quest(),
                 self.portal_hunt(),
+                self.push_boulders().every(20),
             ])
             .preempt(self.agent, [
                 self.offer_corpses().preempt(self.agent, [
