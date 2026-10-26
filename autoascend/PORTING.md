@@ -1084,3 +1084,17 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   [-2.7, +2.7]; exceptions 6 vs 6, same types (seed 82 crashes the same way on both sides)
 - Verdict: better @ 192 (job 38), rung8 +6.2 [+1.8, +10.7], detectable 4.5 -> kept; merged to main (`6a840f2`,
   play code equal to the candidate, full suite 464 passed); Current baseline `6a840f2`
+
+#### Experiment 15: `exp/passive` - never melee spotted or ochre jellies
+- Requirement / decisions: knowledge sweep candidate 1 (02-KNOWLEDGE-SWEEP.md); passive acid is (level + 1)d6 on
+  half the hits that land (`uhitm.c` passive)
+- Change: `ACID_JELLIES` in `combat/monster_utils.py`, `fight_heur.drop_acid_jelly_melee` removes melee on them in
+  `fight2`; counter `acid_jelly_spared`
+- Candidate `ae16092ef1638c0cb266fd1b5a43e5867a540b3d`; baseline `6a840f2`; primary metric `dlvl10`
+- Smoke (22 seeds that died to a jelly in the baseline): fired 18/22, jelly deaths 22 -> 3 (one blind fight with
+  "it", two ochre jellies that engulf), 0 exceptions, 1 watchdog
+- Mechanism @ 2304 (95%): died better +1.0 [+0.1, +1.8], starved +0.1 [-0.8, +0.9], free5 worse -1.4 [-2.5, -0.2],
+  rung7 +0.5 [-0.5, +1.5]
+- Verdict: no measurable difference @ 2304 (job 39), dlvl10 +0.3 [-0.7, +1.3], detectable 1.0 -> dropped. Jelly
+  deaths are about 1% of games; saving them does not show at Dlvl 10, and free5 got worse (walking around a jelly
+  that blocks a corridor may leave the bot stuck)
