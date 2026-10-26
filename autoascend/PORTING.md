@@ -1109,3 +1109,18 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Mechanism @ 2304 (95%): died +0.0 [-0.2, +0.2], starved -0.1 [-0.4, +0.1], rung7 +0.2 [-0.1, +0.5], dlvl10 +0.2
   [-0.1, +0.4]; the narrow intervals show that most paired games play out identically (the rule rarely fires)
 - Verdict: no measurable difference @ 2304 (job 40), free5 +0.0 [-0.1, +0.2] -> dropped
+
+#### Experiment 17: `exp/boulder-push` - push boulders when a level looks finished
+- Requirement / decisions: starvation analysis on 6a840f2 (570/2304 starved or died fainted; 160 of 315 stuck
+  starvers had a boulder in view; the BFS never walks through boulders outside Sokoban)
+- Change: `boulders.push_candidates` / `nothing_left`; `global_logic.push_boulders` (every 20 steps, only when no
+  frontier and no reachable stairs down, not in Sokoban, cap 30 pushes per level); counters `boulder_push_try`,
+  `boulder_pushed`
+- Candidate `ec1a2c09`; baseline `6a840f2`; primary metric `starved`
+- Smoke (22 boulder-stuck starver seeds): pushed in 10/22, starved/fainted 22 -> 11; one baseline-type crash
+  (107 pushes) -> cap added
+- Bench @ 2304: pushed in 849 games; starved-to-death end reasons 122 -> 96; no new exception types
+- Mechanism @ 2304 (95%): free5 +0.6 [-0.9, +2.1], died +0.1 [-0.9, +1.1], dlvl10 +0.8 [-0.9, +2.5], rung7 +0.1
+  [-1.2, +1.5]; all in the right direction, none significant
+- Verdict: no measurable difference @ 2304 (job 41), starved -1.4 [-2.9, +0.1] (upper bound just above 0) ->
+  dropped by protocol; branch kept as a near-miss to combine with a later food/prayer fix
