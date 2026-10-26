@@ -950,7 +950,7 @@ local `archive/` tag (restore with `git branch <name> archive/<name>`), then the
 ## Phase 2: real descent
 
 Phase 2 baseline: `6502ae339853c3d24570865816b1ddedfe19b566` (tag `p2-baseline`, job 33, 2304 seeded games)
-Current baseline: `6502ae339853c3d24570865816b1ddedfe19b566`
+Current baseline: `c429830bb141542147c8740921b310e631dc8c95`
 
 Measurement only on top of `p1-final`: exact Mines' End rung from the game's own dungeon table (02-01), a stuck
 report each time the stuck watch gives up, end level, watchdog stack, metric `free5` (02-02/02-03).
@@ -993,7 +993,7 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 | 10 | `exp/mines-end` | Mines' End goal ends on the real bottom (screen) | `b06d9fe` | `6502ae3` | rung7 | no measurable difference @ 2304 | +0.0 [-0.2, +0.3] | dropped |
 | 11 | `exp/stuck-1` | frontier-first when stuck (DESC-03 rule) | `73c4584` | `6502ae3` | free5 | no measurable difference @ 2304 | +0.9 [-0.4, +2.2] | dropped |
 | 12 | `exp/stuck-2` | clear-way: cross known traps, wait out peacefuls (DESC-03 rule 2) | `609ca19` | `6502ae3` | free5 | no measurable difference @ 2304 | +0.6 [-0.2, +1.4] | dropped |
-| 13 | `exp/standoff` | fight standoff: ignore far monsters that stood still 20+ turns | `99b0a2b` | `6502ae3` | free5 | pending | - | - |
+| 13 | `exp/standoff` | fight standoff: ignore far monsters that stood still 20+ turns | `99b0a2b` | `6502ae3` | free5 | better @ 2304 | +1.9 [+0.1, +3.7] | kept |
 
 #### Experiment 10: `exp/mines-end` - Mines' End goal ends on the real bottom, judged from the screen
 - Requirement / decisions: DESC-01 (D-04: screen only, no memory)
@@ -1060,5 +1060,10 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   last checkpoint
 - Smoke (seeds 75, 896, 760, 0-18): fired in 19 of 22; no exception, no watchdog; seed 896 Dlvl 7 -> 11,
   760 6 -> 7, 75 5 -> 5
-- Mechanism (planned): starved, died, rung2, rung6, rung7, exceptions/watchdog, counter `standoff_ignored`
-- Verdict: pending
+- Mechanism: `standoff_ignored` fired in 1766 of 2304 games; starved -1.9 [-3.7, -0.1] (fewer), died -0.2
+  [-1.3, +0.9], rung2 +1.7 [-0.1, +3.5], rung6 +1.7 [-0.0, +3.5], rung7 +0.7 [-0.7, +2.2]; exceptions 59 vs 50
+  (3 new types, one game each: OverflowError global_logic, AssertionError monster_tracker, AssertionError
+  agent; inventory.py AssertionError 25 vs 16), watchdog 43 vs 49
+- Verdict: better @ 2304 (job 37), free5 +1.9 [+0.1, +3.7], detectable 1.8 -> kept; merged to main
+  (`c429830`, play code equal to the candidate, full suite 470 passed); Current baseline `c429830`.
+  The first Phase 2 keep: the fix saves turns on every level, not only at one obstacle

@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-25)
 
 Phase: 2 (Real Descent) — READY TO EXECUTE
 Plan: 3 of 8
-Status: EXECUTING - 02-01..02-06 done (exp 10, 11, 12 dropped; baseline stays 6502ae3); gap exp 13 exp/standoff (99b0a2b) vs 6502ae3, free5, bench job 37 running; then 02-07 exp/quest-portal (84ec9b9): full suite, smoke on Dlvl 11+ seeds, rung8. PAUSE requested by owner 2026-10-25: after job 37 is decided and logged, stop; resume 02-07 next session. TOMORROW (owner, 2026-10-25): before 02-07, sanity-check sweep over reference/ (wiki pages + 3.6.6 source) for missed strategies; triage by title first, deep-read the strategy-relevant pages, write 02-KNOWLEDGE-SWEEP.md with ranked candidates
+Status: PAUSED (owner, 2026-10-26) - 02-01..02-06 done (exp 10, 11, 12 dropped); gap exp 13 exp/standoff KEPT (free5 +1.9 [+0.1, +3.7], job 37), merged, Current baseline c429830. NEXT SESSION: 1) knowledge sweep over reference/ (wiki pages + 3.6.6 source) -> 02-KNOWLEDGE-SWEEP.md with ranked candidates (owner request); 2) rebase exp/quest-portal (84ec9b9) onto c429830, full suite, smoke on Dlvl 11+ seeds, pre-register rung8 (02-07). Follow-up: 3 new one-game exception types in job 37 (OverflowError global_logic, AssertionError monster_tracker, AssertionError agent)
 Last activity: 2026-10-25 — 02-01 exact Mines End rung, 02-02 stuck reports/free5; p2-baseline job 33 running
 
 Progress: [█░░░░░░░░░] 13%
