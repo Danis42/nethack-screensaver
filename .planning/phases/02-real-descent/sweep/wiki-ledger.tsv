@@ -4,38 +4,38 @@ read-topic	(	todo
 read-topic	)	todo
 read-topic	,	todo
 read-topic	-	todo
-read-topic	0	todo
+skip-variant	0	skipped
 read-topic	1-turn ascension	todo
 skip-meta	2006 nethack.alt.org tournament	skipped
 skip-meta	2007 June nethack.alt.org tournament	skipped
 read-topic	6	todo
-read-topic	7	todo
-read-topic	8	todo
-read-topic	9	todo
-read-topic	A Hug and a Kiss	todo
+skip-variant	7	skipped
+skip-variant	8	skipped
+skip-variant	9	skipped
+skip-variant	A Hug and a Kiss	skipped
 skip-variant	A'gone	skipped
 skip-variant	A'salom	skipped
 read-topic	A	todo
 read-topic	ANSI C	todo
-read-topic	Aasimar (starting race in EvilHack)	todo
-read-topic	Aasimar (starting race in dNetHack)	todo
+skip-variant	Aasimar (starting race in EvilHack)	skipped
+skip-variant	Aasimar (starting race in dNetHack)	skipped
 skip-meta	Aasimar (starting race)	skipped
 skip-meta	Aasimar	skipped
 read-monster	Abbot	todo
 read-topic	Abbreviations	todo
 read-topic	Aberration	todo
-read-topic	Abigaba tiles	todo
+skip-meta	Abigaba tiles	skipped
 skip-meta	Abil-343.txt	skipped
 skip-meta	Ability	skipped
 skip-variant	Abominable Snowman (EvilHack)	skipped
 skip-variant	Abominable Snowman (notdNetHack)	skipped
 skip-meta	Abominable Snowman	skipped
-read-topic	AceHack	todo
+skip-variant	AceHack	skipped
 skip-variant	Acererak	skipped
 skip-variant	Acid Brand	skipped
-read-topic	Acid Mage quest	todo
-read-topic	Acid Mage	todo
-read-topic	Acid blast (monster spell)	todo
+skip-variant	Acid Mage quest	skipped
+skip-variant	Acid Mage	skipped
+skip-variant	Acid blast (monster spell)	skipped
 read-monster	Acid blob	todo
 skip-variant	Acid hound pup	skipped
 skip-variant	Acid hound	skipped
@@ -46,12 +46,12 @@ read-topic	Acid	todo
 skip-variant	Acidfall (CrecelleHack)	skipped
 skip-meta	Acidfall (disambiguation)	skipped
 read-topic	Acolyte (quest guardian)	todo
-read-topic	Acronyms	todo
+skip-variant	Acronyms	skipped
 skip-variant	Adamach	skipped
-read-topic	Adamantine	todo
+skip-variant	Adamantine	skipped
 read-topic	Adjust	todo
 read-topic	Advent calendar	todo
-read-topic	Afraid	todo
+skip-variant	Afraid	skipped
 skip-variant	Agent	skipped
 read-topic	Aggravate monster	todo
 read-topic	Aggravate	todo
@@ -59,10 +59,10 @@ skip-meta	Aggravation	skipped
 skip-variant	Aglaope	skipped
 skip-variant	Ahazu	skipped
 skip-meta	Air (disambiguation)	skipped
-read-topic	Air (god)	todo
-read-topic	Air dash	todo
+skip-variant	Air (god)	skipped
+skip-variant	Air dash	skipped
 read-monster	Air elemental	todo
-read-topic	Air	todo
+skip-variant	Air	skipped
 read-topic	Akkabish tannin	todo
 read-item	Aklys	todo
 skip-translation	Aklys_zh-CN	skipped
@@ -81,7 +81,7 @@ read-topic	Alignment abuse	todo
 skip-variant	Alignment key (SLASH'EM)	skipped
 skip-variant	Alignment key (dNetHack)	skipped
 skip-meta	Alignment key	skipped
-read-topic	Alignment quest	todo
+skip-variant	Alignment quest	skipped
 read-topic	Alignment record	todo
 read-topic	Alignment	todo
 skip-translation	Alignment_ko	skipped
@@ -91,14 +91,14 @@ read-topic	Altar farming	todo
 read-topic	Altar	todo
 read-topic	Alternate item names	todo
 skip-variant	Alucard	skipped
-read-topic	Amaterasu Omikami	todo
+skip-variant	Amaterasu Omikami	skipped
 read-topic	American Standard Code for Information Interchange	todo
 skip-variant	Amethyst stone	skipped
 skip-translation	Amethyst stone_zh-CN	skipped
 read-topic	Amiga	todo
 skip-variant	Ammit	skipped
 read-topic	Amnesia	todo
-read-topic	Amoeboid	todo
+skip-variant	Amoeboid	skipped
 skip-variant	Amon	skipped
 read-topic	Amorphous	todo
 read-topic	Amphibious	todo
@@ -141,11 +141,11 @@ read-topic	Amulet	todo
 skip-translation	Amulet_ru	skipped
 skip-translation	Amulet_zh-CN	skipped
 skip-variant	Anachrononaut (player monster)	skipped
-read-topic	Anachrononaut quest	todo
-read-topic	Anachrononaut	todo
+skip-variant	Anachrononaut quest	skipped
+skip-variant	Anachrononaut	skipped
 skip-meta	Ancient (disambiguation)	skipped
 read-topic	Ancient Domains of Mystery	todo
-read-topic	Ancient arrow	todo
+skip-variant	Ancient arrow	skipped
 skip-variant	Ancient naga	skipped
 read-topic	Ancient of blessings	todo
 read-topic	Ancient of corruption	todo
@@ -160,12 +160,12 @@ skip-variant	Andrealphus	skipped
 read-topic	Andries Brouwer	todo
 read-topic	Android quest	todo
 skip-variant	Android visor	skipped
-read-topic	Android	todo
+skip-variant	Android	skipped
 skip-variant	Andromalius	skipped
-read-topic	Angband OpenSource Initiative	todo
+skip-variant	Angband OpenSource Initiative	skipped
 skip-variant	Angband orc	skipped
-read-topic	Angband	todo
-read-topic	Angel (starting race)	todo
+skip-variant	Angband	skipped
+skip-variant	Angel (starting race)	skipped
 read-monster	Angel	todo
 read-topic	Angelic and demonic maledictions	todo
 read-topic	Angelic being	todo
@@ -175,14 +175,14 @@ read-topic	Anger	todo
 read-topic	Angle bracket	todo
 read-topic	Anhur	todo
 read-topic	Animal	todo
-read-topic	Annam	todo
+skip-variant	Annam	skipped
 read-topic	Annotate	todo
-read-topic	Anshar	todo
+skip-variant	Anshar	skipped
 read-topic	Ant or other insect	todo
 skip-meta	Ant	skipped
 read-topic	Anthole	todo
 read-topic	Anti-magic field	todo
-read-topic	Anti-matter vortex (NetHack brass)	todo
+skip-variant	Anti-matter vortex (NetHack brass)	skipped
 skip-meta	Anti-matter vortex	skipped
 skip-variant	Antimatter vortex (EvilHack)	skipped
 read-topic	Anu	todo
@@ -195,8 +195,8 @@ skip-variant	Aphrodite (SLASH'EM)	skipped
 skip-variant	Aphrodite (UnNetHack)	skipped
 skip-meta	Aphrodite	skipped
 read-topic	Apocalypse angel	todo
-read-topic	Apollo	todo
-read-topic	Apollon	todo
+skip-variant	Apollo	skipped
+skip-variant	Apollon	skipped
 skip-variant	Apollyon	skipped
 skip-variant	Apple pie	skipped
 read-item	Apple	todo
@@ -207,7 +207,7 @@ skip-variant	Apprentice witch	skipped
 read-monster	Apprentice	todo
 skip-meta	Apron	skipped
 skip-meta	Arachnid (disambiguation)	skipped
-read-topic	Arachnid (monster attribute)	todo
+skip-variant	Arachnid (monster attribute)	skipped
 read-topic	Arachnid or centipede	todo
 skip-variant	Arc bug	skipped
 skip-variant	Arcadian avenger	skipped
@@ -240,16 +240,16 @@ skip-meta	Arctic fern	skipped
 skip-variant	Argentum golem	skipped
 read-topic	Arioch	todo
 skip-variant	Arm (dNetHack)	skipped
-read-topic	Arm blaster	todo
+skip-variant	Arm blaster	skipped
 skip-meta	Arm	skipped
 read-topic	Armor class	todo
 skip-variant	Armor of Retribution	skipped
-read-topic	Armor shredding	todo
+skip-variant	Armor shredding	skipped
 read-topic	Armor	todo
 skip-translation	Armor_zh-CN	skipped
 read-topic	Armored boots	todo
 skip-meta	Armr-343.txt	skipped
-read-topic	Arrow (attack type)	todo
+skip-variant	Arrow (attack type)	skipped
 read-topic	Arrow and dart trap	todo
 read-item	Arrow	todo
 skip-translation	Arrow_zh-CN	skipped
@@ -267,7 +267,7 @@ read-topic	Ascension kit	todo
 read-topic	Ascension run	todo
 read-topic	Ascension.run	todo
 read-topic	Ascension	todo
-read-topic	Ash	todo
+skip-variant	Ash	skipped
 read-monster	Ashikaga Takauji	todo
 skip-variant	Ashmar	skipped
 skip-variant	Ashwood staff	skipped
@@ -296,7 +296,7 @@ skip-variant	Atgeir (dNetHack)	skipped
 skip-meta	Atgeir	skipped
 read-item	Athame	todo
 skip-translation	Athame_zh-CN	skipped
-read-topic	Atheist	todo
+skip-meta	Atheist	skipped
 read-topic	Athena	todo
 skip-variant	Atlantean Royal Sword	skipped
 skip-variant	Atlatl (EvilHack)	skipped
@@ -314,7 +314,7 @@ skip-variant	Auto shotgun (SLASH'EM)	skipped
 skip-variant	Auto shotgun (dNetHack)	skipped
 skip-meta	Auto shotgun	skipped
 read-topic	Auto-identify	todo
-read-topic	Autocursing	todo
+skip-variant	Autocursing	skipped
 skip-translation	Autocursing_ko	skipped
 read-topic	Autoexplore	todo
 read-topic	Automatic searching	todo
@@ -322,17 +322,17 @@ skip-variant	Auton	skipped
 read-topic	Autopickup exception	todo
 read-topic	Autopickup	todo
 skip-variant	Avatar of Lolth	skipped
-read-topic	Avian	todo
+skip-variant	Avian	skipped
 read-topic	Axe (skill)	todo
 read-item	Axe	todo
 skip-translation	Axe_ko	skipped
 skip-translation	Axe_zh-CN	skipped
-read-topic	Axiomatic	todo
+skip-variant	Axiomatic	skipped
 read-topic	Axolotl	todo
 read-topic	B	todo
 skip-meta	BDSM	skipped
 skip-translation	BDSM_zh-CN	skipped
-read-topic	BFG	todo
+skip-variant	BFG	skipped
 read-topic	BSD	todo
 read-topic	BUC	todo
 skip-variant	Baalzebub's Lair (SpliceHack)	skipped
@@ -370,8 +370,8 @@ read-monster	Baby silver dragon	todo
 skip-variant	Baby stone dragon	skipped
 read-monster	Baby white dragon	todo
 read-monster	Baby yellow dragon	todo
-read-topic	Back At Ya	todo
-read-topic	Backslash	todo
+skip-variant	Back At Ya	skipped
+skip-variant	Backslash	skipped
 read-topic	Backstab	todo
 read-topic	Bad Idea	todo
 skip-variant	Bad egg	skipped
@@ -395,13 +395,13 @@ read-monster	Baluchitherium	todo
 read-item	Banana	todo
 skip-translation	Banana_ko	skipped
 skip-translation	Banana_zh-CN	skipped
-read-topic	Band (helm)	todo
+skip-variant	Band (helm)	skipped
 skip-meta	Band	skipped
-read-topic	Bandage	todo
+skip-variant	Bandage	skipped
 read-item	Banded mail	todo
 skip-translation	Banded mail_zh-CN	skipped
 skip-variant	Bandersnatch	skipped
-read-topic	Bands (weapon)	todo
+skip-variant	Bands (weapon)	skipped
 read-topic	Bane	todo
 skip-variant	Baphomet (EvilHack)	skipped
 skip-variant	Baphomet (SpliceHack)	skipped
@@ -421,20 +421,20 @@ skip-variant	Barbarian_dNetHack	skipped
 read-monster	Barbed devil	todo
 skip-variant	Bard (dNetHack monster)	skipped
 read-topic	Bard (player monster)	todo
-read-topic	Bard quest	todo
+skip-variant	Bard quest	skipped
 read-topic	Bard	todo
 skip-variant	Bard_SlashTHEM	skipped
 read-item	Bardiche	todo
 skip-translation	Bardiche_zh-CN	skipped
 skip-variant	Barding (item)	skipped
 skip-variant	Barding of reflection	skipped
-read-topic	Barding	todo
+skip-variant	Barding	skipped
 read-topic	Bare hands	todo
 skip-variant	Barghest	skipped
 skip-variant	Barking spider	skipped
 read-topic	Barracks	todo
 read-monster	Barrow wight	todo
-read-topic	Base attack bonus	todo
+skip-variant	Base attack bonus	skipped
 read-topic	Base attributes	todo
 read-topic	Base item	todo
 skip-variant	Baseball bat (Hack'EM)	skipped
@@ -460,14 +460,14 @@ skip-variant	Bearded devil (SLASH'EM)	skipped
 skip-meta	Bearded devil	skipped
 read-item	Beartrap	todo
 skip-translation	Beartrap_zh-CN	skipped
-read-topic	Beast crusher	todo
+skip-variant	Beast crusher	skipped
 skip-variant	Bebelith	skipped
 read-item	Bec de corbin	todo
 skip-translation	Bec de corbin_zh-CN	skipped
 skip-variant	Bed	skipped
 skip-meta	Bee	skipped
 read-topic	Beehive	todo
-read-topic	Beginner's guide to NetHack sources	todo
+skip-meta	Beginner's guide to NetHack sources	skipped
 read-topic	Beginner	todo
 read-topic	Beheading and bisection	todo
 skip-variant	Beholder (EvilHack)	skipped
@@ -492,21 +492,21 @@ skip-meta	Belt	skipped
 skip-variant	Berator	skipped
 skip-variant	Berith	skipped
 skip-variant	Berserk (EvilHack)	skipped
-read-topic	Berserk (technique)	todo
+skip-variant	Berserk (technique)	skipped
 skip-meta	Berserk	skipped
 read-topic	Best of RGRN	todo
-read-topic	Bestial claw	todo
+skip-variant	Bestial claw	skipped
 read-topic	Big Room	todo
 skip-variant	Big Stick	skipped
 skip-variant	Bilbo Baggins	skipped
 read-item	Bill-guisarme	todo
 skip-translation	Bill-guisarme_zh-CN	skipped
-read-topic	Binder quest	todo
-read-topic	Binder	todo
+skip-variant	Binder quest	skipped
+skip-variant	Binder	skipped
 read-topic	Binding keys	todo
-read-topic	Biodiversity patch	todo
-read-topic	Biodiversity patch_Priest quest	todo
-read-topic	Bird	todo
+skip-meta	Biodiversity patch	skipped
+skip-meta	Biodiversity patch_Priest quest	skipped
+skip-variant	Bird	skipped
 read-topic	Bite attack	todo
 skip-meta	Bite	skipped
 skip-variant	Black Horse (EvilHack)	skipped
@@ -533,10 +533,10 @@ skip-variant	Black rat	skipped
 skip-variant	Black signet ring	skipped
 skip-variant	Black troll	skipped
 skip-variant	Black wasp	skipped
-read-topic	Blackbeard's Ghost	todo
+skip-variant	Blackbeard's Ghost	skipped
 skip-variant	Blacksmith hammer	skipped
 skip-variant	Blacksmith	skipped
-read-topic	Blade of mercy	todo
+skip-variant	Blade of mercy	skipped
 skip-meta	Bladed	skipped
 skip-meta	Blank paper	skipped
 skip-translation	Blank paper_zh-CN	skipped
@@ -548,7 +548,7 @@ skip-variant	Blazing fern sprout (UnNetHack)	skipped
 skip-meta	Blazing fern sprout	skipped
 skip-meta	Blazing fern	skipped
 skip-variant	Blessed (monster)	skipped
-read-topic	Blessing (technique)	todo
+skip-variant	Blessing (technique)	skipped
 skip-meta	Blessing	skipped
 skip-variant	Blibdoolpoolp's mindgraven champion	skipped
 skip-variant	Blibdoolpoolp, graven-into-flesh	skipped
@@ -558,7 +558,7 @@ read-item	Blindfold	todo
 skip-translation	Blindfold_zh-CN	skipped
 read-topic	Blindness resistance	todo
 read-topic	Blindness	todo
-read-topic	Blink	todo
+skip-variant	Blink	skipped
 skip-variant	Blinking eye	skipped
 skip-variant	Blob of preserved organs	skipped
 read-topic	Blob	todo
@@ -570,7 +570,7 @@ skip-meta	Blood-red potion	skipped
 skip-variant	Blood-spear	skipped
 read-topic	Bloodborne	todo
 skip-variant	Bloodletter	skipped
-read-topic	Bloodsense	todo
+skip-variant	Bloodsense	skipped
 skip-variant	Bloodshot eye	skipped
 read-topic	Bloodthirsty	todo
 skip-variant	Bloodworm	skipped
@@ -584,8 +584,8 @@ read-topic	Body armor	todo
 skip-translation	Body armor_zh-CN	skipped
 skip-meta	Body parts	skipped
 skip-variant	Body shape (dNetHack)	skipped
-read-topic	Bodyglove	todo
-read-topic	Bokrug, the water-lizard	todo
+skip-variant	Bodyglove	skipped
+skip-variant	Bokrug, the water-lizard	skipped
 skip-variant	Bolg	skipped
 skip-variant	Bomb	skipped
 read-monster	Bone devil	todo
@@ -601,45 +601,45 @@ skip-translation	Book of the Dead_zh-CN	skipped
 skip-meta	Book	skipped
 skip-translation	Book_zh-CN	skipped
 read-topic	Boomerang (skill)	todo
-read-topic	Boomerang Boulders	todo
+skip-variant	Boomerang Boulders	skipped
 read-item	Boomerang	todo
 skip-translation	Boomerang_zh-CN	skipped
 read-topic	Boots	todo
 skip-translation	Boots_zh-CN	skipped
-read-topic	Booze (technique)	todo
+skip-variant	Booze (technique)	skipped
 skip-meta	Booze	skipped
-read-topic	Borrow	todo
+skip-variant	Borrow	skipped
 read-topic	Bot	todo
 skip-meta	Bottle (disambiguation)	skipped
-read-topic	Boulder Halls of Zim	todo
+skip-variant	Boulder Halls of Zim	skipped
 read-topic	Boulder fort	todo
 read-item	Boulder	todo
 skip-variant	Bourbon	skipped
 skip-variant	Bovine	skipped
 read-topic	Bow (skill)	todo
-read-topic	Bow-blade	todo
+skip-variant	Bow-blade	skipped
 read-item	Bow	todo
 skip-translation	Bow_zh-CN	skipped
 skip-meta	Box	skipped
 skip-translation	Box_zh-CN	skipped
 skip-variant	Bracers (item)	skipped
 skip-variant	Bracers of the First Circle	skipped
-read-topic	Bracers	todo
+skip-variant	Bracers	skipped
 skip-variant	Brain golem	skipped
 read-topic	Branch	todo
 read-topic	Branchport	todo
 skip-meta	Brand	skipped
-read-topic	Brass interface patch	todo
-read-item	Brass lantern	todo
+skip-variant	Brass interface patch	skipped
+skip-variant	Brass lantern	skipped
 skip-translation	Brass lantern_zh-CN	skipped
-read-topic	Breaking wheel	todo
+skip-variant	Breaking wheel	skipped
 skip-meta	Breath (disambiguation)	skipped
-read-topic	Breath timer	todo
+skip-variant	Breath timer	skipped
 read-topic	Breath	todo
 read-topic	Breathless	todo
 read-topic	Bribe	todo
-read-topic	Brigit	todo
-read-topic	Bring 'em On Down	todo
+skip-meta	Brigit	skipped
+skip-variant	Bring 'em On Down	skipped
 skip-variant	Broadsword (dNetHack)	skipped
 read-topic	Broadsword (skill)	todo
 read-item	Broadsword	todo
@@ -651,13 +651,13 @@ skip-variant	Broken shadow	skipped
 skip-variant	Bronze (EvilHack)	skipped
 read-item	Bronze plate mail	todo
 skip-translation	Bronze plate mail_zh-CN	skipped
-read-topic	Brood wasp	todo
+skip-variant	Brood wasp	skipped
 read-monster	Brown mold	todo
 skip-variant	Brown moldier	skipped
 read-monster	Brown pudding	todo
 skip-variant	Brownie	skipped
-read-topic	BrowserHack	todo
-read-topic	Buckler	todo
+skip-variant	BrowserHack	skipped
+skip-variant	Buckler	skipped
 skip-variant	Buer (dNetHack)	skipped
 skip-meta	Buer	skipped
 skip-meta	Bug (disambiguation)	skipped
@@ -695,13 +695,13 @@ read-topic	C343-23	todo
 read-topic	CAPNTHLA	todo
 read-topic	CWI license	todo
 skip-variant	Call undead (EvilHack)	skipped
-read-topic	Call undead	todo
+skip-variant	Call undead	skipped
 read-topic	Call	todo
-read-topic	Calm steed	todo
-read-topic	Camaxtli	todo
+skip-variant	Calm steed	skipped
+skip-variant	Camaxtli	skipped
 read-item	Can of grease	todo
 skip-translation	Can of grease_zh-CN	skipped
-read-topic	Cancellation (monster spell)	todo
+skip-variant	Cancellation (monster spell)	skipped
 read-topic	Cancellation	todo
 read-item	Candelabrum of Invocation	todo
 skip-translation	Candelabrum of Invocation_ko	skipped
@@ -711,22 +711,22 @@ skip-meta	Candle	skipped
 skip-translation	Candle_zh-CN	skipped
 read-item	Candy bar	todo
 skip-translation	Candy bar_zh-CN	skipped
-read-topic	Cane	todo
+skip-variant	Cane	skipped
 read-topic	Canine	todo
 read-topic	Cannibalism	todo
 skip-variant	Capelet	skipped
 read-monster	Captain	todo
 skip-variant	Carcosan courtier	skipped
-read-topic	Carcosan sting	todo
-read-topic	Carmilla	todo
+skip-variant	Carcosan sting	skipped
+skip-variant	Carmilla	skipped
 read-topic	Carnivore	todo
 read-monster	Carnivorous ape	todo
 skip-variant	Carrion crawler	skipped
 read-item	Carrot	todo
 skip-translation	Carrot_ko	skipped
 skip-translation	Carrot_zh-CN	skipped
-read-topic	Cartomancer	todo
-read-topic	Cartouche of the Cat Lord	todo
+skip-variant	Cartomancer	skipped
+skip-variant	Cartouche of the Cat Lord	skipped
 skip-variant	Cassilda the Iron Maiden	skipped
 skip-variant	Castle (UnNetHack)	skipped
 read-topic	Castle	todo
@@ -753,7 +753,7 @@ skip-variant	Celestial dragon	skipped
 skip-variant	Centaur (EvilHack)	skipped
 read-topic	Centaur (monster class)	todo
 read-topic	Centaur (monster)	todo
-read-topic	Centaur (starting race)	todo
+skip-variant	Centaur (starting race)	skipped
 skip-meta	Centaur	skipped
 skip-variant	Center of All	skipped
 read-monster	Centipede	todo
@@ -763,26 +763,26 @@ skip-variant	Cerberus (dNetHack)	skipped
 read-monster	Cerberus (monster)	todo
 skip-variant	Cerberus (xNetHack)	skipped
 skip-meta	Cerberus	skipped
-read-topic	Cerulean Sign	todo
-read-topic	Chain (item type)	todo
+skip-variant	Cerulean Sign	skipped
+skip-variant	Chain (item type)	skipped
 read-item	Chain mail	todo
 skip-translation	Chain mail_zh-CN	skipped
 skip-meta	Chain	skipped
-read-topic	Chained blitz	todo
+skip-variant	Chained blitz	skipped
 skip-variant	Chakram (dNetHack)	skipped
-read-topic	Chakram	todo
+skip-variant	Chakram	skipped
 read-monster	Chameleon	todo
 skip-variant	Champion (monster)	skipped
 skip-variant	Changed (monster)	skipped
-read-topic	Changed	todo
-read-topic	Changeling (starting race)	todo
+skip-variant	Changed	skipped
+skip-variant	Changeling (starting race)	skipped
 skip-variant	Chaos Quest (dNetHack)	skipped
-read-topic	Chaos Temple Quest	todo
-read-topic	Chaos	todo
-read-topic	Chaotic Quest	todo
-read-topic	Chaotic angels and minions	todo
+skip-variant	Chaos Temple Quest	skipped
+skip-variant	Chaos	skipped
+skip-variant	Chaotic Quest	skipped
+skip-variant	Chaotic angels and minions	skipped
 skip-meta	Character	skipped
-read-topic	Charge saber	todo
+skip-variant	Charge saber	skipped
 read-topic	Charge	todo
 read-topic	Charisma	todo
 read-topic	Charm	todo
@@ -795,26 +795,26 @@ skip-translation	Cheap plastic imitation of the Amulet of Yendor_zh-CN	skipped
 read-topic	Cheating	todo
 skip-variant	Cheese	skipped
 read-topic	Chef quest	todo
-read-topic	Chef	todo
+skip-variant	Chef	skipped
 skip-variant	Chemistry set	skipped
 read-item	Chest	todo
 skip-translation	Chest_zh-CN	skipped
-read-topic	Chi healing	todo
-read-topic	Chi strike	todo
+skip-variant	Chi healing	skipped
+skip-variant	Chi strike	skipped
 read-monster	Chickatrice	todo
 skip-variant	Chicken (SLASH'EM)	skipped
 skip-variant	Chicken (SpliceHack)	skipped
 skip-meta	Chicken	skipped
 skip-variant	Chief Yeoman Warder	skipped
 read-monster	Chieftain	todo
-read-topic	Chih Sung-tzu	todo
-read-topic	Chikage	todo
+skip-variant	Chih Sung-tzu	skipped
+skip-variant	Chikage	skipped
 skip-variant	Chill bug (notdNetHack)	skipped
 skip-variant	Chillbug (SlashTHEM)	skipped
 skip-variant	Chillbug (UnNetHack)	skipped
 skip-meta	Chillbug	skipped
 skip-variant	Chiropteran (monster)	skipped
-read-topic	Chiropteran (starting race)	todo
+skip-variant	Chiropteran (starting race)	skipped
 skip-variant	Chiropteran mummy	skipped
 skip-meta	Chiropteran	skipped
 skip-meta	Choking	skipped
@@ -836,8 +836,8 @@ skip-variant	Chunk of fossil dark	skipped
 skip-variant	Chupoclops	skipped
 skip-variant	Church blade	skipped
 skip-variant	Church-hammer	skipped
-read-topic	Church-pick	todo
-read-topic	Circle of Acheron	todo
+skip-variant	Church-pick	skipped
+skip-variant	Circle of Acheron	skipped
 skip-variant	City of Brass	skipped
 read-topic	Clairvoyance	todo
 skip-variant	Clairvoyant changed	skipped
@@ -846,7 +846,7 @@ read-topic	Claw attack	todo
 skip-meta	Claw	skipped
 read-monster	Clay golem	todo
 skip-meta	Clear potion	skipped
-read-topic	Clear thoughts	todo
+skip-variant	Clear thoughts	skipped
 read-item	Cleaver	todo
 read-topic	Cleric (player monster)	todo
 read-topic	Cleric quest	todo
@@ -856,7 +856,7 @@ read-topic	Clerical spells	todo
 read-item	Cloak of displacement	todo
 skip-translation	Cloak of displacement_ko	skipped
 skip-translation	Cloak of displacement_zh-CN	skipped
-read-topic	Cloak of flight (notnotdNetHack)	todo
+skip-variant	Cloak of flight (notnotdNetHack)	skipped
 skip-variant	Cloak of flight	skipped
 read-item	Cloak of invisibility	todo
 skip-translation	Cloak of invisibility_ko	skipped
@@ -869,9 +869,9 @@ skip-translation	Cloak of protection_zh-CN	skipped
 read-topic	Cloak	todo
 skip-translation	Cloak_ko	skipped
 skip-translation	Cloak_zh-CN	skipped
-read-topic	Clockwork Automaton (starting race)	todo
+skip-variant	Clockwork Automaton (starting race)	skipped
 skip-meta	Clockwork automaton	skipped
-read-topic	Clockwork	todo
+skip-variant	Clockwork	skipped
 skip-meta	Clone	skipped
 read-topic	Close	todo
 read-topic	Closet	todo
@@ -891,11 +891,11 @@ read-monster	Cockatrice	todo
 read-topic	Cold resistance	todo
 skip-translation	Cold resistance_ko	skipped
 read-topic	Cold	todo
-read-topic	Collecting Marbles	todo
-read-topic	Colon	todo
+skip-variant	Collecting Marbles	skipped
+skip-variant	Colon	skipped
 skip-variant	Colonel Blood	skipped
-read-topic	Colors	todo
-read-topic	Column B	todo
+skip-meta	Colors	skipped
+skip-variant	Column B	skipped
 skip-variant	Columnar crystal	skipped
 read-topic	Combat	todo
 read-topic	Comestible	todo
@@ -904,14 +904,14 @@ skip-translation	Comestible_zh-CN	skipped
 read-topic	Command	todo
 read-topic	Commands (by key)	todo
 read-topic	Comments	todo
-read-topic	Compile-time options	todo
-read-topic	Compiling (3.4.3)	todo
-read-topic	Compiling (3.6.0)	todo
+skip-meta	Compile-time options	skipped
+skip-meta	Compiling (3.4.3)	skipped
+skip-meta	Compiling (3.6.0)	skipped
 skip-variant	Compiling (SLASH'EM)	skipped
-read-topic	Compiling	todo
-read-topic	Computer parts	todo
+skip-meta	Compiling	skipped
+skip-variant	Computer parts	skipped
 skip-meta	Con	skipped
-read-topic	Conduct	todo
+skip-meta	Conduct	skipped
 read-topic	Cone of cold (monster spell)	todo
 skip-meta	Cone of cold	skipped
 skip-meta	Conf	skipped
@@ -929,7 +929,7 @@ skip-translation	Container_zh-CN	skipped
 read-topic	Convert	todo
 skip-variant	Convict (dNetHack monster)	skipped
 read-topic	Convict (player monster)	todo
-read-topic	Convict quest	todo
+skip-variant	Convict quest	skipped
 skip-variant	Convict quest_EvilHack	skipped
 skip-variant	Convict quest_dNetHack	skipped
 read-topic	Convict	todo
@@ -940,7 +940,7 @@ skip-variant	Convict_SlashTHEM	skipped
 skip-variant	Convict_SpliceHack	skipped
 skip-variant	Convict_UnNetHack	skipped
 skip-variant	Convict_dNetHack	skipped
-read-topic	Cooking	todo
+skip-variant	Cooking	skipped
 read-topic	Copper	todo
 skip-translation	Copper_ko	skipped
 read-item	Cornuthaum	todo
@@ -950,10 +950,10 @@ skip-translation	Corpse_ko	skipped
 skip-translation	Corpse_zh-CN	skipped
 read-topic	Corpseless	todo
 read-topic	Corridor	todo
-read-topic	Corsair quest	todo
-read-topic	Corsair	todo
+skip-variant	Corsair quest	skipped
+skip-variant	Corsair	skipped
 read-monster	Couatl	todo
-read-topic	Count Carefully	todo
+skip-variant	Count Carefully	skipped
 skip-variant	Count Dracula	skipped
 skip-variant	Coven leader	skipped
 read-topic	Covetous	todo
@@ -964,8 +964,8 @@ read-item	Cream pie	todo
 skip-translation	Cream pie_zh-CN	skipped
 read-topic	Create ammo	todo
 skip-meta	Create monster	skipped
-read-topic	Create pool	todo
-read-topic	CrecelleHack	todo
+skip-variant	Create pool	skipped
+skip-variant	CrecelleHack	skipped
 read-topic	CrecelleHack_Artifacts	todo
 read-topic	CrecelleHack_Coatings	todo
 read-topic	CrecelleHack_Day_Night Cycle	todo
@@ -977,16 +977,16 @@ skip-translation	Credit card_zh-CN	skipped
 read-topic	Credit cloning	todo
 skip-variant	Creeping mound	skipped
 skip-variant	Crimson moon-lotus	skipped
-read-topic	Critical strike	todo
+skip-variant	Critical strike	skipped
 read-monster	Crocodile	todo
 read-monster	Croesus	todo
-read-topic	Crom	todo
+skip-variant	Crom	skipped
 read-topic	Crossbow (skill)	todo
 read-item	Crossbow bolt	todo
 skip-translation	Crossbow bolt_zh-CN	skipped
 read-item	Crossbow	todo
 skip-translation	Crossbow_zh-CN	skipped
-read-topic	Crow quill	todo
+skip-variant	Crow quill	skipped
 skip-variant	Crow	skipped
 skip-variant	Crown Royal Cloak	skipped
 read-topic	Crowning	todo
@@ -996,14 +996,14 @@ skip-translation	Crysknife_zh-CN	skipped
 skip-variant	Crystal (dNetHack)	skipped
 read-item	Crystal ball	todo
 skip-translation	Crystal ball_zh-CN	skipped
-read-topic	Crystal boots	todo
+skip-variant	Crystal boots	skipped
 skip-variant	Crystal chest	skipped
-read-topic	Crystal gauntlets	todo
+skip-variant	Crystal gauntlets	skipped
 skip-variant	Crystal golem	skipped
 skip-variant	Crystal helm (dNetHack)	skipped
 skip-meta	Crystal helm	skipped
 skip-variant	Crystal ice golem	skipped
-read-topic	Crystal ice wall	todo
+skip-variant	Crystal ice wall	skipped
 skip-variant	Crystal ooze	skipped
 skip-variant	Crystal pick	skipped
 read-item	Crystal plate mail	todo
@@ -1011,9 +1011,9 @@ skip-translation	Crystal plate mail_zh-CN	skipped
 skip-variant	Crystal shield (dNetHack)	skipped
 skip-meta	Crystal shield	skipped
 skip-variant	Crystal skull	skipped
-read-topic	Crystal sword	todo
+skip-variant	Crystal sword	skipped
 skip-meta	Crystal	skipped
-read-topic	Crystals (artifacts)	todo
+skip-variant	Crystals (artifacts)	skipped
 skip-variant	Cthulhu	skipped
 read-topic	Ctrl	todo
 skip-variant	Cult (dNetHack)	skipped
@@ -1022,29 +1022,29 @@ read-topic	Cure self	todo
 skip-meta	Curly bracket	skipped
 read-topic	Curse items	todo
 read-topic	Curse removal	todo
-read-topic	Curse resistance	todo
+skip-variant	Curse resistance	skipped
 read-topic	Curse-testing	todo
-read-topic	Curses interface	todo
+skip-meta	Curses interface	skipped
 skip-meta	Curses	skipped
 skip-meta	Curved dagger	skipped
-read-topic	Custom map symbols (3.4.3)	todo
-read-topic	Custom map symbols	todo
+skip-meta	Custom map symbols (3.4.3)	skipped
+skip-meta	Custom map symbols	skipped
 skip-variant	Cutlass (dNetHack)	skipped
-read-topic	Cutthroat	todo
-read-topic	Cutting laser	todo
+skip-variant	Cutthroat	skipped
+skip-variant	Cutting laser	skipped
 read-monster	Cyclops	todo
 read-topic	D (function)	todo
 read-topic	D notation	todo
 read-topic	D	todo
-read-topic	DECgraphics	todo
-read-topic	DNHslex	todo
-read-topic	DNetHack Items	todo
-read-topic	DNetHack artifact wishing	todo
-read-topic	DNetHack artifacts	todo
-read-topic	DNetHack from Nethack	todo
-read-topic	DNetHack monster spells	todo
-read-topic	DNetHack	todo
-read-topic	Daedalus Delicatessen	todo
+skip-meta	DECgraphics	skipped
+skip-variant	DNHslex	skipped
+skip-variant	DNetHack Items	skipped
+skip-variant	DNetHack artifact wishing	skipped
+skip-variant	DNetHack artifacts	skipped
+skip-variant	DNetHack from Nethack	skipped
+skip-variant	DNetHack monster spells	skipped
+skip-variant	DNetHack	skipped
+skip-variant	Daedalus Delicatessen	skipped
 skip-variant	Daemon	skipped
 read-topic	Dagger (skill)	todo
 read-item	Dagger	todo
@@ -1061,7 +1061,7 @@ skip-variant	Damned pirate (SpliceHack)	skipped
 skip-variant	Damned pirate (dNetHack)	skipped
 skip-meta	Damned pirate	skipped
 skip-meta	Damp	skipped
-read-topic	Dancer	todo
+skip-variant	Dancer	skipped
 skip-variant	Dantalion	skipped
 skip-variant	Dantrag	skipped
 skip-variant	Dark Angel	skipped
@@ -1100,26 +1100,26 @@ read-topic	Dark source	todo
 skip-variant	Dark worm	skipped
 skip-variant	Dark young	skipped
 skip-meta	Dark	skipped
-read-topic	Darkness (element)	todo
-read-topic	Darkness given hunger	todo
-read-topic	Darksight	todo
+skip-variant	Darkness (element)	skipped
+skip-variant	Darkness given hunger	skipped
+skip-variant	Darksight	skipped
 read-topic	Dart (skill)	todo
 read-item	Dart	todo
 skip-translation	Dart_zh-CN	skipped
 skip-variant	Daruth Xaxox	skipped
-read-topic	Dash	todo
+skip-variant	Dash	skipped
 read-topic	Data Librarian	todo
 read-topic	Daughter of Naunet	todo
 skip-variant	Daughter of bedlam	skipped
-read-topic	Dazzle	todo
-read-topic	Dead tree	todo
+skip-variant	Dazzle	skipped
+skip-variant	Dead tree	skipped
 read-topic	Deafness	todo
 read-monster	Death (monster)	todo
 skip-variant	Death Eye	skipped
 read-topic	Death by boredom	todo
 skip-variant	Death dog	skipped
 read-topic	Death drop	todo
-read-topic	Death knight	todo
+skip-variant	Death knight	skipped
 skip-meta	Death ray	skipped
 read-topic	Death resistance	todo
 skip-meta	Death	skipped
@@ -1130,7 +1130,7 @@ skip-variant	Deathsword (SLASH'EM)	skipped
 skip-meta	Deathsword	skipped
 read-topic	Debian	todo
 read-topic	Debugging	todo
-read-topic	Deck of fate	todo
+skip-variant	Deck of fate	skipped
 skip-variant	Deep Freeze	skipped
 skip-variant	Deep dragon (SLASH'EM)	skipped
 skip-variant	Deep dragon (dNetHack)	skipped
@@ -1148,16 +1148,16 @@ skip-meta	Deeper one	skipped
 skip-variant	Deepest one (SLASH'EM)	skipped
 skip-variant	Deepest one (dNetHack)	skipped
 skip-meta	Deepest one	skipped
-read-topic	Default tileset scaled to 20x20	todo
-read-topic	Default tileset scaled to 20x30	todo
-read-topic	Default tileset scaled to 24x24	todo
-read-topic	Default tileset scaled to 32x32	todo
+skip-meta	Default tileset scaled to 20x20	skipped
+skip-meta	Default tileset scaled to 20x30	skipped
+skip-meta	Default tileset scaled to 24x24	skipped
+skip-meta	Default tileset scaled to 32x32	skipped
 read-topic	Defensive item	todo
 skip-variant	Deferred and defunct features (SlashTHEM)	skipped
 skip-variant	Deferred and defunct features (dNetHack)	skipped
 read-topic	Deferred features	todo
-read-topic	Defilement (god)	todo
-read-topic	Defilement	todo
+skip-variant	Defilement (god)	skipped
+skip-variant	Defilement	skipped
 skip-variant	Defunct features (SLASH'EM)	skipped
 skip-variant	Defunct features (SpliceHack)	skipped
 read-topic	Defunct features	todo
@@ -1165,7 +1165,7 @@ read-topic	Delayed instadeath	todo
 skip-variant	Deluder	skipped
 read-topic	Demigod bar	todo
 read-topic	Demigod	todo
-read-topic	Demihuman	todo
+skip-variant	Demihuman	skipped
 read-monster	Demilich	todo
 skip-variant	Deminymph	skipped
 skip-variant	Demogorgon (dNetHack)	skipped
@@ -1182,10 +1182,10 @@ read-item	Demonbane	todo
 read-topic	Demonia	todo
 read-item	Dented pot	todo
 skip-translation	Dented pot_zh-CN	skipped
-read-topic	Des-file format (NetHack 3.4.3)	todo
+skip-meta	Des-file format (NetHack 3.4.3)	skipped
 skip-variant	Des-file format (UnNetHack)	skipped
-read-topic	Des-file format	todo
-read-topic	Desiccation	todo
+skip-meta	Des-file format	skipped
+skip-variant	Desiccation	skipped
 read-topic	Destroy armor (monster spell)	todo
 skip-translation	Destroy armor (monster spell)_ko	skipped
 skip-meta	Destroy armor	skipped
@@ -1198,11 +1198,11 @@ skip-meta	Devil	skipped
 read-topic	Devnull Tribute	todo
 read-topic	Devteam member	todo
 read-topic	Dexterity	todo
-read-topic	Dgamelaunch mail	todo
+skip-variant	Dgamelaunch mail	skipped
 read-topic	Dgamelaunch	todo
 read-topic	Dgn comp	todo
 skip-variant	Diamond golem	skipped
-read-topic	Diana	todo
+skip-variant	Diana	skipped
 skip-variant	Dichotomy	skipped
 read-topic	Diet	todo
 read-topic	Diff	todo
@@ -1210,7 +1210,7 @@ skip-meta	Difficulty	skipped
 read-topic	Digestion	todo
 read-topic	Digging for victory	todo
 read-topic	Digging	todo
-read-topic	Dilapidated armory	todo
+skip-variant	Dilapidated armory	skipped
 read-item	Dilithium crystal	todo
 skip-translation	Dilithium crystal_zh-CN	skipped
 skip-variant	Dimensional lock	skipped
@@ -1226,7 +1226,7 @@ skip-variant	Dirge (SporkHack)	skipped
 skip-variant	Dirge (dNetHack)	skipped
 skip-meta	Dirge	skipped
 read-topic	Disappear	todo
-read-topic	Disarm (technique)	todo
+skip-variant	Disarm (technique)	skipped
 skip-meta	Disarm	skipped
 read-topic	Discoveries	todo
 read-monster	Disenchanter	todo
@@ -1236,7 +1236,7 @@ read-topic	Disintegration resistance	todo
 skip-translation	Disintegration resistance_ko	skipped
 read-topic	Disintegration	todo
 read-topic	Disintegrator	todo
-read-topic	Diskos	todo
+skip-variant	Diskos	skipped
 skip-variant	Dispater (dNetHack)	skipped
 skip-variant	Dispater's lair (SLASH'EM)	skipped
 skip-meta	Dispater's lair	skipped
@@ -1252,11 +1252,11 @@ skip-variant	Displacer beast	skipped
 skip-variant	Disrupter	skipped
 skip-variant	Dissection kit	skipped
 skip-translation	Divination spell_zh-CN	skipped
-read-topic	Divination spells	todo
+skip-variant	Divination spells	skipped
 read-topic	Division	todo
 read-monster	Djinni	todo
 read-topic	Do not pass go. Do not collect 200 zorkmids.	todo
-read-topic	Do you want your possessions identified_	todo
+skip-variant	Do you want your possessions identified_	skipped
 skip-variant	Doctor Archer	skipped
 skip-variant	Doctor Frankenstein	skipped
 skip-meta	Doesn't seem to move	skipped
@@ -1270,11 +1270,11 @@ read-topic	Door	todo
 read-topic	Doppelganger (starting race)	todo
 read-topic	Doppelganger quest	todo
 read-monster	Doppelganger	todo
-read-topic	Dot	todo
+skip-variant	Dot	skipped
 read-topic	Double Trouble	todo
 read-topic	Double damage	todo
-read-topic	Double force-blade	todo
-read-topic	Double sword	todo
+skip-variant	Double force-blade	skipped
+skip-variant	Double sword	skipped
 skip-variant	Doughnut	skipped
 skip-variant	Douglas Adams (monster)	skipped
 read-topic	Douglas Adams	todo
@@ -1285,12 +1285,12 @@ skip-variant	Dragon (SLASH'EM)	skipped
 skip-variant	Dragon (SpliceHack)	skipped
 skip-variant	Dragon (UnNetHack)	skipped
 skip-variant	Dragon (dNetHack)	skipped
-read-topic	Dragon (monster attribute)	todo
+skip-variant	Dragon (monster attribute)	skipped
 read-topic	Dragon (monster)	todo
 skip-variant	Dragon armor (dNetHack)	skipped
 skip-meta	Dragon armor	skipped
 read-topic	Dragon hide	todo
-read-topic	Dragon rider	todo
+skip-variant	Dragon rider	skipped
 read-topic	Dragon scale mail	todo
 skip-translation	Dragon scale mail_zh-CN	skipped
 read-topic	Dragon scales	todo
@@ -1313,12 +1313,12 @@ skip-variant	Drauglir	skipped
 skip-variant	Draugr (EvilHack)	skipped
 read-topic	Draugr (starting race)	todo
 skip-meta	Draugr	skipped
-read-topic	Draw blood	todo
-read-topic	Draw energy	todo
+skip-variant	Draw blood	skipped
+skip-variant	Draw energy	skipped
 read-topic	Drawbridge	todo
 skip-variant	Dread seraph	skipped
 skip-variant	Dream quasielemental	skipped
-read-topic	Dreprun stave	todo
+skip-variant	Dreprun stave	skipped
 skip-meta	Dress (disambiguation)	skipped
 skip-variant	Dretch	skipped
 skip-meta	Drgn-343.txt	skipped
@@ -1326,27 +1326,27 @@ skip-variant	Drider (EvilHack)	skipped
 skip-variant	Drider (dNetHack)	skipped
 skip-meta	Drider	skipped
 read-topic	Drop	todo
-read-topic	Droven bolt	todo
-read-topic	Droven chain mail	todo
+skip-variant	Droven bolt	skipped
+skip-variant	Droven chain mail	skipped
 read-topic	Droven cloak	todo
 skip-variant	Droven crossbow	skipped
-read-topic	Droven dagger	todo
-read-topic	Droven greatsword	todo
+skip-variant	Droven dagger	skipped
+skip-variant	Droven greatsword	skipped
 read-topic	Droven helm	todo
-read-topic	Droven lance	todo
+skip-variant	Droven lance	skipped
 read-topic	Droven plate mail	todo
-read-topic	Droven short sword	todo
-read-topic	Droven spear	todo
+skip-variant	Droven short sword	skipped
+skip-variant	Droven spear	skipped
 skip-variant	Drow (EvilHack)	skipped
 skip-variant	Drow (SLASH'EM)	skipped
 skip-variant	Drow (SpliceHack)	skipped
 skip-variant	Drow (dNetHack)	skipped
-read-topic	Drow (monster attribute)	todo
+skip-variant	Drow (monster attribute)	skipped
 read-topic	Drow (starting race)	todo
-read-topic	Drow Healer quest	todo
+skip-variant	Drow Healer quest	skipped
 read-topic	Drow Healer	todo
-read-topic	Drow Noble quest	todo
-read-topic	Drow Priest	todo
+skip-variant	Drow Noble quest	skipped
+skip-variant	Drow Priest	skipped
 read-topic	Drow Racial quest	todo
 skip-variant	Drow alienist	skipped
 skip-variant	Drow cleric	skipped
@@ -1357,7 +1357,7 @@ skip-variant	Drow mummy (EvilHack)	skipped
 skip-variant	Drow mummy (dNetHack)	skipped
 skip-meta	Drow mummy	skipped
 skip-variant	Drow novice	skipped
-read-topic	Drow quest	todo
+skip-variant	Drow quest	skipped
 skip-variant	Drow raider	skipped
 skip-variant	Drow warrior	skipped
 skip-variant	Drow zombie (EvilHack)	skipped
@@ -1365,21 +1365,21 @@ skip-variant	Drow zombie (SlashTHEM)	skipped
 skip-meta	Drow zombie	skipped
 skip-meta	Drow	skipped
 read-topic	Drowning	todo
-read-topic	Druid	todo
+skip-variant	Druid	skipped
 read-item	Drum of earthquake	todo
 skip-translation	Drum of earthquake_zh-CN	skipped
 skip-meta	Drum	skipped
 skip-variant	Drunk	skipped
-read-topic	Drunkenness	todo
+skip-variant	Drunkenness	skipped
 skip-variant	Dryad	skipped
 read-topic	Dudley's dungeon	todo
 skip-variant	Duergar (SLASH'EM)	skipped
 skip-variant	Duergar (dNetHack)	skipped
 skip-meta	Duergar	skipped
-read-topic	Dumplog	todo
+skip-meta	Dumplog	skipped
 read-item	Dunce cap	todo
 skip-translation	Dunce cap_zh-CN	skipped
-read-topic	Dungeon Growths	todo
+skip-variant	Dungeon Growths	skipped
 read-topic	Dungeon feature	todo
 skip-variant	Dungeon fern (UnNetHack)	skipped
 skip-meta	Dungeon fern (disambiguation)	skipped
@@ -1387,7 +1387,7 @@ skip-variant	Dungeon fern spore (UnNetHack)	skipped
 skip-meta	Dungeon fern spore	skipped
 skip-variant	Dungeon fern sprout (UnNetHack)	skipped
 skip-meta	Dungeon fern sprout	skipped
-read-topic	Dungeon fern	todo
+skip-variant	Dungeon fern	skipped
 read-topic	Dungeon level	todo
 read-topic	Dungeon.def format	todo
 skip-meta	Dungeon	skipped
@@ -1401,9 +1401,9 @@ read-topic	Dwarf (monster attribute)	todo
 read-monster	Dwarf (monster)	todo
 read-topic	Dwarf (starting race)	todo
 skip-translation	Dwarf (starting race)_ru	skipped
-read-topic	Dwarf Knight quest	todo
-read-topic	Dwarf Knight	todo
-read-topic	Dwarf Noble quest	todo
+skip-variant	Dwarf Knight quest	skipped
+skip-variant	Dwarf Knight	skipped
+skip-variant	Dwarf Noble quest	skipped
 skip-variant	Dwarf cleric	skipped
 skip-variant	Dwarf leader	skipped
 read-monster	Dwarf mummy	todo
@@ -1435,16 +1435,16 @@ read-item	Dwarvish spear	todo
 skip-translation	Dwarvish spear_zh-CN	skipped
 read-topic	Dying	todo
 read-topic	Dylan O'Donnell	todo
-read-topic	DynaHack	todo
+skip-variant	DynaHack	skipped
 read-topic	E	todo
 read-topic	ESRB rating	todo
 read-monster	Earendil	todo
-read-topic	Earth (god)	todo
+skip-variant	Earth (god)	skipped
 skip-variant	Earth Mage	skipped
 read-monster	Earth elemental	todo
 skip-meta	Earth	skipped
 read-topic	Earthquake	todo
-read-topic	Easy Peasey	todo
+skip-variant	Easy Peasey	skipped
 read-topic	Eat	todo
 read-topic	Eating jewelry	todo
 read-topic	EbonHack	todo
@@ -1461,13 +1461,13 @@ read-item	Egg	todo
 skip-translation	Egg_zh-CN	skipped
 skip-variant	Eight ball	skipped
 read-topic	Eilistran armor	todo
-read-topic	Either Way, It's All Good	todo
+skip-variant	Either Way, It's All Good	skipped
 skip-variant	Eladrin Lords and Ladies	skipped
 skip-variant	Eladrin	skipped
 skip-variant	Elbereth (dNetHack)	skipped
 read-topic	Elbereth	todo
-read-topic	Elder Elemental Eye	todo
-read-topic	Elder Sign	todo
+skip-variant	Elder Elemental Eye	skipped
+skip-variant	Elder Sign	skipped
 skip-variant	Elder brain	skipped
 skip-variant	Elder ent	skipped
 skip-variant	Elder minotaur	skipped
@@ -1476,14 +1476,14 @@ skip-variant	Elder pseudodragon	skipped
 skip-variant	Eldritch ki-rin	skipped
 skip-variant	Electric Mage quest	skipped
 skip-variant	Electric Mage	skipped
-read-topic	Electric bug	todo
+skip-variant	Electric bug	skipped
 read-monster	Electric eel	todo
 skip-variant	Electric sword	skipped
 skip-meta	Electric	skipped
 skip-variant	Elemental (SpliceHack)	skipped
-read-topic	Elemental (monster attribute)	todo
+skip-variant	Elemental (monster attribute)	skipped
 read-topic	Elemental Planes	todo
-read-topic	Elemental fist	todo
+skip-variant	Elemental fist	skipped
 read-topic	Elemental	todo
 read-topic	Elf (monster attribute)	todo
 read-monster	Elf (monster)	todo
@@ -1495,7 +1495,7 @@ skip-variant	Elf-lady (dNetHack)	skipped
 read-topic	Elf-noble	todo
 skip-meta	Elf	skipped
 skip-variant	Elfrist	skipped
-read-topic	Elshava	todo
+skip-variant	Elshava	skipped
 read-item	Elven arrow	todo
 skip-translation	Elven arrow_zh-CN	skipped
 read-item	Elven boots	todo
@@ -1512,28 +1512,28 @@ skip-translation	Elven cloak_zh-CN	skipped
 read-item	Elven dagger	todo
 skip-translation	Elven dagger_zh-CN	skipped
 skip-variant	Elven helm (dNetHack)	skipped
-read-topic	Elven lance	todo
+skip-variant	Elven lance	skipped
 read-item	Elven leather helm	todo
 skip-translation	Elven leather helm_zh-CN	skipped
 skip-variant	Elven long sword	skipped
-read-topic	Elven mace	todo
+skip-meta	Elven mace	skipped
 read-item	Elven mithril-coat	todo
 skip-translation	Elven mithril-coat_zh-CN	skipped
 skip-variant	Elven monarch	skipped
 skip-variant	Elven ring mail	skipped
-read-topic	Elven scimitar	todo
+skip-variant	Elven scimitar	skipped
 read-item	Elven shield	todo
 skip-translation	Elven shield_zh-CN	skipped
 read-item	Elven short sword	todo
 skip-translation	Elven short sword_zh-CN	skipped
-read-topic	Elven sickle	todo
+skip-variant	Elven sickle	skipped
 read-item	Elven spear	todo
 skip-translation	Elven spear_zh-CN	skipped
 read-topic	Elven toga	todo
 skip-variant	Elven wizard	skipped
 skip-variant	Elvenqueen (dNetHack)	skipped
-read-topic	Elvish Racial quest	todo
-read-topic	Emacs	todo
+skip-variant	Elvish Racial quest	skipped
+skip-meta	Emacs	skipped
 skip-variant	Embalmer (monster)	skipped
 skip-variant	Embraced drowess	skipped
 read-topic	Emergency spell	todo
@@ -1543,7 +1543,7 @@ skip-meta	Enchant armor	skipped
 skip-meta	Enchanting	skipped
 skip-translation	Enchantment spell_zh-CN	skipped
 read-topic	Enchantment spells	todo
-read-topic	Enchantment	todo
+skip-variant	Enchantment	skipped
 read-topic	Encumbrance	todo
 read-topic	End Game	todo
 read-topic	Endgame (3.0)	todo
@@ -1560,9 +1560,9 @@ skip-variant	Enormous rat (UnNetHack)	skipped
 skip-variant	Enormous rat (dNetHack)	skipped
 skip-meta	Enormous rat	skipped
 skip-variant	Ent (EvilHack)	skipped
-read-topic	Ent (monster class)	todo
+skip-variant	Ent (monster class)	skipped
 skip-variant	Ent (notdNetHack)	skipped
-read-topic	Ent (starting race)	todo
+skip-variant	Ent (starting race)	skipped
 skip-meta	Ent	skipped
 read-topic	Environment variable	todo
 skip-variant	Equipment quality (EvilHack)	skipped
@@ -1576,8 +1576,8 @@ skip-translation	Escape spell_zh-CN	skipped
 read-topic	Escape spells	todo
 skip-meta	Escape	skipped
 read-topic	Escaping the dungeon	todo
-read-topic	Esscooahlipboourrr	todo
-read-topic	Etherealoid (starting race)	todo
+skip-variant	Esscooahlipboourrr	skipped
+skip-variant	Etherealoid (starting race)	skipped
 skip-meta	Etherealoid	skipped
 read-monster	Ettin mummy	todo
 read-monster	Ettin zombie	todo
@@ -1588,13 +1588,13 @@ skip-translation	Eucalyptus leaf_zh-CN	skipped
 skip-variant	Eurynome	skipped
 skip-variant	Eve	skipped
 skip-variant	Evelyn	skipped
-read-topic	Evil Patch Idea	todo
+skip-meta	Evil Patch Idea	skipped
 skip-variant	Evil coins	skipped
 skip-meta	Evil eye (disambiguation)	skipped
 skip-variant	Evil eye	skipped
-read-topic	Evil food	todo
-read-topic	EvilHack	todo
-read-topic	Eviscerate	todo
+skip-variant	Evil food	skipped
+skip-variant	EvilHack	skipped
+skip-variant	Eviscerate	skipped
 read-item	Excalibur	todo
 skip-variant	Executioner's mace	skipped
 skip-variant	Executioner	skipped
@@ -1606,8 +1606,8 @@ skip-variant	Expensive suit	skipped
 read-topic	Experience level	todo
 read-topic	Experience points	todo
 read-topic	Expert pudding farming	todo
-read-topic	Expert trait	todo
-read-topic	Exploding die	todo
+skip-variant	Expert trait	skipped
+skip-variant	Exploding die	skipped
 read-topic	Explore mode	todo
 read-topic	Explosion attack	todo
 read-topic	Explosion	todo
@@ -1615,8 +1615,8 @@ skip-variant	Exterminator	skipped
 read-topic	Extinction	todo
 skip-meta	Extra healing	skipped
 skip-translation	Extra healing_zh-CN	skipped
-read-topic	Extramission	todo
-read-topic	Extraterrestrial	todo
+skip-variant	Extramission	skipped
+skip-variant	Extraterrestrial	skipped
 read-topic	Eye of doom	todo
 read-topic	Eye or sphere	todo
 skip-meta	Eye	skipped
@@ -1626,12 +1626,12 @@ skip-variant	Eyeball (dNetHack)	skipped
 skip-meta	Eyeball	skipped
 read-topic	Eyeless	todo
 read-topic	F	todo
-read-topic	FIQHack	todo
-read-topic	FIQHack_Monster spellcasting	todo
-read-topic	FIQHack_New HP growth	todo
-read-topic	FIQHack_Pointers	todo
-read-topic	FIQHack_YANIs	todo
-read-topic	Faceless helm	todo
+skip-variant	FIQHack	skipped
+skip-variant	FIQHack_Monster spellcasting	skipped
+skip-variant	FIQHack_New HP growth	skipped
+skip-variant	FIQHack_Pointers	skipped
+skip-variant	FIQHack_YANIs	skipped
+skip-variant	Faceless helm	skipped
 skip-meta	Faded	skipped
 skip-variant	Fafnir	skipped
 read-topic	Fake Wizard's Tower	todo
@@ -1641,9 +1641,9 @@ skip-variant	Fallen angel	skipped
 read-topic	Falling rock trap	todo
 read-monster	Famine	todo
 read-topic	Fan labor	todo
-read-topic	Fang of apep	todo
+skip-variant	Fang of apep	skipped
 read-topic	Far look	todo
-read-topic	Farm implements	todo
+skip-variant	Farm implements	skipped
 read-topic	Farming	todo
 skip-variant	Fat cat	skipped
 skip-variant	Father Dagon (SLASH'EM)	skipped
@@ -1656,7 +1656,7 @@ skip-translation	Fedora_zh-CN	skipped
 read-topic	Feline	todo
 skip-variant	Fell beast	skipped
 skip-variant	Felt marker	skipped
-read-topic	Female Half-dragon Noble quest	todo
+skip-variant	Female Half-dragon Noble quest	skipped
 skip-variant	Fern spore (UnNetHack)	skipped
 skip-variant	Fey (dNetHack)	skipped
 read-topic	Fg	todo
@@ -1670,14 +1670,14 @@ skip-meta	File format	skipped
 read-topic	Find	todo
 skip-meta	Fire (disambiguation)	skipped
 read-topic	Fire (element)	todo
-read-topic	Fire (god)	todo
+skip-variant	Fire (god)	skipped
 skip-variant	Fire Brand (dNetHack)	skipped
 read-item	Fire Brand	todo
 skip-variant	Fire Chief Helmet	skipped
 read-topic	Fire Dagger	todo
 skip-meta	Fire and Frost Brand	skipped
 read-monster	Fire ant	todo
-read-topic	Fire bolt	todo
+skip-variant	Fire bolt	skipped
 read-monster	Fire elemental	todo
 read-monster	Fire giant	todo
 skip-variant	Fire helmet	skipped
@@ -1690,7 +1690,7 @@ skip-meta	Fire storm	skipped
 read-topic	Fire trap	todo
 skip-variant	Fire vampire	skipped
 read-monster	Fire vortex	todo
-read-topic	Firearm	todo
+skip-variant	Firearm	skipped
 read-topic	Fireball (monster spell)	todo
 skip-meta	Fireball	skipped
 skip-translation	Fireball_zh-CN	skipped
@@ -1700,15 +1700,15 @@ read-topic	Firestar	todo
 skip-variant	Firewall	skipped
 skip-meta	Firework	skipped
 read-topic	Firing	todo
-read-topic	First Things First	todo
-read-topic	First Wraithworm	todo
+skip-variant	First Things First	skipped
+skip-variant	First Wraithworm	skipped
 read-topic	Fish	todo
 skip-variant	Fishing pole	skipped
 read-topic	Flail (skill)	todo
 read-item	Flail	todo
 skip-translation	Flail_zh-CN	skipped
 read-topic	Flame Mage quest	todo
-read-topic	Flame Mage	todo
+skip-variant	Flame Mage	skipped
 skip-variant	Flame Mage_Hack'EM	skipped
 skip-variant	Flame shield	skipped
 skip-meta	Flame sphere	skipped
@@ -1731,7 +1731,7 @@ read-topic	Floor	todo
 skip-meta	Flute	skipped
 skip-translation	Flute_zh-CN	skipped
 skip-variant	Flux slime	skipped
-read-topic	Fly on the Wall	todo
+skip-variant	Fly on the Wall	skipped
 skip-variant	Fly swatter	skipped
 skip-variant	Flying boots (SlashTHEM)	skipped
 skip-variant	Flying boots (dNetHack)	skipped
@@ -1745,19 +1745,19 @@ read-topic	Food appraisal	todo
 read-item	Food ration	todo
 skip-translation	Food ration_zh-CN	skipped
 skip-meta	Food-343.txt	skipped
-read-topic	Foodless	todo
+skip-meta	Foodless	skipped
 skip-variant	Footbow	skipped
-read-topic	Force blade	todo
-read-topic	Force pike	todo
-read-topic	Force push	todo
-read-topic	Force sword	todo
-read-topic	Force whip	todo
+skip-variant	Force blade	skipped
+skip-variant	Force pike	skipped
+skip-variant	Force push	skipped
+skip-variant	Force sword	skipped
+skip-variant	Force whip	skipped
 read-topic	Force	todo
 skip-translation	Force_ko	skipped
 skip-variant	Ford Perfect	skipped
 read-monster	Forest centaur	todo
 skip-variant	Forge (dNetHack)	skipped
-read-topic	Forge (dungeon feature)	todo
+skip-variant	Forge (dungeon feature)	skipped
 skip-meta	Forge	skipped
 skip-meta	Forging	skipped
 read-topic	Fort Ludios	todo
@@ -1767,13 +1767,13 @@ skip-meta	Fortune	skipped
 skip-meta	Foun-343.txt	skipped
 read-topic	Fountain	todo
 skip-translation	Fountain_ko	skipped
-read-topic	Four Wings	todo
+skip-variant	Four Wings	skipped
 read-monster	Fox	todo
 skip-variant	Frag grenade (SLASH'EM)	skipped
 skip-variant	Frag grenade (dNetHack)	skipped
 skip-meta	Frag grenade	skipped
 read-topic	Fragile	todo
-read-topic	Frankenstein's Lab	todo
+skip-variant	Frankenstein's Lab	skipped
 skip-variant	Frankenstein's Monster	skipped
 read-topic	Free action	todo
 read-topic	Free	todo
@@ -1782,7 +1782,7 @@ skip-meta	Freeze sphere	skipped
 read-monster	Freezing sphere	todo
 read-topic	Frilled apron	todo
 skip-meta	Frost (disambiguation)	skipped
-read-topic	Frost (god)	todo
+skip-variant	Frost (god)	skipped
 skip-variant	Frost Brand (dNetHack)	skipped
 read-item	Frost Brand	todo
 read-monster	Frost giant	todo
@@ -1793,7 +1793,7 @@ skip-variant	Froster	skipped
 skip-meta	Fruit	skipped
 skip-translation	Fruit_zh-CN	skipped
 skip-variant	Fruitcake	skipped
-read-topic	Fulvous	todo
+skip-variant	Fulvous	skipped
 skip-variant	Fuma-itto no Ken (SlashTHEM)	skipped
 skip-variant	Fuma-itto no Ken (dNetHack)	skipped
 skip-meta	Fuma-itto no Ken	skipped
@@ -1802,7 +1802,7 @@ skip-translation	Fumble boots_zh-CN	skipped
 read-topic	Fumbling	todo
 read-topic	Fun	todo
 read-topic	Fungus or mold	todo
-read-topic	Furnace	todo
+skip-variant	Furnace	skipped
 read-topic	Furniture	todo
 read-topic	G	todo
 read-topic	GDSM versus SDSM	todo
@@ -1842,8 +1842,8 @@ read-topic	Gaze attack	todo
 skip-translation	Gaze attack_ko	skipped
 read-topic	Gazetteer	todo
 read-monster	Gecko	todo
-read-topic	Geek quest	todo
-read-topic	Geek	todo
+skip-variant	Geek quest	skipped
+skip-variant	Geek	skipped
 skip-variant	Gehennom (EvilHack)	skipped
 skip-variant	Gehennom (Lethe patch)	skipped
 skip-variant	Gehennom (dNetHack)	skipped
@@ -1870,10 +1870,10 @@ skip-meta	Geryon's lair	skipped
 read-monster	Geryon	todo
 read-topic	Geyser	todo
 skip-variant	Ghast	skipped
-read-topic	Ghaunadaur	todo
+skip-variant	Ghaunadaur	skipped
 read-topic	Ghost (monster class)	todo
 read-monster	Ghost	todo
-read-topic	Ghoul (starting race)	todo
+skip-variant	Ghoul (starting race)	skipped
 skip-variant	Ghoul mage	skipped
 skip-variant	Ghoul queen	skipped
 read-monster	Ghoul	todo
@@ -1945,7 +1945,7 @@ skip-variant	Gnoll (EvilHack)	skipped
 skip-variant	Gnoll (SLASH'EM)	skipped
 skip-variant	Gnoll (SpliceHack)	skipped
 skip-variant	Gnoll (dNetHack)	skipped
-read-topic	Gnoll (monster attribute)	todo
+skip-variant	Gnoll (monster attribute)	skipped
 skip-meta	Gnoll (monster class)	skipped
 skip-variant	Gnoll chieftain	skipped
 skip-variant	Gnoll cleric	skipped
@@ -1956,12 +1956,12 @@ skip-variant	Gnoll shaman	skipped
 skip-variant	Gnoll warrior	skipped
 skip-variant	Gnoll witherling	skipped
 read-topic	Gnoll	todo
-read-topic	GnollHack	todo
-read-topic	GnollHack_Features	todo
-read-topic	GnollHack_Race	todo
-read-topic	GnollHack_Resistances and Saving Throws	todo
-read-topic	GnollHack_Score	todo
-read-topic	GnollHack_Spellcasting	todo
+skip-variant	GnollHack	skipped
+skip-variant	GnollHack_Features	skipped
+skip-variant	GnollHack_Race	skipped
+skip-variant	GnollHack_Resistances and Saving Throws	skipped
+skip-variant	GnollHack_Score	skipped
+skip-variant	GnollHack_Spellcasting	skipped
 read-topic	Gnome (monster attribute)	todo
 read-topic	Gnome (monster class)	todo
 read-monster	Gnome (monster)	todo
@@ -1980,7 +1980,7 @@ skip-variant	Gnome warrior	skipped
 read-monster	Gnome zombie	todo
 skip-meta	Gnome	skipped
 read-topic	Gnomish Mines	todo
-read-topic	Gnomish Ranger quest	todo
+skip-variant	Gnomish Ranger quest	skipped
 skip-variant	Gnomish boots	skipped
 skip-variant	Gnomish helm	skipped
 skip-variant	Gnomish pointy hat	skipped
@@ -1988,7 +1988,7 @@ skip-variant	Gnomish suit	skipped
 read-monster	Gnomish wizard	todo
 skip-variant	Goat	skipped
 read-monster	Goblin King	todo
-read-topic	Goblin Town	todo
+skip-variant	Goblin Town	skipped
 skip-variant	Goblin outrider	skipped
 skip-variant	Goblin shaman (EvilHack)	skipped
 skip-variant	Goblin shaman (SporkHack)	skipped
@@ -1996,16 +1996,16 @@ skip-meta	Goblin shaman	skipped
 skip-variant	Goblin-captain	skipped
 read-monster	Goblin	todo
 skip-variant	God (dNetHack)	skipped
-read-topic	God-o-meter	todo
+skip-variant	God-o-meter	skipped
 read-topic	God	todo
 skip-meta	Gods-343.txt	skipped
-read-topic	Goedendag	todo
+skip-variant	Goedendag	skipped
 skip-variant	Goggles	skipped
 read-topic	Gold (material)	todo
 skip-variant	Gold Scroll of Law	skipped
 skip-variant	Gold dragon (EvilHack)	skipped
 skip-meta	Gold dragon (disambiguation)	skipped
-read-topic	Gold dragon (patch)	todo
+skip-meta	Gold dragon (patch)	skipped
 skip-meta	Gold dragon scale mail (disambiguation)	skipped
 skip-variant	Gold dragon scale mail	skipped
 skip-meta	Gold dragon scales (disambiguation)	skipped
@@ -2013,10 +2013,10 @@ skip-variant	Gold dragon scales	skipped
 skip-variant	Gold dragon	skipped
 read-monster	Gold golem	todo
 read-topic	Gold lover	todo
-read-topic	Gold-bladed vibrospear	todo
-read-topic	Gold-bladed vibrosword	todo
-read-topic	Gold-bladed vibrozanbato	todo
-read-topic	Golden arrow	todo
+skip-variant	Gold-bladed vibrospear	skipped
+skip-variant	Gold-bladed vibrosword	skipped
+skip-variant	Gold-bladed vibrozanbato	skipped
+skip-variant	Golden arrow	skipped
 read-monster	Golden naga hatchling	todo
 read-monster	Golden naga	todo
 skip-variant	Golem (SLASH'EM)	skipped
@@ -2025,15 +2025,15 @@ skip-variant	Gollum (EvilHack)	skipped
 skip-variant	Gollum (SLASH'EM)	skipped
 skip-meta	Gollum	skipped
 skip-variant	Good Neighbor	skipped
-read-topic	Gorgoneion	todo
+skip-variant	Gorgoneion	skipped
 skip-stub	Gothuulbe	skipped
 read-topic	Graffiti	todo
 read-monster	Grand Master	todo
-read-topic	Graphical user interface	todo
+skip-meta	Graphical user interface	skipped
 read-topic	Grappler	todo
 read-item	Grappling hook	todo
 skip-translation	Grappling hook_zh-CN	skipped
-read-topic	Grass	todo
+skip-variant	Grass	skipped
 read-topic	Graveyard	todo
 read-topic	Gray dragon scale mail	todo
 skip-translation	Gray dragon scale mail_ko	skipped
@@ -2042,7 +2042,7 @@ read-monster	Gray dragon	todo
 skip-variant	Gray fungus (EvilHack)	skipped
 skip-variant	Gray fungus (SporkHack)	skipped
 skip-meta	Gray fungus	skipped
-read-topic	Gray mold infection	todo
+skip-variant	Gray mold infection	skipped
 read-monster	Gray ooze	todo
 read-topic	Gray stone	todo
 skip-translation	Gray stone_zh-CN	skipped
@@ -2053,10 +2053,10 @@ skip-meta	Graz'zt	skipped
 skip-variant	Great Claws of Urdlen	skipped
 skip-variant	Great Cthulhu	skipped
 skip-variant	Great High Shaman of Kurtulmak	skipped
-read-topic	Great Old One	todo
+skip-variant	Great Old One	skipped
 skip-variant	Great dagger	skipped
-read-topic	Great mace	todo
-read-topic	Greatclub	todo
+skip-meta	Great mace	skipped
+skip-variant	Greatclub	skipped
 skip-variant	Greater homunculus	skipped
 skip-variant	Greater pegasus	skipped
 skip-variant	Green coat	skipped
@@ -2086,18 +2086,18 @@ skip-meta	Grimlock	skipped
 read-item	Grimtooth	todo
 skip-variant	Gromph	skipped
 skip-variant	Grotesque peeper	skipped
-read-topic	Ground slam	todo
+skip-variant	Ground slam	skipped
 read-topic	Group	todo
 read-topic	Growing up	todo
 read-topic	Grudge	todo
 skip-variant	Grue (dNetHack)	skipped
 read-topic	Grue challenge	todo
-read-topic	Grue's Cavern	todo
+skip-variant	Grue's Cavern	skipped
 skip-meta	Grue	skipped
-read-topic	Grumbar	todo
+skip-variant	Grumbar	skipped
 skip-variant	Grund the Orc King	skipped
-read-topic	Grund's Stronghold	todo
-read-topic	GruntHack	todo
+skip-variant	Grund's Stronghold	skipped
+skip-variant	GruntHack	skipped
 skip-variant	Guard dog	skipped
 read-monster	Guard	todo
 read-monster	Guardian naga hatchling	todo
@@ -2121,9 +2121,9 @@ skip-meta	Hack 1.0.1	skipped
 skip-meta	Hack 1.0.2	skipped
 skip-meta	Hack 1.0.3	skipped
 skip-meta	Hack 1.0	skipped
-read-topic	Hack'EM Frequently Asked Questions	todo
-read-topic	Hack'EM strategy guide for vanilla players	todo
-read-topic	Hack'EM	todo
+skip-variant	Hack'EM Frequently Asked Questions	skipped
+skip-variant	Hack'EM strategy guide for vanilla players	skipped
+skip-variant	Hack'EM	skipped
 skip-meta	Hack	skipped
 skip-variant	Hacker's Food	skipped
 read-topic	Hacker	todo
@@ -2131,18 +2131,18 @@ read-item	Halberd	todo
 skip-translation	Halberd_zh-CN	skipped
 read-topic	Half physical damage	todo
 read-topic	Half spell damage	todo
-read-topic	Half-dragon (starting race)	todo
+skip-variant	Half-dragon (starting race)	skipped
 skip-variant	Half-dragon mummy	skipped
-read-topic	Hallucination resistance	todo
+skip-meta	Hallucination resistance	skipped
 read-item	Hallucination	todo
-read-topic	Hallucinatory currency	todo
-read-topic	Hallucinatory messages	todo
-read-topic	Hallucinatory monster	todo
+skip-meta	Hallucinatory currency	skipped
+skip-meta	Hallucinatory messages	skipped
+skip-meta	Hallucinatory monster	skipped
 read-topic	Hammer (skill)	todo
 skip-variant	Hammer of the Gods	skipped
 skip-meta	Hammer	skipped
-read-topic	Hamsa	todo
-read-topic	Hand blaster	todo
+skip-variant	Hamsa	skipped
+skip-variant	Hand blaster	skipped
 read-topic	Hangup	todo
 skip-meta	Harassment	skipped
 skip-variant	Harbinger	skipped
@@ -2151,7 +2151,7 @@ skip-meta	Harp	skipped
 skip-translation	Harp_zh-CN	skipped
 skip-variant	Harpy	skipped
 read-topic	Harrower of Zariel	todo
-read-topic	Hash mark	todo
+skip-variant	Hash mark	skipped
 read-topic	Haste self (monster spell)	todo
 skip-meta	Haste self	skipped
 skip-translation	Haste self_zh-CN	skipped
@@ -2165,17 +2165,17 @@ skip-variant	Healer (dNetHack monster)	skipped
 read-monster	Healer (player monster)	todo
 read-topic	Healer quest	todo
 skip-variant	Healer quest_dNetHack	skipped
-read-topic	Healer uniform	todo
+skip-variant	Healer uniform	skipped
 read-topic	Healer	todo
 skip-variant	Healer_EvilHack	skipped
 skip-variant	Healer_SLASH'EM	skipped
 skip-variant	Healer_dNetHack	skipped
-read-topic	Healing hands	todo
+skip-variant	Healing hands	skipped
 skip-translation	Healing spell_zh-CN	skipped
 read-topic	Healing spells	todo
 read-topic	Healing	todo
 skip-variant	Healthstone	skipped
-read-topic	Hearse	todo
+skip-variant	Hearse	skipped
 skip-variant	Heaven piercer	skipped
 skip-variant	Heavy hammer (SLASH'EM)	skipped
 skip-variant	Heavy hammer (SlashTHEM)	skipped
@@ -2186,8 +2186,8 @@ skip-variant	Heavy machine gun (SLASH'EM)	skipped
 skip-variant	Heavy machine gun (dNetHack)	skipped
 skip-meta	Heavy machine gun	skipped
 skip-variant	Heavy war hammer	skipped
-read-topic	Heck² patch	todo
-read-topic	Hedrow Noble quest	todo
+skip-meta	Heck² patch	skipped
+skip-variant	Hedrow Noble quest	skipped
 skip-variant	Hedrow blademaster	skipped
 skip-variant	Hedrow master-wizard	skipped
 skip-variant	Hedrow warrior	skipped
@@ -2202,12 +2202,12 @@ skip-meta	Hellcat	skipped
 skip-variant	Hellfire (SLASH'EM)	skipped
 skip-variant	Hellfire (dNetHack)	skipped
 skip-meta	Hellfire	skipped
-read-topic	Hellish seal	todo
+skip-variant	Hellish seal	skipped
 skip-variant	Hellrat	skipped
 read-item	Helm of brilliance	todo
 skip-translation	Helm of brilliance_zh-CN	skipped
 read-topic	Helm of caution	todo
-read-topic	Helm of drain resistance	todo
+skip-variant	Helm of drain resistance	skipped
 skip-variant	Helm of madness	skipped
 read-item	Helm of opposite alignment	todo
 skip-translation	Helm of opposite alignment_zh-CN	skipped
@@ -2221,13 +2221,13 @@ skip-translation	Helmet_zh-CN	skipped
 read-topic	Help (in-game)	todo
 skip-meta	Help	skipped
 skip-variant	Helping Hand	skipped
-read-topic	Hemargyos	todo
-read-topic	Heptagram	todo
+skip-variant	Hemargyos	skipped
+skip-variant	Heptagram	skipped
 read-topic	Herbivore	todo
 read-topic	Hermes	todo
-read-topic	Hexagram	todo
+skip-variant	Hexagram	skipped
 read-monster	Hezrou	todo
-read-topic	Hidden Dungeon	todo
+skip-variant	Hidden Dungeon	skipped
 skip-variant	Hide shield	skipped
 read-topic	Hiding	todo
 skip-variant	High Flame Mage	skipped
@@ -2237,21 +2237,21 @@ read-item	High boots	todo
 skip-translation	High boots_zh-CN	skipped
 read-topic	High cleric	todo
 read-monster	High-elf	todo
-read-topic	High-elven warsword	todo
+skip-variant	High-elven warsword	skipped
 skip-variant	Hill giant shaman	skipped
 read-monster	Hill giant	todo
 read-monster	Hill orc	todo
 read-monster	Hippocrates	todo
 read-topic	Hit and run	todo
 read-topic	Hit points	todo
-read-topic	Hitchhiker's Guide to the Galaxy	todo
-read-topic	Hits creatures as _x weapon	todo
+skip-variant	Hitchhiker's Guide to the Galaxy	skipped
+skip-variant	Hits creatures as _x weapon	skipped
 skip-variant	Hmnyw-Pharaoh	skipped
-read-topic	Hobbit (monster attribute)	todo
-read-topic	Hobbit (starting race)	todo
+skip-variant	Hobbit (monster attribute)	skipped
+skip-variant	Hobbit (starting race)	skipped
 skip-variant	Hobbit mummy	skipped
 skip-variant	Hobbit pickpocket	skipped
-read-topic	Hobbit quest	todo
+skip-variant	Hobbit quest	skipped
 skip-variant	Hobbit zombie	skipped
 read-monster	Hobbit	todo
 read-monster	Hobgoblin	todo
@@ -2271,14 +2271,14 @@ read-monster	Horse	todo
 skip-variant	Houchou	skipped
 skip-variant	Hound of Tindalos	skipped
 read-monster	Housecat	todo
-read-topic	How to apply the NetHack 1.4f patch	todo
+skip-meta	How to apply the NetHack 1.4f patch	skipped
 skip-meta	Hppw-343.txt	skipped
-read-topic	Huan Ti	todo
+skip-variant	Huan Ti	skipped
 read-item	Huge chunk of meat	todo
 skip-translation	Huge chunk of meat_zh-CN	skipped
 skip-variant	Huge pseudodragon	skipped
 skip-variant	Huginn and Muninn	skipped
-read-topic	Huhetotl	todo
+skip-variant	Huhetotl	skipped
 read-topic	Human (monster attribute)	todo
 read-monster	Human (monster)	todo
 read-topic	Human (starting race)	todo
@@ -2290,50 +2290,50 @@ read-topic	Humanoid (monster class)	todo
 read-topic	Humanoid	todo
 skip-meta	Hunger	skipped
 read-topic	Hungerless casting	todo
-read-topic	Hunter's axe	todo
+skip-variant	Hunter's axe	skipped
 read-monster	Hunter	todo
-read-topic	Hunting horror	todo
+skip-variant	Hunting horror	skipped
 skip-variant	Hydra	skipped
 skip-variant	Hypospray ampule	skipped
 skip-variant	Hypospray	skipped
 read-topic	I	todo
-read-topic	IBMgraphics	todo
-read-topic	IBMgraphics_UTF-8 patch for 3.4.0	todo
-read-topic	IBMgraphics_UTF-8 patch for 3.4.3	todo
+skip-meta	IBMgraphics	skipped
+skip-meta	IBMgraphics_UTF-8 patch for 3.4.0	skipped
+skip-meta	IBMgraphics_UTF-8 patch for 3.4.3	skipped
 read-topic	INetHack	todo
 read-topic	IPBT	todo
 read-topic	Ice Mage quest	todo
 read-topic	Ice Mage	todo
 skip-variant	Ice Mage_Hack'EM	skipped
-read-topic	Ice Queen's Realm	todo
-read-topic	Ice bolt	todo
+skip-variant	Ice Queen's Realm	skipped
+skip-variant	Ice bolt	skipped
 read-item	Ice box	todo
 skip-translation	Ice box_zh-CN	skipped
 read-monster	Ice devil	todo
 skip-variant	Ice golem	skipped
 skip-variant	Ice nymph	skipped
 skip-variant	Ice shield	skipped
-read-topic	Ice trap	todo
+skip-variant	Ice trap	skipped
 read-monster	Ice troll	todo
 read-monster	Ice vortex	todo
-read-topic	Ice wall	todo
+skip-variant	Ice wall	skipped
 read-topic	Ice	todo
 skip-variant	Ichneumon	skipped
 read-topic	Identification	todo
 skip-variant	Igniter	skipped
 read-monster	Iguana	todo
-read-topic	Illiterate	todo
+skip-meta	Illiterate	skipped
 skip-translation	Illiterate_ko	skipped
-read-topic	Illithanachronounbinder	todo
+skip-variant	Illithanachronounbinder	skipped
 skip-variant	Illithid (EvilHack)	skipped
-read-topic	Illithid (monster attribute)	todo
-read-topic	Illithid (starting race)	todo
+skip-variant	Illithid (monster attribute)	skipped
+skip-variant	Illithid (starting race)	skipped
 skip-variant	Illithid larva	skipped
 skip-meta	Illithid	skipped
-read-topic	Illurien of the Myriad Glimpses	todo
-read-topic	Ilmater	todo
+skip-variant	Illurien of the Myriad Glimpses	skipped
+skip-variant	Ilmater	skipped
 skip-variant	Ilona Szilagy	skipped
-read-topic	Ilsensine	todo
+skip-variant	Ilsensine	skipped
 read-topic	Immunity to sickness	todo
 skip-translation	Immunity to sickness_ko	skipped
 read-topic	Imp or minor demon	todo
@@ -2341,20 +2341,20 @@ read-monster	Imp	todo
 read-topic	Impaired	todo
 read-topic	Imperial elven armor	todo
 read-topic	Impossible	todo
-read-topic	Impurity	todo
-read-topic	Incantifier (starting race)	todo
+skip-variant	Impurity	skipped
+skip-variant	Incantifier (starting race)	skipped
 skip-meta	Incantifier	skipped
 skip-variant	Index wolf	skipped
 read-topic	Inediate	todo
-read-topic	Infernal (starting race)	todo
-read-topic	Infidel quest	todo
-read-topic	Infidel	todo
+skip-variant	Infernal (starting race)	skipped
+skip-variant	Infidel quest	skipped
+skip-variant	Infidel	skipped
 read-topic	Infravision	todo
 skip-translation	Infravision_ko	skipped
-read-topic	Inheritance	todo
+skip-variant	Inheritance	skipped
 skip-variant	Inmate	skipped
-read-topic	Innards	todo
-read-topic	Insectoid (monster attribute)	todo
+skip-variant	Innards	skipped
+skip-variant	Insectoid (monster attribute)	skipped
 skip-meta	Insectoid	skipped
 read-topic	Insight	todo
 read-topic	Instant death	todo
@@ -2373,7 +2373,7 @@ read-topic	Intrinsic theft	todo
 read-topic	Introduction	todo
 read-topic	Inventory	todo
 read-topic	Invisibility	todo
-read-topic	Invisible item	todo
+skip-variant	Invisible item	skipped
 read-topic	Invocation ritual	todo
 read-topic	Invoke	todo
 skip-meta	Invt-343.txt	skipped
@@ -2421,9 +2421,9 @@ read-topic	Jay Fenlason's Hack	todo
 read-topic	Jay Fenlason	todo
 skip-variant	Jedi (player monster)	skipped
 skip-variant	Jedi Master	skipped
-read-topic	Jedi jump	todo
-read-topic	Jedi quest	todo
-read-topic	Jedi	todo
+skip-variant	Jedi jump	skipped
+skip-variant	Jedi quest	skipped
+skip-variant	Jedi	skipped
 skip-variant	Jelly (SLASH'EM)	skipped
 read-topic	Jelly	todo
 read-monster	Jellyfish	todo
@@ -2460,17 +2460,17 @@ read-topic	Kary, the Fiend of Fire	todo
 skip-variant	Kas	skipped
 read-item	Katana	todo
 skip-translation	Katana_zh-CN	skipped
-read-topic	Katar	todo
+skip-variant	Katar	skipped
 skip-variant	Kathryn the Ice Queen	skipped
-read-topic	Katyusha	todo
+skip-variant	Katyusha	skipped
 read-topic	Kebabable	todo
 read-item	Kelp frond	todo
 skip-translation	Kelp frond_zh-CN	skipped
 skip-variant	Ken Hayabusa	skipped
 skip-variant	Kensei (player monster)	skipped
-read-topic	Kensei quest haunted castle_dNethack	todo
-read-topic	Kensei quest	todo
-read-topic	Kensei	todo
+skip-variant	Kensei quest haunted castle_dNethack	skipped
+skip-variant	Kensei quest	skipped
+skip-variant	Kensei	skipped
 skip-variant	Keolewa (EvilHack)	skipped
 skip-variant	Keolewa (Hack'EM)	skipped
 skip-variant	Keolewa (SporkHack)	skipped
@@ -2478,11 +2478,11 @@ skip-meta	Keolewa	skipped
 skip-variant	Keter Sephiroth	skipped
 skip-meta	Key	skipped
 skip-translation	Key_zh-CN	skipped
-read-topic	Keyboard	todo
+skip-meta	Keyboard	skipped
 read-topic	Keystone Kop (monster class)	todo
 read-monster	Keystone Kop	todo
 read-topic	Khaamnun tannin	todo
-read-topic	Khopesh	todo
+skip-variant	Khopesh	skipped
 read-monster	Ki-rin	todo
 read-topic	Kick (command)	todo
 read-topic	Kick attack	todo
@@ -2490,7 +2490,7 @@ skip-meta	Kick	skipped
 read-item	Kicking boots	todo
 skip-translation	Kicking boots_zh-CN	skipped
 skip-variant	Kidney belt	skipped
-read-topic	Kiii	todo
+skip-variant	Kiii	skipped
 skip-variant	Kiku-ichimonji (SlashTHEM)	skipped
 skip-variant	Kiku-ichimonji (dNetHack)	skipped
 skip-meta	Kiku-ichimonji	skipped
@@ -2515,13 +2515,13 @@ read-topic	Knight	todo
 skip-variant	Knight_EvilHack	skipped
 skip-variant	Knight_SLASH'EM	skipped
 skip-variant	Knight_dNetHack	skipped
-read-topic	Knightly stances	todo
+skip-variant	Knightly stances	skipped
 read-topic	Knockback	todo
 skip-variant	Koa	skipped
 skip-variant	Koala	skipped
 read-topic	Kobold (monster class)	todo
-read-topic	Kobold (starting race)	todo
-read-topic	Kobold level	todo
+skip-variant	Kobold (starting race)	skipped
+skip-variant	Kobold level	skipped
 read-monster	Kobold lord	todo
 read-monster	Kobold mummy	todo
 read-monster	Kobold shaman	todo
@@ -2535,7 +2535,7 @@ read-monster	Kop Lieutenant	todo
 read-monster	Kop Sergeant	todo
 read-topic	Kops Make Great Theft Prevention Experts	todo
 skip-variant	Korrupt Kop	skipped
-read-topic	Kos	todo
+skip-variant	Kos	skipped
 skip-variant	Kostchtchie (dNetHack)	skipped
 skip-meta	Kostchtchie	skipped
 skip-variant	Kraken, the Fiend of Water	skipped
@@ -2544,7 +2544,7 @@ skip-translation	Kraken_ko	skipped
 skip-variant	Kroo the Kobold King	skipped
 read-topic	Krysia's Krusader	todo
 skip-variant	Kuker	skipped
-read-topic	L (person)	todo
+skip-variant	L (person)	skipped
 read-topic	L	todo
 skip-variant	Lab coat	skipped
 read-topic	Ladder	todo
@@ -2560,14 +2560,14 @@ skip-translation	Lance_zh-CN	skipped
 read-item	Land mine	todo
 skip-translation	Land mine_zh-CN	skipped
 read-topic	Lantern plate mail	todo
-read-topic	Laozi	todo
-read-topic	Lareth	todo
+skip-variant	Laozi	skipped
+skip-variant	Lareth	skipped
 read-item	Large box	todo
 skip-translation	Large box_zh-CN	skipped
 read-monster	Large cat	todo
 skip-variant	Large cave lizard (EvilHack)	skipped
 skip-variant	Large cave lizard (dNetHack)	skipped
-read-topic	Large deep-rock dweller	todo
+skip-variant	Large deep-rock dweller	skipped
 skip-variant	Large dingo	skipped
 read-monster	Large dog	todo
 read-monster	Large kobold	todo
@@ -2579,20 +2579,20 @@ skip-variant	Large spider	skipped
 skip-variant	Large splint mail	skipped
 read-topic	Larn	todo
 skip-variant	Larva	skipped
-read-topic	Latona	todo
+skip-variant	Latona	skipped
 skip-meta	Launcher	skipped
 skip-translation	Launcher_zh-CN	skipped
 skip-variant	Lava blob	skipped
 skip-variant	Lava demon	skipped
 skip-variant	Lava gremlin	skipped
-read-topic	Lava wall	todo
+skip-variant	Lava wall	skipped
 read-topic	Lava	todo
 skip-variant	Law quest (dNetHack)	skipped
-read-topic	Lawful Quest	todo
-read-topic	Lawful angels and minions	todo
-read-topic	Lead	todo
+skip-variant	Lawful Quest	skipped
+skip-variant	Lawful angels and minions	skipped
+skip-variant	Lead	skipped
 skip-stub	Leadership	skipped
-read-topic	Leaked development version	todo
+skip-variant	Leaked development version	skipped
 read-item	Leash	todo
 skip-translation	Leash_zh-CN	skipped
 read-item	Leather armor	todo
@@ -2614,13 +2614,13 @@ skip-variant	Legion devil	skipped
 read-topic	Legion	todo
 read-item	Lembas wafer	todo
 skip-translation	Lembas wafer_zh-CN	skipped
-read-topic	Lemure pit	todo
+skip-variant	Lemure pit	skipped
 read-monster	Lemure	todo
-read-topic	Leo Nemaeus hide	todo
+skip-variant	Leo Nemaeus hide	skipped
 read-monster	Leocrotta	todo
 skip-meta	Leprechaun (disambiguation)	skipped
 read-topic	Leprechaun (monster class)	todo
-read-topic	Leprechaun (starting race)	todo
+skip-variant	Leprechaun (starting race)	skipped
 read-topic	Leprechaun hall	todo
 skip-variant	Leprechaun wizard	skipped
 read-monster	Leprechaun	todo
@@ -2628,9 +2628,9 @@ skip-variant	Lesser homunculus	skipped
 skip-variant	Lesser nightmare	skipped
 read-topic	Lessons learned the hard way	todo
 skip-translation	Lessons learned the hard way_zh-CN	skipped
-read-topic	Lethe Gorge	todo
+skip-variant	Lethe Gorge	skipped
 skip-variant	Lethe elemental	skipped
-read-topic	Lethe patch	todo
+skip-variant	Lethe patch	skipped
 read-topic	Lev comp	todo
 read-topic	Level teleport	todo
 read-topic	Level teleporter	todo
@@ -2666,16 +2666,16 @@ skip-variant	Lightsaber Forms (dNetHack)	skipped
 skip-variant	Lightsaber	skipped
 skip-variant	Lilitu	skipped
 skip-variant	Lillend	skipped
-read-topic	Linley's Dungeon Crawl	todo
-read-topic	Linux	todo
-read-topic	Liquid leap	todo
+skip-variant	Linley's Dungeon Crawl	skipped
+skip-meta	Linux	skipped
+skip-variant	Liquid leap	skipped
 read-topic	Liquid	todo
-read-topic	List of Monsters in NerfHack	todo
-read-topic	List of UnNetHack tiles	todo
-read-topic	List of historic vanilla NetHack tiles	todo
+skip-variant	List of Monsters in NerfHack	skipped
+skip-variant	List of UnNetHack tiles	skipped
+skip-meta	List of historic vanilla NetHack tiles	skipped
 read-topic	List of major consultations	todo
 read-topic	List of qt xpms.h images	todo
-read-topic	List of vanilla NetHack tiles	todo
+skip-meta	List of vanilla NetHack tiles	skipped
 read-topic	Lithivore	todo
 read-monster	Little dog	todo
 read-topic	Living doll	todo
@@ -2685,7 +2685,7 @@ read-monster	Lizard	todo
 skip-variant	Loadbearer	skipped
 read-item	Loadstone	todo
 skip-translation	Loadstone_zh-CN	skipped
-read-topic	Lobon	todo
+skip-variant	Lobon	skipped
 read-item	Lock pick	todo
 skip-translation	Lock pick_zh-CN	skipped
 skip-meta	Lock	skipped
@@ -2702,7 +2702,7 @@ skip-meta	Lolth	skipped
 skip-variant	Lomya	skipped
 read-topic	Long gloves	todo
 skip-meta	Long samurai sword	skipped
-read-topic	Long saw	todo
+skip-variant	Long saw	skipped
 read-topic	Long sword (skill)	todo
 read-item	Long sword	todo
 skip-translation	Long sword_zh-CN	skipped
@@ -2718,7 +2718,7 @@ skip-variant	Lord Sidious	skipped
 read-monster	Lord Surtur	todo
 read-item	Low boots	todo
 skip-translation	Low boots_zh-CN	skipped
-read-topic	Low-light vision	todo
+skip-variant	Low-light vision	skipped
 read-topic	Lua	todo
 read-item	Lucern hammer	todo
 skip-translation	Lucern hammer_zh-CN	skipped
@@ -2735,16 +2735,16 @@ skip-variant	Luckblade (SLASH'EM)	skipped
 skip-meta	Luckblade	skipped
 read-item	Luckstone	todo
 skip-translation	Luckstone_zh-CN	skipped
-read-topic	Lugh	todo
+skip-variant	Lugh	skipped
 skip-variant	Lugribossk	skipped
 read-item	Lump of royal jelly	todo
 skip-translation	Lump of royal jelly_ko	skipped
 skip-translation	Lump of royal jelly_zh-CN	skipped
-read-topic	Lunatic	todo
+skip-variant	Lunatic	skipped
 read-monster	Lurker above	todo
 skip-variant	Lurking one	skipped
 skip-variant	Lustrous ring	skipped
-read-topic	Lycanthrope (starting race)	todo
+skip-variant	Lycanthrope (starting race)	skipped
 read-topic	Lycanthrope quest	todo
 read-topic	Lycanthropy	todo
 read-monster	Lynx	todo
@@ -2753,15 +2753,15 @@ read-topic	M1 AMPHIBIOUS	todo
 read-topic	M2 PNAME	todo
 read-topic	M2 ROCKTHROW	todo
 read-topic	MS-DOS	todo
-read-topic	MS-DOS_Compiling NetHack 3.4.3 in real mode	todo
+skip-meta	MS-DOS_Compiling NetHack 3.4.3 in real mode	skipped
 read-topic	MSGTYPE	todo
 skip-variant	Maanzecorian	skipped
-read-topic	Mac	todo
-read-topic	Mace (skill)	todo
+skip-meta	Mac	skipped
+skip-meta	Mace (skill)	skipped
 read-item	Mace	todo
 skip-translation	Mace_zh-CN	skipped
-read-topic	Macro	todo
-read-topic	Macuahuitl	todo
+skip-meta	Macro	skipped
+skip-meta	Macuahuitl	skipped
 skip-variant	Mad Grazi	skipped
 read-topic	Mad scientist	todo
 skip-variant	Mad seer	skipped
@@ -2796,7 +2796,7 @@ read-topic	Magic portal	todo
 skip-variant	Magic resistance (GnollHack)	skipped
 read-topic	Magic resistance (monster)	todo
 read-topic	Magic resistance	todo
-read-topic	Magic torch	todo
+skip-variant	Magic torch	skipped
 read-topic	Magic trap	todo
 read-item	Magic whistle	todo
 skip-translation	Magic whistle_zh-CN	skipped
@@ -2814,13 +2814,13 @@ skip-meta	Mail	skipped
 read-topic	Main Page	todo
 read-topic	Major demon	todo
 read-topic	Makedefs	todo
-read-topic	Malcanthet's Lair	todo
+skip-variant	Malcanthet's Lair	skipped
 skip-meta	Malcanthet	skipped
-read-topic	Mall	todo
+skip-variant	Mall	skipped
 skip-variant	Mallet	skipped
 skip-variant	Malphas	skipped
 skip-variant	Mana cloak	skipped
-read-topic	Manannan Mac Lir	todo
+skip-meta	Manannan Mac Lir	skipped
 skip-meta	Mane	skipped
 read-monster	Manes	todo
 skip-variant	Mangler	skipped
@@ -2829,7 +2829,7 @@ skip-meta	Manticore	skipped
 skip-variant	Map inclusion (dNetHack)	skipped
 read-topic	Mappable	todo
 skip-translation	Mappable_zh-CN	skipped
-read-topic	Marduk	todo
+skip-variant	Marduk	skipped
 read-monster	Marilith	todo
 skip-variant	Marionette	skipped
 skip-meta	Marker	skipped
@@ -2838,7 +2838,7 @@ read-topic	Mars	todo
 read-topic	Martial arts	todo
 read-topic	Marvin	todo
 skip-variant	Mask (dNetHack)	skipped
-read-topic	Mass-shadow pistol	todo
+skip-variant	Mass-shadow pistol	skipped
 read-monster	Master Assassin	todo
 skip-variant	Master Boot Disk	skipped
 read-monster	Master Kaen	todo
@@ -2850,7 +2850,7 @@ read-monster	Master of Thieves	todo
 read-monster	Mastodon	todo
 read-topic	Material	todo
 skip-translation	Matter spell_zh-CN	skipped
-read-topic	Matter spells	todo
+skip-variant	Matter spells	skipped
 read-topic	Maud	todo
 skip-variant	Maugneshaagar	skipped
 skip-variant	Mayor Cummerbund	skipped
@@ -2872,17 +2872,17 @@ read-topic	Melee	todo
 read-item	Melon	todo
 skip-translation	Melon_zh-CN	skipped
 skip-meta	Memory	skipped
-read-topic	Mental edge	todo
+skip-variant	Mental edge	skipped
 read-topic	Menu controls	todo
-read-topic	Menucolors	todo
-read-topic	Mephisto's Lair	todo
+skip-meta	Menucolors	skipped
+skip-variant	Mephisto's Lair	skipped
 skip-variant	Mephistopheles (EvilHack)	skipped
 skip-variant	Mephistopheles (dNetHack)	skipped
 skip-meta	Mephistopheles	skipped
 read-topic	Mercenary	todo
-read-topic	Mercurial	todo
-read-topic	Mercury	todo
-read-topic	Merfolk (starting race)	todo
+skip-variant	Mercurial	skipped
+skip-variant	Mercury	skipped
+skip-variant	Merfolk (starting race)	skipped
 skip-meta	Mermaid	skipped
 read-topic	Message	todo
 skip-variant	Metal club	skipped
@@ -2892,23 +2892,23 @@ read-topic	Metallivore	todo
 read-topic	Metastrategy	todo
 skip-variant	Metroid	skipped
 skip-variant	Microscopic space fleet	skipped
-read-topic	Microsoft Windows	todo
+skip-meta	Microsoft Windows	skipped
 skip-variant	Migo	skipped
-read-topic	Million-arm	todo
+skip-variant	Million-arm	skipped
 read-topic	Mimic	todo
-read-topic	Mina Harker	todo
+skip-variant	Mina Harker	skipped
 read-topic	Mind blast	todo
 skip-variant	Mind flayer (dNetHack)	skipped
 skip-variant	Mind flayer larva	skipped
 read-monster	Mind flayer	todo
 skip-variant	Mindless thrall	skipped
 read-topic	Mindless	todo
-read-topic	Mine king level	todo
-read-topic	Miner	todo
+skip-variant	Mine king level	skipped
+skip-variant	Miner	skipped
 read-topic	Mineral	todo
 read-topic	Mines' End	todo
 read-topic	Minetown	todo
-read-topic	Mini Me	todo
+skip-variant	Mini Me	skipped
 skip-variant	Minion (dNetHack)	skipped
 read-monster	Minion of Huhetotl	todo
 read-topic	Minion	todo
@@ -2924,10 +2924,10 @@ read-topic	Mirrorblade	todo
 skip-variant	Mirrorbright	skipped
 skip-meta	Misc-343.txt	skipped
 read-topic	Miscellaneous item	todo
-read-topic	Missile flurry	todo
+skip-variant	Missile flurry	skipped
 skip-variant	Mist wolf (SLASH'EM)	skipped
 skip-meta	Mist wolf	skipped
-read-topic	Mithardir Quest	todo
+skip-variant	Mithardir Quest	skipped
 skip-meta	Mithril-coat	skipped
 skip-translation	Mithril-coat_zh-CN	skipped
 read-topic	Mithril	todo
@@ -2935,7 +2935,7 @@ read-topic	Mitra	todo
 read-item	Mjollnir	todo
 read-topic	Moat	todo
 read-topic	Mog	todo
-read-topic	Moldier	todo
+skip-variant	Moldier	skipped
 skip-variant	Moldy pudding	skipped
 skip-meta	Mollified	skipped
 read-topic	Moloch's Sanctum	todo
@@ -2953,7 +2953,7 @@ skip-variant	Monk_SLASH'EM	skipped
 skip-variant	Monk_dNetHack	skipped
 read-monster	Monkey	todo
 skip-variant	Monster (Hack'EM)	skipped
-read-topic	Monster (Hack'EM)_Full list	todo
+skip-variant	Monster (Hack'EM)_Full list	skipped
 skip-variant	Monster (SLASH'EM)	skipped
 skip-variant	Monster (SpliceHack)	skipped
 read-topic	Monster (command)	todo
@@ -2963,7 +2963,7 @@ read-topic	Monster behavior	todo
 read-topic	Monster carrying capacity	todo
 read-topic	Monster class	todo
 read-topic	Monster creation	todo
-read-topic	Monster detection (vision)	todo
+skip-variant	Monster detection (vision)	skipped
 read-topic	Monster detection	todo
 read-topic	Monster difficulty	todo
 read-topic	Monster frequency	todo
@@ -2974,7 +2974,7 @@ read-topic	Monster resistances	todo
 read-topic	Monster sound	todo
 read-topic	Monster spell	todo
 read-topic	Monster starting inventory	todo
-read-topic	Monster template	todo
+skip-variant	Monster template	skipped
 read-topic	Monster weapon preference	todo
 read-topic	Monster	todo
 read-topic	Monsters (by alignment)	todo
@@ -2983,12 +2983,12 @@ read-topic	Monsters (by size)	todo
 read-topic	Monsters (by speed)	todo
 skip-variant	Monsters with hits creatures as a _x weapon (SLASH'EM)	skipped
 skip-variant	Monsters with need _x weapon to hit (SLASH'EM)	skipped
-read-topic	Monsters with non-unique appearance	todo
+skip-variant	Monsters with non-unique appearance	skipped
 skip-variant	Mood ring	skipped
-read-topic	Moon axe	todo
-read-topic	Moon's Chosen	todo
-read-topic	Morale	todo
-read-topic	Mordor Ruins Quest	todo
+skip-variant	Moon axe	skipped
+skip-variant	Moon's Chosen	skipped
+skip-variant	Morale	skipped
+skip-variant	Mordor Ruins Quest	skipped
 read-monster	Mordor orc	todo
 read-topic	Moria (roguelike)	todo
 skip-meta	Moria	skipped
@@ -3010,7 +3010,7 @@ skip-variant	Movanic Deva (dNetHack)	skipped
 skip-variant	Movanic deva (SLASH'EM)	skipped
 read-topic	Movement tactics	todo
 read-topic	Movement	todo
-read-topic	Muddy swamp	todo
+skip-variant	Muddy swamp	skipped
 skip-variant	Mugger	skipped
 skip-variant	Multiplying insect	skipped
 read-topic	Multishot	todo
@@ -3018,8 +3018,8 @@ skip-variant	Mumak calf	skipped
 read-monster	Mumak	todo
 skip-variant	Mummified hand	skipped
 skip-variant	Mummy (GruntHack)	skipped
-read-topic	Mummy curse	todo
-read-topic	Mummy rot	todo
+skip-variant	Mummy curse	skipped
+skip-variant	Mummy rot	skipped
 read-item	Mummy wrapping	todo
 skip-translation	Mummy wrapping_zh-CN	skipped
 read-topic	Mummy	todo
@@ -3036,7 +3036,7 @@ skip-variant	Nabassu	skipped
 skip-variant	Naberius	skipped
 read-topic	Nachash tannin	todo
 read-topic	Naga	todo
-read-topic	Nagamaki	todo
+skip-variant	Nagamaki	skipped
 skip-variant	Naginata (dNetHack)	skipped
 skip-variant	Naiad (dNetHack)	skipped
 read-monster	Nalfeshnee	todo
@@ -3047,19 +3047,19 @@ skip-variant	Narya	skipped
 read-topic	Nasty (monster attribute)	todo
 skip-meta	Nasty	skipped
 read-monster	Nazgul	todo
-read-topic	NeXTSTEP tiles	todo
+skip-meta	NeXTSTEP tiles	skipped
 read-monster	Neanderthal	todo
 read-topic	Near look	todo
 skip-variant	Necromancer (quest nemesis)	skipped
 read-topic	Necromancer quest	todo
 read-topic	Necromancer	todo
-read-topic	Need _x weapon to hit	todo
+skip-variant	Need _x weapon to hit	skipped
 read-monster	Neferet the Green	todo
 read-topic	Negative gold	todo
 skip-variant	Nenya	skipped
 skip-variant	Neothelid (EvilHack)	skipped
 skip-meta	Neothelid	skipped
-read-topic	NerfHack	todo
+skip-variant	NerfHack	skipped
 skip-variant	Nessian pit fiend	skipped
 read-topic	NetBSD	todo
 skip-meta	NetHack 1.3d source code	skipped
@@ -3128,40 +3128,40 @@ skip-meta	NetHack 4	skipped
 skip-meta	NetHack 5.0.0 source code	skipped
 skip-meta	NetHack 5.0.0	skipped
 read-topic	NetHack Code	todo
-read-topic	NetHack Fourk	todo
-read-topic	NetHack General Public License	todo
-read-topic	NetHack Patch Database	todo
+skip-variant	NetHack Fourk	skipped
+skip-meta	NetHack General Public License	skipped
+skip-meta	NetHack Patch Database	skipped
 read-topic	NetHack Plus	todo
 read-topic	NetHack Scoreboard	todo
-read-topic	NetHack Tiles Client	todo
-read-topic	NetHack brass as a patch	todo
-read-topic	NetHack brass	todo
+skip-meta	NetHack Tiles Client	skipped
+skip-variant	NetHack brass as a patch	skipped
+skip-variant	NetHack brass	skipped
 read-topic	NetHack encyclopedia	todo
 read-topic	NetHack haiku	todo
 read-topic	NetHack in other languages	todo
 read-topic	NetHack is not real life	todo
 read-topic	NetHack on Facebook	todo
-read-topic	NetHack quaffing game	todo
+skip-variant	NetHack quaffing game	skipped
 read-topic	NetHack units	todo
-read-topic	NetHack-- 3.0.10	todo
-read-topic	NetHack-- 3.1.3	todo
-read-topic	NetHack--	todo
+skip-variant	NetHack-- 3.0.10	skipped
+skip-variant	NetHack-- 3.1.3	skipped
+skip-variant	NetHack--	skipped
 read-topic	NetHack	todo
 read-topic	NetHack_ The Next Generation	todo
-read-topic	NetHack_nh-timeline.py	todo
+skip-meta	NetHack_nh-timeline.py	skipped
 read-topic	Nethack Extended	todo
 read-topic	Nethack-el	todo
 skip-meta	Nethack.alt.org weekly scorefest	skipped
 skip-meta	Nethack.alt.org	skipped
 read-topic	Nethack.org	todo
 skip-variant	Neutral Quest (dNetHack)	skipped
-read-topic	Neutral Quest	todo
-read-topic	Neutral angels and minions	todo
-read-topic	Neutral outsider	todo
+skip-variant	Neutral Quest	skipped
+skip-variant	Neutral angels and minions	skipped
+skip-variant	Neutral outsider	skipped
 read-topic	Nevanda	todo
 skip-variant	Neverwas	skipped
 read-monster	Newt	todo
-read-topic	Next version	todo
+skip-meta	Next version	skipped
 read-topic	Nhraykey.dll	todo
 read-topic	Nhtohtml	todo
 skip-variant	Nickelpede	skipped
@@ -3183,33 +3183,33 @@ skip-variant	Nightmare's bullet mold	skipped
 skip-variant	Nimune	skipped
 skip-meta	Ninja (disambiguation)	skipped
 read-topic	Ninja (role)	todo
-read-topic	Ninja quest	todo
+skip-variant	Ninja quest	skipped
 skip-variant	Ninja-to (dNetHack)	skipped
 read-monster	Ninja	todo
 skip-variant	Nitocris	skipped
 read-topic	NitroHack	todo
 skip-meta	Noble (disambiguation)	skipped
 read-topic	Noble (player monster)	todo
-read-topic	Noble quest	todo
+skip-variant	Noble quest	skipped
 read-topic	Noble's dress	todo
 read-topic	Noble	todo
 skip-variant	Noble_SlashTHEM	skipped
 skip-variant	Noble_dNetHack	skipped
-read-topic	Noble_dNetHack_Drow Noble	todo
-read-topic	Noble_dNetHack_Dwarf Noble	todo
-read-topic	Noble_dNetHack_Elven Noble	todo
-read-topic	Noble_dNetHack_Hedrow Noble	todo
-read-topic	Noegnud	todo
+skip-variant	Noble_dNetHack_Drow Noble	skipped
+skip-variant	Noble_dNetHack_Dwarf Noble	skipped
+skip-variant	Noble_dNetHack_Elven Noble	skipped
+skip-variant	Noble_dNetHack_Hedrow Noble	skipped
+skip-variant	Noegnud	skipped
 read-topic	Noise	todo
 read-topic	Non-teleport level	todo
 read-topic	Noncorporeal	todo
 read-topic	Nonliving	todo
 read-monster	Norn	todo
-read-topic	Notable ascensions	todo
+skip-variant	Notable ascensions	skipped
 read-topic	Notable players	todo
-read-topic	NotdNetHack	todo
+skip-variant	NotdNetHack	skipped
 read-topic	Notetaking	todo
-read-topic	NotnotdNetHack	todo
+skip-variant	NotnotdNetHack	skipped
 read-item	Novel	todo
 skip-translation	Novel_zh-CN	skipped
 read-topic	Numbers used in the warning system	todo
@@ -3226,7 +3226,7 @@ read-topic	Nutrition	todo
 read-topic	Nutrition_Weight	todo
 skip-variant	Nymph (EvilHack)	skipped
 read-topic	Nymph (monster class)	todo
-read-topic	Nymph (starting race)	todo
+skip-variant	Nymph (starting race)	skipped
 skip-variant	Nymph level (UnNetHack)	skipped
 skip-meta	Nymph level	skipped
 skip-meta	Nymph	skipped
@@ -3239,22 +3239,22 @@ skip-variant	Object materials (SpliceHack)	skipped
 skip-variant	Object materials (dNetHack)	skipped
 skip-variant	Object materials (xNetHack)	skipped
 read-topic	Object materials	todo
-read-topic	Object properties	todo
+skip-variant	Object properties	skipped
 skip-variant	Obox-ob	skipped
-read-topic	Obsidian (material)	todo
+skip-variant	Obsidian (material)	skipped
 skip-meta	Obsidian	skipped
 read-topic	Occupation	todo
 skip-variant	Oceanid	skipped
 read-monster	Ochre jelly	todo
-read-topic	Octopode (starting race)	todo
+skip-variant	Octopode (starting race)	skipped
 skip-meta	Octopode	skipped
-read-topic	Odachi	todo
+skip-variant	Odachi	skipped
 read-topic	Odin	todo
 read-topic	Offensive item	todo
 read-topic	Officer	todo
 read-topic	Offler	todo
 read-topic	Ogre (monster class)	todo
-read-topic	Ogre (starting race)	todo
+skip-variant	Ogre (starting race)	skipped
 skip-variant	Ogre emperor	skipped
 read-monster	Ogre king	todo
 read-monster	Ogre lord	todo
@@ -3273,18 +3273,18 @@ skip-translation	Oilskin cloak_ko	skipped
 skip-translation	Oilskin cloak_zh-CN	skipped
 read-item	Oilskin sack	todo
 skip-translation	Oilskin sack_zh-CN	skipped
-read-topic	Oilskin	todo
+skip-variant	Oilskin	skipped
 skip-variant	Old Gypsy woman	skipped
 read-monster	Olog-hai	todo
 read-topic	Omnivore	todo
 read-topic	On-death explosion	todo
-read-topic	One Weird Trick	todo
+skip-variant	One Weird Trick	skipped
 read-topic	One word messages	todo
 skip-meta	One-eyed Sam	skipped
 read-topic	One-handed	todo
 skip-variant	Oona	skipped
 skip-meta	Oops_	skipped
-read-topic	Open at the Top	todo
+skip-variant	Open at the Top	skipped
 read-topic	Open wounds	todo
 read-topic	Open	todo
 read-topic	OpenBSD	todo
@@ -3292,11 +3292,11 @@ skip-translation	Open_ko	skipped
 skip-meta	Opening	skipped
 skip-translation	Opening_zh-CN	skipped
 read-topic	Operating system	todo
-read-topic	Options (3.4.3)	todo
-read-topic	Options (CrecelleHack)	todo
+skip-meta	Options (3.4.3)	skipped
+skip-meta	Options (CrecelleHack)	skipped
 skip-variant	Options (SLASH'EM)	skipped
 skip-variant	Options (dNetHack)	skipped
-read-topic	Options	todo
+skip-meta	Options	skipped
 read-topic	Oracle (level)	todo
 read-monster	Oracle (monster)	todo
 skip-meta	Oracle	skipped
@@ -3309,10 +3309,10 @@ skip-translation	Orange_zh-CN	skipped
 skip-variant	Orb of charging	skipped
 skip-variant	Orb of destruction	skipped
 skip-variant	Orb of enchantment	skipped
-read-topic	Orb of maintenance	todo
-read-topic	Orb	todo
+skip-variant	Orb of maintenance	skipped
+skip-variant	Orb	skipped
 skip-variant	Orc (SLASH'EM)	skipped
-read-topic	Orc (monster attribute)	todo
+skip-variant	Orc (monster attribute)	skipped
 read-topic	Orc (monster class)	todo
 read-monster	Orc (monster)	todo
 read-topic	Orc (starting race)	todo
@@ -3352,7 +3352,7 @@ read-item	Orcrist	todo
 skip-variant	Orcs of Mordor	skipped
 skip-variant	Orcus (EvilHack)	skipped
 skip-variant	Orcus (dNetHack)	skipped
-read-topic	Orcus (god)	todo
+skip-variant	Orcus (god)	skipped
 read-topic	Orcus-town	todo
 read-monster	Orcus	todo
 read-topic	Order of the Stick	todo
@@ -3364,7 +3364,7 @@ skip-variant	Ornate mace (SpliceHack)	skipped
 skip-meta	Ornate mace	skipped
 skip-variant	Orthos	skipped
 skip-variant	Ose	skipped
-read-topic	Osiris	todo
+skip-variant	Osiris	skipped
 read-topic	Osquip	todo
 skip-variant	Otiax	skipped
 skip-variant	Otyugh	skipped
@@ -3374,8 +3374,8 @@ read-topic	Oviparous	todo
 read-monster	Owlbear	todo
 skip-variant	Ozzy	skipped
 read-topic	P	todo
-read-topic	Pacifist	todo
-read-topic	Pacifist_screen	todo
+skip-meta	Pacifist	skipped
+skip-meta	Pacifist_screen	skipped
 skip-meta	Pack of cards	skipped
 skip-variant	Pack of floppies	skipped
 skip-variant	Pack rat (Hack'EM)	skipped
@@ -3387,10 +3387,10 @@ read-monster	Page	todo
 skip-variant	Paimon	skipped
 read-topic	Pair of lenses	todo
 skip-translation	Pair of lenses_zh-CN	skipped
-read-topic	Pair of stilettos	todo
+skip-meta	Pair of stilettos	skipped
 skip-variant	Pair of sunglasses	skipped
 skip-variant	Paladin (monster)	skipped
-read-topic	Paladin (role)	todo
+skip-variant	Paladin (role)	skipped
 skip-meta	Paladin	skipped
 skip-variant	Pale Horse (EvilHack)	skipped
 skip-variant	Pale horse (SpliceHack)	skipped
@@ -3412,23 +3412,23 @@ skip-variant	Parasite	skipped
 skip-variant	Parasitic master mind flayer	skipped
 skip-variant	Parasitic mind flayer	skipped
 skip-variant	Parasitized embraced alider	skipped
-read-topic	Parasitology	todo
+skip-variant	Parasitology	skipped
 skip-variant	Parazonium	skipped
 skip-variant	Parrot (Hack'EM)	skipped
 skip-variant	Parrot (Pirate patch)	skipped
 skip-variant	Parrot (SLASH'EM)	skipped
 skip-variant	Parrot (dNetHack)	skipped
 skip-meta	Parrot	skipped
-read-topic	Partial intrinsic	todo
+skip-variant	Partial intrinsic	skipped
 read-item	Partisan	todo
 skip-translation	Partisan_zh-CN	skipped
 read-topic	Passive attack	todo
 read-topic	Passtune	todo
 read-topic	Paste	todo
-read-topic	Patch	todo
-read-topic	Patching	todo
+skip-meta	Patch	skipped
+skip-meta	Patching	skipped
 read-topic	Pathfinder	todo
-read-topic	Pathos	todo
+skip-variant	Pathos	skipped
 read-topic	Pauper	todo
 read-topic	Pay	todo
 skip-variant	Peanut bag	skipped
@@ -3439,43 +3439,43 @@ skip-variant	Pegasus (EvilHack)	skipped
 skip-variant	Pegasus	skipped
 read-monster	Pelias	todo
 skip-meta	Pellet	skipped
-read-topic	Pentagram	todo
+skip-variant	Pentagram	skipped
 skip-meta	People of secondary interest to NetHack	skipped
 read-topic	Perm	todo
 read-topic	Permadeaf	todo
-read-topic	Permahallu	todo
+skip-variant	Permahallu	skipped
 read-topic	Perseus	todo
 read-topic	Persistent level	todo
-read-topic	Pest glaive	todo
+skip-variant	Pest glaive	skipped
 read-monster	Pestilence	todo
 skip-variant	Pet (SLASH'EM)	skipped
 skip-variant	Pet (dNetHack)	skipped
-read-topic	Pet name	todo
+skip-variant	Pet name	skipped
 read-topic	Pet	todo
 skip-translation	Pet_ko	skipped
-read-topic	Petmaster	todo
+skip-variant	Petmaster	skipped
 skip-variant	Petrified ent	skipped
 skip-variant	Phantasm	skipped
 skip-variant	Phantom fungus	skipped
 skip-variant	Pharaoh	skipped
 skip-variant	Phase spider	skipped
 read-topic	Phasing	todo
-read-topic	Philosophies	todo
+skip-variant	Philosophies	skipped
 skip-variant	Phlebotomy kit	skipped
-read-topic	Photography patch	todo
-read-topic	Physical damage scaling	todo
+skip-meta	Photography patch	skipped
+skip-variant	Physical damage scaling	skipped
 read-topic	Physical damage	todo
 read-topic	Physical size	todo
 read-topic	Pick up	todo
 read-topic	Pick-axe (skill)	todo
 read-item	Pick-axe	todo
 skip-translation	Pick-axe_zh-CN	skipped
-read-topic	Picking out the Seeds	todo
+skip-variant	Picking out the Seeds	skipped
 read-topic	Piercer (monster class)	todo
 skip-meta	Piercer	skipped
 read-topic	Piety	todo
 read-topic	Pill	todo
-read-topic	Pincer staff	todo
+skip-variant	Pincer staff	skipped
 skip-variant	Pindar (SlashTHEM)	skipped
 skip-meta	Pindar	skipped
 skip-variant	Pineapple	skipped
@@ -3489,7 +3489,7 @@ skip-variant	Pirate brother (dNetHack)	skipped
 skip-meta	Pirate brother	skipped
 skip-variant	Pirate crewmate (Hack'EM)	skipped
 skip-variant	Pirate crewmate (SpliceHack)	skipped
-read-topic	Pirate quest	todo
+skip-variant	Pirate quest	skipped
 read-topic	Pirate	todo
 skip-variant	Pirate_Hack'EM	skipped
 skip-variant	Pirate_SlashTHEM	skipped
@@ -3514,7 +3514,7 @@ read-monster	Plains centaur	todo
 read-topic	Plane of Air	todo
 read-topic	Plane of Earth	todo
 read-topic	Plane of Fire	todo
-read-topic	Plane of Ice	todo
+skip-variant	Plane of Ice	skipped
 read-topic	Plane of Water	todo
 skip-variant	Planetar	skipped
 skip-variant	Plant (EvilHack)	skipped
@@ -3526,12 +3526,12 @@ skip-variant	Plastic golem	skipped
 read-topic	Plastic	todo
 read-item	Plate mail	todo
 skip-translation	Plate mail_zh-CN	skipped
-read-topic	Platinum	todo
+skip-variant	Platinum	skipped
 skip-variant	Platypus	skipped
 skip-variant	Player monster (EvilHack)	skipped
 skip-variant	Player monster (dNetHack)	skipped
 read-topic	Player monster	todo
-read-topic	Player's misconceptions	todo
+skip-variant	Player's misconceptions	skipped
 read-topic	Player	todo
 read-topic	Playground	todo
 skip-variant	Playing card deck	skipped
@@ -3558,7 +3558,7 @@ read-monster	Pony	todo
 read-topic	Port	todo
 skip-variant	Portable electrode	skipped
 read-topic	Portal detection methods	todo
-read-topic	Portal stones	todo
+skip-variant	Portal stones	skipped
 read-topic	Poseidon	todo
 skip-meta	Pot1-343.txt	skipped
 skip-meta	Pot2-343.txt	skipped
@@ -3631,7 +3631,7 @@ skip-variant	Potion of radium	skipped
 skip-variant	Potion of recovery	skipped
 read-item	Potion of restore ability	todo
 skip-translation	Potion of restore ability_zh-CN	skipped
-read-topic	Potion of salt water	todo
+skip-variant	Potion of salt water	skipped
 read-item	Potion of see invisible	todo
 skip-translation	Potion of see invisible_zh-CN	skipped
 read-item	Potion of sickness	todo
@@ -3658,13 +3658,13 @@ skip-translation	Potion_zh-CN	skipped
 skip-stub	Pound sign	skipped
 read-topic	Pounding	todo
 skip-variant	Power pack	skipped
-read-topic	Power surge	todo
+skip-variant	Power surge	skipped
 read-topic	Prayer timeout	todo
 read-topic	Prayer-warded wrapping	todo
 read-topic	Prayer	todo
 skip-translation	Prayer_ko	skipped
 skip-variant	Prehistoric monsters (dNethack)	skipped
-read-topic	Presence of Shub-Nugganoth	todo
+skip-variant	Presence of Shub-Nugganoth	skipped
 skip-meta	Preservation	skipped
 skip-variant	Preservative engine	skipped
 read-topic	Price identification	todo
@@ -3677,19 +3677,19 @@ skip-variant	Priest_EvilHack	skipped
 skip-variant	Priest_SLASH'EM	skipped
 skip-variant	Priest_dNetHack	skipped
 skip-variant	Priestess of Ghaunadaur	skipped
-read-topic	Primal roar	todo
-read-topic	Primordial	todo
-read-topic	Prince Nezha	todo
+skip-variant	Primal roar	skipped
+skip-variant	Primordial	skipped
+skip-variant	Prince Nezha	skipped
 skip-meta	Prince	skipped
 read-topic	Prison guard	todo
 skip-variant	Prisoner (dNetHack)	skipped
 read-monster	Prisoner	todo
 skip-meta	Private server	skipped
 skip-meta	Probing	skipped
-read-topic	Projectile	todo
+skip-meta	Projectile	skipped
 skip-translation	Projectile_zh-CN	skipped
 read-topic	Property	todo
-read-topic	Protection (monster spell)	todo
+skip-variant	Protection (monster spell)	skipped
 read-topic	Protection from shape changers	todo
 read-topic	Protection racket	todo
 skip-meta	Protection	skipped
@@ -3699,19 +3699,19 @@ skip-variant	Pseudodragon (dNetHack)	skipped
 skip-meta	Pseudodragon	skipped
 read-topic	Psi bolt	todo
 skip-meta	Psionic	skipped
-read-topic	Psychic resistance	todo
-read-topic	Psychic	todo
+skip-variant	Psychic resistance	skipped
+skip-variant	Psychic	skipped
 read-topic	Ptah	todo
-read-topic	PuTTY	todo
+skip-meta	PuTTY	skipped
 skip-meta	Public server	skipped
 read-topic	Pudding farming	todo
 read-topic	Pudding or ooze	todo
 skip-meta	Pudding	skipped
 read-topic	Puddingbane	todo
-read-topic	Pummel	todo
+skip-variant	Pummel	skipped
 skip-variant	Pumpkin pie	skipped
 skip-variant	Pumpkin	skipped
-read-topic	Pun	todo
+skip-variant	Pun	skipped
 skip-variant	Punisher	skipped
 read-topic	Punishment	todo
 read-monster	Purple worm	todo
@@ -3739,7 +3739,7 @@ read-topic	Quest artifact	todo
 read-topic	Quest guardian	todo
 read-topic	Quest	todo
 read-topic	Quest.txt format	todo
-read-topic	Quetzalcoatl	todo
+skip-variant	Quetzalcoatl	skipped
 skip-variant	Quick Blade	skipped
 skip-variant	Quickling (SLASH'EM)	skipped
 skip-variant	Quickling (dNetHack)	skipped
@@ -3747,7 +3747,7 @@ skip-meta	Quickling	skipped
 read-topic	Quit	todo
 read-topic	Quiver	todo
 read-monster	Quivering blob	todo
-read-topic	R'lyehian vision	todo
+skip-variant	R'lyehian vision	skipped
 read-topic	R	todo
 skip-variant	Rabbit	skipped
 skip-variant	Rabid dog	skipped
@@ -3758,11 +3758,11 @@ read-topic	Race	todo
 skip-translation	Race_ru	skipped
 read-topic	Racial equipment	todo
 read-topic	Racial monster	todo
-read-topic	Rage eruption	todo
+skip-variant	Rage eruption	skipped
 read-topic	Raglayim tannin	todo
-read-topic	Raijin	todo
-read-topic	Raise zombies	todo
-read-topic	Rakuyo	todo
+skip-variant	Raijin	skipped
+skip-variant	Raise zombies	skipped
+skip-variant	Rakuyo	skipped
 read-topic	Random breath	todo
 read-topic	Random number generator	todo
 skip-variant	Random vault (UnNetHack)	skipped
@@ -3787,23 +3787,23 @@ skip-variant	Rapier (dNetHack)	skipped
 skip-meta	Rapier	skipped
 skip-variant	Rat King (EvilHack)	skipped
 skip-meta	Rat King	skipped
-read-topic	Rat level	todo
-read-topic	Rat	todo
+skip-variant	Rat level	skipped
+skip-variant	Rat	skipped
 skip-meta	Ration	skipped
 read-monster	Raven	todo
 read-topic	Ray	todo
-read-topic	Raygun	todo
+skip-variant	Raygun	skipped
 read-topic	Read	todo
 read-topic	Really Cool Shirt	todo
-read-topic	Reanimation	todo
+skip-variant	Reanimation	skipped
 skip-variant	Reaper	skipped
 read-topic	Reaver	todo
 skip-variant	Rebel leader	skipped
-read-topic	Rec.games.roguelike.nethack FAQ	todo
+skip-meta	Rec.games.roguelike.nethack FAQ	skipped
 read-topic	Rec.games.roguelike.nethack	todo
 skip-variant	Recluse spider	skipped
 read-topic	Record file	todo
-read-topic	Recover	todo
+skip-variant	Recover	skipped
 skip-variant	Red Horse	skipped
 read-topic	Red dragon scale mail	todo
 read-topic	Red dragon scales	todo
@@ -3812,23 +3812,23 @@ read-monster	Red mold	todo
 skip-variant	Red moldier	skipped
 read-monster	Red naga hatchling	todo
 read-monster	Red naga	todo
-read-topic	Red-eyed vibrosword	todo
+skip-variant	Red-eyed vibrosword	skipped
 skip-variant	Redcap	skipped
 read-topic	Redraw screen	todo
 read-topic	Reference card	todo
-read-topic	Reflection (monster spell)	todo
+skip-variant	Reflection (monster spell)	skipped
 read-topic	Reflection	todo
 skip-variant	Regeneration (GnollHack)	skipped
 read-topic	Regeneration (property)	todo
 skip-meta	Regeneration	skipped
-read-topic	Reinforce memory	todo
+skip-variant	Reinforce memory	skipped
 read-topic	Religion	todo
 skip-meta	Remove curse	skipped
 read-topic	Remove	todo
 read-topic	Repeat previous command	todo
 read-topic	Repeat previous messages	todo
 skip-meta	Reptile	skipped
-read-topic	Reptilian	todo
+skip-variant	Reptilian	skipped
 skip-variant	Research (SLASH'EM)	skipped
 skip-variant	Research (dNetHack)	skipped
 skip-meta	Research (disambiguation)	skipped
@@ -3841,7 +3841,7 @@ read-topic	Restore ability	todo
 skip-variant	Retriever	skipped
 skip-variant	Revenant	skipped
 read-topic	Revive	todo
-read-topic	Revivification	todo
+skip-variant	Revivification	skipped
 skip-variant	Rhaumbusun	skipped
 skip-variant	Rhymer	skipped
 read-topic	Riders	todo
@@ -3862,7 +3862,7 @@ read-item	Ring of aggravate monster	todo
 skip-translation	Ring of aggravate monster_ko	skipped
 skip-translation	Ring of aggravate monster_zh-CN	skipped
 skip-variant	Ring of alacrity	skipped
-read-topic	Ring of carrying	todo
+skip-variant	Ring of carrying	skipped
 read-item	Ring of cold resistance	todo
 skip-translation	Ring of cold resistance_ko	skipped
 skip-translation	Ring of cold resistance_zh-CN	skipped
@@ -3932,7 +3932,7 @@ read-topic	Ring strategy	todo
 skip-meta	Ring-343.txt	skipped
 read-topic	Ring	todo
 skip-translation	Ring_zh-CN	skipped
-read-topic	Ringing Endorsement	todo
+skip-variant	Ringing Endorsement	skipped
 skip-meta	Rint-343.txt	skipped
 skip-variant	Rite of Detestation	skipped
 read-topic	Rn1	todo
@@ -3974,7 +3974,7 @@ read-topic	Rodney (bot)	todo
 skip-meta	Rodney	skipped
 read-topic	Rog-O-Matic	todo
 skip-meta	Rogue (disambiguation)	skipped
-read-topic	Rogue (game)	todo
+skip-variant	Rogue (game)	skipped
 read-monster	Rogue (player monster)	todo
 read-topic	Rogue level	todo
 read-topic	Rogue quest	todo
@@ -3984,16 +3984,16 @@ skip-variant	Rogue_EvilHack	skipped
 skip-variant	Rogue_SLASH'EM	skipped
 skip-variant	Rogue_dNetHack	skipped
 read-topic	Roguelike. The magazine	todo
-read-topic	Roguelike	todo
+skip-variant	Roguelike	skipped
 skip-variant	Rogues gloves	skipped
 read-topic	Role difficulty	todo
-read-topic	Role difficulty_Variants	todo
+skip-variant	Role difficulty_Variants	skipped
 read-topic	Role	todo
 skip-translation	Role_ko	skipped
 skip-variant	Roles and races (Hack'EM)	skipped
 skip-variant	Roles and races (SpliceHack)	skipped
 read-topic	Rolling boulder trap	todo
-read-topic	Rondel dagger	todo
+skip-variant	Rondel dagger	skipped
 skip-variant	Ronin (monster)	skipped
 read-topic	Room	todo
 read-monster	Rope golem	todo
@@ -4005,7 +4005,7 @@ read-monster	Rothe	todo
 skip-meta	Rotten	skipped
 skip-meta	Round shield	skipped
 read-topic	Roundshield	todo
-read-topic	Rrllududab	todo
+skip-variant	Rrllududab	skipped
 read-topic	Rub	todo
 skip-translation	Rub_ko	skipped
 skip-variant	Rubber gloves	skipped
@@ -4017,9 +4017,9 @@ skip-variant	Ruffled shirt (dNetHack)	skipped
 skip-meta	Ruffled shirt	skipped
 skip-variant	Ruggo the Gnome High King	skipped
 skip-variant	Ruggo the Gnome King	skipped
-read-topic	Ruins of Moria	todo
-read-topic	Rumor messages	todo
-read-topic	Rumors	todo
+skip-variant	Ruins of Moria	skipped
+skip-meta	Rumor messages	skipped
+skip-meta	Rumors	skipped
 skip-variant	Runed barding	skipped
 skip-variant	Runed bracers	skipped
 skip-meta	Runed broadsword	skipped
@@ -4030,7 +4030,7 @@ skip-meta	Runed plate mail	skipped
 skip-variant	Runesword (dNetHack)	skipped
 read-item	Runesword	todo
 skip-translation	Runesword_zh-CN	skipped
-read-topic	Running Rings Around	todo
+skip-variant	Running Rings Around	skipped
 read-topic	Rust monster or disenchanter	todo
 read-monster	Rust monster	todo
 read-topic	Rust trap	todo
@@ -4039,19 +4039,19 @@ skip-meta	S UMBER	skipped
 skip-meta	S XORN	skipped
 read-topic	S	todo
 read-topic	SCP Foundation	todo
-read-topic	SDL	todo
-read-topic	SLASH 6	todo
-read-topic	SLASH'EM 0.0.7	todo
-read-topic	SLASH'EM 0.0.7E7F2 source code	todo
-read-topic	SLASH'EM 0.0.7E7F3 source code	todo
-read-topic	SLASH'EM Android app	todo
+skip-variant	SDL	skipped
+skip-variant	SLASH 6	skipped
+skip-variant	SLASH'EM 0.0.7	skipped
+skip-variant	SLASH'EM 0.0.7E7F2 source code	skipped
+skip-variant	SLASH'EM 0.0.7E7F3 source code	skipped
+skip-variant	SLASH'EM Android app	skipped
 skip-meta	SLASH'EM Vampire	skipped
-read-topic	SLASH'EM artifact weapons	todo
-read-topic	SLASH'EM artifacts	todo
-read-topic	SLASH'EM	todo
-read-topic	SLASH	todo
-read-topic	SLASHEM PHLEGETHON	todo
-read-topic	SLethe	todo
+skip-variant	SLASH'EM artifact weapons	skipped
+skip-variant	SLASH'EM artifacts	skipped
+skip-variant	SLASH'EM	skipped
+skip-variant	SLASH	skipped
+skip-variant	SLASHEM PHLEGETHON	skipped
+skip-variant	SLethe	skipped
 read-topic	Saber (skill)	todo
 skip-variant	Saber-toothed cat (Hack'EM)	skipped
 skip-variant	Saber-toothed cat (dNetHack)	skipped
@@ -4067,7 +4067,7 @@ read-item	Saddle	todo
 skip-translation	Saddle_zh-CN	skipped
 read-topic	Safe area	todo
 skip-variant	Saint Michael	skipped
-read-topic	Salamander (starting race)	todo
+skip-variant	Salamander (starting race)	skipped
 read-monster	Salamander	todo
 read-monster	Samurai (player monster)	todo
 read-topic	Samurai quest	todo
@@ -4079,7 +4079,7 @@ skip-variant	Samurai_dNetHack	skipped
 read-topic	Sanctuary	todo
 read-monster	Sandestin	todo
 skip-variant	Sandwich	skipped
-read-topic	Sanity	todo
+skip-variant	Sanity	skipped
 skip-variant	Sapphire golem	skipped
 skip-variant	Sara, the Last Oracle	skipped
 read-topic	Sartan tannin	todo
@@ -4087,10 +4087,10 @@ read-monster	Sasquatch	todo
 skip-variant	Satyr (EvilHack)	skipped
 skip-variant	Satyr (SlashTHEM)	skipped
 skip-meta	Satyr	skipped
-read-topic	Save scumming	todo
+skip-variant	Save scumming	skipped
 read-topic	Saving grace	todo
 read-topic	Saving	todo
-read-topic	Saw cleaver	todo
+skip-variant	Saw cleaver	skipped
 read-item	Scale mail	todo
 skip-translation	Scale mail_zh-CN	skipped
 read-item	Scalpel	todo
@@ -4106,7 +4106,7 @@ read-topic	Score	todo
 read-monster	Scorpion	todo
 read-monster	Scorpius	todo
 skip-variant	Scramper	skipped
-read-topic	Scream (attack)	todo
+skip-variant	Scream (attack)	skipped
 skip-meta	Scream	skipped
 skip-variant	Screaming (dNetHack)	skipped
 skip-meta	Screen	skipped
@@ -4160,7 +4160,7 @@ skip-translation	Scroll of magic mapping_zh-CN	skipped
 read-item	Scroll of mail	todo
 skip-translation	Scroll of mail_zh-CN	skipped
 skip-variant	Scroll of mass murder	skipped
-read-topic	Scroll of missing code	todo
+skip-variant	Scroll of missing code	skipped
 read-item	Scroll of punishment	todo
 skip-translation	Scroll of punishment_ko	skipped
 skip-translation	Scroll of punishment_zh-CN	skipped
@@ -4174,7 +4174,7 @@ skip-translation	Scroll of scare monster_zh-CN	skipped
 skip-variant	Scroll of secret arts	skipped
 read-item	Scroll of stinking cloud	todo
 skip-translation	Scroll of stinking cloud_zh-CN	skipped
-read-topic	Scroll of summoning	todo
+skip-variant	Scroll of summoning	skipped
 read-item	Scroll of taming	todo
 skip-translation	Scroll of taming_zh-CN	skipped
 read-item	Scroll of teleportation	todo
@@ -4183,7 +4183,7 @@ skip-variant	Scroll of time	skipped
 skip-variant	Scroll of undo genocide	skipped
 skip-variant	Scroll of ward	skipped
 skip-variant	Scroll of warding	skipped
-read-topic	Scroll of wishing	todo
+skip-variant	Scroll of wishing	skipped
 read-topic	Scroll origins	todo
 read-topic	Scroll strategy	todo
 read-topic	Scroll	todo
@@ -4202,10 +4202,10 @@ read-topic	Secure Shell	todo
 read-topic	Security	todo
 read-topic	Sedge hat	todo
 read-topic	See invisible	todo
-read-topic	Seeker	todo
+skip-variant	Seeker	skipped
 read-topic	Segfault	todo
-read-topic	Seismic hammer	todo
-read-topic	Self-righteous	todo
+skip-variant	Seismic hammer	skipped
+skip-variant	Self-righteous	skipped
 skip-variant	Selkie (dNetHack)	skipped
 skip-meta	Selkie	skipped
 skip-variant	Sensor pack	skipped
@@ -4213,23 +4213,23 @@ skip-meta	Sergeant (disambiguation)	skipped
 read-monster	Sergeant (monster)	todo
 skip-variant	Serpent's Tongue	skipped
 skip-variant	Serpent-necked lioness	skipped
-read-topic	Serrated	todo
+skip-variant	Serrated	skipped
 skip-variant	Servant	skipped
 read-topic	Sessile	todo
-read-topic	Set of crow talons	todo
-read-topic	Set of shackles	todo
+skip-variant	Set of crow talons	skipped
+skip-variant	Set of shackles	skipped
 read-topic	Set	todo
 read-topic	Setgid	todo
 skip-variant	Seth (SLASH'EM)	skipped
 skip-meta	Seth	skipped
 skip-meta	Severe poison	skipped
 skip-variant	Severed hand	skipped
-read-topic	Sewage	todo
+skip-variant	Sewage	skipped
 read-monster	Sewer rat	todo
 skip-variant	Seyll Auzkovyn	skipped
-read-topic	Shade (monster class)	todo
+skip-variant	Shade (monster class)	skipped
 read-monster	Shade	todo
-read-topic	Shadow (damage type)	todo
+skip-variant	Shadow (damage type)	skipped
 skip-variant	Shadow dragon scales	skipped
 skip-variant	Shadow dragon	skipped
 skip-variant	Shadow ogre (Hack'EM)	skipped
@@ -4247,12 +4247,12 @@ read-topic	Shaktari	todo
 read-topic	Shallow water	todo
 read-topic	Shalosh tannah	todo
 read-monster	Shaman Karnov	todo
-read-topic	Shaman	todo
+skip-variant	Shaman	skipped
 skip-variant	Shambling horror	skipped
-read-topic	Shan Lai Ching	todo
-read-topic	Shanta-pata	todo
+skip-variant	Shan Lai Ching	skipped
+skip-variant	Shanta-pata	skipped
 read-topic	Shapeshifter	todo
-read-topic	Shared soul	todo
+skip-variant	Shared soul	skipped
 read-monster	Shark	todo
 skip-variant	Sharpened pencil	skipped
 skip-variant	Sharur	skipped
@@ -4265,12 +4265,12 @@ skip-meta	Shell	skipped
 skip-variant	Shelob (SLASH'EM)	skipped
 skip-variant	Shelob (dNetHack)	skipped
 skip-meta	Shelob	skipped
-read-topic	Sheol	todo
+skip-variant	Sheol	skipped
 skip-meta	Sheol.txt	skipped
 skip-variant	Shepherd's crook	skipped
-read-topic	Shield (skill)	todo
+skip-variant	Shield (skill)	skipped
 skip-meta	Shield bash	skipped
-read-topic	Shield block	todo
+skip-variant	Shield block	skipped
 read-topic	Shield of drain resistance	todo
 skip-variant	Shield of light	skipped
 skip-variant	Shield of mobility	skipped
@@ -4304,7 +4304,7 @@ skip-variant	Shoggoth (SLASH'EM)	skipped
 skip-variant	Shoggoth (dNetHack)	skipped
 skip-meta	Shoggoth	skipped
 read-topic	Shop	todo
-read-topic	Shopkeeper services	todo
+skip-variant	Shopkeeper services	skipped
 read-monster	Shopkeeper	todo
 read-topic	Short sword (skill)	todo
 read-item	Short sword	todo
@@ -4316,21 +4316,21 @@ skip-variant	Shotgun shell (dNetHack)	skipped
 skip-meta	Shotgun shell	skipped
 skip-meta	Shotgun	skipped
 read-topic	Showbuc	todo
-read-topic	Showdmg	todo
+skip-variant	Showdmg	skipped
 read-topic	Showspells	todo
 read-monster	Shrieker	todo
-read-topic	Shrouded dispensary	todo
+skip-variant	Shrouded dispensary	skipped
 read-topic	Shuriken (skill)	todo
 read-item	Shuriken	todo
 skip-translation	Shuriken_zh-CN	skipped
 skip-meta	Sick	skipped
-read-topic	Sickle	todo
+skip-variant	Sickle	skipped
 read-topic	Sickness	todo
 skip-variant	Siege ogre	skipped
 read-topic	Sigil of control	todo
-read-topic	Sigil of discharge	todo
+skip-variant	Sigil of discharge	skipped
 read-topic	Sigil of tempest	todo
-read-topic	Sign of the Scion Queen Mother	todo
+skip-variant	Sign of the Scion Queen Mother	skipped
 read-topic	Signed variable	todo
 read-item	Silver arrow	todo
 skip-translation	Silver arrow_zh-CN	skipped
@@ -4355,7 +4355,7 @@ skip-variant	Silver short sword	skipped
 read-item	Silver spear	todo
 skip-translation	Silver spear_zh-CN	skipped
 read-topic	Silver	todo
-read-topic	Silverknight	todo
+skip-variant	Silverknight	skipped
 skip-variant	Simurgh	skipped
 skip-variant	Sin	skipped
 skip-meta	Sink-343.txt	skipped
@@ -4378,27 +4378,27 @@ skip-translation	Skeleton key_zh-CN	skipped
 skip-variant	Skeleton warrior	skipped
 read-monster	Skeleton	todo
 read-topic	Skill	todo
-read-topic	Skills (NetHack brass)	todo
+skip-variant	Skills (NetHack brass)	skipped
 skip-variant	Skills (SpliceHack)	skipped
 skip-variant	Skull	skipped
 skip-variant	Skullcrusher	skipped
 skip-meta	Sl-arti.txt	skipped
-read-topic	Slash'EM Extended	todo
-read-topic	Slash	todo
-read-topic	SlashTHEM artifacts	todo
-read-topic	SlashTHEM items	todo
-read-topic	SlashTHEM monsters	todo
-read-topic	SlashTHEM races	todo
-read-topic	SlashTHEM roles	todo
-read-topic	SlashTHEM traps	todo
-read-topic	SlashTHEM	todo
+skip-variant	Slash'EM Extended	skipped
+skip-variant	Slash	skipped
+skip-variant	SlashTHEM artifacts	skipped
+skip-variant	SlashTHEM items	skipped
+skip-variant	SlashTHEM monsters	skipped
+skip-variant	SlashTHEM races	skipped
+skip-variant	SlashTHEM roles	skipped
+skip-variant	SlashTHEM traps	skipped
+skip-variant	SlashTHEM	skipped
 read-topic	Sleep resistance	todo
 skip-translation	Sleep resistance_ko	skipped
 read-topic	Sleep	todo
 read-topic	Sleeping gas trap	todo
 skip-variant	Slice of cake	skipped
 read-topic	SliceHack	todo
-read-topic	Slime Pits	todo
+skip-variant	Slime Pits	skipped
 read-item	Slime mold	todo
 skip-translation	Slime mold_zh-CN	skipped
 skip-meta	Slime	skipped
@@ -4411,7 +4411,7 @@ skip-translation	Sling_zh-CN	skipped
 skip-meta	Slippery	skipped
 skip-variant	Slipscale the Betrayer	skipped
 read-topic	Slithy	todo
-read-topic	Slot Machine	todo
+skip-meta	Slot Machine	skipped
 skip-variant	Slow Blade	skipped
 read-topic	Slow digestion	todo
 skip-meta	Slow monster	skipped
@@ -4427,18 +4427,18 @@ skip-variant	Smaug	skipped
 read-topic	Smell	todo
 skip-variant	Smith (dNetHack)	skipped
 skip-meta	Smith	skipped
-read-topic	Smithing hammer	todo
-read-topic	Smithing	todo
+skip-variant	Smithing hammer	skipped
+skip-variant	Smithing	skipped
 skip-meta	Smoke (disambiguation)	skipped
-read-topic	Smoke	todo
+skip-variant	Smoke	skipped
 read-topic	Smoky and milky potions	todo
 read-topic	Snake (monster class)	todo
 read-monster	Snake	todo
-read-topic	Snapscreenshot	todo
+skip-variant	Snapscreenshot	skipped
 skip-variant	Snark (EvilHack)	skipped
 skip-variant	Snark (SporkHack)	skipped
 skip-meta	Snark	skipped
-read-topic	Sneak Preview	todo
+skip-variant	Sneak Preview	skipped
 skip-variant	Sneak attack (dNetHack)	skipped
 read-item	Snickersnee	todo
 skip-variant	Sniper rifle (SLASH'EM)	skipped
@@ -4451,44 +4451,44 @@ read-topic	Soiled	todo
 skip-variant	Sokoban (NetHack Fourk)	skipped
 skip-variant	Sokoban (SLASH'EM)	skipped
 skip-variant	Sokoban (UnNetHack)	skipped
-read-topic	Sokoban Level 1a	todo
-read-topic	Sokoban Level 1b	todo
-read-topic	Sokoban Level 1c	todo
-read-topic	Sokoban Level 1d	todo
-read-topic	Sokoban Level 1e	todo
-read-topic	Sokoban Level 1f	todo
-read-topic	Sokoban Level 1g	todo
-read-topic	Sokoban Level 1h	todo
-read-topic	Sokoban Level 1i	todo
-read-topic	Sokoban Level 1j	todo
-read-topic	Sokoban Level 1k	todo
-read-topic	Sokoban Level 1l	todo
-read-topic	Sokoban Level 1m	todo
-read-topic	Sokoban Level 1n	todo
-read-topic	Sokoban Level 1o	todo
-read-topic	Sokoban Level 1p	todo
-read-topic	Sokoban Level 1q	todo
-read-topic	Sokoban Level 2a	todo
-read-topic	Sokoban Level 2b	todo
-read-topic	Sokoban Level 2c	todo
+skip-variant	Sokoban Level 1a	skipped
+skip-variant	Sokoban Level 1b	skipped
+skip-variant	Sokoban Level 1c	skipped
+skip-variant	Sokoban Level 1d	skipped
+skip-variant	Sokoban Level 1e	skipped
+skip-variant	Sokoban Level 1f	skipped
+skip-variant	Sokoban Level 1g	skipped
+skip-variant	Sokoban Level 1h	skipped
+skip-variant	Sokoban Level 1i	skipped
+skip-variant	Sokoban Level 1j	skipped
+skip-variant	Sokoban Level 1k	skipped
+skip-variant	Sokoban Level 1l	skipped
+skip-variant	Sokoban Level 1m	skipped
+skip-variant	Sokoban Level 1n	skipped
+skip-variant	Sokoban Level 1o	skipped
+skip-variant	Sokoban Level 1p	skipped
+skip-variant	Sokoban Level 1q	skipped
+skip-variant	Sokoban Level 2a	skipped
+skip-variant	Sokoban Level 2b	skipped
+skip-variant	Sokoban Level 2c	skipped
 read-topic	Sokoban Level 3a	todo
 read-topic	Sokoban Level 3b	todo
-read-topic	Sokoban Level 3c	todo
-read-topic	Sokoban Level 3d	todo
-read-topic	Sokoban Level 3e	todo
-read-topic	Sokoban Level 3f	todo
-read-topic	Sokoban Level 3g	todo
-read-topic	Sokoban Level 3h	todo
-read-topic	Sokoban Level 3i	todo
-read-topic	Sokoban Level 3j	todo
-read-topic	Sokoban Level 3k	todo
+skip-variant	Sokoban Level 3c	skipped
+skip-variant	Sokoban Level 3d	skipped
+skip-variant	Sokoban Level 3e	skipped
+skip-variant	Sokoban Level 3f	skipped
+skip-variant	Sokoban Level 3g	skipped
+skip-variant	Sokoban Level 3h	skipped
+skip-variant	Sokoban Level 3i	skipped
+skip-variant	Sokoban Level 3j	skipped
+skip-variant	Sokoban Level 3k	skipped
 read-topic	Sokoban Level 4a	todo
 read-topic	Sokoban Level 4b	todo
-read-topic	Sokoban Level 4c	todo
-read-topic	Sokoban Level 4d	todo
-read-topic	Sokoban Level 4e (flipped vertically)	todo
-read-topic	Sokoban Level 4e	todo
-read-topic	Sokoban Level 4f	todo
+skip-variant	Sokoban Level 4c	skipped
+skip-variant	Sokoban Level 4d	skipped
+skip-variant	Sokoban Level 4e (flipped vertically)	skipped
+skip-variant	Sokoban Level 4e	skipped
+skip-variant	Sokoban Level 4f	skipped
 read-topic	Sokoban	todo
 skip-variant	Sol Valtiva (dNetHack)	skipped
 skip-variant	Sol Valtiva (xNetHack)	skipped
@@ -4496,21 +4496,21 @@ skip-meta	Sol Valtiva	skipped
 skip-variant	Solar	skipped
 read-monster	Soldier ant	todo
 skip-variant	Soldier mummy	skipped
-read-topic	Soldier's rapier	todo
+skip-variant	Soldier's rapier	skipped
 read-monster	Soldier	todo
 read-topic	Solid rock	todo
 skip-variant	Son of Typhon	skipped
-read-topic	Sonic	todo
+skip-variant	Sonic	skipped
 read-topic	Sortloot	todo
 skip-variant	Soul-lens	skipped
 read-topic	Source code statistics	todo
 read-topic	Source diving	todo
-read-topic	Space	todo
+skip-variant	Space	skipped
 skip-variant	Spark bug	skipped
 read-topic	Spear (skill)	todo
 read-item	Spear	todo
 skip-translation	Spear_zh-CN	skipped
-read-topic	Special level (NetHack_ The Next Generation)	todo
+skip-variant	Special level (NetHack_ The Next Generation)	skipped
 skip-variant	Special level (SLASH'EM)	skipped
 read-topic	Special level	todo
 skip-variant	Special room (SLASH'EM)	skipped
@@ -4525,12 +4525,12 @@ skip-meta	Speed monster	skipped
 read-topic	Speed	todo
 read-topic	Spell being	todo
 skip-variant	Spell golem	skipped
-read-topic	Spell maintenance	todo
-read-topic	Spell staff	todo
+skip-variant	Spell maintenance	skipped
+skip-variant	Spell staff	skipped
 skip-meta	Spell	skipped
 skip-variant	Spellbook of acid blast	skipped
 skip-variant	Spellbook of acid stream	skipped
-read-topic	Spellbook of astral eyesight	todo
+skip-variant	Spellbook of astral eyesight	skipped
 read-item	Spellbook of blank paper	todo
 skip-translation	Spellbook of blank paper_zh-CN	skipped
 skip-variant	Spellbook of blizzard	skipped
@@ -4539,7 +4539,7 @@ skip-translation	Spellbook of cancellation_zh-CN	skipped
 read-item	Spellbook of cause fear	todo
 skip-translation	Spellbook of cause fear_zh-CN	skipped
 skip-variant	Spellbook of chain lightning	skipped
-read-topic	Spellbook of charging	todo
+skip-variant	Spellbook of charging	skipped
 read-item	Spellbook of charm monster	todo
 skip-translation	Spellbook of charm monster_zh-CN	skipped
 read-item	Spellbook of clairvoyance	todo
@@ -4612,7 +4612,7 @@ skip-translation	Spellbook of magic mapping_zh-CN	skipped
 read-item	Spellbook of magic missile	todo
 skip-translation	Spellbook of magic missile_zh-CN	skipped
 skip-variant	Spellbook of passwall	skipped
-read-topic	Spellbook of phase	todo
+skip-variant	Spellbook of phase	skipped
 skip-variant	Spellbook of poison blast	skipped
 read-item	Spellbook of polymorph	todo
 skip-translation	Spellbook of polymorph_zh-CN	skipped
@@ -4629,12 +4629,12 @@ read-item	Spellbook of sleep	todo
 skip-translation	Spellbook of sleep_zh-CN	skipped
 read-item	Spellbook of slow monster	todo
 skip-translation	Spellbook of slow monster_zh-CN	skipped
-read-topic	Spellbook of speed monster	todo
+skip-variant	Spellbook of speed monster	skipped
 read-item	Spellbook of stone to flesh	todo
 skip-translation	Spellbook of stone to flesh_zh-CN	skipped
 skip-variant	Spellbook of summon nasty	skipped
 skip-variant	Spellbook of summon undead	skipped
-read-topic	Spellbook of summoning	todo
+skip-variant	Spellbook of summoning	skipped
 read-item	Spellbook of teleport away	todo
 skip-translation	Spellbook of teleport away_zh-CN	skipped
 skip-variant	Spellbook of touch of death	skipped
@@ -4646,15 +4646,15 @@ read-topic	Spellbook	todo
 skip-translation	Spellbook_zh-CN	skipped
 skip-meta	Spellcaster	skipped
 skip-variant	Spellcasting (SLASH'EM)	skipped
-read-topic	Spellcasting focus	todo
+skip-variant	Spellcasting focus	skipped
 read-topic	Spellcasting	todo
 read-topic	Spelling	todo
 skip-variant	Spellweaver goddess-mocker	skipped
 read-item	Spetum	todo
 skip-translation	Spetum_zh-CN	skipped
 skip-meta	Sphere	skipped
-read-topic	Spider (monster attribute)	todo
-read-topic	Spider silk (material)	todo
+skip-variant	Spider (monster attribute)	skipped
+skip-variant	Spider silk (material)	skipped
 skip-meta	Spider silk	skipped
 skip-meta	Spider	skipped
 skip-variant	Spidersilk (artifact)	skipped
@@ -4668,36 +4668,36 @@ skip-translation	Spinach_zh-CN	skipped
 skip-variant	Spined devil	skipped
 skip-variant	Spineseeker (dNetHack)	skipped
 skip-variant	Spineseeker	skipped
-read-topic	Spirit bomb	todo
+skip-variant	Spirit bomb	skipped
 skip-variant	Spirits (dNetHack)	skipped
 skip-meta	Spirits	skipped
 read-topic	Spitting attack	todo
 skip-variant	Spitting beetle	skipped
 skip-meta	Spl1-343.txt	skipped
 skip-meta	Spl2-343.txt	skipped
-read-topic	SpliceHack-Rewrite	todo
-read-topic	SpliceHack	todo
-read-topic	SpliceHack_Rules changes	todo
-read-topic	SpliceHack_Special levels	todo
-read-topic	SpliceHack_Unique demons	todo
+skip-variant	SpliceHack-Rewrite	skipped
+skip-variant	SpliceHack	skipped
+skip-variant	SpliceHack_Rules changes	skipped
+skip-variant	SpliceHack_Special levels	skipped
+skip-variant	SpliceHack_Unique demons	skipped
 read-item	Splint mail	todo
 skip-translation	Splint mail_zh-CN	skipped
 read-topic	Spoiler	todo
 skip-variant	Spoon	skipped
 skip-meta	Spore	skipped
-read-topic	SporkHack	todo
+skip-variant	SporkHack	skipped
 read-monster	Spotted jelly	todo
 skip-variant	Sprig of catnip	skipped
 read-item	Sprig of wolfsbane	todo
 skip-translation	Sprig of wolfsbane_zh-CN	skipped
 skip-variant	Sprow	skipped
 skip-meta	Square bracket	skipped
-read-topic	Square club	todo
+skip-variant	Square club	skipped
 read-topic	Square	todo
 read-topic	Squeaky board	todo
 skip-variant	Squealer	skipped
 read-topic	Stackable	todo
-read-topic	Stacked Dozen	todo
+skip-meta	Stacked Dozen	skipped
 skip-variant	Staff of battle	skipped
 skip-variant	Staff of divination (EvilHack)	skipped
 skip-variant	Staff of divination (SporkHack)	skipped
@@ -4724,7 +4724,7 @@ skip-meta	Stained	skipped
 read-topic	Staircase	todo
 skip-variant	Stake (Hack'EM)	skipped
 skip-variant	Stake (dNetHack)	skipped
-read-topic	Stake of Withering	todo
+skip-variant	Stake of Withering	skipped
 skip-meta	Stake	skipped
 read-monster	Stalker	todo
 skip-variant	Standard strategy (SLASH'EM)	skipped
@@ -4738,7 +4738,7 @@ skip-variant	Star vampire (SLASH'EM)	skipped
 skip-variant	Star vampire (dNetHack)	skipped
 skip-meta	Star vampire	skipped
 skip-variant	Star-Emperor's Ring	skipped
-read-topic	Start scumming	todo
+skip-variant	Start scumming	skipped
 read-topic	Stash	todo
 skip-meta	Stasis	skipped
 skip-meta	Stat-343.txt	skipped
@@ -4748,7 +4748,7 @@ skip-variant	Statue trap	skipped
 read-item	Statue	todo
 read-topic	Status hilites	todo
 read-topic	Status lines	todo
-read-topic	Statuscolors	todo
+skip-meta	Statuscolors	skipped
 skip-meta	Staves	skipped
 read-topic	Steadfast	todo
 read-topic	Steal gold	todo
@@ -4773,12 +4773,12 @@ skip-meta	Stone dragon scales	skipped
 skip-variant	Stone dragon	skipped
 read-monster	Stone giant	todo
 read-monster	Stone golem	todo
-read-topic	Stone to flesh (monster spell)	todo
+skip-variant	Stone to flesh (monster spell)	skipped
 skip-meta	Stone	skipped
 skip-translation	Stone_zh-CN	skipped
 read-topic	Stoning resistance	todo
 read-topic	Stoning	todo
-read-topic	Storage room	todo
+skip-variant	Storage room	skipped
 read-monster	Storm giant	todo
 read-topic	Storm	todo
 read-item	Stormbringer	todo
@@ -4799,23 +4799,23 @@ read-topic	Strong	todo
 read-item	Studded leather armor	todo
 skip-translation	Studded leather armor_zh-CN	skipped
 read-monster	Student	todo
-read-topic	Study	todo
+skip-variant	Study	skipped
 read-topic	Stun (monster spell)	todo
 read-topic	Stun	todo
 read-topic	Stupid Ascension Tricks	todo
 skip-variant	Submachine gun (SLASH'EM)	skipped
 skip-variant	Submachine gun (dNetHack)	skipped
 skip-meta	Submachine gun	skipped
-read-topic	Summon alien	todo
+skip-variant	Summon alien	skipped
 read-topic	Summon insects	todo
-read-topic	Summon minion	todo
+skip-variant	Summon minion	skipped
 read-topic	Summon nasties	todo
 skip-meta	Summoning	skipped
 read-item	Sunsword	todo
 skip-translation	Sunsword_zh-CN	skipped
-read-topic	Surgery	todo
-read-topic	Susanowo	todo
-read-topic	Sustain ability	todo
+skip-variant	Surgery	skipped
+skip-variant	Susanowo	skipped
+skip-variant	Sustain ability	skipped
 skip-variant	Swamp fern (UnNetHack)	skipped
 skip-variant	Swamp fern spore (UnNetHack)	skipped
 skip-meta	Swamp fern spore	skipped
@@ -4834,8 +4834,8 @@ skip-variant	Sword of Balance (SpliceHack)	skipped
 skip-meta	Sword of Balance	skipped
 skip-variant	Sword of Justice	skipped
 skip-meta	Sword	skipped
-read-topic	Syllable	todo
-read-topic	Sylph (starting race)	todo
+skip-variant	Syllable	skipped
+skip-variant	Sylph (starting race)	skipped
 read-topic	Symset	todo
 read-topic	Sysconf	todo
 read-topic	System shock	todo
@@ -4843,19 +4843,19 @@ read-item	T-shirt	todo
 skip-translation	T-shirt_zh-CN	skipped
 read-topic	T	todo
 read-topic	TNNT (the game)	todo
-read-topic	TTY	todo
+skip-meta	TTY	skipped
 read-topic	TV Tropes	todo
 skip-meta	Tabs-343.txt	skipped
 read-topic	Tactical Amulet Extraction Bot	todo
 read-topic	Take off	todo
-read-topic	Tal'Gath	todo
-read-topic	Tamash	todo
+skip-variant	Tal'Gath	skipped
+skip-variant	Tamash	skipped
 read-topic	Tameness	todo
 read-topic	Taming	todo
 skip-variant	Tasmanian devil	skipped
-read-topic	Technique	todo
-read-topic	Tecpatl	todo
-read-topic	Telekinesis	todo
+skip-variant	Technique	skipped
+skip-variant	Tecpatl	skipped
+skip-variant	Telekinesis	skipped
 skip-variant	Telepathic (dNetHack)	skipped
 read-topic	Telepathy	todo
 read-topic	Teleport control	todo
@@ -4863,7 +4863,7 @@ read-topic	Teleport region	todo
 read-topic	Teleportation trap	todo
 read-topic	Teleportation	todo
 read-topic	Teleportitis	todo
-read-topic	Telnet	todo
+skip-meta	Telnet	skipped
 skip-variant	Tempest	skipped
 read-topic	Temple	todo
 read-topic	Temporary intrinsic	todo
@@ -4875,22 +4875,22 @@ read-topic	Teraphim tannah	todo
 read-topic	Terrain	todo
 read-topic	Terry Pratchett	todo
 read-topic	Text adventure	todo
-read-topic	The Absurd NetHack Tileset	todo
+skip-meta	The Absurd NetHack Tileset	skipped
 skip-variant	The Annulus	skipped
 skip-variant	The Apple of Discord	skipped
 read-topic	The Arkenstone	todo
-read-topic	The Black Mother	todo
+skip-variant	The Black Mother	skipped
 skip-variant	The Candle of Eternal Flame	skipped
-read-topic	The Choir	todo
+skip-variant	The Choir	skipped
 skip-variant	The Chromatic Dragon Scales (dNetHack)	skipped
-read-topic	The College	todo
+skip-variant	The College	skipped
 skip-variant	The Computer Level	skipped
 skip-variant	The Crossbow of Carl	skipped
 skip-variant	The Crown of Saint Edward	skipped
 read-topic	The DevTeam Office	todo
 read-topic	The DevTeam Thinks of Everything	todo
-read-topic	The Dragon Caves	todo
-read-topic	The Dragon of Bactria	todo
+skip-variant	The Dragon Caves	skipped
+skip-variant	The Dragon of Bactria	skipped
 skip-variant	The Elder Cerebral Fluid	skipped
 skip-variant	The End	skipped
 skip-variant	The Eye of Vecna	skipped
@@ -4899,19 +4899,19 @@ skip-variant	The Eye of the Beholder	skipped
 skip-variant	The Eye of the Oracle	skipped
 read-item	The Eyes of the Overworld	todo
 skip-variant	The Flute of Slime	skipped
-read-topic	The Forge	todo
-read-topic	The Gauntlets of Spell Power	todo
-read-topic	The Giant Caverns	todo
+skip-variant	The Forge	skipped
+skip-variant	The Gauntlets of Spell Power	skipped
+skip-variant	The Giant Caverns	skipped
 skip-variant	The Great Dagger of Glaurgnaa	skipped
 skip-variant	The Green Dragon Crescent Blade	skipped
 read-topic	The Grid Bug's Fane	todo
-read-topic	The Guild of Disgruntled Adventurers	todo
+skip-variant	The Guild of Disgruntled Adventurers	skipped
 skip-variant	The Hand of Vecna (EvilHack)	skipped
 skip-variant	The Hand of Vecna (SLASH'EM)	skipped
 skip-meta	The Hand of Vecna	skipped
 skip-variant	The Hand-Mirror of Cthylla	skipped
 read-item	The Heart of Ahriman	todo
-read-topic	The Holographic Void Lily	todo
+skip-variant	The Holographic Void Lily	skipped
 skip-variant	The Idol of Moloch	skipped
 skip-variant	The Illithid Staff	skipped
 skip-variant	The Iron Ball of Liberation	skipped
@@ -4920,14 +4920,14 @@ read-topic	The Lady	todo
 skip-variant	The Largest Giant	skipped
 skip-variant	The Lightsaber Prototype	skipped
 read-item	The Longbow of Diana	todo
-read-topic	The Lost Tomb	todo
+skip-variant	The Lost Tomb	skipped
 skip-variant	The Lyre of Orpheus (SlashTHEM)	skipped
 skip-variant	The Lyre of Orpheus (dNetHack)	skipped
 skip-meta	The Lyre of Orpheus	skipped
 read-item	The Magic Mirror of Merlin	todo
 skip-variant	The Mantle of Heaven	skipped
 read-topic	The Mantle of Knowledge	todo
-read-topic	The Mantle of Wrath	todo
+skip-variant	The Mantle of Wrath	skipped
 skip-variant	The Marauder's Map (Nephi Pirate patch)	skipped
 skip-variant	The Marauder's Map (SpliceHack)	skipped
 skip-variant	The Marauder's Map (dNetHack)	skipped
@@ -4935,8 +4935,8 @@ skip-meta	The Marauder's Map	skipped
 read-item	The Master Key of Thievery	todo
 skip-translation	The Master Key of Thievery_zh-CN	skipped
 skip-variant	The Master Sword	skipped
-read-topic	The Medallion of Shifters	todo
-read-topic	The Mirrored Mask	todo
+skip-variant	The Medallion of Shifters	skipped
+skip-variant	The Mirrored Mask	skipped
 read-item	The Mitre of Holiness	todo
 read-topic	The NetHack Challenge	todo
 skip-variant	The Nethack Sources	skipped
@@ -4957,8 +4957,8 @@ skip-variant	The Power Pole	skipped
 skip-variant	The Rat King (SLASH'EM)	skipped
 skip-variant	The Ring of P'hul	skipped
 skip-variant	The Rod of Lordly Might	skipped
-read-topic	The Rod of Seven Parts	todo
-read-topic	The Rogue Gear-spirits	todo
+skip-variant	The Rod of Seven Parts	skipped
+skip-variant	The Rogue Gear-spirits	skipped
 skip-variant	The Ruinous Descent of Stars	skipped
 skip-variant	The Sceptre of Might (Fourk)	skipped
 skip-variant	The Sceptre of Might (SLASH'EM)	skipped
@@ -4967,15 +4967,15 @@ read-item	The Sceptre of Might	todo
 skip-variant	The Scorpion Carapace	skipped
 skip-variant	The Sea (dNetHack)	skipped
 skip-variant	The Shard from Morgoth's Crown	skipped
-read-topic	The Shield of the All-Seeing	todo
+skip-variant	The Shield of the All-Seeing	skipped
 skip-variant	The Sickle of Thunderblasts	skipped
-read-topic	The Silver Flame	todo
+skip-variant	The Silver Flame	skipped
 skip-variant	The Silver Key	skipped
 skip-variant	The Singing Sword	skipped
-read-topic	The Snake	todo
+skip-variant	The Snake	skipped
 skip-variant	The Spear of Peace	skipped
 read-topic	The Spell-warded Wrappings of Nitocris	todo
-read-topic	The Spider Caves	todo
+skip-variant	The Spider Caves	skipped
 read-item	The Staff of Aesculapius	todo
 skip-variant	The Staff of Withering	skipped
 skip-variant	The Staff of the Archmagi	skipped
@@ -4985,12 +4985,12 @@ skip-meta	The Stake of Van Helsing	skipped
 skip-variant	The Star of Hypernotus	skipped
 skip-variant	The Storm Whistle	skipped
 skip-variant	The Striped Shirt of Liberation	skipped
-read-topic	The Sunless Sea	todo
+skip-variant	The Sunless Sea	skipped
 skip-variant	The Sword of Annihilation	skipped
 skip-variant	The Sword of Kas	skipped
-read-topic	The Temple of Moloch	todo
+skip-variant	The Temple of Moloch	skipped
 skip-variant	The Tentacle Rod	skipped
-read-topic	The Tentacle Staff	todo
+skip-variant	The Tentacle Staff	skipped
 skip-variant	The Treasury of Proteus	skipped
 skip-variant	The Tsurugi of Muramasa (dNetHack)	skipped
 read-item	The Tsurugi of Muramasa	todo
@@ -4999,32 +4999,32 @@ skip-variant	The Wand of Orcus (dNetHack)	skipped
 skip-variant	The War-helm of the Dreaming	skipped
 skip-variant	The Web of Lolth	skipped
 skip-variant	The Web of the Chosen	skipped
-read-topic	The Wings of Garuda	todo
-read-topic	The Wyrm Caves	todo
+skip-variant	The Wings of Garuda	skipped
+skip-variant	The Wyrm Caves	skipped
 skip-meta	The door swings shut, and locks_	skipped
-read-topic	The hunshi sihou	todo
+skip-variant	The hunshi sihou	skipped
 read-topic	The spell dissipates over the distance	todo
 skip-meta	Theft	skipped
-read-topic	Themed room	todo
+skip-variant	Themed room	skipped
 skip-translation	Themed room_ko	skipped
 read-topic	Thick-skinned	todo
 skip-variant	Thiefbane	skipped
 skip-variant	Thiefstone	skipped
 read-topic	Things To Do If You're Going to Die Next Turn	todo
 skip-meta	This tastes like slime mold juice	skipped
-read-topic	Thjofastafur stave	todo
+skip-variant	Thjofastafur stave	skipped
 skip-variant	Thorin II Oakenshield	skipped
 skip-variant	Thorin	skipped
 read-monster	Thoth Amon	todo
-read-topic	Thoth	todo
+skip-variant	Thoth	skipped
 skip-meta	Thought	skipped
 skip-variant	Thrashing Tulip Poplar	skipped
-read-topic	Three-Room Monte	todo
+skip-variant	Three-Room Monte	skipped
 skip-variant	Thriae	skipped
 skip-meta	Thrn-343.txt	skipped
 read-topic	Throne room	todo
 read-topic	Throne	todo
-read-topic	Through the Cracks	todo
+skip-variant	Through the Cracks	skipped
 read-topic	Throw	todo
 skip-variant	Throwing axe	skipped
 read-monster	Thug	todo
@@ -5034,13 +5034,13 @@ skip-variant	Tiamat (NetHack--)	skipped
 skip-meta	Tiamat (disambiguation)	skipped
 read-topic	Tiamat, the Fiend of Wind	todo
 skip-variant	Tie-Dye Shirt of Shambhala	skipped
-read-topic	Tiefling (starting race)	todo
+skip-variant	Tiefling (starting race)	skipped
 read-monster	Tiger	todo
 skip-variant	Tile (dNetHack)	skipped
 skip-meta	Tile	skipped
-read-topic	Tileset	todo
-read-topic	Tileset_tile2360.py	todo
-read-topic	Tileset_tile2500.py	todo
+skip-meta	Tileset	skipped
+skip-meta	Tileset_tile2360.py	skipped
+skip-meta	Tileset_tile2500.py	skipped
 skip-variant	Time Elemental	skipped
 skip-meta	Time-343.txt	skipped
 read-topic	Time	todo
@@ -5055,20 +5055,20 @@ skip-variant	Tinfoil hat (SpliceHack)	skipped
 skip-variant	Tinfoil hat (UnNetHack)	skipped
 skip-meta	Tinfoil hat	skipped
 skip-variant	Tinker gnome	skipped
-read-topic	Tinker	todo
+skip-variant	Tinker	skipped
 read-item	Tinning kit	todo
 skip-variant	Tiny pseudodragon	skipped
 read-topic	Tip	todo
 skip-translation	Tip_ko	skipped
 read-monster	Titan	todo
 read-monster	Titanothere	todo
-read-topic	To the Top	todo
+skip-variant	To the Top	skipped
 read-topic	To-hit	todo
 skip-translation	To-hit_ko	skipped
 read-topic	Toggle	todo
-read-topic	Toilet	todo
+skip-variant	Toilet	skipped
 read-topic	Tonal instrument	todo
-read-topic	Tonitrus	todo
+skip-variant	Tonitrus	skipped
 skip-meta	Tool-343.txt	skipped
 read-topic	Tool	todo
 skip-translation	Tool_zh-CN	skipped
@@ -5083,7 +5083,7 @@ skip-variant	Torch (SLASH'EM)	skipped
 skip-variant	Torch (dNetHack)	skipped
 read-topic	Torch	todo
 skip-variant	Tortilla	skipped
-read-topic	Tortle (starting race)	todo
+skip-variant	Tortle (starting race)	skipped
 skip-meta	Tortle	skipped
 read-topic	Touch of death	todo
 skip-translation	Touch of death_ko	skipped
@@ -5098,15 +5098,15 @@ skip-variant	Tourist_EvilHack	skipped
 skip-variant	Tourist_SLASH'EM	skipped
 skip-variant	Tourist_dNetHack	skipped
 skip-meta	Tournament	skipped
-read-topic	Toustefna stave	todo
+skip-variant	Toustefna stave	skipped
 skip-variant	Tove	skipped
 read-item	Towel	todo
 skip-translation	Towel_zh-CN	skipped
 skip-variant	Tower shield	skipped
 skip-meta	Tower	skipped
-read-topic	Town	todo
+skip-variant	Town	skipped
 skip-variant	Tracker jacker	skipped
-read-topic	Traitor	todo
+skip-variant	Traitor	skipped
 skip-variant	Transmuter (SpliceHack)	skipped
 skip-variant	Transmuter	skipped
 read-topic	Trap door	todo
@@ -5115,7 +5115,7 @@ read-topic	Trap	todo
 skip-translation	Trap_zh-CN	skipped
 read-topic	Trapper or lurker above	todo
 read-monster	Trapper	todo
-read-topic	Traproom	todo
+skip-variant	Traproom	skipped
 read-topic	Travel	todo
 skip-variant	Treasury golem	skipped
 read-topic	Treat	todo
@@ -5123,7 +5123,7 @@ skip-variant	Tree blight	skipped
 read-topic	Tree	todo
 skip-variant	Treesinger	skipped
 skip-variant	Trephination kit	skipped
-read-topic	Trick weapon	todo
+skip-variant	Trick weapon	skipped
 read-topic	Trickery	todo
 skip-variant	Tricorn	skipped
 read-topic	Trident (skill)	todo
@@ -5133,17 +5133,17 @@ read-item	Tripe ration	todo
 skip-translation	Tripe ration_zh-CN	skipped
 skip-variant	Triple-headed flail	skipped
 read-topic	Troll (monster class)	todo
-read-topic	Troll (starting race)	todo
+skip-variant	Troll (starting race)	skipped
 skip-variant	Troll mummy	skipped
 read-monster	Troll	todo
 read-item	Trollsbane	todo
 skip-variant	Trooper	skipped
-read-topic	Troubadour	todo
+skip-variant	Troubadour	skipped
 read-topic	Trouble	todo
 skip-variant	Tsetse fly	skipped
 read-item	Tsurugi	todo
 skip-translation	Tsurugi_zh-CN	skipped
-read-topic	Ttyrec	todo
+skip-meta	Ttyrec	skipped
 skip-variant	Tunnel worm	skipped
 read-topic	Tunneling monster	todo
 skip-meta	Turn undead (disambiguation)	skipped
@@ -5152,7 +5152,7 @@ read-topic	Turn	todo
 read-topic	Tutorial	todo
 skip-variant	Twig blight	skipped
 skip-variant	Twitching four-armed changed	skipped
-read-topic	Two-Phase	todo
+skip-variant	Two-Phase	skipped
 read-topic	Two-handed sword (skill)	todo
 read-item	Two-handed sword	todo
 skip-translation	Two-handed sword_zh-CN	skipped
@@ -5160,36 +5160,36 @@ read-topic	Two-handed weapons	todo
 skip-variant	Two-headed troll	skipped
 read-monster	Twoflower	todo
 read-topic	Twoweapon	todo
-read-topic	Tymora	todo
+skip-variant	Tymora	skipped
 read-topic	Tyr	todo
 read-topic	U	todo
 read-topic	UTF8graphics	todo
 read-topic	Ubuntu	todo
 skip-variant	Ugly backpack	skipped
 read-topic	Ulch_	todo
-read-topic	Ultravision	todo
+skip-variant	Ultravision	skipped
 read-topic	Umber hulk (monster class)	todo
 read-monster	Umber hulk	todo
 skip-variant	Umbral hulk	skipped
-read-topic	UnNetHack	todo
-read-topic	UnNetHackPlus	todo
+skip-variant	UnNetHack	skipped
+skip-variant	UnNetHackPlus	skipped
 read-topic	Unarmed	todo
 read-topic	Unarmored soldier	todo
 read-topic	Unchanging	todo
-read-topic	Undead Hunter	todo
-read-topic	Undead Slayer quest	todo
-read-topic	Undead Slayer	todo
+skip-variant	Undead Hunter	skipped
+skip-variant	Undead Slayer quest	skipped
+skip-variant	Undead Slayer	skipped
 skip-variant	Undead hunter (player monster)	skipped
 read-topic	Undead	todo
 read-topic	Undefined	todo
 read-topic	Underground rivers	todo
 read-topic	Underscore	todo
-read-topic	Undertaker quest	todo
+skip-variant	Undertaker quest	skipped
 read-topic	Undertaker	todo
 skip-meta	Unfamiliar heavy gun	skipped
 skip-meta	Unfamiliar long gun	skipped
 skip-meta	Unholy	skipped
-read-topic	Unicode	todo
+skip-meta	Unicode	skipped
 read-item	Unicorn horn	todo
 skip-translation	Unicorn horn_zh-CN	skipped
 read-topic	Unicorn or horse	todo
@@ -5201,13 +5201,13 @@ read-topic	Unix	todo
 read-topic	Unknown abomination	todo
 read-topic	Unlocking tool	todo
 skip-translation	Unlocking tool_zh-CN	skipped
-read-topic	Unofficial conduct	todo
+skip-meta	Unofficial conduct	skipped
 read-topic	Unsolid	todo
 read-topic	Untrap	todo
 read-topic	Unused symbols	todo
 read-topic	Unwinnable	todo
 skip-variant	Upgrade kit	skipped
-read-topic	Upgrading objects	todo
+skip-variant	Upgrading objects	skipped
 skip-variant	Uranium imp (UnNetHack)	skipped
 skip-variant	Uranium imp (dNetHack)	skipped
 skip-meta	Uranium imp	skipped
@@ -5217,7 +5217,7 @@ skip-translation	Uruk-hai shield_zh-CN	skipped
 read-monster	Uruk-hai	todo
 read-topic	Usage fee	todo
 read-topic	Usenet	todo
-read-topic	User interface	todo
+skip-meta	User interface	skipped
 read-topic	User sounds	todo
 skip-variant	Utility belt	skipped
 skip-variant	Uvuudaum	skipped
@@ -5237,11 +5237,11 @@ skip-variant	Vampire (SLASH'EM)	skipped
 skip-meta	Vampire (disambiguation)	skipped
 read-topic	Vampire (monster attribute)	todo
 read-topic	Vampire (monster class)	todo
-read-topic	Vampire (starting race in EvilHack)	todo
-read-topic	Vampire (starting race in Hack'EM)	todo
-read-topic	Vampire (starting race in SLASH'EM)	todo
-read-topic	Vampire (starting race in UnNetHack)	todo
-read-topic	Vampire (starting race in dNetHack)	todo
+skip-variant	Vampire (starting race in EvilHack)	skipped
+skip-variant	Vampire (starting race in Hack'EM)	skipped
+skip-variant	Vampire (starting race in SLASH'EM)	skipped
+skip-variant	Vampire (starting race in UnNetHack)	skipped
+skip-variant	Vampire (starting race in dNetHack)	skipped
 skip-meta	Vampire (starting race)	skipped
 read-monster	Vampire bat	todo
 skip-variant	Vampire lady (dNetHack)	skipped
@@ -5252,41 +5252,41 @@ skip-variant	Vampire mage (SLASH'EM)	skipped
 skip-meta	Vampire mage	skipped
 skip-variant	Vampire royal	skipped
 read-monster	Vampire	todo
-read-topic	Vampiric (damage type)	todo
+skip-variant	Vampiric (damage type)	skipped
 skip-meta	Vampiric	skipped
 skip-variant	Van Helsing	skipped
-read-topic	Vanish	todo
+skip-variant	Vanish	skipped
 read-topic	Vapors	todo
-read-topic	Variant paranoia	todo
-read-topic	Variant	todo
+skip-variant	Variant paranoia	skipped
+skip-variant	Variant	skipped
 read-topic	Vault	todo
 skip-variant	Vecna (EvilHack)	skipped
 skip-variant	Vecna (Hack'EM)	skipped
 skip-variant	Vecna (SLASH'EM)	skipped
 skip-variant	Vecna (dNetHack)	skipped
-read-topic	Vecna's Domain	todo
+skip-variant	Vecna's Domain	skipped
 skip-meta	Vecna	skipped
 skip-variant	Vegepygmy shaman	skipped
 skip-variant	Vegepygmy	skipped
 read-topic	Veggy	todo
-read-topic	Veioistafur stave	todo
+skip-variant	Veioistafur stave	skipped
 skip-variant	Venom shield	skipped
 read-topic	Venom	todo
-read-topic	Vent	todo
+skip-variant	Vent	skipped
 read-topic	Venus	todo
 read-topic	Vernon Spoilers	todo
-read-topic	Version	todo
+skip-meta	Version	skipped
 skip-variant	Vexing orb	skipped
 read-topic	Vi	todo
 read-topic	Vibrating square	todo
-read-topic	Vibroblade	todo
+skip-variant	Vibroblade	skipped
 skip-variant	Vicar Amalia	skipped
 skip-variant	Vicar Wolf	skipped
 skip-variant	Victorian underwear (dNetHack)	skipped
 skip-variant	Villithid	skipped
 skip-variant	Vilya	skipped
 read-monster	Violet fungus	todo
-read-topic	Viperwhip	todo
+skip-variant	Viperwhip	skipped
 skip-variant	Vlad the Impaler (EvilHack)	skipped
 skip-variant	Vlad the Impaler (dNetHack)	skipped
 read-monster	Vlad the Impaler	todo
@@ -5307,20 +5307,20 @@ read-topic	Vortex	todo
 read-item	Voulge	todo
 skip-translation	Voulge_zh-CN	skipped
 read-monster	Vrock	todo
-read-topic	Vt tiledata	todo
-read-topic	Vulnerability (monster spell)	todo
+skip-meta	Vt tiledata	skipped
+skip-variant	Vulnerability (monster spell)	skipped
 read-topic	Vulnerability	todo
 skip-variant	Vulpenferno	skipped
 read-topic	Vulture	todo
 read-topic	W	todo
 read-topic	W343-3	todo
-read-topic	W343-3_Original patch	todo
+skip-meta	W343-3_Original patch	skipped
 read-topic	W343-3_Test program for W343-3	todo
 read-topic	W343-4	todo
-read-topic	W343-4_Patch	todo
+skip-meta	W343-4_Patch	skipped
 skip-meta	Wait_	skipped
 skip-variant	Wakizashi (dNetHack)	skipped
-read-topic	Walking nightmares	todo
+skip-variant	Walking nightmares	skipped
 read-topic	Wall	todo
 skip-variant	Wallaby	skipped
 skip-variant	Wallaroo	skipped
@@ -5372,7 +5372,7 @@ read-item	Wand of polymorph	todo
 skip-translation	Wand of polymorph_zh-CN	skipped
 read-item	Wand of probing	todo
 skip-translation	Wand of probing_zh-CN	skipped
-read-topic	Wand of psionics	todo
+skip-variant	Wand of psionics	skipped
 read-item	Wand of secret door detection	todo
 skip-translation	Wand of secret door detection_ko	skipped
 skip-translation	Wand of secret door detection_zh-CN	skipped
@@ -5401,7 +5401,7 @@ read-topic	Wand	todo
 skip-translation	Wand_ko	skipped
 skip-translation	Wand_zh-CN	skipped
 skip-variant	Wandering pirate	skipped
-read-topic	Wands Balance Patch	todo
+skip-meta	Wands Balance Patch	skipped
 skip-variant	War (dNetHack)	skipped
 read-item	War hammer	todo
 skip-translation	War hammer_zh-CN	skipped
@@ -5419,7 +5419,7 @@ read-monster	Warhorse	todo
 skip-variant	Warmachine	skipped
 read-topic	Warned of monster type	todo
 read-topic	Warning	todo
-read-topic	Warrior (role)	todo
+skip-variant	Warrior (role)	skipped
 skip-variant	Warrior changed	skipped
 read-monster	Warrior	todo
 skip-meta	Wasp	skipped
@@ -5437,7 +5437,7 @@ read-monster	Water nymph	todo
 read-monster	Water troll	todo
 read-item	Water walking boots	todo
 skip-translation	Water walking boots_zh-CN	skipped
-read-topic	Water walking	todo
+skip-variant	Water walking	skipped
 read-topic	Water wall	todo
 skip-meta	Water	skipped
 skip-variant	Waterspout gargoyle	skipped
@@ -5445,7 +5445,7 @@ skip-variant	Wax golem	skipped
 read-topic	Wax	todo
 skip-meta	Weak	skipped
 skip-meta	Weap-343.txt	skipped
-read-topic	Weapon practice	todo
+skip-variant	Weapon practice	skipped
 read-topic	Weapon-tool	todo
 skip-translation	Weapon-tool_zh-CN	skipped
 read-topic	Weapon	todo
@@ -5453,7 +5453,7 @@ skip-translation	Weapon_zh-CN	skipped
 read-topic	Weaponless	todo
 read-topic	Wear	todo
 read-topic	Web	todo
-read-topic	Webbing	todo
+skip-variant	Webbing	skipped
 read-topic	Websites	todo
 skip-variant	Weeping angel (SlashTHEM)	skipped
 skip-variant	Weeping angel (UnNetHack)	skipped
@@ -5464,11 +5464,11 @@ skip-variant	Weeping archangel (UnNetHack)	skipped
 skip-meta	Weeping archangel	skipped
 read-topic	Weight	todo
 read-topic	Welcome message	todo
-read-topic	Weldproof	todo
+skip-variant	Weldproof	skipped
 read-item	Werebane	todo
 skip-variant	Werecreature (SLASH'EM)	skipped
 read-topic	Werecreature	todo
-read-topic	Weredemon	todo
+skip-variant	Weredemon	skipped
 read-monster	Werejackal	todo
 skip-variant	Werepanther	skipped
 read-monster	Wererat	todo
@@ -5495,15 +5495,15 @@ skip-variant	White naga (notdNetHack)	skipped
 skip-variant	White naga hatchling (UnNetHack)	skipped
 skip-variant	White naga hatchling (notdNetHack)	skipped
 skip-meta	White naga	skipped
-read-topic	White vibrospear	todo
-read-topic	White vibrosword	todo
-read-topic	White vibrozanbato	todo
+skip-variant	White vibrospear	skipped
+skip-variant	White vibrosword	skipped
+skip-variant	White vibrozanbato	skipped
 read-topic	Why do I keep dying_	todo
 read-topic	Wide-angle disintegration beam	todo
 read-topic	Wield	todo
 skip-variant	Wight	skipped
 read-topic	Wiki	todo
-read-topic	Windowless Tower	todo
+skip-variant	Windowless Tower	skipped
 read-monster	Winged gargoyle	todo
 skip-variant	Winged kobold	skipped
 skip-variant	Winged pseudodragon	skipped
@@ -5513,17 +5513,17 @@ read-topic	Wipe	todo
 read-topic	Wisdom	todo
 read-topic	Wish	todo
 skip-translation	Wish_ko	skipped
-read-topic	Wishless	todo
+skip-meta	Wishless	skipped
 skip-variant	Witch (dNetHack)	skipped
 read-topic	Witch hat	todo
 skip-variant	Witch's familiar	skipped
-read-topic	Withering	todo
+skip-variant	Withering	skipped
 skip-variant	Wizard (dNetHack monster)	skipped
 skip-meta	Wizard (disambiguation)	skipped
 read-monster	Wizard (player monster)	todo
-read-topic	Wizard Patch	todo
-read-topic	Wizard mode ascension	todo
-read-topic	Wizard mode	todo
+skip-meta	Wizard Patch	skipped
+skip-meta	Wizard mode ascension	skipped
+skip-meta	Wizard mode	skipped
 read-monster	Wizard of Yendor	todo
 read-topic	Wizard quest	todo
 skip-variant	Wizard's Tower (EvilHack)	skipped
@@ -5557,8 +5557,8 @@ skip-meta	Wooden shield	skipped
 skip-variant	Wooden stake	skipped
 read-monster	Woodland-elf	todo
 skip-variant	Woolly mammoth	skipped
-read-topic	Word of Creation	todo
-read-topic	Workbench	todo
+skip-variant	Word of Creation	skipped
+skip-variant	Workbench	skipped
 skip-meta	Worm that walks	skipped
 read-item	Worm tooth	todo
 skip-translation	Worm tooth_zh-CN	skipped
@@ -5572,9 +5572,9 @@ read-topic	Wresting	todo
 skip-meta	Writing	skipped
 read-monster	Wumpus	todo
 skip-variant	Wyvern	skipped
-read-topic	X	todo
+skip-variant	X	skipped
 read-topic	X11	todo
-read-topic	XNetHack	todo
+skip-variant	XNetHack	skipped
 read-topic	Xan or other mythical_fantastic insect	todo
 read-monster	Xan	todo
 skip-variant	Xiuhcoatl (EvilHack)	skipped
@@ -5582,7 +5582,7 @@ skip-variant	Xiuhcoatl (dNetHack)	skipped
 skip-meta	Xiuhcoatl	skipped
 read-topic	Xlogfile	todo
 read-topic	Xorn (monster class)	todo
-read-topic	Xorn monk	todo
+skip-variant	Xorn monk	skipped
 read-monster	Xorn	todo
 skip-meta	Xplv-343.txt	skipped
 read-topic	Y	todo
@@ -5603,7 +5603,7 @@ skip-meta	Yendor	skipped
 read-topic	Yendorian army	todo
 skip-variant	Yeoman Warder	skipped
 read-topic	Yeoman quest	todo
-read-topic	Yeoman	todo
+skip-variant	Yeoman	skipped
 read-topic	Yet Another Ascension Post	todo
 read-topic	Yet Another First Ascension Post	todo
 read-topic	Yet Another Funny Message	todo
@@ -5613,8 +5613,8 @@ skip-translation	Yet Another Stupid Death_zh-CN	skipped
 read-monster	Yeti	todo
 skip-variant	Ymir	skipped
 skip-variant	Yochlol	skipped
-read-topic	Yog-Sothoth	todo
-read-topic	You Only Need Six	todo
+skip-variant	Yog-Sothoth	skipped
+skip-variant	You Only Need Six	skipped
 skip-meta	You feel a strange sensation	skipped
 skip-meta	You feel guilty	skipped
 skip-meta	You feel like someone is helping you	skipped
@@ -5635,20 +5635,20 @@ skip-meta	Your mind fails to lock onto that location	skipped
 skip-meta	Your skin feels warm for a moment	skipped
 read-topic	Youtube	todo
 skip-variant	Yuki-onna (dNetHack)	skipped
-read-topic	Yuki-onna (starting race)	todo
+skip-variant	Yuki-onna (starting race)	skipped
 skip-meta	Yuki-onna	skipped
 skip-meta	Yum_ That was real brain food_	skipped
 read-item	Yumi	todo
 skip-translation	Yumi_zh-CN	skipped
 skip-variant	Yurian	skipped
-read-topic	Z-score	todo
-read-topic	Z	todo
-read-topic	ZAPM items	todo
-read-topic	ZAPM	todo
+skip-variant	Z-score	skipped
+skip-variant	Z	skipped
+skip-variant	ZAPM items	skipped
+skip-variant	ZAPM	skipped
 read-topic	Zap	todo
-read-topic	Zen	todo
-read-topic	Zerth mantras	todo
-read-topic	Zo-Kalar	todo
+skip-meta	Zen	skipped
+skip-variant	Zerth mantras	skipped
+skip-variant	Zo-Kalar	skipped
 skip-variant	Zombie (EvilHack)	skipped
 skip-variant	Zombie (GruntHack)	skipped
 skip-variant	Zombie (dNetHack)	skipped
@@ -5659,7 +5659,7 @@ read-topic	Zoo	todo
 read-topic	Zookeeper	todo
 read-topic	Zorkmid	todo
 skip-translation	Zorkmid_zh-CN	skipped
-read-topic	Zouthern animal	todo
+skip-variant	Zouthern animal	skipped
 read-topic	Zruty (monster class)	todo
 read-monster	Zruty	todo
 read-topic	_	todo
