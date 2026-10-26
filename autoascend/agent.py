@@ -13,7 +13,7 @@ from . import utils
 from .character import Character
 from .exceptions import AgentPanic, AgentFinished, AgentChangeStrategy
 from .exploration_logic import ExplorationLogic
-from .global_logic import GlobalLogic
+from .global_logic import GlobalLogic, is_stoning_cure
 from .glyph import MON, C, Hunger, G, SHOP
 from .item import Item, flatten_items
 from .item.inventory import Inventory
@@ -83,6 +83,11 @@ def hunger_prayer_gap(weak_turns):
         // HUNGER_PRAYER_EASE
     return HUNGER_PRAYER_GAP_START - eased
 
+
+# Conditions that kill within a few turns and that a prayer fixes (pray.c TROUBLE_STONED, _SLIMED, _STRANGLED,
+# _SICK). Dying is certain without help, so a prayer that may come too soon is still worth it.
+DEADLY_CONDITIONS = nh.BL_MASK_STONE | nh.BL_MASK_SLIME | nh.BL_MASK_STRNGL | nh.BL_MASK_FOODPOIS | nh.BL_MASK_TERMILL
+DEADLY_PRAYER_GAP = 50  # turns: right after a prayer the condition is either fixed or the god will not help
 
 def diagonal_blocked_square(message, here, target):
     """ Square NetHack would not let us cross diagonally, judging by its refusal message """
@@ -1255,6 +1260,9 @@ class Agent:
 
             actions = combat.fight_heur.drop_floating_eye_melee(
                 actions, monsters, (self.blstats.y, self.blstats.x), self.character.prop.blind)
+            actions = combat.fight_heur.drop_bare_handed_cockatrice_melee(
+                actions, monsters, (self.blstats.y, self.blstats.x),
+                self.inventory.items.main_hand is None and self.inventory.items.gloves is None)
 
             if allow_attack_all:
                 attack_actions = [a for a in actions if a[1][0] in ('melee', 'ranged', 'zap')]
@@ -1527,6 +1535,20 @@ class Agent:
     @utils.debug_log('emergency_strategy')
     @Strategy.wrap
     def emergency_strategy(self):
+        if self.blstats.prop_mask & nh.BL_MASK_STONE:
+            cure = next((item for item in flatten_items(self.inventory.items) if is_stoning_cure(item)), None)
+            if cure is not None:
+                yield True
+                self.stats_logger.log_event('stoning_cure_eaten')
+                self.inventory.eat(cure)
+                return
+
+        if self.blstats.prop_mask & DEADLY_CONDITIONS and \
+                (self.last_prayer_turn is None or self.blstats.time - self.last_prayer_turn > DEADLY_PRAYER_GAP):
+            yield True
+            self.stats_logger.log_event('deadly_trouble_prayer')
+            self.pray()
+            return
 
         # if self.should_cast_extra_heal():
         #     yield True
@@ -1603,7 +1625,7 @@ class Agent:
             if item.category == nh.FOOD_CLASS and \
                     item.objs[0].name != 'sprig of wolfsbane' and \
                     (not item.is_corpse() or
-                     item.monster_id in [MON.from_name(n) - nh.GLYPH_MON_OFF for n in ['lizard', 'lichen']]):
+                     item.monster_id in [MON.from_name(n) - nh.GLYPH_MON_OFF for n in ['lichen']]):
                 return item
         return None
 

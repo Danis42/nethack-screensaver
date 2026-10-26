@@ -515,3 +515,40 @@ def test_hunger_prayer_gap_eases_while_weak():
     assert hunger_prayer_gap(100) == 700
     assert hunger_prayer_gap(200) == 400  # near starvation: the old gap
     assert hunger_prayer_gap(5000) == 400
+
+
+class _Corpse:
+    def __init__(self, monster, unambiguous=True):
+        import nle.nethack as nh
+        from autoascend.glyph import MON
+        self.monster_id = MON.from_name(monster) - nh.GLYPH_MON_OFF
+        self._unambiguous = unambiguous
+
+    def is_unambiguous(self):
+        return self._unambiguous
+
+    def is_corpse(self):
+        return True
+
+
+def test_stoning_cures_are_lizard_and_acid_blob_corpses():
+    from autoascend.global_logic import is_stoning_cure
+    assert is_stoning_cure(_Corpse('lizard'))
+    assert is_stoning_cure(_Corpse('acid blob'))
+    assert not is_stoning_cure(_Corpse('newt'))
+    assert not is_stoning_cure(_Corpse('lizard', unambiguous=False))
+
+
+def test_only_lizard_corpses_are_kept_as_stoning_cure():
+    from autoascend.global_logic import is_kept_stoning_cure
+    assert is_kept_stoning_cure(_Corpse('lizard'))
+    assert not is_kept_stoning_cure(_Corpse('acid blob'))
+
+
+def test_deadly_conditions_are_the_prayer_fixable_ones():
+    import nle.nethack as nh
+    from autoascend.agent import DEADLY_CONDITIONS
+    for bit in (nh.BL_MASK_STONE, nh.BL_MASK_SLIME, nh.BL_MASK_STRNGL, nh.BL_MASK_FOODPOIS, nh.BL_MASK_TERMILL):
+        assert DEADLY_CONDITIONS & bit
+    for bit in (nh.BL_MASK_BLIND, nh.BL_MASK_CONF, nh.BL_MASK_STUN, nh.BL_MASK_HALLU, nh.BL_MASK_LEV):
+        assert not DEADLY_CONDITIONS & bit
