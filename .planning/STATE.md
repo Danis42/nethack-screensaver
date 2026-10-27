@@ -162,8 +162,22 @@ BENCH: server restarted on the nh5-port tree with SCREENS_BENCH_PYTHON=~/.cache/
 ~/.cache/screens-nh5/bench-server.log). Job 47: candidate 395c5ed (NH5) vs baseline 3be8413 (3.6, 1152 games stored),
 metric dlvl6. A guard loop stops it at the 1152 checkpoint so no 3.6 baseline game is ever played on NH5.
 IMPORTANT: while the server runs with the NH5 python, never bench 3.6 commits.
+2026-10-28: Job 47 (395c5ed NH5 vs 3be8413 3.6, 1152 pairs): values do NOT fit (rung5 -9.2, rung7 -7.9, dlvl10 -7.4,
+crashed +7.1, poisoned -3.5, rays -3.2) -> per owner rule: new NH5 baseline, 3.6 data retired (kept in the DB, not used).
+Job 47 "failed" afterwards: it tried 3.6 baseline games on the NH5 python (worker died 3x) - nothing stored; never run
+3.6 commits on this server. Speed: 5.0 = 3.6 per turn (~216k turns/min); 21.6 games/min (shorter games).
+Release notes checked: doc/fixes5-0-0.txt triaged by local Ollama (scripts/fixes_triage.py -> phase dir
+fixes-triage.jsonl), strict LLM pass useless, keyword shortlist (121 entries) read; resulting changes: NLE defaults
+paranoid_confirmation:pray, notips (0cc8e934b); kick prompt only with autounlock (off). Wiki NetHack 5.0.0 read:
+strategy deltas for later: Valkyrie starts with (dwarvish) spear not long sword (Excalibur plan dead), monsters rarely
+drop food on death, poison never instakills, peacefuls can be displaced, special levels incl. Sokoban/Minetown/Mines' End
+mirrored (Oracle noflip), natural regen lower. Ascension kit deltas: .planning/research/ASCENSION-KIT-NH5.md.
+Port fixes since: 2a671eb mirrored Sokoban (the top crash), a118488/fb5924f class-word items, status texts, unpadded
+monster lines, 32f1dc1/579c4d5 no looting when too loaded. Ollama runs as user: OLLAMA_MODELS=/var/lib/ollama ollama serve.
+NEW BASELINE: tag p5-baseline = 579c4d5, bench job 48 (2304 games) started 2026-10-28.
 Resume steps:
-1. Job 47 result: compare all metrics (seeded_report pairs: dlvl6, dlvl10, rung2..rung7, died, starved, crashed, free5)
-   NH5 vs 3.6. Owner rule: values close -> keep the 3.6 baseline; all over the place -> new NH5 baseline, retire 3.6 data.
-2. Check floating-eye deaths on NH5; then merge nh5-port to main (with owner OK: main then needs the NH5 venv).
+1. Wait for job 48 (`uv run screens-bench wait 48`); table it (results, killers, crashes) like p1-baseline.
+2. Fix remaining NH5 crash types from job 48 if any is >= 1%; then merge nh5-port to main (main then needs the NH5
+   venv: pyproject nle -> local build) - ask the owner before switching main.
+3. Then back to experiments on NH5: floating-eye deaths, starting weapon (spear vs mattock/long sword), food supply.
 Resume file: None
