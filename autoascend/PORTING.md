@@ -1164,3 +1164,16 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   Crashes: inventory.py:91 assertion (items_below_me unset after "Pick up what?" on big piles) 8 games vs 2 in
   the baseline: an existing bug hit more often, not a new type; follow-up.
 - Decision: kept; merged to main (c8792f3, bot code identical to `3be8413`), 474 tests pass. New baseline `3be8413`.
+
+#### Experiment 20: `exp/poison-resistance` - eat poisonous corpses for poison resistance
+- Requirement / decisions: items audit: 120 poison deaths; corpses with >= 20% poison resistance chance
+  (killer bee, scorpion, soldier ant, giant beetle) eaten when HP >= 21 and Str >= 14; any once resistant.
+- Candidate `d83ed40`; baseline `3be8413`; primary metric `poisoned` (new, lower is better).
+- Smoke on 22 poison-death seeds: poisoned 22 -> 9, resistance gained in 6.
+- Bench (job 45 interrupted by shutdown @576, resubmitted as job 46, stopped @1152 when the owner moved the
+  project to NetHack 5.0): poisoned +0.4 [-0.6, +1.4] -> no measurable difference.
+- Diagnosis: most poison deaths are early killer bees and orcish arrows before any corpse is eaten (often
+  identical games); the 252 of 576 games that gained resistance had only 3 baseline poison deaths. `died` +2.3
+  [+0.1, +4.4] @576 was an artifact: all 27 candidate-only deaths are seeds where the baseline crashed, hung or
+  quit. Open oddity: seed 479 gained resistance and still died "poisoned by a snake" at full HP.
+- Decision: dropped (branch kept).

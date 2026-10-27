@@ -109,6 +109,18 @@ Plans:
 - [ ] 02-07-PLAN.md — exp/quest-portal: enter the Quest portal on purpose
 - [ ] 02-08-PLAN.md — Phase 2 done bar: p2-final vs p2-baseline
 
+### Phase 02.1: Port to NetHack 5.0 (INSERTED)
+
+**Goal:** The bot plays NetHack 5.0.0: NLE ported from NetHack 3.6.7 to 5.0.0 (seeding and bench intact), AutoAscend
+ported to 5.0's messages, objects, monsters and levels, and its results compared against the 3.6 baseline `3be8413`
+(kept if the numbers fit; otherwise a new 5.0 baseline replaces all 3.6 data). Owner decision 2026-10-27.
+**Requirements**: TBD
+**Depends on:** Phase 2
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 02.1 to break down)
+
 ### Phase 3: Gearing Up
 
 **Goal**: The bot arrives deep wearing and carrying what real ascenders do: armour with low AC, magic resistance, reflection, and working wands and rings.

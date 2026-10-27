@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
 milestone: v0.1.0
-current_phase: 2
-current_phase_name: Real Descent
-status: executing
-stopped_at: gap experiment 15 exp/passive (bench)
-last_updated: "2026-10-25T13:04:19.487Z"
-last_activity: 2026-10-26
-last_activity_desc: knowledge sweep; job 38 exp/quest-portal
-state_head: dabd11d7d8e36e84ba2fce3ab57e36dc6084f538
+current_phase: "02.1"
+current_phase_name: Port to NetHack 5.0
+status: discussing
+stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
+last_updated: "2026-10-27T19:15:01.515Z"
+last_activity: 2026-10-27
+last_activity_desc: owner decision - port to NetHack 5.0; exp 20 dropped
+state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
-  total_phases: 8
+  total_phases: 9
   completed_phases: 1
   total_plans: 24
-  completed_plans: 17
+  completed_plans: 23
 ---
 
 # Project State
@@ -27,9 +27,9 @@ See: .planning/PROJECT.md (updated 2026-10-25)
 
 ## Current Position
 
-Phase: 2 (Real Descent) — READY TO EXECUTE
-Plan: 3 of 8
-Status: EXECUTING Phase 2 gap experiments (2026-10-26) - Exp 14 exp/quest-portal KEPT (job 38, baseline 6a840f2). Exp 15 exp/passive DROPPED (job 39: dlvl10 no measurable difference @2304, free5 worse -1.4). Exp 16 exp/elbereth-respect DROPPED (job 40). Exp 17 exp/boulder-push (push boulders when the level looks finished; 160 of 315 stuck starvers had a boulder in view): pre-registered primary starved, mechanism free5/died/dlvl10/rung7/boulder_pushed; smoke 22 boulder-stuck starver seeds: pushed in 10/22, starved/fainted 22 -> 11, seed 3 Dlvl 1 -> 13, 1 crash of a baseline type (inventory assertion, seed 9, 107 pushes -> cap 30/level added); job 41: no measurable difference @2304, starved -1.4 [-2.9, +0.1] (122 -> 96 starvation deaths, pushes in 849 games) -> DROPPED by protocol, branch kept as near-miss to bundle with a food/prayer fix. Exp 18 exp/prayer-timing (+ boulder-push) KEPT, merged 8ae7686 (job 42: starved -2.3 [-4.3, -0.4]; bench label bug for lower-is-better metrics fixed f867d84). NEW BASELINE for next experiments: main 8ae7686 (bot code = 893797a6). Exp 19 exp/deadly-trouble (bd8ab3d vs 893797a6; pray/eat lizard on Stone/Slime/Strangled/FoodPois/TermIll via NLE status mask, lizards kept as medicine, no cockatrice corpse sacrifice pickup, no bare-handed cockatrice melee): pre-registered primary petrified (new bench metric, lower is better), mechanism died/free5/dlvl10/rung7; smoke 22 affected seeds: petrified 4 -> 2, corpse-pickup deaths gone; job 43 @1152: petrified -2.2 [-3.3, -1.0] better BUT free5 -2.2 worse, starved +1.9 open; cause: acid blob corpse pickup diverged 567/1152 games -> not merged; rerun 3be8413 (lizard-only pickup) job 44 @384: petrified -2.6 [-4.5, -0.7] better, mechanism all open -> KEPT, merged c8792f3. NEW BASELINE: 3be8413. Follow-up: inventory.py:91 assertion on big piles ('Pick up what?') is the top crash (8/384). Exp 20 exp/poison-resistance (eat poisonous corpses that give poison resistance >= 20% (killer bee, scorpion, soldier ant, giant beetle) when HP >= 21 and Str >= 14; any once resistant): pre-registered primary poisoned (new bench metric, lower is better) vs 3be8413, mechanism died/dlvl10/rung7/free5/starved; smoke 22 poison-death seeds: poisoned 22 -> 9, resistance gained in 6, 0 exceptions; job running. ROUTE AUDIT done (.planning/research/ASCENSION-ROUTE-AUDIT.md): pick-axe is the key item (skips Medusa, needed on Earth, unsticks levels); Castle entry = striking at drawbridge; no prayer in Gehennom. ITEMS AUDIT done (.planning/research/ITEMS-EFFECTS-AUDIT.md): bot never reads/puts on, armour by AC only; ranked next experiments: (1) pray/eat lizard when stoning starts (82 petrified deaths, 47 saw the warning), (2) eat poisonous corpses for poison resistance (120 poison deaths), (3) pick-axe dig down when stuck. FULL KNOWLEDGE SWEEP (owner request 2026-10-25: go through ALL wiki pages + source): ledger .planning/phases/02-real-descent/sweep/wiki-ledger.tsv, 5667 pages: read-topic 2056, read-monster 367, read-item 420, skipped variant 1671 / translation 533 / meta 616 / stub 4; pages are summarised by a LOCAL Ollama model (qwen2.5:14b on the GPU, no Claude tokens): scripts/wiki_sweep/ollama_sweep.py -> sweep/wiki-facts.jsonl (resumable; restart if stopped). Then filter by script, read the short list, verify against src, rank in 02-KNOWLEDGE-SWEEP.md. Then same for src/*.c. Status page: scripts/status_page.py (http://127.0.0.1:8770). Owner rule: NO subagents without consent. Follow-up: 3 one-game exception types from job 37
+Phase: 02.1 (Port to NetHack 5.0) — INSERTED, ready to discuss
+Plan: 0 of TBD
+Status: Port to NetHack 5.0 started 2026-10-27 (owner decision). 3.6 experiments paused: Exp 20 exp/poison-resistance DROPPED at stop (job 46 @1152: poisoned +0.4 [-0.6, +1.4]); exp/pickup-crash parked unbenched (smoke-clean on 20 crash seeds). Earlier Phase 2 history: see PORTING.md and git log.
 Last activity: 2026-10-25 — 02-01 exact Mines End rung, 02-02 stuck reports/free5; p2-baseline job 33 running
 
 Progress: [█░░░░░░░░░] 13%
@@ -101,6 +101,10 @@ Full log in PROJECT.md Key Decisions. Recent, affecting current work:
 - [Phase 1] 2026-10-24 fix `16a6cb8`: a panic loop that keeps the screen changing (empty-bag loot menu) grew workers to 11 GB; the watchdog now also fires when the game turn stalls for 120 s and only 20 panics are kept. The empty-bag menu itself is not fixed (parse in item_manager / loot).
 - [Phases 4-8] Nothing above rung 9 (Medusa, 14 of 2304 games) has been reached; these phases depend on the staged-start harness (STAGE-01, whose `wizard=True` route is unvalidated against `NetHackChallenge` and seeding).
 
+### Roadmap Evolution
+
+- Phase 02.1 inserted after Phase 2: Port to NetHack 5.0: port NLE 1.3.0 (NetHack 3.6.7) to NetHack 5.0.0 and the AutoAscend bot to it; compare against the 3.6 baseline 3be8413, keep it if the numbers fit, else new 5.0 baseline (owner 2026-10-27; 3.6 experiments paused) (URGENT)
+
 ## Deferred Items
 
 Items acknowledged and deferred at milestone close, most recent first:
@@ -113,24 +117,17 @@ Tracked but unscheduled (REQUIREMENTS.md v2): ROLE-01 role choice, DEBT-01..05 t
 
 ## Session Continuity
 
-Last session: 2026-10-27 (resumed).
-Stopped at: Exp 20 exp/poison-resistance (d83ed40) vs 3be8413: job 45 interrupted by shutdown at 576 pairs, resubmitted as
-bench job 46 (primary `poisoned`). At 576: poisoned +0.3 [-0.9, +1.6] open (most poison deaths are early killer bees /
-orcish arrows before any corpse is eaten; 252 games gained resistance but those seeds had only 3 baseline poison deaths);
-died +2.3 worse at 95% is an artifact: all 27 candidate-only deaths are seeds where the baseline crashed/watchdog/quit.
-Seed 479 gained resistance yet died "poisoned by a snake" -> check the resistance event detection.
-Side work: inventory.py:91 crash (top crash, 9/576 in 3be8413). Cause: get_items_below_me sets engraving_below_me before
-the PICKUP parse; if it raises in between without on_panic, update() skips the refresh and asserts. Plus seed 20:
-'You are physically incapable of picking anything up.' (polymorphed) not in the empty-pile list (inventory.py:489).
-Seed 9 repro confirmed the cause (first error: 'set of orange dragon scales' parse). Branch exp/pickup-crash
-(worktree ../screens-pickup; c2dfcd1 + f0cd61a): refresh when items unset, engraving stored with items, parser fixes
-(dragon scales 'set of', moist towel, ball and chain, Orcish Town fruit, shop globs '(N aum, no charge)'), heavy
-single-item pickup prompt answered 'q', polymorph 'physically incapable'. Tests 479 pass. Smoke on all 20 baseline
-seeds that crashed with inventory.py:91/501 or item_manager.py:498: 0 crashes left (all end in deaths/watchdog/quit).
-Pending: bench exp/pickup-crash vs the baseline after job 46 (metric crashed).
+Last session: 2026-10-27.
+Stopped at: Phase 02.1 (Port to NetHack 5.0) inserted after the owner's decision (2026-10-27): stop the 3.6 experiments,
+port NLE 1.3.0 (runs NetHack 3.6.7; no NLE release supports 5.0, the original repo is archived) to NetHack 5.0.0
+(released 2026-05-02) and port the AutoAscend bot. Do NOT retire the 3.6 baseline 3be8413: run the ported bot and
+compare; if the numbers fit, keep it; if they are all over the place, make a new 5.0 baseline and retire the 3.6 data.
+3.6 leftovers: Exp 20 exp/poison-resistance DROPPED (job 46 stopped @1152: poisoned +0.4 [-0.6, +1.4], died worse only
+because the baseline crashed in those seeds). Branch exp/pickup-crash (c2dfcd1, f0cd61a; worktree ../screens-pickup)
+parked unbenched: inventory refresh + parser fixes, smoke-clean on 20 crash seeds; most parser fixes will matter on 5.0 too.
+Wiki: 5.0 is now the right version; facts from 3.6.6 source no longer automatically apply.
 Resume steps:
-1. `uv run screens-bench wait 46`; if interrupted, resubmit candidate exp/poison-resistance, baseline 3be8413, metric poisoned.
-2. Evaluate with seeded_report.py pairs for poisoned, died, free5, dlvl10, rung7, starved, crashed (died: check flips vs crashes).
-3. Rebase exp/pickup-crash onto the new baseline (if exp 20 kept), bench it vs that baseline, metric crashed.
-4. Then pick-axe dig down when stuck (ASCENSION-ROUTE-AUDIT.md).
+1. /gsd-discuss-phase 02.1 (scope: NLE port approach, seeding/bench compatibility, comparison gate vs 3be8413).
+2. Feasibility map: clone NetHack 5.0.0 source and NLE source into reference/; list NLE's hooks into NetHack (win/rl,
+   blstats, glyphs, seeding, NetHackChallenge) and what changed in 5.0 for each.
 Resume file: None
