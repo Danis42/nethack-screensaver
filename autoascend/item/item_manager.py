@@ -294,7 +294,7 @@ class ItemManager:
             r'( ([+-]\d+))? '
             r"([a-zA-z0-9-!'# ]+)"
             r'( \(([0-9]+:[0-9]+|no charge)\))?'
-            r'( \(([a-zA-Z0-9;, ]+)\)(; slippery\))?)?'  # NetHack 5 can append "; slippery)" after the paren
+            r'( \(((?!for sale|unpaid|contents)[a-zA-Z][a-zA-Z0-9;, ]*)\)(; slippery\))?)?'  # NetHack 5 can append "; slippery)" after the paren
             r'( \((?:(for sale|unpaid), )?(\d+ aum, )?((\d+)[a-zA-Z- ]+|no charge)\))?'
             r'$',
             text)
