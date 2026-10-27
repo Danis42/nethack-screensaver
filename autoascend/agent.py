@@ -809,6 +809,13 @@ class Agent:
                 self.type_text('n')
             if 'You cannot disable this trap.' in self.single_message:
                 return
+            if self.single_message.startswith('Disarm this '):  # NetHack 5: the trap on it is already known
+                self.type_text('y')
+                if 'You disarm it!' in self.message:
+                    self.stats_logger.log_event('container_untrap_success')
+                    return
+                self.stats_logger.log_event('container_untrap_fail')
+                return self.message
             assert 'Check it for traps?' in self.single_message, self.single_message
             self.type_text('y')
             if self.message.startswith('You find no traps on the'):

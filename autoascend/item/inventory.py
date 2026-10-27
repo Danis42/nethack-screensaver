@@ -143,6 +143,9 @@ class Inventory:
                 return False
             assert 'What do you want to wield' in self.agent.message, self.agent.message
             self.agent.type_text(letter)
+            # NetHack 5 asks before wielding a quivered item ("You have 3 elven daggers readied.  Wield one?")
+            if ' readied.  Wield ' in self.agent.message:
+                self.agent.type_text('y')
             if 'You cannot wield a two-handed sword while wearing a shield.' in self.agent.message or \
                     'You cannot wield a two-handed weapon while wearing a shield.' in self.agent.message or \
                     ' welded to your hand' in self.agent.message:
@@ -303,8 +306,16 @@ class Inventory:
                         break
                 else:
                     raise AgentPanic('container not in the loot list')
-            if ' turns out to be locked.' in self.agent.single_message or \
-                    re.search(r'\bThe [a-z ]+ is locked\.', self.agent.single_message):
+            locked = lambda: ' turns out to be locked.' in self.agent.single_message or \
+                re.search(r'\bThe [a-z ]+ is locked\.', self.agent.single_message)
+            for _ in range(3):  # "You carefully open the bag..." can come with a --More-- before the menu
+                if check_if_triggered_container_trap(self.agent.single_message):
+                    self.agent.stats_logger.log_event('triggered_undetected_trap')
+                    raise AgentPanic('triggered trap while looting')
+                if locked() or self.agent.single_popup:
+                    break
+                yield ' '
+            if locked():
                 status = 'locked'
                 return
             assert self.agent.single_popup and 'Do what with ' in self.agent.single_popup[0], \
@@ -1037,14 +1048,16 @@ class Inventory:
             # activated effects:
             "A lit field surrounds you!": ['light'],
             "You may wish for an object.": ['wishing'],
-            "You feel self-knowledgeable...": ['enlightenment']  # TODO: parse the effect
+            "You feel self-knowledgeable...": ['enlightenment'],  # TODO: parse the effect
+            # NetHack 5 zaps secret door detection when engraving with it
+            "You don't find anything.": ['secret door detection'],
+            "You reveal a secret ": ['secret door detection'],
             # TODO: "The wand is too worn out to engrave.": [None],  # wand is exhausted
         }
 
         for msg, wand_types in mapping.items():
             res = re.findall(msg, message)
             if len(res) > 0:
-                assert len(res) == 1
                 return [O.from_name(w, nh.WAND_CLASS) for w in wand_types]
 
         # TODO: "wand is cancelled (x:-1)" ?
