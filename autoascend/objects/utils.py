@@ -34,9 +34,10 @@ def possibilities_from_glyph(i):
             if desc in group:
                 return [o for o in objects if o is not None and o.desc in group]
 
-        # the item is unambiguous or is 'conical hat'
+        # the item is unambiguous or is 'conical hat' or (NetHack 5) 'wooden shield': small shield,
+        # shield of drain resistance and shield of shock resistance look alike and are not shuffled
         ret = [o for o in objects if o is not None and (o.desc or o.name) == desc]
-        if desc != 'conical hat':
+        if desc not in ('conical hat', 'wooden shield'):
             assert len(ret) == 1, ret
         return ret
 

@@ -30,13 +30,15 @@ class MonsterTracker:
                 index = self.agent.popup.index('All monsters currently shown on the map:')
             except IndexError:
                 assert 0, (self.agent.message, self.agent.popup)
-            regex = re.compile(r"^<(\d+),(\d+)>  ([\x00-\x7F])  ([a-zA-z-,' ]+)$")
+            # NetHack 5 pads the coordinates ("<74,8>   d  jackal"); 3.6 used two spaces
+            regex = re.compile(r"^<(\d+),(\d+)> +([\x00-\x7F])  (.+)$")
 
             monsters = {}
             for line in self.agent.popup[index + 1:]:
                 r = regex.search(line)
                 assert r is not None, line
                 x, y, char, name = r.groups()
+                name = name.split(', ')[0]  # NetHack 5 appends states: "tame dog, can't move (...)"
                 y, x = int(y), int(x) - 1
 
                 # char_on_map = self.agent.last_observation['chars'][y, x]

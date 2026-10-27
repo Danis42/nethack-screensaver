@@ -102,7 +102,8 @@ class G:  # Glyphs
                        SS.S_level_teleporter, SS.S_magic_portal, SS.S_web, SS.S_statue_trap, SS.S_magic_trap,
                        SS.S_anti_magic_trap, SS.S_polymorph_trap})
 
-    SWALLOW = frozenset(range(nh.GLYPH_SWALLOW_OFF, nh.GLYPH_WARNING_OFF))
+    # NetHack 5 puts the explosion glyphs between swallow and warning
+    SWALLOW = frozenset(range(nh.GLYPH_SWALLOW_OFF, nh.GLYPH_EXPLODE_OFF))
 
     DICT = {k: v for k, v in locals().items() if not k.startswith('_')}
 

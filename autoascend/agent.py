@@ -15,6 +15,7 @@ from .exceptions import AgentPanic, AgentFinished, AgentChangeStrategy
 from .exploration_logic import ExplorationLogic
 from .global_logic import GlobalLogic, is_stoning_cure
 from .glyph import MON, C, Hunger, G, SHOP
+from .glyph import nh5 as nh5_glyph
 from .item import Item, flatten_items
 from .item.inventory import Inventory
 from .level import Level
@@ -446,6 +447,7 @@ class Agent:
             action = A.ACTIONS[A.ACTIONS.index(ord(action))]
         observation, reward, done, info = self.env.step(action)
         observation = {k: v.copy() for k, v in observation.items()}
+        observation['glyphs'] = nh5_glyph.canonical(observation['glyphs'])
         self.step_count += 1
         self.score += reward
 

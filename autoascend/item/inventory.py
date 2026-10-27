@@ -220,7 +220,9 @@ class Inventory:
             if ' vanished!' in self.agent.message:
                 self.item_manager.container_contents.pop(container.container_id)
                 raise AgentPanic('some items from the container vanished')
-            if 'You carefully open ' in self.agent.single_message or 'You open ' in self.agent.single_message:
+            # NetHack 5 shows the "Do what with" menu together with this message: no <space> then
+            if ('You carefully open ' in self.agent.single_message or 'You open ' in self.agent.single_message) \
+                    and not self.agent.single_popup:
                 yield ' '
             assert 'You have no free hand.' not in self.agent.single_message, 'TODO: handle it'
             assert 'Do what with ' in self.agent.single_popup[0]
@@ -262,31 +264,53 @@ class Inventory:
                 assert "You can't do that while carrying so much stuff." not in self.agent.message, self.agent.message
                 self.agent.step(self.items.get_letter(container), gen())
             elif container in self.items_below_me:
-                self.agent.step(A.Command.LOOT)
-                while True:
-                    assert 'Loot which containers?' not in self.agent.popup, self.agent.popup
-                    assert 'Loot in what direction?' not in self.agent.message
-                    if "You don't find anything here to loot." in self.agent.message:
-                        raise AgentPanic('no container to loot')
-                    r = re.findall(r'There is ([a-zA-z0-9# ]+) here\, loot it\? \[ynq\] \(q\)', self.agent.message)
-                    assert len(r) == 1, self.agent.message
-                    text = r[0]
-                    it = self.item_manager.get_item_from_text(text,
-                                                              position=(
-                                                                  *self.agent.current_level().key(),
-                                                                  self.agent.blstats.y,
-                                                                  self.agent.blstats.x))
-                    if it.container_id == container.container_id:
-                        break
-                    self.agent.step('n')
-
-                self.agent.step('y', gen())
+                status = self._loot_container_below_me(lambda it: it.container_id == container.container_id, gen())
+                if status == 'locked':
+                    raise AgentPanic('container is locked')
             else:
                 assert 0
 
         for item in chain(self.items.all_items, self.items_below_me):
             if item.is_container() and item.container_id == container.container_id:
                 self.check_container_content(item)
+
+    def _loot_container_below_me(self, is_target, gen):
+        """#loot the container below me that is_target(item) picks and play gen in its "Do what with" menu.
+
+        NetHack 5 opens that menu right away when there is one container; with several it asks
+        "Loot which containers?". Returns 'locked', 'no hands' or None.
+        """
+        status = None
+
+        def loot():
+            nonlocal status
+            if "You don't find anything here to loot." in self.agent.single_message:
+                raise AgentPanic('no container below me')
+            if 'you cannot loot anything.' in self.agent.single_message:  # "Without a free hand, ..."
+                status = 'no hands'
+                return
+            if self.agent.single_popup and self.agent.single_popup[0] == 'Loot which containers?':
+                for line in self.agent.single_popup[1:]:
+                    if line[1:4] != ' - ':
+                        continue
+                    it = self.item_manager.get_item_from_text(line[4:], position=(
+                        *self.agent.current_level().key(), self.agent.blstats.y, self.agent.blstats.x))
+                    if is_target(it):
+                        yield line[0]
+                        yield A.MiscAction.MORE
+                        break
+                else:
+                    raise AgentPanic('container not in the loot list')
+            if ' turns out to be locked.' in self.agent.single_message or \
+                    re.search(r'\bThe [a-z ]+ is locked\.', self.agent.single_message):
+                status = 'locked'
+                return
+            assert self.agent.single_popup and self.agent.single_popup[0].startswith('Do what with '), \
+                (self.agent.single_message, self.agent.single_popup)
+            yield from gen
+
+        self.agent.step(A.Command.LOOT, loot())
+        return status
 
     def check_container_content(self, item):
         assert item.is_possible_container() or item.is_container()
@@ -302,14 +326,18 @@ class Inventory:
         def gen():
             nonlocal content, is_bag_of_tricks
 
-            if 'You carefully open ' in self.agent.single_message or 'You open ' in self.agent.single_message:
+            # NetHack 5 shows the "Do what with" menu together with this message: no <space> then
+            if ('You carefully open ' in self.agent.single_message or 'You open ' in self.agent.single_message) \
+                    and not self.agent.single_popup:
                 yield ' '
 
             if 'It develops a huge set of teeth and bites you!' in self.agent.single_message:
                 is_bag_of_tricks = True
                 return
 
-            if 'Hmmm, it turns out to be locked.' in self.agent.single_message or 'It is locked.' in self.agent.single_message:
+            # NetHack 5 names the container: "The chest is locked.", "Hmmm, the chest turns out to be locked."
+            if ' turns out to be locked.' in self.agent.single_message or \
+                    re.search(r'\b(It|The [a-z ]+) is locked\.', self.agent.single_message):
                 content.locked = True
                 yield A.Command.ESC
                 return
@@ -328,7 +356,7 @@ class Inventory:
             if 'cat' in self.agent.message and ' inside the box is ' in self.agent.message:
                 raise AgentPanic('encountered a cat in a box')
 
-            assert self.agent.single_popup, (self.agent.single_message)
+            assert self.agent.single_popup, (self.agent.single_message, self.agent.popup, self.agent.message)
             if '\no - ' not in '\n'.join(self.agent.single_popup):
                 # ':' sometimes doesn't display items correctly if there's >= 22 items (the first page isn't shown)
                 yield ':'
@@ -376,25 +404,13 @@ class Inventory:
                 if 'You have no hands!' in self.agent.message:
                     return
             else:
-                self.agent.step(A.Command.LOOT)
-                while True:
-                    if "You don't find anything here to loot." in self.agent.message:
-                        raise AgentPanic('no container below me')
-                    assert 'Loot which containers?' not in self.agent.popup, self.agent.popup
-                    assert 'There is ' in self.agent.message and ', loot it?' in self.agent.message, self.agent.message
-                    r = re.findall(r'There is ([a-zA-z0-9# ]+) here\, loot it\? \[ynq\] \(q\)', self.agent.message)
-                    assert len(r) == 1, self.agent.message
-                    text = r[0]
-                    it = self.item_manager.get_item_from_text(text,
-                                                              position=(
-                                                                  *self.agent.current_level().key(),
-                                                                  self.agent.blstats.y,
-                                                                  self.agent.blstats.x))
-                    if (item.container_id is not None and it.container_id == item.container_id) or \
-                            (item.container_id is None and item.text == it.text):
-                        break
-                    self.agent.step('n')
-                self.agent.step('y', gen())
+                status = self._loot_container_below_me(
+                    lambda it: (item.container_id is not None and it.container_id == item.container_id) or
+                               (item.container_id is None and item.text == it.text), gen())
+                if status == 'locked':
+                    content.locked = True
+                elif status == 'no hands':
+                    return
 
             if is_bag_of_tricks:
                 assert item.content is None
