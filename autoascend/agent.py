@@ -630,7 +630,7 @@ class Agent:
 
     def _update_level_corpses(self):
         mnames = list(map(lambda x: x[-1],
-                          re.findall(r'((kills?)|(destroys?)) ((an?)|(the) )?([a-zA-Z ]+)\!', self.message)))
+                          re.findall(r'\b((kills?)|(destroys?)) ((an?)|(the) )?([a-zA-Z ]+)\!', self.message)))
         mnames += list(map(lambda x: x[-4],
                            re.findall(r'((An? )|(The )( *))([a-zA-Z ]+) is ((killed)|(destroyed))\!', self.message)))
         mnames = list(filter(lambda name: 'invisible' not in name and name != 'it' and not name.startswith('poor '),
@@ -639,6 +639,7 @@ class Agent:
                           mnames))
         mnames = list(filter(lambda name: name[0].lower() == name[0],
                              mnames))
+        mnames = [name for name in mnames if MON.is_name(name)]  # e.g. NetHack 5 quest taunts
 
         level = self.current_level()
 

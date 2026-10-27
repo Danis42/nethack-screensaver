@@ -38,9 +38,15 @@ def from_name(name):
 @functools.lru_cache(nh.NUMMONS)
 def id_from_name(name):
     for i in range(nh.NUMMONS):
-        if nh.permonst(i).mname == name:
+        # NetHack 5 names some monsters by gender ("kobold lord" / "kobold lady"); mname is the neutral
+        # or male name, pmnames all of them
+        if nh.permonst(i).mname == name or name in nh.permonst(i).pmnames:
             return i
     assert 0, name
+
+
+def is_name(name):
+    return any(nh.permonst(i).mname == name or name in nh.permonst(i).pmnames for i in range(nh.NUMMONS))
 
 
 def body_from_name(name):

@@ -307,7 +307,7 @@ class Inventory:
                     re.search(r'\bThe [a-z ]+ is locked\.', self.agent.single_message):
                 status = 'locked'
                 return
-            assert self.agent.single_popup and self.agent.single_popup[0].startswith('Do what with '), \
+            assert self.agent.single_popup and 'Do what with ' in self.agent.single_popup[0], \
                 (self.agent.single_message, self.agent.single_popup)
             yield from gen
 
