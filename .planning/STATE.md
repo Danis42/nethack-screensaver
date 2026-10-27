@@ -122,11 +122,15 @@ Seed 479 gained resistance yet died "poisoned by a snake" -> check the resistanc
 Side work: inventory.py:91 crash (top crash, 9/576 in 3be8413). Cause: get_items_below_me sets engraving_below_me before
 the PICKUP parse; if it raises in between without on_panic, update() skips the refresh and asserts. Plus seed 20:
 'You are physically incapable of picking anything up.' (polymorphed) not in the empty-pile list (inventory.py:489).
-Seed 9 repro running with diagnostics (scratchpad repro9.py).
+Seed 9 repro confirmed the cause (first error: 'set of orange dragon scales' parse). Branch exp/pickup-crash
+(worktree ../screens-pickup; c2dfcd1 + f0cd61a): refresh when items unset, engraving stored with items, parser fixes
+(dragon scales 'set of', moist towel, ball and chain, Orcish Town fruit, shop globs '(N aum, no charge)'), heavy
+single-item pickup prompt answered 'q', polymorph 'physically incapable'. Tests 479 pass. Smoke on all 20 baseline
+seeds that crashed with inventory.py:91/501 or item_manager.py:498: 0 crashes left (all end in deaths/watchdog/quit).
+Pending: bench exp/pickup-crash vs the baseline after job 46 (metric crashed).
 Resume steps:
 1. `uv run screens-bench wait 46`; if interrupted, resubmit candidate exp/poison-resistance, baseline 3be8413, metric poisoned.
 2. Evaluate with seeded_report.py pairs for poisoned, died, free5, dlvl10, rung7, starved, crashed (died: check flips vs crashes).
-3. Build branch exp/pickup-crash from main: refresh when items_below_me is None; set engraving at the end; add the
-   polymorph message. Smoke on seeds 9, 20, 113 and the other inventory.py:91 seeds, then bench vs the new baseline, metric crashed.
+3. Rebase exp/pickup-crash onto the new baseline (if exp 20 kept), bench it vs that baseline, metric crashed.
 4. Then pick-axe dig down when stuck (ASCENSION-ROUTE-AUDIT.md).
 Resume file: None
