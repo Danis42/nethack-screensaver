@@ -139,8 +139,19 @@ early_init), a0800e46a TEMPORARY debug (panic/impossible to stderr + backtrace; 
 Venv: ~/.cache/screens-nh5/venv (`VIRTUAL_ENV=... uv pip install --reinstall-package nle reference/nle-src`;
 PyPI allowed in .claude/settings.local.json sandbox). Checks: seeded val-dwa-fem-law game starts, 3000 random steps
 fine, MAX_GLYPH 9624 (3.6: ~5976), blstats 27; same seed -> identical tty hash, other seed differs.
+NLE also 1ff62e859: _pynethack fills mons[]/objects[] at import (NH5 copies them at run time), `mname` is a property
+again (neutral name, else male) plus new `pmnames` (male, female, neutral). Bot deps installed in the NH5 venv.
+BOT PORT status: glyph tables import fine now; first stop is autoascend/objects/data.py (hand-written 3.6 object
+table, asserted against nh.objdescr). 3.6 453 objects -> 5.0 481: 17 "generic <class>" placeholders (to None),
+new: silver mace, helm of caution, gold dragon scale mail/scales, shield of drain/shock resistance, amulet of
+guarding/flying, enormous meatball (was huge chunk of meat), mail (scroll), spellbooks chain lightning/stasis,
+venoms renamed (splash of blinding/acid venom); appearance changes: helm of brilliance crystal helmet, small
+shield wooden shield, grappling hook no descr. Stats (wt/cost/prob/damage) of existing items still to compare.
 Resume steps:
-0. Run one AutoAscend game on the NH5 venv (PYTHONPATH=~/screens) and list what breaks first.
+0. Port autoascend/objects/data.py to 5.0 (script: compare every field with nh.objclass/objdescr in the NH5 venv;
+   new entries from reference/nethack-5.0.0/include/objects.h), then rerun the seed-7 bot game and fix the next stop.
+   Plan the rest as GSD plans for phase 02.1: messages/monster genders, crash sweep on ~50 seeds, bench workers on the
+   NH5 venv, then compare vs 3be8413.
 1. /gsd-discuss-phase 02.1 (scope: NLE port approach, seeding/bench compatibility, comparison gate vs 3be8413).
 2. Feasibility map: clone NetHack 5.0.0 source and NLE source into reference/; list NLE's hooks into NetHack (win/rl,
    blstats, glyphs, seeding, NetHackChallenge) and what changed in 5.0 for each.
