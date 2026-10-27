@@ -147,12 +147,16 @@ new: silver mace, helm of caution, gold dragon scale mail/scales, shield of drai
 guarding/flying, enormous meatball (was huge chunk of meat), mail (scroll), spellbooks chain lightning/stasis,
 venoms renamed (splash of blinding/acid venom); appearance changes: helm of brilliance crystal helmet, small
 shield wooden shield, grappling hook no descr. Stats (wt/cost/prob/damage) of existing items still to compare.
+BOT PORT (branch nh5-port, local): 20e6a14 objects/data.py generated from NH5 objects.h (scripts/gen_objects_data.py)
++ NH5 constants; ac29501 glyph layer autoascend/glyph/nh5.py (female->male glyphs, branch walls->main, altars->one,
+branch stairs->stairs, engraved floor->floor; applied in Agent.step), screen_symbol_consts regenerated, monster list
+format, wooden shield, #loot without "loot it?"; 301cdc1+de890fe = cherry-picked exp/pickup-crash fixes; next commit:
+gendered names (pmnames), kill-message word boundary, empty-bag menu. NLE (screens-nh5): + notutorial, autounlock:none
+defaults (8314c9271, 3f7a52967). Seed 7 on NH5: ends normally (killed by a watch captain T9584 Dlvl 6), only routine
+panics. Smoke helper: scratchpad smoke_tb.py (prints swallowed exceptions as CAUGHT).
 Resume steps:
-0. Port autoascend/objects/data.py to 5.0 (script: compare every field with nh.objclass/objdescr in the NH5 venv;
-   new entries from reference/nethack-5.0.0/include/objects.h), then rerun the seed-7 bot game and fix the next stop.
-   Plan the rest as GSD plans for phase 02.1: messages/monster genders, crash sweep on ~50 seeds, bench workers on the
-   NH5 venv, then compare vs 3be8413.
-1. /gsd-discuss-phase 02.1 (scope: NLE port approach, seeding/bench compatibility, comparison gate vs 3be8413).
-2. Feasibility map: clone NetHack 5.0.0 source and NLE source into reference/; list NLE's hooks into NetHack (win/rl,
-   blstats, glyphs, seeding, NetHackChallenge) and what changed in 5.0 for each.
+1. Read the 24-seed sweep (scratchpad sweep5/), fix the most common NH5-specific errors, repeat until crashes are rare.
+2. Tests: the repo test suite still targets NLE 3.6; run it in the NH5 venv and port/mark tests.
+3. Bench on NH5: the bench workers must use ~/.cache/screens-nh5/venv (pyproject nle dependency -> local build).
+4. Compare nh5-port against the 3.6 baseline 3be8413 (owner: keep the baseline if the values fit).
 Resume file: None
