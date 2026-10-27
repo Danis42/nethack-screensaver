@@ -7,8 +7,8 @@ not count.
 NLE loads libnethack from a memfd (``/memfd:nle.so``), one copy per env, so a process can hold
 several games. The copy is picked by the game's (core, disp) seeds, which each copy keeps in
 ``nle_seeds``; neither address order nor inode numbers follow creation order. Symbol offsets come
-from ``nm`` on the installed library; the struct layouts are NetHack 3.6's (dungeon.h), verified on
-NLE 1.3.0.
+from ``nm`` on the installed library; the struct layouts are NetHack 5.0's (dungeon.h, hack.h,
+decl.h: the dungeon tables live in the ``svd``/``svn`` instance globals), measured with offsetof().
 """
 import ctypes
 import functools
@@ -19,15 +19,19 @@ from dataclasses import dataclass
 from pathlib import Path
 
 MEMFD = "/memfd:nle.so"
-DUNGEON_SIZE = 56  # struct dungeon: dname[24] proto[15] boneid d_flags(4) entry/num/reached(int8) ledger/depth(int32)
-NAME_LEN = 24
-NUM_DUNLEVS = 45
-DEPTH_START = 52
-TOPOLOGY_MINES_DNUM = 42  # dungeon_topology: 20 d_levels, then tower, sokoban, mines, quest dnums
-TOPOLOGY_QUEST_DNUM = 43
-TOPOLOGY_MINEEND = 52  # d_mineend_level (dnum, dlevel)
+DUNGEON_SIZE = 92  # struct dungeon: dname[24] proto[15] fill_lvl[15] themerms[15] boneid d_flags,
+NAME_LEN = 24      # then entry/num/reached (xint16) and ledger/depth (int)
+NUM_DUNLEVS = 78
+DEPTH_START = 88
+SVD_DUNGEONS = 0   # svd.dungeons[MAXDUNGEON]
+SVD_TOPOLOGY = 1472  # svd.dungeon_topology
+TOPOLOGY_SIZE = 114
+TOPOLOGY_MINES_DNUM = 84  # dungeon_topology: 20 d_levels (xint16 pairs), then tower, sokoban, mines, quest dnums
+TOPOLOGY_QUEST_DNUM = 86
+TOPOLOGY_MINEEND = 106  # d_mineend_level (dnum, dlevel), xint16 each
+SVN_N_DGNS = 0     # svn.n_dgns
 MINES_NAME = "The Gnomish Mines"
-SYMBOLS = ("dungeons", "n_dgns", "dungeon_topology", "nle_seeds")
+SYMBOLS = ("svd", "svn", "nle_seeds")
 
 
 class TruthUnavailable(Exception):
@@ -81,12 +85,12 @@ def read(seeds) -> DungeonTruth:
     """Layout of the game whose (core, disp) seeds are given (``Nethack.get_current_seeds()[:2]``)."""
     symbols = _symbols()
     base = _game_base(seeds, symbols["nle_seeds"])
-    n_dgns = ctypes.c_int.from_address(base + symbols["n_dgns"]).value
+    n_dgns = ctypes.c_int.from_address(base + symbols["svn"] + SVN_N_DGNS).value
     if not 1 <= n_dgns <= 16:
         raise TruthUnavailable(f"n_dgns {n_dgns}")
-    table = ctypes.string_at(base + symbols["dungeons"], DUNGEON_SIZE * n_dgns)
-    topology = ctypes.string_at(base + symbols["dungeon_topology"], DUNGEON_SIZE)
-    mines, quest = topology[TOPOLOGY_MINES_DNUM], topology[TOPOLOGY_QUEST_DNUM]
+    table = ctypes.string_at(base + symbols["svd"] + SVD_DUNGEONS, DUNGEON_SIZE * n_dgns)
+    topology = ctypes.string_at(base + symbols["svd"] + SVD_TOPOLOGY, TOPOLOGY_SIZE)
+    mines, quest = struct.unpack_from("hh", topology, TOPOLOGY_MINES_DNUM)
     if not (mines < n_dgns and quest < n_dgns):
         raise TruthUnavailable(f"dnums mines {mines} quest {quest} of {n_dgns}")
 
@@ -94,8 +98,8 @@ def read(seeds) -> DungeonTruth:
         return table[dnum * DUNGEON_SIZE:(dnum + 1) * DUNGEON_SIZE]
 
     name = entry(mines)[:NAME_LEN].split(b"\0")[0].decode(errors="replace")
-    levels = struct.unpack_from("b", entry(mines), NUM_DUNLEVS)[0]
-    end = tuple(topology[TOPOLOGY_MINEEND:TOPOLOGY_MINEEND + 2])
+    levels = struct.unpack_from("h", entry(mines), NUM_DUNLEVS)[0]
+    end = struct.unpack_from("hh", topology, TOPOLOGY_MINEEND)
     if name != MINES_NAME or not 2 <= levels <= 12 or end != (mines, levels):
         raise TruthUnavailable(f"unexpected Mines entry {name!r} levels {levels} end {end}")
     return DungeonTruth(mines_levels=levels, mines_end=end, quest_dnum=quest,

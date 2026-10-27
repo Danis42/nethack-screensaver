@@ -15,7 +15,7 @@ def _read(env):
     return dungeon_truth.read(env.get_current_seeds()[:2])
 
 
-@pytest.mark.parametrize("seed, levels", [(1, 8), (3, 9)])
+@pytest.mark.parametrize("seed, levels", [(1, 8), (4, 9)])  # NetHack 5 dungeons of these seeds
 def test_reads_the_mines_size_and_mines_end(seed, levels):
     env = _env(seed)
     try:
@@ -30,7 +30,7 @@ def test_reads_the_mines_size_and_mines_end(seed, levels):
 def test_reads_the_game_with_the_given_seeds_among_several():
     envs = [_env(seed) for seed in (3, 1, 8, 4)]
     try:
-        assert [_read(env).mines_levels for env in envs] == [9, 8, 8, 9]
+        assert [_read(env).mines_levels for env in envs] == [8, 8, 8, 9]
     finally:
         for env in envs:
             env.close()
