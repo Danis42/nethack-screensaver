@@ -132,8 +132,15 @@ winrl.cc, pynethack.cc; seeding (set_initial_seeds, fix_moon_phase) kept; glyph 
 NetHack 5.0.0 source cloned to reference/nethack-5.0.0 (tag NetHack-5.0.0_Released). Building the branch was blocked
 by the auto-mode classifier (compiles downloaded code) -> owner must allow: scratch venv build via
 `uv pip install reference/nle-src` (branch checked out).
+2026-10-27 evening: NetHack 5.0 RUNS under NLE. Build: reference/nle-src branch `screens-nh5` (local only) on top of
+upstream NetHack-5-upgrade 2a0e3baf1: d9c5ded27 link fixes (glyphmap/tileidx, glyph_to_cmap copy, hacklib.c),
+dda836441 startup fixes (Lua 5.4.8 pinned, level files in nhdat via NLE_DAT glob, file prefixes set after
+early_init), a0800e46a TEMPORARY debug (panic/impossible to stderr + backtrace; drop before any real use).
+Venv: ~/.cache/screens-nh5/venv (`VIRTUAL_ENV=... uv pip install --reinstall-package nle reference/nle-src`;
+PyPI allowed in .claude/settings.local.json sandbox). Checks: seeded val-dwa-fem-law game starts, 3000 random steps
+fine, MAX_GLYPH 9624 (3.6: ~5976), blstats 27; same seed -> identical tty hash, other seed differs.
 Resume steps:
-0. With owner permission: build the NH5 branch in a scratch venv, run one random-action game, then one AutoAscend game.
+0. Run one AutoAscend game on the NH5 venv (PYTHONPATH=~/screens) and list what breaks first.
 1. /gsd-discuss-phase 02.1 (scope: NLE port approach, seeding/bench compatibility, comparison gate vs 3be8413).
 2. Feasibility map: clone NetHack 5.0.0 source and NLE source into reference/; list NLE's hooks into NetHack (win/rl,
    blstats, glyphs, seeding, NetHackChallenge) and what changed in 5.0 for each.
