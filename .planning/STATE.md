@@ -154,9 +154,16 @@ format, wooden shield, #loot without "loot it?"; 301cdc1+de890fe = cherry-picked
 gendered names (pmnames), kill-message word boundary, empty-bag menu. NLE (screens-nh5): + notutorial, autounlock:none
 defaults (8314c9271, 3f7a52967). Seed 7 on NH5: ends normally (killed by a watch captain T9584 Dlvl 6), only routine
 panics. Smoke helper: scratchpad smoke_tb.py (prints swallowed exceptions as CAUGHT).
+More port commits: bb5b2dc tests + dungeon_truth on NH5 (suite 478 passed, 6 skipped in the NH5 venv; 7 of 8 Sokoban
+levels unchanged, soko2-2 new and solved by the live solver), 9a6b179 bench SCREENS_BENCH_PYTHON, 395c5ed disarm-this-box,
+quivered wield, bag --More--, secret door wand. NLE c03cfdf73 nosafe_wait. Sweep 24 seeds (sweep6): 24/24 normal ends,
+max Dlvl 16; note 3/24 deaths "frozen by a floating eye's gaze" (check the floating-eye rule on NH5).
+BENCH: server restarted on the nh5-port tree with SCREENS_BENCH_PYTHON=~/.cache/screens-nh5/venv/bin/python (log
+~/.cache/screens-nh5/bench-server.log). Job 47: candidate 395c5ed (NH5) vs baseline 3be8413 (3.6, 1152 games stored),
+metric dlvl6. A guard loop stops it at the 1152 checkpoint so no 3.6 baseline game is ever played on NH5.
+IMPORTANT: while the server runs with the NH5 python, never bench 3.6 commits.
 Resume steps:
-1. Read the 24-seed sweep (scratchpad sweep5/), fix the most common NH5-specific errors, repeat until crashes are rare.
-2. Tests: the repo test suite still targets NLE 3.6; run it in the NH5 venv and port/mark tests.
-3. Bench on NH5: the bench workers must use ~/.cache/screens-nh5/venv (pyproject nle dependency -> local build).
-4. Compare nh5-port against the 3.6 baseline 3be8413 (owner: keep the baseline if the values fit).
+1. Job 47 result: compare all metrics (seeded_report pairs: dlvl6, dlvl10, rung2..rung7, died, starved, crashed, free5)
+   NH5 vs 3.6. Owner rule: values close -> keep the 3.6 baseline; all over the place -> new NH5 baseline, retire 3.6 data.
+2. Check floating-eye deaths on NH5; then merge nh5-port to main (with owner OK: main then needs the NH5 venv).
 Resume file: None
