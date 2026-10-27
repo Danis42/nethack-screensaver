@@ -229,3 +229,24 @@ def test_blocked_push_square_waits_a_limited_number_of_turns():
         assert logic._push_square_blocked() is True  # wait a turn: the monster moves or fights
     assert logic._push_square_blocked() is False  # something permanent: give up
     assert len(waited) == LIVE_SOKOBAN_BLOCKED_TRIES
+
+
+def test_stored_solutions_work_on_mirrored_levels():
+    # NetHack 5 can flip Sokoban levels; every flip of a stored map must replay as cleanly as the original
+    from autoascend import soko_solver as S
+
+    def pushes_applied(text, moves):
+        board, applied = S.convert_map(text), 0
+        for (y, x), (dy, dx) in moves:
+            if board.sokomap[y, x] == S.BOULDER and board.sokomap[y - dy, x - dx] == S.EMPTY and \
+                    board.sokomap[y + dy, x + dx] in (S.EMPTY, S.TARGET):
+                board.move(y, x, dy, dx)
+                applied += 1
+        return applied
+
+    items = list(S.orientations())
+    assert len(items) == 4 * len(S.maps)
+    for k in range(0, len(items), 4):
+        original = pushes_applied(*items[k])
+        assert original > 0
+        assert [pushes_applied(*items[k + flip]) for flip in range(1, 4)] == [original] * 3

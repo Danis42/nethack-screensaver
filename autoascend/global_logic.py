@@ -517,12 +517,16 @@ class GlobalLogic:
 
         while 1:
             wall_map = utils.isin(self.agent.current_level().objects, G.WALL)
-            for smap, answer in soko_solver.maps.items():
+            for smap, answer in soko_solver.orientations():
                 sokomap = soko_solver.convert_map(smap)
                 offset = np.array(min(zip(*wall_map.nonzero()))) - \
                          np.array(min(zip(*(sokomap.sokomap == soko_solver.WALL).nonzero())))
+                if (offset < 0).any():
+                    continue
                 mask = wall_map[offset[0] : offset[0] + sokomap.sokomap.shape[0],
                                 offset[1] : offset[1] + sokomap.sokomap.shape[1]]
+                if mask.shape != sokomap.sokomap.shape:  # another (or mirrored) level: does not fit here
+                    continue
                 if (mask & (sokomap.sokomap == soko_solver.WALL) == mask).all():
                     break
             else:

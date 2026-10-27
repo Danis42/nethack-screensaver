@@ -44,6 +44,22 @@ class SokoMap:
         print()
 
 
+def orientations():
+    """Every stored map with its solution, also mirrored: NetHack 5 can flip Sokoban levels
+    horizontally, vertically or both (the level files have no "noflip")."""
+    for text, answer in maps.items():
+        lines = [line for line in text.splitlines() if line]
+        height, width = len(lines), max(map(len, lines))
+        lines = [line.ljust(width) for line in lines]
+        for flip_y in (False, True):
+            for flip_x in (False, True):
+                rows = lines[::-1] if flip_y else lines
+                rows = [row[::-1] for row in rows] if flip_x else rows
+                moves = [((height - 1 - y if flip_y else y, width - 1 - x if flip_x else x),
+                          (-dy if flip_y else dy, -dx if flip_x else dx)) for (y, x), (dy, dx) in answer]
+                yield '\n'.join(rows), moves
+
+
 def convert_map(text):
     START = -1
     mapping = {'<': EMPTY, '>': START, '.': EMPTY, '?': EMPTY, '+': EMPTY,
