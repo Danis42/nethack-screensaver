@@ -126,7 +126,14 @@ compare; if the numbers fit, keep it; if they are all over the place, make a new
 because the baseline crashed in those seeds). Branch exp/pickup-crash (c2dfcd1, f0cd61a; worktree ../screens-pickup)
 parked unbenched: inventory refresh + parser fixes, smoke-clean on 20 crash seeds; most parser fixes will matter on 5.0 too.
 Wiki: 5.0 is now the right version; facts from 3.6.6 source no longer automatically apply.
+KEY FINDING 2026-10-27: NLE upstream (github.com/NetHack-LE/nle, cloned to reference/nle-src) has a branch
+origin/NetHack-5-upgrade (Stephen Oman, 12 commits 2026-06..2026-10-25) that imports NetHack 5.0 and adapts nle.c,
+winrl.cc, pynethack.cc; seeding (set_initial_seeds, fix_moon_phase) kept; glyph layout changed (MAX_GLYPH enum).
+NetHack 5.0.0 source cloned to reference/nethack-5.0.0 (tag NetHack-5.0.0_Released). Building the branch was blocked
+by the auto-mode classifier (compiles downloaded code) -> owner must allow: scratch venv build via
+`uv pip install reference/nle-src` (branch checked out).
 Resume steps:
+0. With owner permission: build the NH5 branch in a scratch venv, run one random-action game, then one AutoAscend game.
 1. /gsd-discuss-phase 02.1 (scope: NLE port approach, seeding/bench compatibility, comparison gate vs 3be8413).
 2. Feasibility map: clone NetHack 5.0.0 source and NLE source into reference/; list NLE's hooks into NetHack (win/rl,
    blstats, glyphs, seeding, NetHackChallenge) and what changed in 5.0 for each.
