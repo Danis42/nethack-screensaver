@@ -328,7 +328,15 @@ class Inventory:
         self.agent.step(A.Command.LOOT, loot())
         return status
 
+    def _too_loaded_to_loot(self):
+        # NetHack 5 refuses #loot/#apply when the hero cannot move under the load ("You collapse under
+        # your load."): overloaded, or stressed or worse at low HP; trying again would only loop
+        return self.agent.blstats.carrying_capacity >= 5 or \
+            (self.agent.blstats.carrying_capacity >= 2 and self.agent.blstats.hitpoints < 10)
+
     def check_container_content(self, item):
+        if self._too_loaded_to_loot():
+            return
         assert item.is_possible_container() or item.is_container()
         assert item in self.items.all_items or item in self.items_below_me
 
@@ -1346,6 +1354,9 @@ class Inventory:
     @utils.debug_log('inventory.check_containers')
     @Strategy.wrap
     def check_containers(self):
+        if self._too_loaded_to_loot():
+            yield False
+            return
         yielded = False
         for item in self.agent.inventory.items_below_me:
             if item.is_possible_container():
