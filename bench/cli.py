@@ -18,6 +18,8 @@ REPO = Path(__file__).resolve().parent.parent
 DATA = Path(os.environ.get("SCREENS_BENCH_DATA", "~/.local/share/screens-bench")).expanduser()
 CACHE = Path(os.environ.get("SCREENS_BENCH_CACHE", "~/.cache/screens-bench")).expanduser()
 URL = os.environ.get("SCREENS_BENCH_URL", "http://127.0.0.1:8765")
+# the Python that plays the games (its NLE decides the NetHack version), e.g. the NetHack 5 venv
+WORKER_PYTHON = Path(os.environ.get("SCREENS_BENCH_PYTHON", sys.executable)).expanduser()
 
 
 def build_app(workers=11, data_dir=DATA, cache_dir=CACHE):
@@ -27,7 +29,7 @@ def build_app(workers=11, data_dir=DATA, cache_dir=CACHE):
 
     def spawn(sha):
         worktree = gitrefs.ensure_worktree(REPO, sha, cache_dir / "worktrees")
-        return ProcessWorker(Path(sys.executable), worktree, data_dir / "worker.log")
+        return ProcessWorker(WORKER_PYTHON, worktree, data_dir / "worker.log")
 
     return App(store, Scheduler(store, spawn, slots=workers), REPO, cache_dir)
 
