@@ -31,7 +31,8 @@ class MonsterTracker:
             except IndexError:
                 assert 0, (self.agent.message, self.agent.popup)
             # NetHack 5 pads the coordinates ("<74,8>   d  jackal"); 3.6 used two spaces
-            regex = re.compile(r"^<(\d+),(\d+)> +([\x00-\x7F])  (.+)$")
+            # long lines lose the padding: "<8,6> G peaceful gnomish wizard, can't move (...)"
+            regex = re.compile(r"^<(\d+),(\d+)> +([\x00-\x7F]) +(.+)$")
 
             monsters = {}
             for line in self.agent.popup[index + 1:]:

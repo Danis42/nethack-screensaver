@@ -44,6 +44,13 @@ def _repair_cut_text(text):
     return head
 
 
+_CLASS_WORDS = {  # NetHack 5 class names for objects not seen up close -> (class, armor subtype or None)
+    'potion': (nh.POTION_CLASS, None), 'scroll': (nh.SCROLL_CLASS, None), 'spellbook': (nh.SPBOOK_CLASS, None),
+    'wand': (nh.WAND_CLASS, None), 'ring': (nh.RING_CLASS, None), 'amulet': (nh.AMULET_CLASS, None),
+    'gem': (nh.GEM_CLASS, None), 'stone': (nh.GEM_CLASS, None), 'shield': (nh.ARMOR_CLASS, O.ARM_SHIELD),
+}
+
+
 class ItemManager:
     def __init__(self, agent):
         self.agent = agent
@@ -287,7 +294,7 @@ class ItemManager:
             r'( ([+-]\d+))? '
             r"([a-zA-z0-9-!'# ]+)"
             r'( \(([0-9]+:[0-9]+|no charge)\))?'
-            r'( \(([a-zA-Z0-9; ]+(, flickering|, gleaming|, glimmering)?[a-zA-Z0-9; ]*)\))?'
+            r'( \(([a-zA-Z0-9;, ]+)\)(; slippery\))?)?'  # NetHack 5 can append "; slippery)" after the paren
             r'( \((?:(for sale|unpaid), )?(\d+ aum, )?((\d+)[a-zA-Z- ]+|no charge)\))?'
             r'$',
             text)
@@ -307,16 +314,18 @@ class ItemManager:
         ) = matches[0]
         # TODO: effects, uses
 
-        if info in {'being worn', 'being worn; slippery', 'wielded', 'chained to you',
-                    'on left hand', 'on right hand'} or info.startswith(
-                'weapon in ') or \
-                info.startswith('tethered weapon in '):
+        # "being worn; slippery", "weapon in left hand, brightly lit", "alternate weapons; not wielded" (5.0)
+        base = info.split(';')[0].split(',')[0].strip()
+        if base in {'being worn', 'being donned', 'being doffed', 'wielded', 'chained to you',
+                    'embedded in your skin'} or \
+                base.startswith(('weapon in ', 'tethered to ', 'tethered weapon in ', 'wielded in ', 'on left ',
+                                 'on right ')):
             equipped = True
             at_ready = False
-        elif info in {'at the ready', 'in quiver', 'in quiver pouch', 'lit'}:
+        elif base in {'at the ready', 'in quiver', 'in quiver pouch', 'lit'}:
             equipped = False
             at_ready = True
-        elif info in {'', 'alternate weapon; not wielded', 'alternate weapon; notwielded'}:
+        elif base == '' or base.startswith(('alternate weapon', 'attached to ')):
             equipped = False
             at_ready = False
         else:
@@ -646,6 +655,14 @@ class ItemManager:
 
         appearance_ids = list(appearance_ids)
         assert len(appearance_ids) == 0 or len({ord(nh.objclass(i).oc_class) for i in appearance_ids}), name
+
+        # NetHack 5 names objects not seen up close by their class: "a potion", "2 scrolls", "a shield"
+        class_word = _CLASS_WORDS.get(name[:-1] if name.endswith('s') and name[:-1] in _CLASS_WORDS else name)
+        if not obj_ids and not appearance_ids and class_word is not None:
+            oclass, sub = class_word
+            ids = [i for i in range(nh.NUM_OBJECTS) if O.objects[i] is not None and
+                   ord(nh.objclass(i).oc_class) == oclass and (sub is None or O.objects[i].sub == sub)]
+            return [O.objects[i] for i in ids], [i + nh.GLYPH_OBJ_OFF for i in ids]
 
         # assert (len(obj_ids) > 0) ^ (len(appearance_ids) > 0), (name, obj_ids, appearance_ids)
         if (len(obj_ids) > 0) == (len(appearance_ids) > 0):
