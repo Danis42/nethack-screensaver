@@ -1,3 +1,5 @@
+import nle.nethack as nh
+
 from autoascend.item.item_manager import ContainerContent, ItemManager
 
 CLOAK = 'an uncursed thoroughly burnt thoroughly rotted +2 cloak of displacement (being worn)'
@@ -51,3 +53,17 @@ def test_worn_ring_parses_as_equipped():
         objs, glyphs, count, status, modifier, equipped, *rest = ItemManager.parse_text(
             f'an uncursed ring of slow digestion (on {hand} hand)')
         assert objs[0].name == 'slow digestion' and equipped
+
+
+def test_dragon_scales_parse_as_armor():
+    # a pick-up menu lists them under Armor as "set of <color> dragon scales" (objnam.c xname)
+    for text in ['a set of orange dragon scales', '2 sets of gray dragon scales']:
+        objs, *rest = ItemManager.parse_text(text, nh.ARMOR_CLASS)
+        assert objs[0].name.endswith('dragon scales')
+
+
+def test_moist_towel_parses():
+    # a towel with 1-2 charges of water is "moist", more is "wet" (objnam.c xname)
+    for text in ['a moist towel', 'an uncursed wet towel']:
+        objs, *rest = ItemManager.parse_text(text, nh.TOOL_CLASS)
+        assert objs[0].name == 'towel'

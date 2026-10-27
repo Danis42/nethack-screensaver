@@ -78,7 +78,9 @@ class Inventory:
                  self._previous_blstats.level_number, self._previous_blstats.dungeon_number) != \
                 (self.agent.blstats.y, self.agent.blstats.x, \
                  self.agent.blstats.level_number, self.agent.blstats.dungeon_number) or \
-                (self.engraving_below_me is None or self.engraving_below_me.lower() == 'elbereth'):
+                (self.engraving_below_me is None or self.engraving_below_me.lower() == 'elbereth') or \
+                self.items_below_me is None or self.letters_below_me is None:
+            # a failed get_items_below_me can leave the engraving read but the items unset
             assume_appropriate_message = self._previous_blstats is not None and not self.engraving_below_me
 
             self._previous_blstats = self.agent.blstats
@@ -480,9 +482,8 @@ class Inventory:
                     index = self.agent.message.index('You read: "') + len('You read: "')
                     assert '"' in self.agent.message[index:]
                     engraving = self.agent.message[index: index + self.agent.message[index:].index('"')]
-                    self.engraving_below_me = engraving
                 else:
-                    self.engraving_below_me = ''
+                    engraving = ''
 
                 if 'Things that are here:' not in self.agent.popup and 'There is ' not in '\n'.join(self.agent.popup):
                     if 'You see no objects here.' in self.agent.message:
@@ -510,7 +511,8 @@ class Inventory:
                                 'You read:' in self.agent.message or \
                                 "You don't see anything in here to pick up." in self.agent.message or \
                                 'You cannot reach the ground.' in self.agent.message or \
-                                "You don't feel anything in here to pick up." in self.agent.message:
+                                "You don't feel anything in here to pick up." in self.agent.message or \
+                                'You are physically incapable of picking anything up.' in self.agent.message:
                             items = []
                             letters = []
                         else:
@@ -541,6 +543,7 @@ class Inventory:
 
                 self.items_below_me = items
                 self.letters_below_me = letters
+                self.engraving_below_me = engraving
                 return items
 
     def pickup(self, items, counts=None):

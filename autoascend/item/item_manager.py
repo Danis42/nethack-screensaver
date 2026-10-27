@@ -283,7 +283,7 @@ class ItemManager:
             r'^(a|an|the|\d+)'
             r'( empty)?'
             r'( (cursed|uncursed|blessed))?'
-            r'( (very |thoroughly )?(rustproof|poisoned|corroded|rusty|burnt|rotted|partly eaten|partly used|diluted|unlocked|locked|wet|greased))*'
+            r'( (very |thoroughly )?(rustproof|poisoned|corroded|rusty|burnt|rotted|partly eaten|partly used|diluted|unlocked|locked|moist|wet|greased))*'
             r'( ([+-]\d+))? '
             r"([a-zA-z0-9-!'# ]+)"
             r'( \(([0-9]+:[0-9]+|no charge)\))?'
@@ -564,6 +564,8 @@ class ItemManager:
             ('', nh.GEM_CLASS),
             ('', nh.ARMOR_CLASS),
             ('pair of ', nh.ARMOR_CLASS),
+            ('set of ', nh.ARMOR_CLASS),  # dragon scales (objnam.c xname)
+            ('sets of ', nh.ARMOR_CLASS),
             ('', nh.WEAPON_CLASS),
             ('', nh.TOOL_CLASS),
             ('', nh.FOOD_CLASS),
