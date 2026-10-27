@@ -288,7 +288,7 @@ class ItemManager:
             r"([a-zA-z0-9-!'# ]+)"
             r'( \(([0-9]+:[0-9]+|no charge)\))?'
             r'( \(([a-zA-Z0-9; ]+(, flickering|, gleaming|, glimmering)?[a-zA-Z0-9; ]*)\))?'
-            r'( \((for sale|unpaid), (\d+ aum, )?((\d+)[a-zA-Z- ]+|no charge)\))?'
+            r'( \((?:(for sale|unpaid), )?(\d+ aum, )?((\d+)[a-zA-Z- ]+|no charge)\))?'
             r'$',
             text)
         assert len(matches) <= 1, text
@@ -546,6 +546,8 @@ class ItemManager:
             name = name[len('small '):]
         elif name == 'knives':
             name = 'knife'
+        elif name in ['dwarven root', 'dwarven roots', 'paddle cactus', 'paddle cacti']:
+            name = 'slime mold'  # Orcish Town loot is fruit renamed (mkmaze.c orcfruit)
 
         # object identified (look on names)
         obj_ids = set()
@@ -571,6 +573,8 @@ class ItemManager:
             ('', nh.FOOD_CLASS),
             ('', nh.COIN_CLASS),
             ('', nh.ROCK_CLASS),
+            ('', nh.BALL_CLASS),
+            ('', nh.CHAIN_CLASS),
         ]
         suffixes = [
             ('s', nh.GEM_CLASS),

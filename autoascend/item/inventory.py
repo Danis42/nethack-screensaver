@@ -502,7 +502,18 @@ class Inventory:
                         letters = []
                 else:
                     self.agent.step(A.Command.PICKUP)  # FIXME: parse LOOK output, add this fragment to pickup method
-                    if 'Pick up what?' not in self.agent.popup:
+                    lifting = re.search(r'You have (?:a little|much) trouble lifting (.*)\.  Continue\? \[ynq\]',
+                                        self.agent.message)
+                    if lifting:
+                        # a single heavy item is picked up without a menu: decline, but remember what lies here
+                        item_str = lifting.group(1)
+                        self.agent.step('q')
+                        items = [self.item_manager.get_item_from_text(item_str,
+                                                                      position=(*self.agent.current_level().key(),
+                                                                                self.agent.blstats.y,
+                                                                                self.agent.blstats.x))]
+                        letters = [None]
+                    elif 'Pick up what?' not in self.agent.popup:
                         if 'You cannot reach the bottom of the pit.' in self.agent.message or \
                                 'You cannot reach the bottom of the abyss.' in self.agent.message or \
                                 'You cannot reach the floor.' in self.agent.message or \

@@ -67,3 +67,24 @@ def test_moist_towel_parses():
     for text in ['a moist towel', 'an uncursed wet towel']:
         objs, *rest = ItemManager.parse_text(text, nh.TOOL_CLASS)
         assert objs[0].name == 'towel'
+
+
+def test_punishment_ball_and_chain_parse():
+    objs, *rest = ItemManager.parse_text('a heavy iron ball (chained to you)', nh.BALL_CLASS)
+    assert objs[0].name == 'heavy iron ball'
+    objs, *rest = ItemManager.parse_text('an iron chain', nh.CHAIN_CLASS)
+    assert objs[0].name == 'iron chain'
+
+
+def test_orcish_town_fruit_parses_as_slime_mold():
+    for text in ['a dwarven root', '2 paddle cacti']:
+        objs, *rest = ItemManager.parse_text(text, nh.FOOD_CLASS)
+        assert objs[0].name == 'slime mold'
+
+
+def test_shop_glob_without_for_sale_parses():
+    # doname: a glob the shopkeeper gives away shows "(<weight> aum, no charge)"
+    objs, *rest = ItemManager.parse_text('a small glob of gray ooze (20 aum, no charge)', nh.FOOD_CLASS)
+    assert objs[0].name == 'glob of gray ooze'
+    objs, *rest = ItemManager.parse_text('a small glob of gray ooze (for sale, 20 aum, 6 zorkmids)', nh.FOOD_CLASS)
+    assert objs[0].name == 'glob of gray ooze'
