@@ -174,7 +174,9 @@ drop food on death, poison never instakills, peacefuls can be displaced, special
 mirrored (Oracle noflip), natural regen lower. Ascension kit deltas: .planning/research/ASCENSION-KIT-NH5.md.
 Port fixes since: 2a671eb mirrored Sokoban (the top crash), a118488/fb5924f class-word items, status texts, unpadded
 monster lines, 32f1dc1/579c4d5 no looting when too loaded. Ollama runs as user: OLLAMA_MODELS=/var/lib/ollama ollama serve.
-NEW BASELINE: tag p5-baseline = 579c4d5, bench job 48 (2304 games) started 2026-10-28.
+NEW BASELINE: tag p5-baseline = 579c4d5, bench job 48 (2304 games) started 2026-10-28, STOPPED by the owner the same
+night (stored games are reused): restart with bench_baseline ref=579c4d5 games=2304 on the NH5 bench server
+(SCREENS_BENCH_PYTHON=~/.cache/screens-nh5/venv/bin/python).
 Resume steps:
 1. Wait for job 48 (`uv run screens-bench wait 48`); table it (results, killers, crashes) like p1-baseline.
 2. Fix remaining NH5 crash types from job 48 if any is >= 1%; then merge nh5-port to main (main then needs the NH5
