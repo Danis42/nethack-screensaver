@@ -294,6 +294,9 @@ class Inventory:
             if 'you cannot loot anything.' in self.agent.single_message:  # "Without a free hand, ..."
                 status = 'no hands'
                 return
+            if 'You collapse under your load.' in self.agent.single_message or \
+                    "You don't have enough stamina to move." in self.agent.single_message:
+                raise AgentPanic('too heavy to loot')
             if self.agent.single_popup and self.agent.single_popup[0] == 'Loot which containers?':
                 for line in self.agent.single_popup[1:]:
                     if line[1:4] != ' - ':
@@ -368,6 +371,10 @@ class Inventory:
 
             if 'cat' in self.agent.message and ' inside the box is ' in self.agent.message:
                 raise AgentPanic('encountered a cat in a box')
+
+            if 'You collapse under your load.' in self.agent.message or \
+                    "You don't have enough stamina to move." in self.agent.message:
+                raise AgentPanic('too heavy to loot')  # NetHack 5 refuses #loot when overloaded
 
             assert self.agent.single_popup, (self.agent.single_message, self.agent.popup, self.agent.message)
             if '\no - ' not in '\n'.join(self.agent.single_popup):
