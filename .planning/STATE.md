@@ -192,7 +192,8 @@ traced yet). Seed 31 traced: hero CONFUSED in a doorway with 3 floating eyes adj
 sent the hit into an eye. Fix on branch exp/eye-confusion (off nh5-port): with confusion/stun and an adjacent eye no
 melee and no move (fight2 then waits); seed 31 no longer frozen (starves at T13745 instead); suite 481 passed.
 Experiments 21 (exp/zap-prompt) and 22 (exp/eye-confusion) vs p5-baseline once job 49 is done; both target the
-~1.6% "frozen by a floating eye's gaze" deaths, so bench them one at a time (or merged as one if the owner agrees).
+~1.6% "frozen by a floating eye's gaze" deaths. OWNER: bench as ONE -> branch exp/floating-eye (df77d20 = both
+merged, suite 481 passed) is experiment 21 vs p5-baseline after job 49.
 Resume steps:
 1. Wait for job 49 (replaces 48) (`uv run screens-bench wait 48`); table it (results, killers, crashes) like p1-baseline.
 2. Fix remaining NH5 crash types from job 48 if any is >= 1%; then merge nh5-port to main (main then needs the NH5
