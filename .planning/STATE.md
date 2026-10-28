@@ -185,6 +185,10 @@ Floating eye: NH5 renamed the helpless reason "frozen by a monster's gaze" -> "f
 (uhitm.c:6044). Rate: 3.6 baseline 16/1446 (1.1%), NH5 job 47 18/1152 (1.6%) -> an old bot problem, not a port bug;
 the melee filter drop_floating_eye_melee (fight2 only) is bypassed somewhere. Trace script: scratchpad eye_trace.py
 (wraps Agent.step, prints the call stack of the step that froze the hero); seeds 5, 11, 19, 31 of 579c4d5.
+Floating-eye cause FOUND: Agent.zap sent the direction key even when no "In what direction?" came (empty wand:
+"Nothing happens" first, zap.c dozap) -> the key moved the hero into the eye. Fix on branch exp/zap-prompt (ed55aa8,
+off nh5-port; suite 479 passed): seeds 5/11/19 no longer frozen; seed 31 still dies identically (another path, not
+traced yet). Experiment 21 = bench exp/zap-prompt vs p5-baseline once job 49 is done (metric: died / frozen-by-eye).
 Resume steps:
 1. Wait for job 49 (replaces 48) (`uv run screens-bench wait 48`); table it (results, killers, crashes) like p1-baseline.
 2. Fix remaining NH5 crash types from job 48 if any is >= 1%; then merge nh5-port to main (main then needs the NH5
