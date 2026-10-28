@@ -117,7 +117,7 @@ Tracked but unscheduled (REQUIREMENTS.md v2): ROLE-01 role choice, DEBT-01..05 t
 
 ## Session Continuity
 
-Last session: 2026-10-27.
+Last session: 2026-10-28.
 Stopped at: Phase 02.1 (Port to NetHack 5.0) inserted after the owner's decision (2026-10-27): stop the 3.6 experiments,
 port NLE 1.3.0 (runs NetHack 3.6.7; no NLE release supports 5.0, the original repo is archived) to NetHack 5.0.0
 (released 2026-05-02) and port the AutoAscend bot. Do NOT retire the 3.6 baseline 3be8413: run the ported bot and
@@ -177,8 +177,16 @@ monster lines, 32f1dc1/579c4d5 no looting when too loaded. Ollama runs as user: 
 NEW BASELINE: tag p5-baseline = 579c4d5, bench job 48 (2304 games) started 2026-10-28, STOPPED by the owner the same
 night (stored games are reused): restart with bench_baseline ref=579c4d5 games=2304 on the NH5 bench server
 (SCREENS_BENCH_PYTHON=~/.cache/screens-nh5/venv/bin/python).
+2026-10-28 (session 2): the bench server had been auto-started WITHOUT SCREENS_BENCH_PYTHON (would play 3.6!);
+restarted by hand with `SCREENS_BENCH_PYTHON=$HOME/.cache/screens-nh5/venv/bin/python nohup .venv/bin/python -m
+bench.cli serve >> ~/.cache/screens-nh5/bench-server.log 2>&1 &` - ALWAYS check /proc/<pid>/environ before benching.
+Baseline resumed as job 49 (same target: 579c4d5, 2304 games; job 48 had stored 19).
+Floating eye: NH5 renamed the helpless reason "frozen by a monster's gaze" -> "frozen by a floating eye's gaze"
+(uhitm.c:6044). Rate: 3.6 baseline 16/1446 (1.1%), NH5 job 47 18/1152 (1.6%) -> an old bot problem, not a port bug;
+the melee filter drop_floating_eye_melee (fight2 only) is bypassed somewhere. Trace script: scratchpad eye_trace.py
+(wraps Agent.step, prints the call stack of the step that froze the hero); seeds 5, 11, 19, 31 of 579c4d5.
 Resume steps:
-1. Wait for job 48 (`uv run screens-bench wait 48`); table it (results, killers, crashes) like p1-baseline.
+1. Wait for job 49 (replaces 48) (`uv run screens-bench wait 48`); table it (results, killers, crashes) like p1-baseline.
 2. Fix remaining NH5 crash types from job 48 if any is >= 1%; then merge nh5-port to main (main then needs the NH5
    venv: pyproject nle -> local build) - ask the owner before switching main.
 3. Then back to experiments on NH5: floating-eye deaths, starting weapon (spear vs mattock/long sword), food supply.
