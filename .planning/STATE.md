@@ -188,7 +188,11 @@ the melee filter drop_floating_eye_melee (fight2 only) is bypassed somewhere. Tr
 Floating-eye cause FOUND: Agent.zap sent the direction key even when no "In what direction?" came (empty wand:
 "Nothing happens" first, zap.c dozap) -> the key moved the hero into the eye. Fix on branch exp/zap-prompt (ed55aa8,
 off nh5-port; suite 479 passed): seeds 5/11/19 no longer frozen; seed 31 still dies identically (another path, not
-traced yet). Experiment 21 = bench exp/zap-prompt vs p5-baseline once job 49 is done (metric: died / frozen-by-eye).
+traced yet). Seed 31 traced: hero CONFUSED in a doorway with 3 floating eyes adjacent, attacked a ghoul NW, confdir
+sent the hit into an eye. Fix on branch exp/eye-confusion (off nh5-port): with confusion/stun and an adjacent eye no
+melee and no move (fight2 then waits); seed 31 no longer frozen (starves at T13745 instead); suite 481 passed.
+Experiments 21 (exp/zap-prompt) and 22 (exp/eye-confusion) vs p5-baseline once job 49 is done; both target the
+~1.6% "frozen by a floating eye's gaze" deaths, so bench them one at a time (or merged as one if the owner agrees).
 Resume steps:
 1. Wait for job 49 (replaces 48) (`uv run screens-bench wait 48`); table it (results, killers, crashes) like p1-baseline.
 2. Fix remaining NH5 crash types from job 48 if any is >= 1%; then merge nh5-port to main (main then needs the NH5
