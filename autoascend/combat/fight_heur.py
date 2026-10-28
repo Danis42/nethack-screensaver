@@ -170,7 +170,7 @@ def get_potential_wand_usages(agent, monsters, dy, dx):
     # TODO: also get items recursively from bags
     for item in agent.inventory.items:
         targeted_monsters = set()
-        if not item.is_offensive_usable_wand():
+        if not agent.usable_offensive_wand(item):
             continue
         priority = 0
         # print('--------------', dy, dx)

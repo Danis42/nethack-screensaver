@@ -33,6 +33,7 @@ class StatsLogger:
             "stuck_report_error": 0,
             "shop_door_spared": 0,
             "standoff_ignored": 0,
+            "zap_empty_wand": 0,
             "quest_portal_level_seen": 0,
             "quest_portal_entered": 0,
             "quest_portal_left": 0,
