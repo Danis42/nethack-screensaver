@@ -25,6 +25,19 @@ def test_keeps_ranged_attacks_on_floating_eye():
     assert drop_floating_eye_melee(actions, monsters, (5, 5), blind=False) == actions
 
 
+def test_drops_all_melee_and_moves_next_to_a_floating_eye_when_confused():
+    # a confused or stunned hero's direction is random (hack.c confdir), so any attack may hit the eye
+    monsters = [_mon("floating eye", 5, 4), _mon("ghoul", 4, 4)]
+    actions = [(16, ("melee", -1, -1)), (3, ("move", 1, 0)), (11, ("ranged", -1, -1))]
+    assert drop_floating_eye_melee(actions, monsters, (5, 5), blind=False, scrambled=True) == actions[2:]
+
+
+def test_confusion_without_an_adjacent_floating_eye_keeps_melee():
+    monsters = [_mon("floating eye", 5, 7), _mon("ghoul", 4, 4)]
+    actions = [(16, ("melee", -1, -1)), (3, ("move", 1, 0))]
+    assert drop_floating_eye_melee(actions, monsters, (5, 5), blind=False, scrambled=True) == actions
+
+
 def _standoff_agent(pos=(5, 5)):
     from types import SimpleNamespace
 
