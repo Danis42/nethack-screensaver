@@ -198,12 +198,15 @@ def get_potential_wand_usages(agent, monsters, dy, dx):
     return ret
 
 
-def drop_floating_eye_melee(actions, monsters, player_pos, blind):
-    """ Hitting a seen floating eye freezes you for many turns, often to death """
+def drop_floating_eye_melee(actions, monsters, player_pos, blind, scrambled=False):
+    """ Hitting a seen floating eye freezes you for many turns, often to death.
+    scrambled (confused or stunned): any step or attack may go in a random direction (hack.c confdir) """
     if blind:
         return actions
     py, px = player_pos
     eyes = {(y - py, x - px) for _, y, x, mon, _ in monsters if mon.mname == 'floating eye'}
+    if scrambled and any(max(abs(dy), abs(dx)) == 1 for dy, dx in eyes):
+        return [a for a in actions if a[1][0] not in ('melee', 'move')]
     return [a for a in actions if not (a[1][0] == 'melee' and (a[1][1], a[1][2]) in eyes)]
 
 

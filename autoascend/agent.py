@@ -1280,7 +1280,8 @@ class Agent:
                 actions = list(filter(lambda x: x[1][0] != 'ranged', actions))
 
             actions = combat.fight_heur.drop_floating_eye_melee(
-                actions, monsters, (self.blstats.y, self.blstats.x), self.character.prop.blind)
+                actions, monsters, (self.blstats.y, self.blstats.x), self.character.prop.blind,
+                self.character.prop.confusion or self.character.prop.stun)
             actions = combat.fight_heur.drop_bare_handed_cockatrice_melee(
                 actions, monsters, (self.blstats.y, self.blstats.x),
                 self.inventory.items.main_hand is None and self.inventory.items.gloves is None)
