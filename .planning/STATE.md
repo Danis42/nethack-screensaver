@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-10-29
-last_activity_desc: p5-baseline done; exp 21 (floating eye) running as job 50
+last_activity_desc: exp 21 kept (floating eye); exp 22 (monster-wrap) running as job 51
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -202,12 +202,14 @@ inventory.py:399 3, agent.py:541 wield loop 3, others <= 2.
 Bench server trap fixed: the MCP server auto-starts `bench.cli serve` WITHOUT SCREENS_BENCH_PYTHON (3.6!);
 .mcp.json now sets it (8ca9bb8, active from the next session). Still check /proc/<pid>/environ before benching.
 8ca9bb8 also adds metric `eye` (killed while frozen by a floating eye's gaze).
-Experiment 21: job 50 = exp/floating-eye (df77d20) vs p5-baseline, metric eye, started 2026-10-29 (~2 h).
+Experiment 21 KEPT: job 50 exp/floating-eye (df77d20) vs p5-baseline, metric eye: better at 192 pairs,
+-4.2 [-7.9, -0.5] (0 vs 8 eye deaths); same seeds: crashed 5 vs 7, rung4 +2.6, starved +3.6 (noise, watch it).
+Merged into nh5-port as bf0c7d9 (suite 481 passed). Experiment 22: job 51 = exp/monster-wrap vs p5-baseline, metric crashed.
 exp/monster-wrap (980395e, off p5-baseline, worktree ../screens-wrap): ;M skips wrapped lines; suite 481 passed;
 crash seeds 125 152 280 398 512 end normally, 202 later hits agent.py:541. Experiment 22 (metric crashed) after job 50.
 Resume steps:
-1. Wait for job 50 (`uv run screens-bench wait 50`); keep/drop exp/floating-eye.
-2. Bench exp/monster-wrap vs p5-baseline, metric crashed.
+1. Wait for job 51 (`uv run screens-bench wait 51`); keep -> merge exp/monster-wrap into nh5-port.
+2. (done) exp 21 kept.
 3. OWNER DECISION pending: merge nh5-port to main (main then needs the NH5 venv: pyproject nle -> local build).
 4. Then experiments on NH5: starting weapon (spear vs mattock/long sword), food supply, inventory.py:387 crash.
 Resume file: None
