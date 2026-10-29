@@ -29,6 +29,7 @@ class Stage:
     xl: int = 1
     wishes: tuple[str, ...] = field(default_factory=tuple)
     wield: str | None = "long sword"  # wielded before the teleport (part of the item's name)
+    strategy: str = "daredevil"  # plan for the bot (autoascend/plans.py): a deep start dives, not back to the Mines
 
 
 # A kit that a bot reaching the level could plausibly have (ASCENSION-PLAN-NH5.md); grows with the phases.

@@ -297,6 +297,8 @@ def run_game(
     # a pinned role (screensaver config) is found by resetting random characters until it matches
     # a staged game (staging.py) plays in wizard mode from a chosen late-game situation; never natural play
     env_class = NetHackChallenge if stage is None else staging.StagedChallenge
+    if stage is not None and strategy is None:
+        strategy = staging.STAGES[stage].strategy
     env = env_class(no_progress_timeout=1000, fix_moon_phase=seed is not None,
                     character=CHARACTER if role is None else "@")
     if seed is not None:
