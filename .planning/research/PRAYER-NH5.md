@@ -27,6 +27,22 @@ Source: p5-baseline (579c4d5, 2304 games), NetHack 5.0.0 src/pray.c, autoascend/
 - prayer.py already classifies outcomes ("is displeased.", "Thou hast angered me.", "Thou must
   relearn thy lessons!") but only for statistics.
 
+## Where the first failure comes from
+
+- 547 / 2304 games (24%) have at least one failed prayer.
+- Gap since the previous prayer at the first failure: median 891 (quartiles 877 / 891 / 991).
+  A successful prayer sets nutrition to 900 (wiki Nutrition); the hero is Weak again ~850-890
+  turns later and the bot prays at once. Failure rate by gap: 400-599 turns 12%, 600-799 5%,
+  800-999 6.7%; matches P(rnz(350) > gap + 200).
+- Not luck from cannibalism or same-race sacrifice: both are guarded (agent.py:1446,
+  global_logic.py:802).
+- So the first failure is the price of living on prayer: ~6.7% per hunger cycle, ~40% over
+  the 7 prayers of a typical starving game. Food (FOOD-NH5.md) removes the cause; waiting
+  longer while Weak buys little (Weak lasts ~50 turns before Fainting, and fainted heroes are
+  killed by passing monsters).
+- Sacrifice at a co-aligned altar lowers the prayer timeout and anger (wiki Sacrifice):
+  Minetown's temple could reset a starving bot's prayer clock.
+
 ## Candidate experiment
 
 After a failed prayer, never pray again until a sacrifice brings "reconciliation" (or, simpler,

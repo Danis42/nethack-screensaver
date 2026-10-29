@@ -59,10 +59,10 @@ starting dagger, never bash a supply chest.
 ## Probe: pick-axes in stuck-and-starved games
 
 Replayed the first 20 seeds that starved on their stuck level (scratchpad pick_probe.py wraps
-Agent.step; 17 finished at the time of writing). A pick-axe or mattock was in the inventory in
-4/17 (seeds 16, 41, 57: thousands of turns before the stuck watch fired; 104 after), visible on
-the map at some point in 9/17, and 11/17 killed at least one dwarf. The bot never dug down.
-So roughly half of these games had a pick within reach: dig-down when stuck is worth building.
+Agent.step). A pick-axe or mattock was in the inventory in 4/20 (3 of them thousands of turns
+before the stuck watch fired), visible on the map at some point in 8/20, and 10/20 killed at least
+one dwarf. The bot never dug down. So a pick is within reach in roughly 40% of these games:
+dig-down when stuck is worth building; a pet killing peaceful dwarves would add more.
 
 ## Candidate experiments (one at a time)
 

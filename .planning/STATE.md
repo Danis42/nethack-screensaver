@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-10-29
-last_activity_desc: main is NetHack 5 now (nh5-port merged); exp 22 running as job 51
+last_activity_desc: exp 22 kept (monster-wrap); research notes; exp 23 (dig down) next
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -208,7 +208,12 @@ Merged into nh5-port as bf0c7d9 (suite 481 passed). Experiment 22: job 51 = exp/
 exp/monster-wrap (980395e, off p5-baseline, worktree ../screens-wrap): ;M skips wrapped lines; suite 481 passed;
 crash seeds 125 152 280 398 512 end normally, 202 later hits agent.py:541. Experiment 22 (metric crashed) after job 50.
 Resume steps:
-1. Wait for job 51 (`uv run screens-bench wait 51`); keep -> merge exp/monster-wrap into main.
+1. (done) Experiment 22 KEPT: job 51 exp/monster-wrap crashed -0.9 [-1.6, -0.2] at 1152 (21 vs 31 crashes,
+   nothing else moved); merged into main as 8951611 (suite 483 passed).
+   Research 2026-10-29 in .planning/research/: FOOD-NH5, PRAYER-NH5, LADDER-NH5, WIKI-TIER1 (wiki tier 1 read).
+   Experiment queue (one at a time): 23 dig down when stuck (pick-axe/wand of digging), 24 no prayer after a
+   failed one, 25 Mines branch-stair glyph + early explorer, 26 pry locked chests with the dagger,
+   then unicorns (never approach), shop mimics, Sokoban food.
 2. (done) exp 21 kept.
 3. (done 2026-10-29, owner yes) nh5-port fast-forwarded into main; work continues on main. pyproject: nle from
    path reference/nle-src (branch screens-nh5); .venv now = NH5 build (identical .so/nhdat to the NH5 venv).
