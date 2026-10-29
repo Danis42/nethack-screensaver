@@ -18,7 +18,7 @@ from autoascend.global_logic import Milestone
 from autoascend.glyph import MON
 from autoascend.item import flatten_items
 from autoascend.plans import DEFAULT_STRATEGY, STRATEGIES, choose_strategy, plan_for, race_from_welcome
-from nethack_screensaver import dungeon_truth, fixed_clock
+from nethack_screensaver import dungeon_truth, fixed_clock, staging
 
 HP = 10
 MAX_HP = 11
@@ -79,6 +79,7 @@ class GameResult:
     events: dict = field(default_factory=dict)  # the bot's non-zero event counters
     stuck_reports: list = field(default_factory=list)  # one row per stuck-watch firing (autoascend/stuck.py)
     watchdog_stack: list = field(default_factory=list)  # "dir/file.py:line function", innermost last
+    stage: str | None = None  # staged (wizard-mode) game: never mixed into natural-play rates
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -283,6 +284,7 @@ def run_game(
     watchdog_seconds: float | None = 60.0,
     strategy: str | None = None,
     seed: int | None = None,
+    stage: str | None = None,
 ) -> GameResult:
     if seed is not None and role is not None:
         # the wrapper resets until the role matches; with a fixed seed every reset is the same game
@@ -293,8 +295,10 @@ def run_game(
     # names from it, which fix_moon_phase does not cover); takes effect where the fixed_clock shim is preloaded
     fixed_clock.pin(seed)
     # a pinned role (screensaver config) is found by resetting random characters until it matches
-    env = NetHackChallenge(no_progress_timeout=1000, fix_moon_phase=seed is not None,
-                           character=CHARACTER if role is None else "@")
+    # a staged game (staging.py) plays in wizard mode from a chosen late-game situation; never natural play
+    env_class = NetHackChallenge if stage is None else staging.StagedChallenge
+    env = env_class(no_progress_timeout=1000, fix_moon_phase=seed is not None,
+                    character=CHARACTER if role is None else "@")
     if seed is not None:
         # NetHackChallenge blocks the instance method; the class's own one still works
         type(env.nethack).set_initial_seeds(env.nethack, seed, seed, False)
@@ -332,7 +336,8 @@ def run_game(
         return plan
 
     wrapper = EnvWrapper(env, on_step=on_step, step_limit=max_steps, role=role, choose_plan=choose_plan,
-                         agent_args=dict(AGENT_ARGS))
+                         agent_args=dict(AGENT_ARGS),
+                         prepare=None if stage is None else lambda e, obs: staging.apply_stage(e, staging.STAGES[stage]))
     watchdog_stack = []
     try:
         with watchdog:
@@ -361,7 +366,7 @@ def run_game(
                       food_at_end=_food_at_end(wrapper), events=_events(wrapper),
                       stuck_reports=_stuck_reports(wrapper), dungeon_at_end=ctx.dungeon_at_end,
                       level_at_end=ctx.level_at_end, watchdog_stack=watchdog_stack,
-                      outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)))
+                      outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)), stage=stage)
 
 
 def _farming(wrapper) -> bool:

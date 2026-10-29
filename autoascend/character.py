@@ -379,7 +379,8 @@ class Character:
         return next(iter(self.upgradable_skills.keys()))
 
     def _parse_enhance_view(self):
-        if self.agent.popup[0] not in ('Current skills:', 'Pick a skill to advance:'):
+        # wizard mode (staged games) adds "  (N slots available)" and prints "Basic   12( 20)" instead of "[Basic]"
+        if self.agent.popup[0].split('  (')[0] not in ('Current skills:', 'Pick a skill to advance:'):
             raise ValueError('Invalid ehance popup text format.' + str(self.agent.popup))
         self.upgradable_skills = dict()
         for line in self.agent.popup[1:]:
@@ -391,9 +392,11 @@ class Character:
                 continue
             matches = re.findall(r'^([a-zA-Z] -)?#?\*? *' +
                                  r'(' + '|'.join(self.name_to_skill_type.keys()) + ') *' +
-                                 r'\[(' + '|'.join(self.possible_skill_levels) + r')\]', line)
+                                 r'(?:\[(' + '|'.join(self.possible_skill_levels) + r')\]|' +
+                                 r'(' + '|'.join(self.possible_skill_levels) + r') +\d+\( *\d+\))', line)
             assert len(matches) == 1, (matches, line)
-            letter, skill_type, skill_level = matches[0]
+            letter, skill_type, skill_level, wizard_level = matches[0]
+            skill_level = skill_level or wizard_level
             if letter:
                 letter = letter[0]
                 assert letter not in self.upgradable_skills.values()
