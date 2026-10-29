@@ -20,13 +20,15 @@ def _role_matches(obs, role):
 
 
 class EnvWrapper:
-    def __init__(self, env, on_step=None, step_limit=None, role=None, agent_args=None, choose_plan=None):
+    def __init__(self, env, on_step=None, step_limit=None, role=None, agent_args=None, choose_plan=None,
+                 prepare=None):
         self.env = env
         self.on_step = on_step
         self.step_limit = step_limit
         self.role = role
         self.agent_args = agent_args or {}
         self.choose_plan = choose_plan  # obs after reset -> milestone plan
+        self.prepare = prepare  # (env, obs after reset) -> obs: sets up a staged game before the bot plays
         self.agent = None
         self.last_observation = None
         self.score = 0
@@ -46,6 +48,8 @@ class EnvWrapper:
             obs, _info = self.env.reset()
             if self.role is None or _role_matches(obs, self.role):
                 break
+        if self.prepare is not None:
+            obs = self.prepare(self.env, obs)
         self.score = 0
         self.step_count = 0
         self.end_reason = ''
