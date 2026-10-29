@@ -5,9 +5,9 @@ current_phase: "02.1"
 current_phase_name: Port to NetHack 5.0
 status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
-last_updated: "2026-10-27T19:15:01.515Z"
-last_activity: 2026-10-27
-last_activity_desc: owner decision - port to NetHack 5.0; exp 20 dropped
+last_updated: "2026-10-29T00:00:00.000Z"
+last_activity: 2026-10-29
+last_activity_desc: p5-baseline done; exp 21 (floating eye) running as job 50
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -194,9 +194,20 @@ melee and no move (fight2 then waits); seed 31 no longer frozen (starves at T137
 Experiments 21 (exp/zap-prompt) and 22 (exp/eye-confusion) vs p5-baseline once job 49 is done; both target the
 ~1.6% "frozen by a floating eye's gaze" deaths. OWNER: bench as ONE -> branch exp/floating-eye (df77d20 = both
 merged, suite 481 passed) is experiment 21 vs p5-baseline after job 49.
+2026-10-29: job 49 DONE - p5-baseline (579c4d5) 2304 games: dlvl6 65.8%, dlvl10 28.0%, rung2 46.9%, rung4 17.4%,
+rung6 14.1%, rung7 4.8%, rung8 2.6%, rung9 1 game; starved 25.1%, ants 6.7%, rays 4.0%, eye 1.5% (35), crashed 2.3%
+(65 non-death ends). Crash types (none >= 1%): monster_tracker.py:40 22 (0.95%, NH5 wraps long ;M lines),
+inventory.py:387 14 (prompt left open in check_container_content), watchdog 12, item_manager 302/507 3+3,
+inventory.py:399 3, agent.py:541 wield loop 3, others <= 2.
+Bench server trap fixed: the MCP server auto-starts `bench.cli serve` WITHOUT SCREENS_BENCH_PYTHON (3.6!);
+.mcp.json now sets it (8ca9bb8, active from the next session). Still check /proc/<pid>/environ before benching.
+8ca9bb8 also adds metric `eye` (killed while frozen by a floating eye's gaze).
+Experiment 21: job 50 = exp/floating-eye (df77d20) vs p5-baseline, metric eye, started 2026-10-29 (~2 h).
+exp/monster-wrap (980395e, off p5-baseline, worktree ../screens-wrap): ;M skips wrapped lines; suite 481 passed;
+crash seeds 125 152 280 398 512 end normally, 202 later hits agent.py:541. Experiment 22 (metric crashed) after job 50.
 Resume steps:
-1. Wait for job 49 (replaces 48) (`uv run screens-bench wait 48`); table it (results, killers, crashes) like p1-baseline.
-2. Fix remaining NH5 crash types from job 48 if any is >= 1%; then merge nh5-port to main (main then needs the NH5
-   venv: pyproject nle -> local build) - ask the owner before switching main.
-3. Then back to experiments on NH5: floating-eye deaths, starting weapon (spear vs mattock/long sword), food supply.
+1. Wait for job 50 (`uv run screens-bench wait 50`); keep/drop exp/floating-eye.
+2. Bench exp/monster-wrap vs p5-baseline, metric crashed.
+3. OWNER DECISION pending: merge nh5-port to main (main then needs the NH5 venv: pyproject nle -> local build).
+4. Then experiments on NH5: starting weapon (spear vs mattock/long sword), food supply, inventory.py:387 crash.
 Resume file: None
