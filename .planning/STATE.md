@@ -6,8 +6,8 @@ current_phase_name: Port to NetHack 5.0
 status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-10-29
-last_activity_desc: exp 23 (dig down) running as job 52 vs main; research continues
+last_activity: 2026-10-30
+last_activity_desc: Track B harness on main; job 52 (exp 23) at 384 pairs; session end
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -207,23 +207,22 @@ Experiment 21 KEPT: job 50 exp/floating-eye (df77d20) vs p5-baseline, metric eye
 Merged into nh5-port as bf0c7d9 (suite 481 passed). Experiment 22: job 51 = exp/monster-wrap vs p5-baseline, metric crashed.
 exp/monster-wrap (980395e, off p5-baseline, worktree ../screens-wrap): ;M skips wrapped lines; suite 481 passed;
 crash seeds 125 152 280 398 512 end normally, 202 later hits agent.py:541. Experiment 22 (metric crashed) after job 50.
+2026-10-30 (session end): TRACK B started (owner yes). On main: staged-game harness (nethack_screensaver/staging.py,
+run_game(stage=...), scripts/staged_run.py; stages medusa/castle/quest/valley; wizard mode via StagedChallenge,
+character passed as options, wizard-only prompts answered, skill parser reads wizard format; natural play unchanged,
+seeds 1-4 identical). Branch track-b/medusa-dig (off exp/dig-down + main): divers from Dlvl 21 dig down on arrival
+(bc76bc6): staged medusa 1-12 -> 7/12 dug to the Castle level, median T1138 (was 150); 1576f92 pit retry is MIXED
+(seed 10 fixed, seed 4 worse) - revert or rework. Open: explorer spins without a game turn when nothing is
+reachable (go_to_level_strategy/open_visit_search; also most of the 12 natural baseline watchdogs) -> natural
+bench experiment candidate "explorer idle turn". Staged results: scratchpad only, never in the bench store.
 Resume steps:
-1. (done) Experiment 22 KEPT: job 51 exp/monster-wrap crashed -0.9 [-1.6, -0.2] at 1152 (21 vs 31 crashes,
-   nothing else moved); merged into main as 8951611 (suite 483 passed).
-   Research 2026-10-29 in .planning/research/: FOOD-NH5, PRAYER-NH5, LADDER-NH5, WIKI-TIER1 (wiki tier 1 read).
-   Experiment queue (one at a time): 23 dig down when stuck (pick-axe/wand of digging), 24 no prayer after a
-   failed one, 25 Mines branch-stair glyph + early explorer, 26 pry locked chests with the dagger,
-   then unicorns (never approach), shop mimics, Sokoban food; also hallucination (no attacks), unicorn horn
-   use, gas spores near peacefuls (ONLINE-2026-10-29.md).
-   Experiment 23 RUNNING: job 52 = exp/dig-down (9a3925d) vs main (6c7bfef: p5-baseline + exp 21 + exp 22,
-   both sides played; main's games become the new reference), metric starved. Smoke: 4/20 stuck seeds dug
-   and survived deeper; 2 later watch deaths traced to hallucination (seed 41) and a gas spore (104).
-   ROUTE RESEARCH DONE 2026-10-29: .planning/research/ASCENSION-PLAN-NH5.md (route table, keystone items,
-   12 capability gaps, human evidence, two tracks: natural bench rungs 1-8 + staged wizard-mode bench rungs 9-17;
-   wizard mode verified on the NH5 build: ^V, ^W, #levelchange work; wizkit does not).
-2. (done) exp 21 kept.
-3. (done 2026-10-29, owner yes) nh5-port fast-forwarded into main; work continues on main. pyproject: nle from
-   path reference/nle-src (branch screens-nh5); .venv now = NH5 build (identical .so/nhdat to the NH5 venv).
-   3.6 is gone from main; the 3.6 tree lives at tag 3be8413 / p1-final only.
-4. Then experiments on NH5: starting weapon (spear vs mattock/long sword), food supply, inventory.py:387 crash.
+1. Job 52 (exp 23 dig-down vs main 6c7bfef, metric starved) was at 384 pairs, open (-0.3 [-3.7, +3.2]). If the PC
+   was shut down: check the server env (/proc/<pid>/environ has SCREENS_BENCH_PYTHON; .mcp.json now sets it), then
+   bench_experiment candidate=exp/dig-down baseline=6c7bfef metric=starved (stored games are reused).
+   Keep -> merge exp/dig-down into main (then rebase track-b/medusa-dig onto main).
+2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
+   explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
+   hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
+3. Track B next: fix the post-dig hang, then the Castle (passtune Mastermind with an instrument, pry the wand chest,
+   trap doors), per .planning/research/ASCENSION-PLAN-NH5.md.
 Resume file: None
