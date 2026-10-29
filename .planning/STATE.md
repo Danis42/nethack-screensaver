@@ -218,6 +218,9 @@ Resume steps:
    Experiment 23 RUNNING: job 52 = exp/dig-down (9a3925d) vs main (6c7bfef: p5-baseline + exp 21 + exp 22,
    both sides played; main's games become the new reference), metric starved. Smoke: 4/20 stuck seeds dug
    and survived deeper; 2 later watch deaths traced to hallucination (seed 41) and a gas spore (104).
+   ROUTE RESEARCH DONE 2026-10-29: .planning/research/ASCENSION-PLAN-NH5.md (route table, keystone items,
+   12 capability gaps, human evidence, two tracks: natural bench rungs 1-8 + staged wizard-mode bench rungs 9-17;
+   wizard mode verified on the NH5 build: ^V, ^W, #levelchange work; wizkit does not).
 2. (done) exp 21 kept.
 3. (done 2026-10-29, owner yes) nh5-port fast-forwarded into main; work continues on main. pyproject: nle from
    path reference/nle-src (branch screens-nh5); .venv now = NH5 build (identical .so/nhdat to the NH5 venv).
