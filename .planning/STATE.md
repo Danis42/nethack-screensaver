@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-10-29
-last_activity_desc: exp 22 kept (monster-wrap); research notes; exp 23 (dig down) next
+last_activity_desc: exp 23 (dig down) running as job 52 vs main; research continues
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -213,7 +213,11 @@ Resume steps:
    Research 2026-10-29 in .planning/research/: FOOD-NH5, PRAYER-NH5, LADDER-NH5, WIKI-TIER1 (wiki tier 1 read).
    Experiment queue (one at a time): 23 dig down when stuck (pick-axe/wand of digging), 24 no prayer after a
    failed one, 25 Mines branch-stair glyph + early explorer, 26 pry locked chests with the dagger,
-   then unicorns (never approach), shop mimics, Sokoban food.
+   then unicorns (never approach), shop mimics, Sokoban food; also hallucination (no attacks), unicorn horn
+   use, gas spores near peacefuls (ONLINE-2026-10-29.md).
+   Experiment 23 RUNNING: job 52 = exp/dig-down (9a3925d) vs main (6c7bfef: p5-baseline + exp 21 + exp 22,
+   both sides played; main's games become the new reference), metric starved. Smoke: 4/20 stuck seeds dug
+   and survived deeper; 2 later watch deaths traced to hallucination (seed 41) and a gas spore (104).
 2. (done) exp 21 kept.
 3. (done 2026-10-29, owner yes) nh5-port fast-forwarded into main; work continues on main. pyproject: nle from
    path reference/nle-src (branch screens-nh5); .venv now = NH5 build (identical .so/nhdat to the NH5 venv).
