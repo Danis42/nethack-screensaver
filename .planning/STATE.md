@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-10-29
-last_activity_desc: exp 21 kept (floating eye); exp 22 (monster-wrap) running as job 51
+last_activity_desc: main is NetHack 5 now (nh5-port merged); exp 22 running as job 51
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -208,8 +208,10 @@ Merged into nh5-port as bf0c7d9 (suite 481 passed). Experiment 22: job 51 = exp/
 exp/monster-wrap (980395e, off p5-baseline, worktree ../screens-wrap): ;M skips wrapped lines; suite 481 passed;
 crash seeds 125 152 280 398 512 end normally, 202 later hits agent.py:541. Experiment 22 (metric crashed) after job 50.
 Resume steps:
-1. Wait for job 51 (`uv run screens-bench wait 51`); keep -> merge exp/monster-wrap into nh5-port.
+1. Wait for job 51 (`uv run screens-bench wait 51`); keep -> merge exp/monster-wrap into main.
 2. (done) exp 21 kept.
-3. OWNER DECISION pending: merge nh5-port to main (main then needs the NH5 venv: pyproject nle -> local build).
+3. (done 2026-10-29, owner yes) nh5-port fast-forwarded into main; work continues on main. pyproject: nle from
+   path reference/nle-src (branch screens-nh5); .venv now = NH5 build (identical .so/nhdat to the NH5 venv).
+   3.6 is gone from main; the 3.6 tree lives at tag 3be8413 / p1-final only.
 4. Then experiments on NH5: starting weapon (spear vs mattock/long sword), food supply, inventory.py:387 crash.
 Resume file: None

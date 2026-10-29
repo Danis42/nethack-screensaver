@@ -4,7 +4,7 @@ version = "0.2.0"
 description = "Terminal screensaver: AutoAscend plays NetHack"
 requires-python = ">=3.13,<3.14"
 dependencies = [
-    "nle==1.3.0",
+    "nle",
     "numpy>=2.0",
     "numba>=0.61",
     "opencv-python-headless>=4.10",
@@ -18,6 +18,10 @@ screens-bench = "bench.cli:main"
 [dependency-groups]
 dev = ["pytest>=8", {include-group = "bench"}]
 bench = ["mcp>=2.3"]
+
+[tool.uv.sources]
+# NetHack 5.0: NLE has no release for it; local build of reference/nle-src, branch screens-nh5
+nle = { path = "reference/nle-src" }
 
 [build-system]
 requires = ["hatchling"]

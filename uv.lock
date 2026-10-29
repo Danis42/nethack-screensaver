@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = "==3.13.*"
 
 [[package]]
@@ -326,7 +326,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "nle", specifier = "==1.3.0" },
+    { name = "nle", directory = "reference/nle-src" },
     { name = "numba", specifier = ">=0.61" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "opencv-python-headless", specifier = ">=4.10" },
@@ -343,18 +343,34 @@ dev = [
 
 [[package]]
 name = "nle"
-version = "1.3.0"
-source = { registry = "https://pypi.org/simple" }
+source = { directory = "reference/nle-src" }
 dependencies = [
     { name = "gymnasium" },
     { name = "numpy" },
     { name = "pybind11" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2a/36/b8d5e7e394640a1d7aed2110b7911b3574f902158dadf04f1042f5f13ee5/nle-1.3.0.tar.gz", hash = "sha256:598871072652861541a1c1e56caf51851f311b062d7830d9ebf452119e53205d", size = 7782930, upload-time = "2026-04-25T17:44:40.722Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/9d/f4024f6c372fe807292fc7b78120cd182590c50f6fa43e4c7890aea436d2/nle-1.3.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:d59cf5795240d1e74a46141678fdf0a38e50e916bc9f0bc32eef6773df69a13a", size = 3214479, upload-time = "2026-04-25T17:44:36.51Z" },
-    { url = "https://files.pythonhosted.org/packages/25/b0/2c9e361dab02d1a9fe3e95f2ef541e1d8f80bce0eccd85b4b77a7b79754f/nle-1.3.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:20dc0ede2673ed0dd9a75195c784270f17c92a1ba83478c04a9d6d64c574774b", size = 3270674, upload-time = "2026-04-25T17:44:38.254Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "cmake-format", marker = "extra == 'dev'", specifier = ">=0.6.10" },
+    { name = "gymnasium", specifier = "==1.2.0" },
+    { name = "memory-profiler", marker = "extra == 'dev'", specifier = ">=0.60.0" },
+    { name = "nle", extras = ["agent", "dev"], marker = "extra == 'all'" },
+    { name = "numpy", specifier = ">=1.16" },
+    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=2.0.1" },
+    { name = "pybind11", specifier = ">=2.2" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=6.2.5" },
+    { name = "pytest-benchmark", marker = "extra == 'dev'", specifier = ">=3.4.1" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = "==0.4.3" },
+    { name = "setuptools", marker = "extra == 'dev'", specifier = ">=69.5.1" },
+    { name = "sphinx", marker = "extra == 'dev'", specifier = ">=2.4.4" },
+    { name = "sphinx-rtd-theme", marker = "extra == 'dev'", specifier = ">=0.4.3" },
+    { name = "torch", marker = "extra == 'agent'", specifier = ">=1.3.1" },
 ]
+provides-extras = ["agent", "dev", "all"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "nle", extras = ["dev"] }]
 
 [[package]]
 name = "numba"
