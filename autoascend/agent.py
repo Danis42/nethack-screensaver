@@ -9,6 +9,7 @@ import numpy as np
 from nle.nethack import actions as A
 
 from . import combat
+from . import digging
 from . import utils
 from .character import Character
 from .exceptions import AgentPanic, AgentFinished, AgentChangeStrategy
@@ -918,6 +919,45 @@ class Agent:
                 return False
             self.direction(direction)
         return True
+
+    def dig_down(self):
+        """Dig through the floor with a wand of digging or a pick-axe (digging.py).
+
+        Returns 'fell' (on a new level), 'undiggable' (hard floor), 'no_tool', 'no_square' or 'stopped'
+        (interrupted, e.g. by a monster: try again later)."""
+        tool = digging.dig_tool(self.inventory.items, self.empty_wands)
+        if tool is None:
+            return 'no_tool'
+        level = self.current_level()
+        target = digging.dig_square(level.objects, level.shop | level.shop_interior, self.bfs(),
+                                    (self.blstats.y, self.blstats.x))
+        if target is None:
+            return 'no_square'
+        if target != (self.blstats.y, self.blstats.x):
+            self.go_to(*target)
+            if (self.blstats.y, self.blstats.x) != target:
+                return 'stopped'
+        start = level.key()
+        if tool.category == nh.WAND_CLASS:
+            self.zap(tool, '>')
+            outcome = digging.dig_outcome(self.message)
+            return 'fell' if self.current_level().key() != start else outcome
+        outcome = 'stopped'
+        for _ in range(4):  # pit, then hole; a monster may interrupt either
+            with self.atom_operation():
+                tool = self.inventory.move_to_inventory(tool)
+                self.step(A.Command.APPLY)
+                self.type_text(self.inventory.items.get_letter(tool))
+                if 'In what direction do you want to dig?' not in self.message:
+                    self.stats_logger.log_event('dig_no_prompt')
+                    return 'stopped'
+                self.direction('>')
+            if self.current_level().key() != start:
+                return 'fell'
+            outcome = digging.dig_outcome(self.message)
+            if outcome != 'pit':
+                break
+        return outcome
 
     def usable_offensive_wand(self, item):
         return item.is_offensive_usable_wand() and str(item) not in self.empty_wands

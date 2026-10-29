@@ -33,6 +33,9 @@ DRAWBRIDGE = frozenset({SS.S_vodbridge, SS.S_hodbridge, SS.S_vcdbridge, SS.S_hcd
 MEDUSA = frozenset({MON.fn('Medusa')})
 BOULDER_PUSHES_PER_LEVEL = 30
 STUCK_TURNS = 2500  # no new level and no new milestone for this long: give up the route and dive
+DIG_RETRIES = 5  # interrupted digs per level before giving up on digging there
+DIG_RETRY_TURNS = 50  # an interrupted dig is tried again this many turns later
+DIG_MIN_HP = 9  # falling through a hole deals 1d6 per level fallen (NetHack 5)
 PORTAL_HUNT_TURNS = 1500  # on the Quest portal level, this long to walk every square for the portal
 _PRIZES = None
 
@@ -173,6 +176,11 @@ class ItemPriority(ItemPriorityBase):
         for item in filter(is_kept_stoning_cure, items):  # medicine against petrification; never rots
             add_item(item, count=2)
 
+        for item in items:  # one pick-axe: digs down off a level the bot is stuck on (digging.py)
+            if item.is_unambiguous() and item.object == O.from_name('pick-axe') and item.status != Item.CURSED:
+                add_item(item, count=1)
+                break
+
         if self._take_sacrificial_corpses:
             for item in filter(self.agent.global_logic.can_sacrify, items):
                 add_item(item)
@@ -223,6 +231,8 @@ class GlobalLogic:
         self._live_blocked = 0
         self._progress = ProgressWatch(STUCK_TURNS)
         self._mines_dive_over = False  # a diver in the Mines heads down them until stuck (Mines' End)
+        self._undiggable = set()  # levels whose floor was too hard to dig through
+        self._dig_level, self._dig_retries = None, 0
         self.stuck_reports = []  # one row per stuck-watch firing (autoascend/stuck.py), for the results
         self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
         self._prize_found = False
@@ -273,6 +283,22 @@ class GlobalLogic:
 
     def _diving_in_mines(self):
         return self.agent.current_level().dungeon_number == Level.GNOMISH_MINES and not self._mines_dive_over
+
+    def _dig_down_when_stuck(self):
+        """A stuck diver digs through the floor (digging.py). Returns Agent.dig_down's outcome, or None if not tried."""
+        level = self.agent.current_level()
+        if level.key() != self._dig_level:
+            self._dig_level, self._dig_retries = level.key(), 0
+        if self.milestone != Milestone.DIVE or level.key() in self._undiggable or \
+                level.dungeon_number == Level.SOKOBAN or \
+                (level.dungeon_number == Level.GNOMISH_MINES and self._mines_dive_over) or \
+                self.agent.blstats.hitpoints < DIG_MIN_HP:
+            return None
+        outcome = self.agent.dig_down()
+        self.agent.stats_logger.log_event(f'dig_{outcome}')
+        if outcome == 'undiggable':
+            self._undiggable.add(level.key())
+        return outcome
 
     def _stuck(self):
         return self._progress.stuck(self.agent.current_level().key(), self.milestone, self.agent.blstats.time)
@@ -966,12 +992,19 @@ class GlobalLogic:
             if self._stuck():
                 self.agent.stats_logger.log_event('stuck_dive')
                 self._report_stuck(level)
-                if self.milestone != Milestone.DIVE:
+                was_diving = self.milestone == Milestone.DIVE
+                if not was_diving:
                     self.plan.dive_instead()
-                elif self._diving_in_mines():
-                    self._mines_dive_over = True  # bottom of the Mines: back up, dive the main dungeon
-                else:
-                    self.agent.stats_logger.log_event('stuck_diving')  # no downstairs found
+                dug = self._dig_down_when_stuck()
+                if dug == 'stopped' and self._dig_retries < DIG_RETRIES:
+                    self._dig_retries += 1  # interrupted (a monster?): try again soon, not in STUCK_TURNS
+                    self._progress.restart(self.agent.blstats.time - STUCK_TURNS + DIG_RETRY_TURNS)
+                    continue
+                if dug != 'fell' and was_diving:
+                    if self._diving_in_mines():
+                        self._mines_dive_over = True  # bottom of the Mines: back up, dive the main dungeon
+                    else:
+                        self.agent.stats_logger.log_event('stuck_diving')  # no downstairs found
                 self._progress.restart(self.agent.blstats.time)
                 continue
             if condition():
