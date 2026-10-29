@@ -108,6 +108,7 @@ class Agent:
         self.panic_on_errors = panic_on_errors
         self.all_panics = []
         self._no_kick_until = -1  # game turn; NetHack refuses kicks e.g. with wounded legs
+        self.empty_wands = set()  # str(item) of wands that answered "Nothing happens" to a zap
         self.rl_model_to_train = rl_model_to_train
         self.rl_model_training_comm = rl_model_training_comm
 
@@ -858,8 +859,18 @@ class Agent:
         with self.atom_operation():
             self.step(A.Command.ZAP)
             self.type_text(self.inventory.items.get_letter(item))
+            if 'In what direction?' not in self.message:
+                # an empty wand says "Nothing happens" before the prompt (zap.c dozap); the direction
+                # key would then move the hero, e.g. into a floating eye
+                if 'Nothing happens' in self.message:
+                    self.empty_wands.add(str(item))
+                    self.stats_logger.log_event('zap_empty_wand')
+                return False
             self.direction(direction)
         return True
+
+    def usable_offensive_wand(self, item):
+        return item.is_offensive_usable_wand() and str(item) not in self.empty_wands
 
     def fire(self, item, direction):
         if self.character.prop.polymorph:
@@ -1269,7 +1280,8 @@ class Agent:
                 actions = list(filter(lambda x: x[1][0] != 'ranged', actions))
 
             actions = combat.fight_heur.drop_floating_eye_melee(
-                actions, monsters, (self.blstats.y, self.blstats.x), self.character.prop.blind)
+                actions, monsters, (self.blstats.y, self.blstats.x), self.character.prop.blind,
+                self.character.prop.confusion or self.character.prop.stun)
             actions = combat.fight_heur.drop_bare_handed_cockatrice_melee(
                 actions, monsters, (self.blstats.y, self.blstats.x),
                 self.inventory.items.main_hand is None and self.inventory.items.gloves is None)
@@ -1344,7 +1356,7 @@ class Agent:
             else:
                 _, dy, dx, = best_action
                 for item in self.inventory.items:
-                    if item.is_offensive_usable_wand():
+                    if self.usable_offensive_wand(item):
                         wand = item
                         break
                 else:
