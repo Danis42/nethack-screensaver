@@ -2,7 +2,8 @@
   "mcpServers": {
     "screens-bench": {
       "command": "uv",
-      "args": ["run", "--group", "bench", "python", "-m", "bench.mcp_server"]
+      "args": ["run", "--group", "bench", "python", "-m", "bench.mcp_server"],
+      "env": {"SCREENS_BENCH_PYTHON": "~/.cache/screens-nh5/venv/bin/python"}
     }
   }
 }

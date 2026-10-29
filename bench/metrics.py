@@ -57,6 +57,8 @@ METRICS = {m.name: m for m in [
     Metric("petrified", "turned to stone", "rate", lambda g: "petrified" in g["end_reason"], lower_is_better=True),
     Metric("poisoned", "killed by poison or a poisonous corpse", "rate", lambda g: "poison" in g["end_reason"],
            lower_is_better=True),
+    Metric("eye", "killed while frozen by a floating eye's gaze", "rate",
+           lambda g: "floating eye's gaze" in g["end_reason"], lower_is_better=True),
     Metric("ants", "killed by an ant", "rate", lambda g: killer(g) in ANTS, lower_is_better=True),
     Metric("rays", "killed by a wand or ray", "rate", lambda g: any(r in killer(g) for r in RAYS),
            lower_is_better=True),
