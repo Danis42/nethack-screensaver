@@ -4,6 +4,7 @@ from nle.nethack import actions as A
 
 from . import objects as O
 from . import boulders
+from . import digging
 from . import quest_portal
 from . import soko_solver
 from .soko_solver import search as soko_search
@@ -36,6 +37,8 @@ STUCK_TURNS = 2500  # no new level and no new milestone for this long: give up t
 DIG_RETRIES = 5  # interrupted digs per level before giving up on digging there
 DIG_RETRY_TURNS = 50  # an interrupted dig is tried again this many turns later
 DIG_MIN_HP = 9  # falling through a hole deals 1d6 per level fallen (NetHack 5)
+DEEP_DIG_DLVL = 21  # Medusa's level is Dlvl 21-28 (1-4 above the Castle, which is Dlvl 25-29)
+DEEP_DIG_RETRY_TURNS = 20  # an interrupted deep dig is tried again this many turns later
 PORTAL_HUNT_TURNS = 1500  # on the Quest portal level, this long to walk every square for the portal
 _PRIZES = None
 
@@ -233,6 +236,7 @@ class GlobalLogic:
         self._mines_dive_over = False  # a diver in the Mines heads down them until stuck (Mines' End)
         self._undiggable = set()  # levels whose floor was too hard to dig through
         self._dig_level, self._dig_retries = None, 0
+        self._next_deep_dig = 0  # turn of the next deep-dive dig attempt
         self.stuck_reports = []  # one row per stuck-watch firing (autoascend/stuck.py), for the results
         self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
         self._prize_found = False
@@ -299,6 +303,25 @@ class GlobalLogic:
         if outcome == 'undiggable':
             self._undiggable.add(level.key())
         return outcome
+
+    def _deep_dig_due(self):
+        return self.milestone == Milestone.DIVE and self.agent.blstats.time >= self._next_deep_dig and \
+            self.agent.current_level().dungeon_number == Level.DUNGEONS_OF_DOOM and \
+            self.agent.current_level().level_number >= DEEP_DIG_DLVL and \
+            self.agent.current_level().key() not in self._undiggable and \
+            digging.dig_tool(self.agent.inventory.items, self.agent.empty_wands) is not None
+
+    def _dig_deep(self):
+        """A diver from Dlvl 21 down digs through the floor on arrival instead of exploring. Medusa's level is
+        always this deep and its floor is diggable on all 4 maps: digging skips the water, her island and her
+        gaze, where the explorer hangs or the hero drowns (staged games); the Castle floor is undiggable, so the
+        dig stops there (ASCENSION-PLAN-NH5.md). True if the hero fell."""
+        if not self._deep_dig_due():
+            return False
+        outcome = self._dig_down_when_stuck()
+        if outcome != 'fell':
+            self._next_deep_dig = self.agent.blstats.time + DEEP_DIG_RETRY_TURNS
+        return outcome == 'fell'
 
     def _stuck(self):
         return self._progress.stuck(self.agent.current_level().key(), self.milestone, self.agent.blstats.time)
@@ -989,6 +1012,8 @@ class GlobalLogic:
             if self._should_bail():
                 self.plan.bail_out()
                 continue
+            if self._dig_deep():
+                continue
             if self._stuck():
                 self.agent.stats_logger.log_event('stuck_dive')
                 self._report_stuck(level)
@@ -1057,7 +1082,7 @@ class GlobalLogic:
                 .preempt(self.agent, [
                     self.agent.exploration.explore_stairs(go_to_strategy, all=True).condition(explore_stairs_condition),
                 ])
-                .until(self.agent, lambda: condition() or self._should_bail() or self._stuck())
+                .until(self.agent, lambda: condition() or self._should_bail() or self._stuck() or self._deep_dig_due())
             ).run()
 
     def global_strategy(self):
