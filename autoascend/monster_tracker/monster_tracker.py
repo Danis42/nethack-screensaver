@@ -36,6 +36,8 @@ class MonsterTracker:
 
             monsters = {}
             for line in self.agent.popup[index + 1:]:
+                if not line.startswith('<'):
+                    continue  # NetHack 5 wraps long lines: "... (paralyzed, or" / "sleeping or busy)"
                 r = regex.search(line)
                 assert r is not None, line
                 x, y, char, name = r.groups()
