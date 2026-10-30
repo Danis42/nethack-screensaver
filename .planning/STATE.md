@@ -223,7 +223,8 @@ Resume steps:
    Exp 24 exp/idle-turn (worktree ../screens-idle): CAUSE of the explorer hang: go_to_level_strategy `while 1` spins
    when every strategy declines (no game turn, so stuck/bail watches never run); 17 watchdogs on 6c7bfef, 6 at Dlvl
    22-27. Fix: one search when a pass used no turn. Unfixed control: 9/9 seeds hang at the stored turn.
-   Verify fixed replays + suite, commit, bench vs 6c7bfef (metric crashed, watch rung7, rung9).
+   Fix 57addd2: 9/9 hang seeds end normally, suite 487 passed. Job 54 = exp/idle-turn vs 6c7bfef, metric hung (new,
+   cc971b5; `crashed` does not count watchdogs). Watch rung7, rung9. After a kill the server can stay a zombie: restart with setsid.
    Then exp "pry chests": bot gives up on locked boxes (inventory.py 'locked'); NH5 supply chest on 2/3 of levels above
    Oracle, 5/6 locked. Also measure whether the bot collects the guaranteed ration on the Mines branch level.
    Replay caveat: seed 206 diverged from its stored game under tracing; 340 of 599 starvation deaths are in the Mines.
