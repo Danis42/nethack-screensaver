@@ -183,11 +183,15 @@ class ExplorationLogic:
                 assert self.agent.current_level().key() in levels_to_search
                 continue
 
+            turn = self.agent.blstats.time
             explore_strategy.preempt(self.agent, [
                 self.explore_stairs(go_to_strategy, all=True) \
                         .condition(lambda: self.agent.current_level().key() in levels_to_search),
                 go_to_least_explored_level(),
             ], continue_after_preemption=False).run()
+            if self.agent.blstats.time == turn:
+                # every strategy declined: without a game turn the stuck and bail watches never run
+                self.agent.search(1)
 
         path = self.get_path_to_level(dungeon_number, level_number)
         assert path is not None, \
