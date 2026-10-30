@@ -1177,3 +1177,10 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   [+0.1, +4.4] @576 was an artifact: all 27 candidate-only deaths are seeds where the baseline crashed, hung or
   quit. Open oddity: seed 479 gained resistance and still died "poisoned by a snake" at full HP.
 - Decision: dropped (branch kept).
+
+#### Experiment 23: `exp/dig-down` - stuck divers dig down with a pick-axe or wand of digging (NetHack 5)
+- Candidate `9a3925d`; baseline `6c7bfef`; primary metric `starved`.
+- Bench @ 2304 (job 52 stopped at 384 by a shutdown, resumed as job 53): starved +0.2 [-0.8, +1.3] -> no
+  measurable difference; rung7 118 vs 121 games.
+- Decision: dropped from main (branch kept). The dig code lives on in `track-b/medusa-dig`, where the staged
+  Medusa games need it.

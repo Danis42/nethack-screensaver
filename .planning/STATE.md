@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-10-30
-last_activity_desc: Track B harness on main; job 52 (exp 23) at 384 pairs; session end
+last_activity_desc: exp 23 dropped @2304; exp 24 explorer hang cause found
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -215,11 +215,18 @@ seeds 1-4 identical). Branch track-b/medusa-dig (off exp/dig-down + main): diver
 (seed 10 fixed, seed 4 worse) - revert or rework. Open: explorer spins without a game turn when nothing is
 reachable (go_to_level_strategy/open_visit_search; also most of the 12 natural baseline watchdogs) -> natural
 bench experiment candidate "explorer idle turn". Staged results: scratchpad only, never in the bench store.
+2026-10-30 session resumed: job 52 was gone after a restart; server env checked (NH5 python, one server); exp 23
+restarted as job 53 (exp/dig-down vs 6c7bfef, metric starved; stored games reused).
 Resume steps:
-1. Job 52 (exp 23 dig-down vs main 6c7bfef, metric starved) was at 384 pairs, open (-0.3 [-3.7, +3.2]). If the PC
-   was shut down: check the server env (/proc/<pid>/environ has SCREENS_BENCH_PYTHON; .mcp.json now sets it), then
-   bench_experiment candidate=exp/dig-down baseline=6c7bfef metric=starved (stored games are reused).
-   Keep -> merge exp/dig-down into main (then rebase track-b/medusa-dig onto main).
+1. Exp 23 DONE: job 53 @2304 starved +0.2 [-0.8, +1.3], no measurable difference -> dropped from main (branch kept;
+   track-b/medusa-dig keeps the dig code). Baseline stays 6c7bfef.
+   Exp 24 exp/idle-turn (worktree ../screens-idle): CAUSE of the explorer hang: go_to_level_strategy `while 1` spins
+   when every strategy declines (no game turn, so stuck/bail watches never run); 17 watchdogs on 6c7bfef, 6 at Dlvl
+   22-27. Fix: one search when a pass used no turn. Unfixed control: 9/9 seeds hang at the stored turn.
+   Verify fixed replays + suite, commit, bench vs 6c7bfef (metric crashed, watch rung7, rung9).
+   Then exp "pry chests": bot gives up on locked boxes (inventory.py 'locked'); NH5 supply chest on 2/3 of levels above
+   Oracle, 5/6 locked. Also measure whether the bot collects the guaranteed ration on the Mines branch level.
+   Replay caveat: seed 206 diverged from its stored game under tracing; 340 of 599 starvation deaths are in the Mines.
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
