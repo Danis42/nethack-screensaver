@@ -39,3 +39,16 @@ Source: p5-baseline (579c4d5, 2304 games). Games grouped by highest rung reached
   bot attacks the peaceful watch and Minetown turns hostile. Needs a replay of one of these seeds.
 - Unicorns (gray 20, black 16): a lawful Valkyrie fights cross-aligned unicorns; strong in melee.
 - Wrath of Tyr 33: PRAYER-NH5.md.
+
+## Angry peacefuls (2026-10-30, `6c7bfef`, 2304 games)
+
+69 shopkeeper + 48 Watch deaths = 117 (5.1%), more than any single monster. First-anger message from replays:
+- Shopkeeper (24 seeds): kicked shop door 7, left without paying 5 ("You stole N zorkmids"), stray dart/dagger/bolt/gas
+  spore 4, melee on unseen/hallucinated/named shopkeeper 4, not caught 4.
+- Watch (12 seeds): stray thrown item or magic missile 6, hallucination 4, "You hit it" on an unseen peaceful 2.
+- Door kicks: the sign is dust and scuffs ("C?osed for inventory", "?|o?c  for inv?nt r"); exp 5 matched the exact text
+  only. Fix: exp/scuffed-shop-sign.
+Candidates after that: no ranged attack or zap along a line holding a peaceful (also "slips as you throw" cannot be
+aimed around: skip throwing cursed stacks); no melee on remembered unseen monsters inside shops and towns; pay or drop
+before leaving a shop (needs #pay, the bot never issues it).
+Other census items: 81 deaths while praying, 43 while sleeping, 518 while fainted.
