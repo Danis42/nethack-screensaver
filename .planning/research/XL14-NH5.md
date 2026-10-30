@@ -49,8 +49,7 @@ Only for a run that is otherwise stuck.
 1. Natural play to XL 10-11 at Dlvl 20+ (Track A: survive, eat wraiths, stop dying to peacefuls).
 2. Past Medusa by digging, Castle: eels and garrison toward XL 11-12, chest: wand + gain level.
 3. Wish(es): one for levels if still below XL 13 after the potion, rest for the kit.
-4. Back up the Castle's up stairs. PROBLEM: they arrive on Medusa's island with Medusa alive: needs reflection or a
-   blindfold, plus a water crossing. Unsolved; the alternative is cursed gain level or a cursed scroll of teleportation.
+4. Back past Medusa: see MEDUSA-RETURN-NH5.md (cursed potion of gain level, or level teleport).
 5. Quest at XL 14 with alignment 20.
 
 Example budget: XL 10 on arrival + 4 eels + garrison = about 10,000 XP (XL 11); chest potion XL 12; wish for potions: two more
@@ -59,7 +58,6 @@ reach XL 14 (needs both). The plan has no margin: one more natural level or one 
 ## Open questions
 
 - Alignment record: never measured on the bot; killing peacefuls costs -5 each. Log it.
-- Getting off Castle level upward past Medusa (above).
 - Whether humans reach XL 14 before the Castle: the NLD game table has no XL field; needs ttyrecs.
 
 ## Near-term experiments
