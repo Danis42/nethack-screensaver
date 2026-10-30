@@ -1522,6 +1522,15 @@ class Inventory:
                     if fail_msg is not None and check_if_triggered_container_trap(fail_msg):
                         raise AgentPanic('triggered trap while looting')
                 self.check_container_content(item)
+                if item.shop_status == Item.NOT_SHOP and item.content is not None and item.content.locked:
+                    forced = self.agent.force_lock_below_me()
+                    if forced == 'open':
+                        item.content.locked = False
+                        self.check_container_content(item)
+                    if forced is not None:
+                        self.agent.inventory.items_below_me = None
+                        self.get_items_below_me()
+                        return
         if not yielded:
             yield False
 

@@ -826,6 +826,23 @@ class Agent:
                 return True
             return False
 
+    def force_lock_below_me(self):
+        """ Force the first locked box here with the wielded weapon.
+        Return None if it stayed locked, 'open' if the lock broke, 'destroyed' if the box broke with it """
+        with self.atom_operation():
+            self.step(A.Command.FORCE)
+            if 'force its lock?' not in self.single_message:
+                return None
+            self.type_text('y')
+            if 'You succeed in forcing the lock.' not in self.message:
+                self.stats_logger.log_event('force_lock_fail')
+                return None
+            self.stats_logger.log_event('force_lock_success')
+            if 'In fact, you' in self.message:
+                self.stats_logger.log_event('force_lock_destroyed')
+                return 'destroyed'
+            return 'open'
+
     def untrap_container_below_me(self):
         """ Return None if succesfull else fail message """
         with self.atom_operation():
