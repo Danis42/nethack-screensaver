@@ -66,7 +66,7 @@ Quest portal level and 1 of 2304 reaches Medusa; humans who kill Medusa ascend ~
 ## What the bot cannot do today (capability gaps), in route order
 
 1. Dig down (exp 23 in flight), dig sideways, dig into fake towers.
-2. Never pray after a failed prayer; never pray, engrave Elbereth or sacrifice in Gehennom.
+2. Never pray, engrave Elbereth or sacrifice in Gehennom. (No prayer after a failed prayer: demoted 2026-10-30, it only relabels deaths; see STATE.md.)
 3. Apply a unicorn horn; avoid fights while hallucinating; no gas spore kills next to peacefuls.
 4. Pry locked chests with the dagger (supply chests, Castle wand chest).
 5. Put on rings and amulets; wear armour by property (MR, reflection, levitation, speed), not by AC alone.
@@ -94,6 +94,12 @@ Quest portal level and 1 of 2304 reaches Medusa; humans who kill Medusa ascend ~
   today), then ^V to the target level, ^W for the kit, #levelchange for XL. Staged results are reported
   apart from natural-play rates (REQUIREMENTS STAGE-01). NLE's wizkit option does not reach our NH5
   build ("NetHack asked for env variable WIZKIT"); ^W wishes do the same job.
+
+## Updates 2026-10-30
+
+- XL 14 has its own plan, XL14-NH5.md: Castle before the Quest; level jumps; the wand has 1 charge, so the wish count
+  below needs checking.
+- Early pace and angry peacefuls: FOOD-NH5.md, LADDER-NH5.md.
 
 ## Order of work
 
