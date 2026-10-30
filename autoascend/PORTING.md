@@ -1184,3 +1184,11 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   measurable difference; rung7 118 vs 121 games.
 - Decision: dropped from main (branch kept). The dig code lives on in `track-b/medusa-dig`, where the staged
   Medusa games need it.
+
+#### Experiment 24: `exp/idle-turn` - a level-goal pass that used no turn searches once (NetHack 5)
+- Cause: `go_to_level_strategy` spins when every strategy declines; no game turn, so the stuck and bail watches never
+  run and the 120 s watchdog ends the game (17 of 2304 on `6c7bfef`, 6 of them at Dlvl 22-27).
+- Candidate `57addd2`; baseline `6c7bfef`; primary metric `hung` (new, `crashed` does not count watchdogs).
+- Smoke: 9 of 9 hang seeds end in normal deaths (unfixed control: 9 of 9 hang at the stored turn).
+- Bench @ 576 (job 54): hung -1.4 [-2.6, -0.1] -> better; 0 hangs in 576 games.
+- Decision: kept; merged to main. New baseline `57addd2`.

@@ -237,6 +237,7 @@ Resume steps:
    ../screens-traps, on exp/idle-turn): offset 0: 11/12 reach the Mines (was 6/12), levels 300-600 turns (was ~750),
    5 vs 3 fainted deaths, Dlvl 1 time grew (up to 3331, unexplained: check). BENCH ORDER after job 54: exp/no-trap-search
    (metric starved, watch rung1, rung2, trap deaths), then exp/pry-chests.
+   Exp 24 KEPT (job 54 @576: hung -1.4 [-2.6, -0.1], 0 hangs), merged to main; new baseline 57addd2 (not 6c7bfef).
    Replay caveat: seed 206 diverged from its stored game under tracing; 340 of 599 starvation deaths are in the Mines.
    Prayer study (6c7bfef, 2304 games): 339 games anger Tyr; 368 later prayers, 0 recognised successes; ends 281 starved,
    34 wrath, 24 other, median 472 turns left; 34/36 wrath deaths Fainting with no food. So "no prayer after a failed
