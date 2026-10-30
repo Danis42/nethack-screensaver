@@ -228,6 +228,9 @@ Resume steps:
    Then exp "pry chests": bot gives up on locked boxes (inventory.py 'locked'); NH5 supply chest on 2/3 of levels above
    Oracle, 5/6 locked. Also measure whether the bot collects the guaranteed ration on the Mines branch level.
    Replay caveat: seed 206 diverged from its stored game under tracing; 340 of 599 starvation deaths are in the Mines.
+   Prayer study (6c7bfef, 2304 games): 339 games anger Tyr; 368 later prayers, 0 recognised successes; ends 281 starved,
+   34 wrath, 24 other, median 472 turns left; 34/36 wrath deaths Fainting with no food. So "no prayer after a failed
+   prayer" only relabels deaths: DEMOTED. Anger is a symptom; the lever is food supply.
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
