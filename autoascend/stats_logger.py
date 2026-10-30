@@ -16,6 +16,7 @@ class StatsLogger:
             "force_lock_success": 0,
             "force_lock_fail": 0,
             "force_lock_destroyed": 0,
+            "force_lock_no_blade": 0,
             "container_untrap_fail": 0,
             "untrap_success": 0,
             "triggered_undetected_trap": 0,

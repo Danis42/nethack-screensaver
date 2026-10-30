@@ -30,6 +30,17 @@ def items_to_unload(items, keep=()):
     return sorted(spare, key=lambda i: (i.category == nh.FOOD_CLASS, -i.weight()))
 
 
+FORCE_LOCK_TRIES = 2
+
+
+def prying_blade(items):
+    """The non-cursed blade to force a lock with, smallest skill first (daggers), or None."""
+    blades = [item for item in items if item.is_weapon() and item.is_unambiguous()
+              and item.status in (Item.UNCURSED, Item.BLESSED)
+              and O.P_DAGGER <= item.object.sub <= O.P_SABER and item.object.sub != O.P_PICK_AXE]
+    return min(blades, key=lambda item: item.object.sub, default=None)
+
+
 class Inventory:
     _name_to_category = {
         'Amulets': nh.AMULET_CLASS,
@@ -1523,7 +1534,7 @@ class Inventory:
                         raise AgentPanic('triggered trap while looting')
                 self.check_container_content(item)
                 if item.shop_status == Item.NOT_SHOP and item.content is not None and item.content.locked:
-                    forced = self.agent.force_lock_below_me()
+                    forced = self.force_lock_below_me()
                     if forced == 'open':
                         item.content.locked = False
                         self.check_container_content(item)
@@ -1533,6 +1544,22 @@ class Inventory:
                         return
         if not yielded:
             yield False
+
+    def force_lock_below_me(self):
+        """ Pry with a blade, up to FORCE_LOCK_TRIES times. Bashing wakes the level and may destroy the box with its
+        potions (lock.c forcelock), so it is only for a hero without a blade. """
+        forced = None
+        for _ in range(FORCE_LOCK_TRIES):
+            blade = prying_blade(self.items.all_items)
+            if blade is None:
+                self.agent.stats_logger.log_event('force_lock_no_blade')
+            elif not self.wield(blade):
+                break
+            forced = self.agent.force_lock_below_me()
+            if forced is not None:
+                break
+        self.agent.wield_best_melee_weapon()
+        return forced
 
     @utils.debug_log('inventory.go_to_item_to_pickup')
     @Strategy.wrap

@@ -2,7 +2,9 @@ from types import SimpleNamespace
 
 import nle.nethack as nh
 
-from autoascend.item.inventory import items_to_unload
+from autoascend import objects as O
+from autoascend.item import Item
+from autoascend.item.inventory import items_to_unload, prying_blade
 
 
 def _item(name, weight, category=nh.TOOL_CLASS, equipped=False, droppable=True):
@@ -22,3 +24,17 @@ def test_unload_drops_heaviest_spare_items_first_and_food_last():
     order = items_to_unload([food, apple, box, rock, wand, sword, stone], keep=[food])
 
     assert [i.name for i in order] == ["rocks", "pick-axe", "wand", "apple"]
+
+
+def _weapon(name, status=Item.UNCURSED):
+    return SimpleNamespace(object=O.from_name(name), status=status, is_weapon=lambda: True,
+                           is_unambiguous=lambda: True)
+
+
+def test_prying_blade_prefers_the_dagger():
+    dagger = _weapon('dagger')
+    assert prying_blade([_weapon('long sword'), dagger, _weapon('spear')]) is dagger
+
+
+def test_prying_blade_skips_cursed_and_non_blades():
+    assert prying_blade([_weapon('dagger', Item.CURSED), _weapon('spear'), _weapon('dwarvish mattock')]) is None
