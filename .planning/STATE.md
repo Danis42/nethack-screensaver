@@ -225,8 +225,10 @@ Resume steps:
    22-27. Fix: one search when a pass used no turn. Unfixed control: 9/9 seeds hang at the stored turn.
    Fix 57addd2: 9/9 hang seeds end normally, suite 487 passed. Job 54 = exp/idle-turn vs 6c7bfef, metric hung (new,
    cc971b5; `crashed` does not count watchdogs). Watch rung7, rung9. After a kill the server can stay a zombie: restart with setsid.
-   Then exp "pry chests": bot gives up on locked boxes (inventory.py 'locked'); NH5 supply chest on 2/3 of levels above
-   Oracle, 5/6 locked. Also measure whether the bot collects the guaranteed ration on the Mines branch level.
+   Then exp 25 exp/pry-chests (worktree ../screens-pry, on top of exp/idle-turn): smoke 6 seeds 20 locks forced, boxes
+   looted; bench vs 57addd2 if exp 24 is kept (else rebase), metric starved; watch potions lost to destroyed boxes.
+   Bots hit 2-12 locked boxes per game. Also measure the guaranteed ration on the Mines branch level.
+   Side finding: some games re-check 'an empty bag named #0' hundreds of times (seeds 107, 118); not investigated.
    Replay caveat: seed 206 diverged from its stored game under tracing; 340 of 599 starvation deaths are in the Mines.
    Prayer study (6c7bfef, 2304 games): 339 games anger Tyr; 368 later prayers, 0 recognised successes; ends 281 starved,
    34 wrath, 24 other, median 472 turns left; 34/36 wrath deaths Fainting with no food. So "no prayer after a failed
