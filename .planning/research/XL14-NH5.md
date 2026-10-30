@@ -32,10 +32,9 @@ is worth 40,000 XP, at XL 11 10,000. Drink late; do not spend potions below XL 1
 | Wish | 3 blessed potions: 50% get 3, else 1. 2 potions: 67% get 2, else 1 | objnam.c `cnt < rnd(6)` | can't wish |
 | Foocubus | small chance of a level per encounter | not a plan | - |
 
-## Wishes are scarcer than the plan assumed
+## Wishes
 
-The Castle wand has 1 charge (mkobj.c), plus a rare wrest. ASCENSION-PLAN-NH5.md counts 2-3 wishes in total, and the top
-wish is magic resistance. A wish spent on levels competes with MR and with levitation/reflection. Verify the count.
+See WISHES-NH5.md: 2 reliable at the Castle, 4-5 in the whole game.
 
 ## Bypass: kill the Quest leader (last resort)
 

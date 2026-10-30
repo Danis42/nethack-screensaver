@@ -97,6 +97,8 @@ Quest portal level and 1 of 2304 reaches Medusa; humans who kill Medusa ascend ~
 
 ## Updates 2026-10-30
 
+- Wish budget: WISHES-NH5.md replaces the Wishes row below: 2 at the Castle (charge + wrest), 3 with a found charging
+  scroll, plus Vlad's throne and the Amulet.
 - XL 14 has its own plan, XL14-NH5.md: Castle before the Quest; level jumps; the wand has 1 charge, so the wish count
   below needs checking.
 - Early pace and angry peacefuls: FOOD-NH5.md, LADDER-NH5.md.
