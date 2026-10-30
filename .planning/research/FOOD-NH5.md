@@ -91,3 +91,6 @@ faster early descent; Sokoban entry level's food before the Mines. Food shop aft
 
 Sources: https://nethackwiki.com/wiki/Forum:Hunger_and_Poison https://nethackwiki.com/wiki/Starvation
 https://nethackwiki.com/wiki/NetHack_5.0.0
+
+Probe result (2026-10-30): 25,718 of 58,311 pre-Mines turns (44%, 12 seeds) were searches, driven by trap_search_offset=1.
+With offset 0: 11/12 games reach the Mines (was 6/12); not yet benched -> exp/no-trap-search.

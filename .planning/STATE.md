@@ -232,6 +232,11 @@ Resume steps:
    exp/pry-chests now ffe4685: pry with a blade, one retry, bash only without one (FOOD-NH5.md had said so). Suite 489.
    Starvers rarely reach food: Minetown 141/599, Sokoban 16/599, 192 never reach the Mines; bot reaches the Mines at
    T3575 (yardstick T1173). Next probe: where early turns go (FOOD-NH5.md end).
+   Pace probe (12 seeds 201-212, scratchpad pace.py): 44% of pre-Mines turns are Agent.search; cause trap_search_offset=1
+   (global_logic.py explore1, vendored AutoAscend): a search before each new square. exp/no-trap-search (worktree
+   ../screens-traps, on exp/idle-turn): offset 0: 11/12 reach the Mines (was 6/12), levels 300-600 turns (was ~750),
+   5 vs 3 fainted deaths, Dlvl 1 time grew (up to 3331, unexplained: check). BENCH ORDER after job 54: exp/no-trap-search
+   (metric starved, watch rung1, rung2, trap deaths), then exp/pry-chests.
    Replay caveat: seed 206 diverged from its stored game under tracing; 340 of 599 starvation deaths are in the Mines.
    Prayer study (6c7bfef, 2304 games): 339 games anger Tyr; 368 later prayers, 0 recognised successes; ends 281 starved,
    34 wrath, 24 other, median 472 turns left; 34/36 wrath deaths Fainting with no food. So "no prayer after a failed
