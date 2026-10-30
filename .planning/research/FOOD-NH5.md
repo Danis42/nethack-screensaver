@@ -71,3 +71,23 @@ dig-down when stuck is worth building; a pet killing peaceful dwarves would add 
 2. Open locked chests (#force / kick): supply chests carry healing and digging.
 3. Buy food in shops (needs gold pickup and the buy dialog).
 4. Make sure the guaranteed Mines-branch ration is found (explore the branch level fully).
+
+## Where starving games get to (2026-10-30, `6c7bfef`, 599 of 2304 games)
+
+- Reached by starving games: Mines 397, Minetown 141, Oracle 54, Sokoban 16. 192 never reached the Mines.
+  Minetown starvers die a median 3838 turns after arriving; 116 of the 141 are still in the Mines.
+- Pace (median of games that got there, bot vs yardstick): Mines T3575 vs T1173, Minetown T6922 vs T3538,
+  Sokoban T11541 vs T9022. The hero starts with 900 nutrition plus one food ration (800, u_init.c): about 1700 turns.
+  The early game is about 2-3x slower than the yardstick, on a food budget that no longer gets death drops.
+- Forum:Hunger and Poison agrees: stalling starves; "as long as you keep moving" corpses are plenty from the Mines on.
+- Food-shop chance: most Minetown maps 90% (minetn-2,3,4; 5,6 fixed; 7 two 50% rooms; dat/*.lua monkfoodshop). The bot
+  has no buy logic, and at most 141 of 599 starvers would reach a shop: a later experiment, not the main lever.
+- Sokoban: each of the 8 map files places 4 random food items (`class = "%"`), still true on NetHack 5. Only 16
+  starvers get there, because the route does the Mines first.
+- Web searches (2026-10-30) found no NetHack 5 food guide; wiki Starvation has no 5.0 section.
+
+Next probe: where the early turns go (turns per level on Dlvl 1-4 and Mines 1-2 by activity). Candidate experiments:
+faster early descent; Sokoban entry level's food before the Mines. Food shop after those.
+
+Sources: https://nethackwiki.com/wiki/Forum:Hunger_and_Poison https://nethackwiki.com/wiki/Starvation
+https://nethackwiki.com/wiki/NetHack_5.0.0

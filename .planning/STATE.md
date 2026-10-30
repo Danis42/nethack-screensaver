@@ -229,6 +229,9 @@ Resume steps:
    looted; bench vs 57addd2 if exp 24 is kept (else rebase), metric starved; watch potions lost to destroyed boxes.
    Bots hit 2-12 locked boxes per game. Also measure the guaranteed ration on the Mines branch level.
    Side finding: some games re-check 'an empty bag named #0' hundreds of times (seeds 107, 118); not investigated.
+   exp/pry-chests now ffe4685: pry with a blade, one retry, bash only without one (FOOD-NH5.md had said so). Suite 489.
+   Starvers rarely reach food: Minetown 141/599, Sokoban 16/599, 192 never reach the Mines; bot reaches the Mines at
+   T3575 (yardstick T1173). Next probe: where early turns go (FOOD-NH5.md end).
    Replay caveat: seed 206 diverged from its stored game under tracing; 340 of 599 starvation deaths are in the Mines.
    Prayer study (6c7bfef, 2304 games): 339 games anger Tyr; 368 later prayers, 0 recognised successes; ends 281 starved,
    34 wrath, 24 other, median 472 turns left; 34/36 wrath deaths Fainting with no food. So "no prayer after a failed
