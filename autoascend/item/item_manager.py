@@ -35,9 +35,11 @@ _KNOWN_INFOS = ['being worn', 'wielded', 'weapon in hand', 'weapon in hands', 'a
 
 def _repair_cut_text(text):
     """Complete or drop a "(...)" suffix that NLE cut off at the line limit."""
-    if len(text) < _TEXT_LIMIT or text.endswith(')') or ' (' not in text:
+    if text.endswith(')') or ' (' not in text:
         return text
     head, fragment = text.rsplit(' (', 1)
+    if len(text) < _TEXT_LIMIT and not 'for sale'.startswith(fragment):  # shop lines are cut sooner
+        return text
     for info in _KNOWN_INFOS:
         if info.startswith(fragment):
             return f'{head} ({info})'
@@ -290,7 +292,7 @@ class ItemManager:
             r'^(a|an|the|\d+)'
             r'( empty)?'
             r'( (cursed|uncursed|blessed))?'
-            r'( (very |thoroughly )?(rustproof|poisoned|corroded|rusty|burnt|rotted|partly eaten|partly used|diluted|unlocked|locked|moist|wet|greased))*'
+            r'( (very |thoroughly )?(rustproof|poisoned|corroded|rusty|burnt|rotted|partly eaten|partly used|diluted|unlocked|locked|moist|wet|greased|fireproof|cracked|trapped))*'
             r'( ([+-]\d+))? '
             r"([a-zA-z0-9-!'# ]+)"
             r'( \(([0-9]+:[0-9]+|no charge)\))?'
@@ -422,6 +424,8 @@ class ItemManager:
                 mon_name = mon_name[3:]
             monster_id = nh.glyph_to_mon(MON.from_name(mon_name))
             name = 'figurine'
+        elif name == 'smooth shield':  # NetHack 5 name of a polished silver shield seen while blind
+            name = 'shield of reflection'
         elif name in ['novel', 'paperback', 'paperback book']:
             name = 'spellbook of novel'
         elif name.endswith(' egg') or name.endswith(' eggs'):

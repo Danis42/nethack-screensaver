@@ -88,3 +88,20 @@ def test_shop_glob_without_for_sale_parses():
     assert objs[0].name == 'glob of gray ooze'
     objs, *rest = ItemManager.parse_text('a small glob of gray ooze (for sale, 20 aum, 6 zorkmids)', nh.FOOD_CLASS)
     assert objs[0].name == 'glob of gray ooze'
+
+
+def test_nethack_5_adjectives_parse():
+    for text, name in [('a fireproof +0 pair of leather gloves (being worn)', 'leather gloves'),
+                       ('a fireproof elven dagger', 'elven dagger'),
+                       ('a cracked +1 crystal plate mail (being worn)', 'crystal plate mail'),
+                       ('a trapped large box', 'large box'),
+                       ('a trapped chest', 'chest')]:
+        assert ItemManager.parse_text(text)[0][0].name == name, text
+
+
+def test_shop_line_cut_short_of_the_limit():
+    assert ItemManager.parse_text('a paperback book named Educated Rodents (for s')[0][0].name == 'novel'
+
+
+def test_smooth_shield_is_reflection():
+    assert ItemManager.parse_text('a smooth shield')[0][0].name == 'shield of reflection'
