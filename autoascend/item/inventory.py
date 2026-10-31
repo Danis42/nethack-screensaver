@@ -266,6 +266,8 @@ class Inventory:
             # TODO: refactor: the same fragment is in check_container_content
             if container in self.items.all_items:
                 self.agent.step(A.Command.APPLY)
+                if 'in your current form.' in self.agent.message:
+                    raise AgentPanic('cannot apply a container in this form')
                 assert "You can't do that while carrying so much stuff." not in self.agent.message, self.agent.message
                 self.agent.step(self.items.get_letter(container), gen())
             elif container in self.items_below_me:
@@ -426,7 +428,8 @@ class Inventory:
             # TODO: refactor: the same fragment is in use_container
             if item in self.items.all_items:
                 self.agent.step(A.Command.APPLY)
-                if "You can't do that while carrying so much stuff." in self.agent.message:
+                if "You can't do that while carrying so much stuff." in self.agent.message or \
+                        'in your current form.' in self.agent.message:  # polymorphed: the letter would be a command
                     return  # TODO: is not changing the content in this case a good way to handle this?
                 self.agent.step(self.items.get_letter(item), gen())
                 if 'You have no hands!' in self.agent.message:
