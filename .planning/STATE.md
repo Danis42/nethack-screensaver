@@ -241,6 +241,11 @@ Resume steps:
    Job 55 = exp/no-trap-search vs 57addd2, metric starved. Next candidate exp "leave Dlvl 1 sooner": milestone
    BE_ON_FIRST_LEVEL (global_logic.py current_strategy) keeps the hero on Dlvl 1 until XL 8 or Hungry, by design, so the
    first food budget is spent there; explains most Dlvl 1 time. Build after job 55 (the two interact).
+   Exp 25 KEPT (job 55 @2304: starved +0.0 [-2.5, +2.6], but rung2 +5.8 [+3.0, +8.6]; crashed +1.0, free5 -2.5, see
+   PORTING.md), merged to main 592ee8c. NEW BASELINE 671cd32 (game code = main, 2304 games stored). Job 56 =
+   exp/pry-chests vs 57addd2, metric starved, running: if kept, rebase on main and merge. Then, server idle: restart it
+   (loads metric shopkeeper), rebase exp/scuffed-shop-sign on main, bench vs 671cd32 metric shopkeeper. Open: the new
+   crashes and stuck endings need a look before more pace work.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels

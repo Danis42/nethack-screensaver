@@ -1192,3 +1192,14 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Smoke: 9 of 9 hang seeds end in normal deaths (unfixed control: 9 of 9 hang at the stored turn).
 - Bench @ 576 (job 54): hung -1.4 [-2.6, -0.1] -> better; 0 hangs in 576 games.
 - Decision: kept; merged to main. New baseline `57addd2`.
+
+#### Experiment 25: `exp/no-trap-search` - no trap search before stepping on new squares (NetHack 5)
+- Cause: 44% of pre-Mines turns were searches (`trap_search_offset=1` in `explore1`).
+- Candidate `671cd32`; baseline `57addd2`; primary metric `starved`.
+- Bench @ 2304 (job 55): starved +0.0 [-2.5, +2.6] -> no measurable difference. The turns saved did not reach food.
+- Paired by hand on the same games, post hoc: rung2 +5.8 [+3.0, +8.6], rung1 +2.5 [+0.2, +4.8], rung4 +2.7
+  [+0.5, +5.0], rung5 +2.2 [+0.2, +4.3], dlvl10 +3.0 [+0.3, +5.6]; Mines at T2963 vs T3575, Minetown T5639 vs T6922.
+- Cost: crashed +1.0 [+0.2, +1.8] (55 vs 32, mostly `inventory.py:387` and `get_items_below_me`); free5 -2.5
+  [-4.6, -0.5] (ended stuck 376 vs 318 of 1878 vs 1824 reaching Dlvl 5, not explained by the extra reach alone).
+- Decision: kept on rung2, not on the primary metric; merged to main (592ee8c). New baseline `671cd32`: same game code
+  as main, 2304 games stored, no replay needed.
