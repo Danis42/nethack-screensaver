@@ -27,6 +27,16 @@ from .strategy import Strategy
 # steps without game time after which the bot lets a turn pass instead of retrying the same refused action
 UNSTICK_AFTER = 100
 CLOSED_SHOP = 'Closed for inventory'  # engraved in front of a closed shop's door
+CLOSED_SHOP_MIN_LENGTH = 15
+
+
+def reads_closed_shop(message):
+    """The closed-shop engraving is in dust and scuffs past reading (letters wiped or replaced, the end trimmed), but
+    its length survives. Taking another engraving for it only spares a door; kicking a shop's door is deadly."""
+    return any(CLOSED_SHOP_MIN_LENGTH <= len(text) <= len(CLOSED_SHOP)
+               for text in re.findall(r'You read: "(.*?)"', message))
+
+
 STANDOFF_TURNS = 20  # a monster that stood this long on one square is not coming: stop waiting to strike first
 PANIC_HISTORY = 20  # panics kept for the Cyclic Panic report; each holds its frames
 
@@ -702,7 +712,7 @@ class Agent:
         self._update_level_items()
         self._update_level_shops()
 
-        if CLOSED_SHOP in self.message:
+        if reads_closed_shop(self.message):
             for y, x in self.neighbors(self.blstats.y, self.blstats.x, shuffle=False, diagonal=False):
                 level.closed_shop_door[y, x] = True
         self._update_level_corpses()
