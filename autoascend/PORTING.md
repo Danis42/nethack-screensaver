@@ -1215,3 +1215,9 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Bench @ 2304 (job 57): shopkeeper -0.4 [-0.6, -0.1] -> better. Same games by hand: rung2 +0.5 [+0.2, +0.8], dlvl10
   +0.3 [+0.1, +0.6]; crashed, starved, free5 unmoved.
 - Decision: kept; merged to main. New baseline `0a627f9`.
+
+#### Experiment 28: `exp/item-names` - parse fireproof, cracked and trapped items, cut shop lines, smooth shield (NetHack 5)
+- Cause: 12 of the 55 crashes on `671cd32` were `parse_text` asserts on NetHack 5 item text.
+- Candidate `c3a6749`; baseline `671cd32`; primary metric `crashed`.
+- Bench @ 2304 (job 58): crashed -0.4 [-0.7, -0.1] -> better, 45 vs 55; both `parse_text` sites 12 -> 0.
+- Decision: kept; merged to main.
