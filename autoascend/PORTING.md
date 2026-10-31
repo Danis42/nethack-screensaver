@@ -1208,3 +1208,10 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Candidate `ffe4685`; baseline `57addd2`; primary metric `starved`.
 - Bench @ 2304 (job 56): starved +1.7 [-0.7, +4.1] -> no measurable difference; no rung, dlvl or crash metric moved.
 - Decision: dropped from main (branch kept).
+
+#### Experiment 27: `exp/scuffed-shop-sign` - recognise scuffed closed-shop engravings before kicking a door (NetHack 5)
+- Cause: 7 of 24 replayed shopkeeper deaths were kicks at a door whose "Closed for inventory" sign was scuffed.
+- Candidate `0a627f9`; baseline `671cd32`; primary metric `shopkeeper` (new).
+- Bench @ 2304 (job 57): shopkeeper -0.4 [-0.6, -0.1] -> better. Same games by hand: rung2 +0.5 [+0.2, +0.8], dlvl10
+  +0.3 [+0.1, +0.6]; crashed, starved, free5 unmoved.
+- Decision: kept; merged to main. New baseline `0a627f9`.
