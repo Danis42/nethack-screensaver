@@ -1229,3 +1229,9 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Smoke: 6 of 6 crash seeds end in normal deaths.
 - Bench @ 1152 (job 60): crashed -1.2 [-2.0, -0.4] -> better, 13 vs 27 games; those three sites 0.
 - Decision: kept; merged to main. New baseline `6449a12` (1152 games stored).
+
+#### Experiment 30: `exp/leave-dlvl1` - leave Dlvl 1 at XL 4, not XL 8 (NetHack 5)
+- Candidate `e207066`; baseline `6449a12`; primary metric `rung2`.
+- Bench @ 2304 (job 62): rung2 -0.1 [-0.9, +0.7] -> no measurable difference; Mines T2927 vs T2966, so the XL gate
+  hardly ever holds the hero back. The earlier note that it explains most Dlvl 1 time was wrong.
+- Decision: dropped from main (branch kept).
