@@ -1203,3 +1203,8 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   [-4.6, -0.5] (ended stuck 376 vs 318 of 1878 vs 1824 reaching Dlvl 5, not explained by the extra reach alone).
 - Decision: kept on rung2, not on the primary metric; merged to main (592ee8c). New baseline `671cd32`: same game code
   as main, 2304 games stored, no replay needed.
+
+#### Experiment 26: `exp/pry-chests` - pry locked boxes with a blade, retry once, bash only without a blade (NetHack 5)
+- Candidate `ffe4685`; baseline `57addd2`; primary metric `starved`.
+- Bench @ 2304 (job 56): starved +1.7 [-0.7, +4.1] -> no measurable difference; no rung, dlvl or crash metric moved.
+- Decision: dropped from main (branch kept).

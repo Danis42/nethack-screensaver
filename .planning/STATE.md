@@ -246,6 +246,7 @@ Resume steps:
    exp/pry-chests vs 57addd2, metric starved, running: if kept, rebase on main and merge. Then, server idle: restart it
    (loads metric shopkeeper), rebase exp/scuffed-shop-sign on main, bench vs 671cd32 metric shopkeeper. Open: the new
    crashes and stuck endings need a look before more pace work.
+   Exp 26 DROPPED (job 56 @2304: starved +1.7 [-0.7, +4.1], nothing else moved). exp/scuffed-shop-sign rebased: 0a627f9.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
