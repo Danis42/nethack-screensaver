@@ -1244,3 +1244,11 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - A variant with an XL 4 gate (`ffaa545`) kept the old pace on 44 seeds (Mines T2492), so it was not benched: XL 4 takes
   as long as the exploring.
 - Decision: dropped for now (branch back at `37ddedb`); retry once shop mimics are dealt with.
+
+#### Experiment 32: `exp/skip-shops` - do not explore shop interiors (NetHack 5)
+- Candidate `af3db17`; baseline `6449a12`; primary metric `mimic` (new).
+- Smoke: 13 of 22 early mimic seeds avoided that death, but the bench shows this did not generalise.
+- Bench @ 2304 (job 64): mimic -0.3 [-1.0, +0.4] -> no measurable difference; 64 vs 71 games, deaths by T1500 60 vs 59.
+  Same games by hand: rung1 +1.8 [+0.2, +3.5], starved -2.0 [-4.0, -0.1], both near zero and post hoc.
+- Decision: dropped from main (branch kept). `shop_interior` is only set once a shopkeeper is seen, and 10 mimic deaths
+  stay on Dlvl 1, where shops do not generate: cause of those unknown.
