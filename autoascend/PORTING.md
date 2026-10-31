@@ -1221,3 +1221,11 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Candidate `c3a6749`; baseline `671cd32`; primary metric `crashed`.
 - Bench @ 2304 (job 58): crashed -0.4 [-0.7, -0.1] -> better, 45 vs 55; both `parse_text` sites 12 -> 0.
 - Decision: kept; merged to main.
+
+#### Experiment 29: `exp/form-apply` - stop opening containers in a form that cannot apply tools (NetHack 5)
+- Cause: polymorphed (mostly lycanthropy), NetHack 5 refuses #apply with "in your current form."; the bot sent the item
+  letter anyway and the game ran it as a command. 20 of 45 crashes on `5ae7ab0`, plus the inventory.py:399 and :423 ones.
+- Candidate `6449a12`; baseline `5ae7ab0`; primary metric `crashed`.
+- Smoke: 6 of 6 crash seeds end in normal deaths.
+- Bench @ 1152 (job 60): crashed -1.2 [-2.0, -0.4] -> better, 13 vs 27 games; those three sites 0.
+- Decision: kept; merged to main. New baseline `6449a12` (1152 games stored).
