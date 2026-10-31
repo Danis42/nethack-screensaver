@@ -1235,3 +1235,12 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Bench @ 2304 (job 62): rung2 -0.1 [-0.9, +0.7] -> no measurable difference; Mines T2927 vs T2966, so the XL gate
   hardly ever holds the hero back. The earlier note that it explains most Dlvl 1 time was wrong.
 - Decision: dropped from main (branch kept).
+
+#### Experiment 31: `exp/dlvl1-stairs` - leave Dlvl 1 as soon as its downstairs are seen (NetHack 5)
+- Measured: 38% of pre-Mines turns are on Dlvl 1, spent on full exploration (`exploration_strategy(0)` preempt).
+- Candidate `37ddedb`; baseline `6449a12`; primary metric `rung2`.
+- Bench @ 2304 (job 63): rung2 -3.0 [-5.8, -0.2] -> worse, although Mines T1571 vs T2966 and starved -3.9 [-6.4, -1.5].
+  Deaths by T1500: 203 vs 59, 131 of the 203 to mimics at XL 1, mostly in Dlvl 2 shops.
+- A variant with an XL 4 gate (`ffaa545`) kept the old pace on 44 seeds (Mines T2492), so it was not benched: XL 4 takes
+  as long as the exploring.
+- Decision: dropped for now (branch back at `37ddedb`); retry once shop mimics are dealt with.
