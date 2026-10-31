@@ -247,7 +247,7 @@ Resume steps:
    (loads metric shopkeeper), rebase exp/scuffed-shop-sign on main, bench vs 671cd32 metric shopkeeper. Open: the new
    crashes and stuck endings need a look before more pace work.
    Exp 26 DROPPED (job 56 @2304: starved +1.7 [-0.7, +4.1], nothing else moved). exp/scuffed-shop-sign rebased: 0a627f9.
-   Exp 27 KEPT (job 57 @2304: shopkeeper -0.4 [-0.6, -0.1]), merged; NEW BASELINE 0a627f9 (replaces 671cd32). Exp 28 KEPT (job 58 @2304: crashed -0.4 [-0.7, -0.1]), exp/item-names merged. NEW BASELINE 5ae7ab0 (combines exp 27 and 28), job 59 playing 2304 games. Open: inventory.py:387 crashes (20), get_items_below_me 556 (8), stuck endings.
+   Exp 27 KEPT (job 57 @2304: shopkeeper -0.4 [-0.6, -0.1]), merged; NEW BASELINE 0a627f9 (replaces 671cd32). Exp 28 KEPT (job 58 @2304: crashed -0.4 [-0.7, -0.1]), exp/item-names merged. NEW BASELINE 5ae7ab0 (combines exp 27 and 28), job 59 playing 2304 games. Job 59 done. Job 60 = exp/form-apply 6449a12 (worktree ../screens-form) vs 5ae7ab0, metric crashed: inventory.py:387 (20 crashes) is NH5 "aren't able to use or apply tools in your current form" when polymorphed (lycanthropy), the item letter then runs as a command; 6/6 crash seeds end normally. Open: get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
