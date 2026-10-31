@@ -53,6 +53,7 @@ METRICS = {m.name: m for m in [
     Metric("hung", "ended on the watchdog", "rate", lambda g: g["end_reason"] == "watchdog", lower_is_better=True),
     Metric("shopkeeper", "killed by a shopkeeper", "rate", lambda g: "shopkeeper" in g["end_reason"],
            lower_is_better=True),
+    Metric("mimic", "killed by a mimic", "rate", lambda g: "mimic" in g["end_reason"], lower_is_better=True),
     Metric("died", "died", "rate", lambda g: g["end_reason"].startswith("DEATH"), lower_is_better=True),
     Metric("starved", "starved, or killed while fainted", "rate",
            lambda g: "starved" in g["end_reason"] or "fainted from lack of food" in g["end_reason"],
