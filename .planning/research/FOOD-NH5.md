@@ -129,3 +129,18 @@ With offset 0: 11/12 games reach the Mines (was 6/12); not yet benched -> exp/no
   Minetown shops for food; a successful prayer at Weak sets nutrition to 900; each attack costs about a turn of nutrition.
 - Untested idea: Mines gnomes are a food source for most heroes, but they are peaceful to a dwarf, so this bot kills less and
   gets fewer corpses there. 340 of 599 starvation deaths were in the Mines; bot kills 12-14 vs human 17-21 per 1000 turns.
+
+## What r/nethack says (9 threads saved by the owner, 2026-11-01; reference/reddit/)
+
+Forum opinion, and none of it is measured. Main findings:
+- Nobody in these threads complains about starving on 5.0. Complaints are about the late game: nerfed regeneration (carry healing;
+  up to 10 full heals on Astral), weaker Elbereth, monsters looting stashes. One player: early game "a bit easier" than 3.6; turn
+  counts rise (30k -> 60k+). Taken with commit 39a7dc1c: food is enough for humans who keep moving.
+- Route: several players say a dwarf or gnome goes to Minetown first, because the Mines are much less deadly for them. Do not
+  finish either branch in one go: Minetown (shops, temple), Sokoban, then the rest of the Mines. This argues against a plain
+  "Sokoban first for a dwarf", which the earlier note floated.
+- "Food allows you to play slower"; low-food heroes visit Sokoban's first level only for food. Source check: soko4-1/4-2 place 4
+  random `%` items at random spots, so some may need the puzzle solved; reachability unmeasured.
+- Prayer: one player starved after spending the first prayer on HP.
+- Sokoban deaths: leocrotta, elves. Advice: unburdened, HP 40+, pet, escape item, done by about XL 9-10.
+- Elves do not respect Elbereth; in 5.0 you cannot fight on it, blocked monsters attack anyway (ascension plan should note).
