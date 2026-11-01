@@ -266,6 +266,11 @@ class GlobalLogic:
             return True
         return self.milestone == Milestone.FIND_SOKOBAN and self._elapsed(SOKOBAN_SEARCH_TURNS)
 
+    def _on_wrong_branch(self):
+        """In the Mines by the wrong stairs while looking for Sokoban: exploring on is how these visits end in death."""
+        return self.milestone == Milestone.FIND_SOKOBAN and \
+            self.agent.current_level().dungeon_number == Level.GNOMISH_MINES
+
     def _diving_in_mines(self):
         return self.agent.current_level().dungeon_number == Level.GNOMISH_MINES and not self._mines_dive_over
 
@@ -1012,7 +1017,7 @@ class GlobalLogic:
                                                             wait_for_pet=not going_home)
                 .before(exploration_strategy(None))#.before(self.agent.exploration.patrol())
                 .preempt(self.agent, [
-                    exploration_strategy(0).condition(lambda: not going_home),
+                    exploration_strategy(0).condition(lambda: not going_home and not self._on_wrong_branch()),
                     exploration_strategy(None).until(
                         self.agent, lambda: self.agent.blstats.hitpoints >= 0.8 * self.agent.blstats.max_hitpoints)
                 ])
