@@ -153,3 +153,4 @@ Forum opinion, and none of it is measured. Main findings:
   Pickup counts rely on a message regex.
 - The bot already visits Sokoban before Mines' End (199 of 200 games), so the "Minetown, Sokoban, rest of the Mines" route adds little.
 - So the deep-Mines and branch-food ideas are not the lever: 61% of starvers die before Minetown.
+- Stuck reports do not explain starvation: 62% of all games get one, and they starve at 23% vs 24% without one. Most starvers have no single blocker.
