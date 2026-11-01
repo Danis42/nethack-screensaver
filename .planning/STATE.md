@@ -6,8 +6,8 @@ current_phase_name: Port to NetHack 5.0
 status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-10-31
-last_activity_desc: exps 25, 27, 28, 29 merged (baseline 6449a12, rung2 54%); exp/mines-branch ready, not benched
+last_activity: 2026-11-01
+last_activity_desc: exp 33 exp/mines-branch dropped (job 65); baseline 6449a12, rung2 54%
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -249,7 +249,9 @@ Resume steps:
    Exp 26 DROPPED (job 56 @2304: starved +1.7 [-0.7, +4.1], nothing else moved). exp/scuffed-shop-sign rebased: 0a627f9.
    Exp 27 KEPT (job 57 @2304: shopkeeper -0.4 [-0.6, -0.1]), merged; NEW BASELINE 0a627f9 (replaces 671cd32). Exp 28 KEPT (job 58 @2304: crashed -0.4 [-0.7, -0.1]), exp/item-names merged. NEW BASELINE 5ae7ab0 (combines exp 27 and 28), job 59 playing 2304 games. Exp 29 KEPT (job 60 @1152: crashed -1.2 [-2.0, -0.4]), exp/form-apply merged; NEW BASELINE 6449a12 (1152 games, extend to 2304 when needed). Baseline 6449a12 has 2304 games. Exp 30 exp/leave-dlvl1 DROPPED (job 62 @2304: rung2 -0.1 [-0.9, +0.7]; Mines T2927 vs T2966, the XL gate does not explain pre-Mines time, still unknown where T2966 vs yardstick T1173 goes). Pre-Mines turns (44 seeds, pace2.py): Dlvl 1 38%, level 2 29%, level 3 18%, level 4 10%; main cost = exploration_strategy(0) preempt, full exploration of every level. exp/dlvl1-stairs (worktree ../screens-stairs): leave Dlvl 1 once > is seen; Dlvl 1 turns 1226 -> 179, Mines T2449 -> T1268 but 30 vs 34 of 44 reached. Exp 31 DROPPED for now (job 63: rung2 -3.0 [-5.8, -0.2], starved -3.9, early mimic deaths in shops at XL 1). Exp 32 exp/skip-shops DROPPED (job 64 @2304: mimic -0.3 [-1.0, +0.4]; 64 vs 71 mimic deaths, early deaths 60 vs 59; hand: rung1 +1.8, starved -2.0, weak).
    Dlvl 2-4: 16 seeds show both > seen 45-725 turns into the branch level, then full exploration anyway, random stair pick, and wrong picks fully explore the next level (Dlvl 5 visits). exp/mines-branch 30ce233 (worktree ../screens-branch, off main, suite 493): stop exploring once a level shows two > with one untried; 24 seeds Mines T2370 -> T1909, reached 17 -> 18, mean turns Dlvl 2/3/4/5 1831/1001/578/129 -> 1750/833/304/0. NOT BENCHED. Owner stopped for today 2026-10-31.
-   NEXT SESSION: bench exp/mines-branch vs 6449a12, metric rung2 (watch early deaths: faster can mean weaker, exp 31). Then real cause of shop and Dlvl 1 mimic deaths; retry exp/dlvl1-stairs only after that. Then get_items_below_me 556 (8), stuck endings.
+   2026-11-01 session resumed: server env checked (NH5 python, one server), exp 33 = job 65 exp/mines-branch vs 6449a12, metric rung2.
+   Exp 33 exp/mines-branch DROPPED (job 65 @2304: rung2 -1.9 [-4.2, +0.4]; rung1 +5.6, Mines T2260 vs T2966, but rung3 -3.6 [-5.9, -1.3]; Mines deaths before Minetown 692 vs 586, 197 vs 113 at XL <= 5, rothes 53 vs 31). Pace changes buy arrival, not survival: baseline stays 6449a12.
+   NEXT: real cause of shop and Dlvl 1 mimic deaths; retry exp/dlvl1-stairs only after that. Then get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels

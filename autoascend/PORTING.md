@@ -1252,3 +1252,13 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   Same games by hand: rung1 +1.8 [+0.2, +3.5], starved -2.0 [-4.0, -0.1], both near zero and post hoc.
 - Decision: dropped from main (branch kept). `shop_interior` is only set once a shopkeeper is seen, and 10 mimic deaths
   stay on Dlvl 1, where shops do not generate: cause of those unknown.
+
+#### Experiment 33: `exp/mines-branch` - stop exploring once a level shows two downstairs (NetHack 5)
+- Measured: both `>` show 45-725 turns into the branch level, then full exploration and a random stair pick anyway.
+- Candidate `30ce233`; baseline `6449a12`; primary metric `rung2`.
+- Bench @ 2304 (job 65): rung2 -1.9 [-4.2, +0.4] -> no measurable difference. Hand comparison: rung1 +5.6 [+4.6, +6.7],
+  Mines T2260 vs T2966, Minetown T5119 vs T5639, but rung3 -3.6 [-5.9, -1.3]; Medusa 3 vs 8 games (too few to judge).
+- Why: more games enter the Mines and die there. Deaths in the Mines before Minetown 692 vs 586, 197 vs 113 of them at
+  XL 5 or below; rothes 53 vs 31 of those deaths.
+- Decision: dropped from main (branch kept). Third pace change (with 30, 31) to show early exploring also buys levels:
+  retry pace only once the hero survives the upper Mines at a lower XL.
