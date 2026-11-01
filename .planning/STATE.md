@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-01
-last_activity_desc: exp 33 exp/mines-branch dropped (job 65); baseline 6449a12, rung2 54%
+last_activity_desc: exp 34 kept (baseline 4da0769), exp 35 exp/shop-wall benching (job 67)
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -251,8 +251,10 @@ Resume steps:
    Dlvl 2-4: 16 seeds show both > seen 45-725 turns into the branch level, then full exploration anyway, random stair pick, and wrong picks fully explore the next level (Dlvl 5 visits). exp/mines-branch 30ce233 (worktree ../screens-branch, off main, suite 493): stop exploring once a level shows two > with one untried; 24 seeds Mines T2370 -> T1909, reached 17 -> 18, mean turns Dlvl 2/3/4/5 1831/1001/578/129 -> 1750/833/304/0. NOT BENCHED. Owner stopped for today 2026-10-31.
    2026-11-01 session resumed: server env checked (NH5 python, one server), exp 33 = job 65 exp/mines-branch vs 6449a12, metric rung2.
    Exp 33 exp/mines-branch DROPPED (job 65 @2304: rung2 -1.9 [-4.2, +0.4]; rung1 +5.6, Mines T2260 vs T2966, but rung3 -3.6 [-5.9, -1.3]; Mines deaths before Minetown 692 vs 586, 197 vs 113 at XL <= 5, rothes 53 vs 31). Pace changes buy arrival, not survival: baseline stays 6449a12.
-   MIMIC CAUSE FOUND: NetHack 5 themed room Storeroom (dat/themerms.lua:250, no mindiff): 30% of the room's squares, 1 in 4 a chest, 3 in 4 a mimic posing as one, any class member even on Dlvl 1; 71 mimic deaths, 33 at XL 1-2, median T1644. Disguised mimics skip their turn (mon.c:1290), only bumping wakes them. exp/storeroom-chests 4da0769 (worktree ../screens-chests, off main, suite 497): bfs never enters a chest with 2+ other chests within 6 squares; lone supply chests stay. Exp 34 = job 66 vs 6449a12, metric mimic (watch unstuck, hung). If kept: merge, new baseline, retry exp/dlvl1-stairs (exp 31 lost to these mimics), and exp/mines-branch only if the hero survives the upper Mines.
-   NEXT: read job 66. Former item: real cause of shop and Dlvl 1 mimic deaths; retry exp/dlvl1-stairs only after that. Then get_items_below_me 556 (8), stuck endings.
+   Exp 34 exp/storeroom-chests KEPT, merged (job 66 @2304: mimic -0.5 [-0.9, -0.2], 59 vs 71; rung1 +0.6): Storerooms (dat/themerms.lua:250, 3 of 4 chests are mimics, no mindiff) are only 12 of 71 deaths. NEW BASELINE 4da0769 (2304 games).
+   Replay of 56 mimic seeds (all reproduced; scratchpad mimtrace.py, wraps Agent.update_state; run with PYTHONHASHSEED=0 and the fixtime LD_PRELOAD, 35 s on 11 procs): 43 of 54 traced deaths inside a shop. Hero enters while exploring, shop_interior only appears then, check_items walks item to item. Exp 32 filtered goals only, and not items.
+   exp/shop-wall (worktree ../screens-shopwall, off main, suite 499): XL < 8: bfs never enters shop_interior, and no exploration/item/container goal inside even from inside. 56 seeds: mimic deaths 56 -> 6, none in shops, median T7924 (seeds selected, so biased). Exp 35 = job 67 vs 4da0769, metric mimic (watch starved, rung2, stuck: no shop food below XL 8). If kept: merge, new baseline, retry exp/dlvl1-stairs; exp/mines-branch stays parked until the upper Mines are survived.
+   NEXT: read job 67. Then of shop and Dlvl 1 mimic deaths; retry exp/dlvl1-stairs only after that. Then get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
