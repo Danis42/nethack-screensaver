@@ -266,7 +266,8 @@ Resume steps:
    Exp 38 exp/dwarf-soko DROPPED (job 70 @576: dwarf starved +6.6 [+0.9, +12.3], rung5 -5.7, rung7 -3.8, deaths by T3000 22 vs 57). Human stands: race did most of exp 37. Worktrees all removed.
    Research (.planning/research/MINES-ENTRY-NH5.md, owner: back ideas with research first): no XL gate. 5.0 ascenders enter the Mines at T1173, XL mostly below 6, 3 of 110 Sokoban first. Bot: 50 of 107 arrive by the wrong stairs on FIND_SOKOBAN, stay 1212 turns, 17 die. Exp 39 = job 71 exp/mines-detour (.worktrees/mines-detour) vs d5f032c, metric rung4; keep if better and starved, dlvl10, rung7 not worse. Smoke same seeds: first visit 1212 -> 13 turns, deaths 17 -> 1.
    Untested from that research: human on Mines-first route; AC at arrival (AC 3 or better 2/72 vs AC 4+ 8/55).
-   NEXT: read job 71, remove the worktree. Then permafood after T6000 (research first). Then get_items_below_me 556 (8), stuck endings.
+   Direction change 2026-11-01 (owner agreed): stop chasing single killers (top killer 2.9% of deaths). Track A: compare XL, AC, HP, key items per rung, human ascensions vs bot, build a build-up phase around the biggest gaps, permafood is part of it. Track B: offline rewind tool, research only, never in play: replay seed + actions, branch at -10/-100/-1000/-5000 turns, about 20 reseeds per option, few big options, first prove replay is exact, then about 200 deaths.
+   NEXT: read job 71, remove the worktree. Then track A, then track B, then audit Medusa and later stages. Later: get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
