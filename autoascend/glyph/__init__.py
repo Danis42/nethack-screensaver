@@ -91,6 +91,8 @@ class G:  # Glyphs
                          if ord(nh.objclass(i).oc_class) != nh.ROCK_CLASS})
     BOULDER = frozenset({nh.GLYPH_OBJ_OFF + i for i in range(nh.NUM_OBJECTS)
                          if ord(nh.objclass(i).oc_class) == nh.ROCK_CLASS})
+    CHEST = frozenset({nh.GLYPH_OBJ_OFF + i for i in range(nh.NUM_OBJECTS)
+                       if nh.objdescr.from_idx(i).oc_name == 'chest'})
 
     NORMAL_OBJECTS = frozenset({i for i in range(nh.MAX_GLYPH) if nh.glyph_is_normal_object(i)})
     FOOD_OBJECTS = frozenset({i for i in NORMAL_OBJECTS
