@@ -256,6 +256,7 @@ Resume steps:
    exp/shop-wall (worktree ../screens-shopwall, off main, suite 499): XL < 8: bfs never enters shop_interior, and no exploration/item/container goal inside even from inside. 56 seeds: mimic deaths 56 -> 6, none in shops, median T7924 (seeds selected, so biased). Exp 35 = job 67 vs 4da0769, metric mimic (watch starved, rung2, stuck: no shop food below XL 8). If kept: merge, new baseline, retry exp/dlvl1-stairs; exp/mines-branch stays parked until the upper Mines are survived.
    Exp 35 exp/shop-wall KEPT, merged fa04add (job 67 @576: mimic -2.1 [-3.9, -0.3]; rung1 +5.2, starved -4.5, crashed -1.2). NEW BASELINE ffe48bd (576 games, job 68 extends it as needed).
    Exp 36 = job 68 exp/dlvl1-stairs 48a2051 (rebased on main; retry of exp 31) vs ffe48bd, metric rung2; watch early deaths and Mines deaths at XL <= 5 (exp 31, 33: faster can mean weaker).
+   Human ascension food study (FOOD-NH5.md end): humans eat what they burn (950-1000 per 1000T), bot 883 -> 707 -> 538; corpses equal, gap is rations and kills. Next food step: measure how much of NH5's placed food (Mines branch item, supply chests) the bot collects.
    NEXT: read job 68. Then get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".

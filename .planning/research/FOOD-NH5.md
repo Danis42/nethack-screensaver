@@ -94,3 +94,24 @@ https://nethackwiki.com/wiki/NetHack_5.0.0
 
 Probe result (2026-10-30): 25,718 of 58,311 pre-Mines turns (44%, 12 seeds) were searches, driven by trap_search_offset=1.
 With offset 0: 11/12 games reach the Mines (was 6/12); not yet benched -> exp/no-trap-search.
+
+## Human ascensions vs the bot (2026-11-01)
+
+72 recorded ascensions on NetHack 3.6 (NLD-NAO, 69 with a readable status line, all roles) vs 58 bot games on `ffe48bd`
+(fresh seeds 3000-3059). Median per game, per 1000 turns; nutrition estimated from corpse and food tables, a hero burns about
+1000 per 1000 turns.
+
+| Turns | Nutrition human / bot | Non-corpse meals human / bot | Kills human / bot | Hungry share human / bot |
+|---|---|---|---|---|
+| 0-3000 | 837 / 883 | 0.67 / 0.67 | 17.0 / 13.7 | 4% / 1% |
+| 3000-6000 | 953 / 707 | 0.67 / 0.67 | 19.3 / 12.3 | 3% / 7% |
+| 6000-10000 | 995 / 538 | 0.75 / 0.25 | 21.3 / 14.0 | 3% / 9% |
+
+- Humans eat about what they burn. The bot matches them for 3000 turns, then runs 300-450 short per 1000 turns.
+- Corpses are not the gap: 2.0-2.3 per 1000 turns on both sides, about 0.15 per kill on both sides.
+- Rations are: 58 of 72 humans ate a food ration by T10000 (3.9 per game), rations stay 10-13% of their meals; the bot falls
+  from 18% to 6% once the starting stock is gone. Humans also kill about 1.5x as much.
+- Caveats: 3.6 has death drops that 5.0 mostly removed, so human ration sources may not carry over; humans are all roles
+ , only 13 are Valkyries; bot messages are sampled per step; bot cohort at T6000+ is survivors.
+- Next: NH5 places food on purpose (a filling item on the Mines branch level, supply chests above the Oracle). Measure how
+  much of it the bot collects, then make that one experiment. Scripts were scratchpad only (asc_food.py, bot_food.py, cmp_food.py).
