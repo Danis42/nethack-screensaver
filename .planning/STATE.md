@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-01
-last_activity_desc: exp 36 dropped; baseline ffe48bd (2304 games); exp 38 control dropped; human Valkyrie stands (baseline d5f032c, 576 games); early deaths next
+last_activity_desc: exp 36 dropped; baseline ffe48bd (2304 games); exp 39 exp/mines-detour benching (job 71); baseline d5f032c
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -264,7 +264,9 @@ Resume steps:
    Exp 37 KEPT, merged 3d163d9 (job 69 @576: starved -9.0 [-14.7, -3.3]; rung3 +12.5, rung4 +9.0, dlvl10 +1.0, rung7 +2.3, rung8 +0.9, deaths by T1500 15 vs 6). Every game is now val-hum-fem-neu; replaces the dwarvish rule. NEW BASELINE d5f032c (576 games). Race and route changed together.
    Exp 38 = job 70 exp/dwarf-soko ac51970 (.worktrees/dwarf-soko: dwarf on Sokoban-first) vs d5f032c, metric starved: the control separating race from route. If dwarf is better or equal on starved and deep rungs, the route did the work: reconsider race. Else human stands.
    Exp 38 exp/dwarf-soko DROPPED (job 70 @576: dwarf starved +6.6 [+0.9, +12.3], rung5 -5.7, rung7 -3.8, deaths by T3000 22 vs 57). Human stands: race did most of exp 37. Worktrees all removed.
-   NEXT: early human deaths (T<3000 10% vs 4%). Then permafood after T6000. Then get_items_below_me 556 (8), stuck endings.
+   Research (.planning/research/MINES-ENTRY-NH5.md, owner: back ideas with research first): no XL gate. 5.0 ascenders enter the Mines at T1173, XL mostly below 6, 3 of 110 Sokoban first. Bot: 50 of 107 arrive by the wrong stairs on FIND_SOKOBAN, stay 1212 turns, 17 die. Exp 39 = job 71 exp/mines-detour (.worktrees/mines-detour) vs d5f032c, metric rung4; keep if better and starved, dlvl10, rung7 not worse. Smoke same seeds: first visit 1212 -> 13 turns, deaths 17 -> 1.
+   Untested from that research: human on Mines-first route; AC at arrival (AC 3 or better 2/72 vs AC 4+ 8/55).
+   NEXT: read job 71, remove the worktree. Then permafood after T6000 (research first). Then get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
