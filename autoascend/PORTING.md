@@ -1270,3 +1270,14 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Bench @ 2304 (job 66): mimic -0.5 [-0.9, -0.2] -> better, 59 vs 71 games. Hand comparison: rung1 +0.6 [+0.2, +0.9], rung2
   +0.1, starved +0.3, unstuck and crashed unchanged; deaths by T1500 52 vs 59.
 - Decision: kept, merged. Storerooms are only 12 of the 71 mimic deaths: the other 59 have another cause.
+
+#### Experiment 35: `exp/shop-wall` - below XL 8 keep out of shops (NetHack 5)
+- Replay of 56 mimic seeds on `4da0769`: 43 of 54 traced deaths inside a shop. The hero steps in while exploring, the shop
+  mask appears only then, and `check_items` walks it from item to item. Experiment 32 filtered exploration goals only.
+- Candidate `ffe48bd`; baseline `4da0769`; primary metric `mimic`. `bfs` never enters a shop below XL 8; no exploration,
+  item or container goal lies inside, even from inside, so a hero in a shop walks out.
+- Smoke: the 56 seeds went from 56 to 6 mimic deaths, none in shops (selected seeds, so biased).
+- Bench @ 576 (job 67): mimic -2.1 [-3.9, -0.3] -> better. Hand comparison: rung1 +5.2 [+1.9, +8.5], rung2 +1.9 [-2.7, +6.6],
+  starved -4.5 [-9.0, +0.0], crashed -1.2 [-2.2, -0.2]; deaths by T1500 6 vs 11. Deaths in the Mines before Minetown 170 vs
+  138: more heroes get there.
+- Decision: kept, merged. New baseline `ffe48bd` (576 games stored). Early mimic deaths no longer block experiment 31.
