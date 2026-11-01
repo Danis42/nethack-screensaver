@@ -391,6 +391,8 @@ class ExplorationLogic:
 
                 to_visit = to_visit_func()
                 to_search = to_search_func(search_prio_limit if search_prio_limit is not None else 0)
+                to_visit &= ~self.agent.closed_shop()
+                to_search &= ~self.agent.closed_shop()
 
                 if check_altar_alignment:
                     for (y, x), alignment in self.agent.current_level().altars.items():

@@ -1314,7 +1314,7 @@ class Inventory:
         if not mask.any():
             yield False
 
-        mask &= dis > 0
+        mask &= (dis > 0) & ~self.agent.closed_shop()
         if not mask.any():
             yield False
         yield True
@@ -1334,7 +1334,7 @@ class Inventory:
             yield False
 
         dis = self.agent.bfs()
-        mask &= dis > 0
+        mask &= (dis > 0) & ~self.agent.closed_shop()
         if not mask.any():
             yield False
 
