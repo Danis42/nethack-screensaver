@@ -254,7 +254,7 @@ Resume steps:
    Exp 34 exp/storeroom-chests KEPT, merged (job 66 @2304: mimic -0.5 [-0.9, -0.2], 59 vs 71; rung1 +0.6): Storerooms (dat/themerms.lua:250, 3 of 4 chests are mimics, no mindiff) are only 12 of 71 deaths. NEW BASELINE 4da0769 (2304 games).
    Replay of 56 mimic seeds (all reproduced; scratchpad mimtrace.py, wraps Agent.update_state; run with PYTHONHASHSEED=0 and the fixtime LD_PRELOAD, 35 s on 11 procs): 43 of 54 traced deaths inside a shop. Hero enters while exploring, shop_interior only appears then, check_items walks item to item. Exp 32 filtered goals only, and not items.
    exp/shop-wall (worktree ../screens-shopwall, off main, suite 499): XL < 8: bfs never enters shop_interior, and no exploration/item/container goal inside even from inside. 56 seeds: mimic deaths 56 -> 6, none in shops, median T7924 (seeds selected, so biased). Exp 35 = job 67 vs 4da0769, metric mimic (watch starved, rung2, stuck: no shop food below XL 8). If kept: merge, new baseline, retry exp/dlvl1-stairs; exp/mines-branch stays parked until the upper Mines are survived.
-   NEXT: read job 67. Then of shop and Dlvl 1 mimic deaths; retry exp/dlvl1-stairs only after that. Then get_items_below_me 556 (8), stuck endings.
+   NEXT: read job 67. Then get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
