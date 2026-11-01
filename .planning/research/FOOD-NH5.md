@@ -115,3 +115,17 @@ With offset 0: 11/12 games reach the Mines (was 6/12); not yet benched -> exp/no
  , only 13 are Valkyries; bot messages are sampled per step; bot cohort at T6000+ is survivors.
 - Next: NH5 places food on purpose (a filling item on the Mines branch level, supply chests above the Oracle). Measure how
   much of it the bot collects, then make that one experiment. Scripts were scratchpad only (asc_food.py, bot_food.py, cmp_food.py).
+
+## Why NetHack 5 changed food, and player advice (online, 2026-11-01)
+
+- Dev reasoning, commit 39a7dc1c ("Most monsters no longer deathdrop comestibles other than their corpse"): playtesting found
+  too much permafood; with death drops grinding made more food than it used; food should push progress and punish grinding;
+  a full playtest ascension still found plenty. Monsters with M2_COLLECT can still drop food. So the design rewards moving on.
+- Compensation: ae3e5d28 adds one good food item on the Mines branch level (random room, random floor spot, not the stair
+  room as the wiki says; checked in the commit and mklev.c). 87f3b480 adds rations for Monks.
+- Community: no thread about 5.0 food found. Search tool cannot reach Reddit; HN and LWN threads do not discuss food. HN:
+  "Valkyrie is no longer the easy-mode starting class".
+- Advice (wiki, mostly pre-5.0): eat fresh safe corpses early and often; beat the pet to corpses; carry permafood; Sokoban and
+  Minetown shops for food; a successful prayer at Weak sets nutrition to 900; each attack costs about a turn of nutrition.
+- Untested idea: Mines gnomes are a food source for most heroes, but they are peaceful to a dwarf, so this bot kills less and
+  gets fewer corpses there. 340 of 599 starvation deaths were in the Mines; bot kills 12-14 vs human 17-21 per 1000 turns.
