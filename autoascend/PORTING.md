@@ -1262,3 +1262,11 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   XL 5 or below; rothes 53 vs 31 of those deaths.
 - Decision: dropped from main (branch kept). Third pace change (with 30, 31) to show early exploring also buys levels:
   retry pace only once the hero survives the upper Mines at a lower XL.
+
+#### Experiment 34: `exp/storeroom-chests` - never step on chests in a group (NetHack 5)
+- Source: themed room Storeroom (`dat/themerms.lua`, no minimum difficulty) fills 30% of a room, 3 of 4 chests being mimics.
+  A disguised mimic skips its turn (`mon.c`), so only stepping onto one is dangerous. A lone chest stays a target.
+- Candidate `4da0769`; baseline `6449a12`; primary metric `mimic`.
+- Bench @ 2304 (job 66): mimic -0.5 [-0.9, -0.2] -> better, 59 vs 71 games. Hand comparison: rung1 +0.6 [+0.2, +0.9], rung2
+  +0.1, starved +0.3, unstuck and crashed unchanged; deaths by T1500 52 vs 59.
+- Decision: kept, merged. Storerooms are only 12 of the 71 mimic deaths: the other 59 have another cause.
