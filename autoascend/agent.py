@@ -100,6 +100,14 @@ def hunger_prayer_gap(weak_turns):
 DEADLY_CONDITIONS = nh.BL_MASK_STONE | nh.BL_MASK_SLIME | nh.BL_MASK_STRNGL | nh.BL_MASK_FOODPOIS | nh.BL_MASK_TERMILL
 DEADLY_PRAYER_GAP = 50  # turns: right after a prayer the condition is either fixed or the god will not help
 
+SHOP_MIN_XL = 8
+
+
+def closed_shop(shop_interior, xp_level):
+    """Shop squares a weak hero has no business on: a shop's mimics hold and kill it (43 of 54 traced mimic deaths)."""
+    return np.zeros_like(shop_interior) if xp_level >= SHOP_MIN_XL else shop_interior
+
+
 def storeroom_chests(glyphs, radius=6, count=3):
     """Chests in a group: NetHack 5's Storeroom themed room, any depth, where 3 of 4 chests are mimics.
     A disguised mimic skips its turn, so passing by is safe; a lone chest is the level's supply chest."""
@@ -1074,6 +1082,9 @@ class Agent:
 
         return ret
 
+    def closed_shop(self):
+        return closed_shop(self.current_level().shop_interior, self.blstats.experience_level)
+
     def bfs(self, y=None, x=None):
         if y is None:
             y = self.blstats.y
@@ -1093,6 +1104,8 @@ class Agent:
             walkable &= ~utils.isin(level.objects, G.TRAPS)
 
         walkable &= ~storeroom_chests(self.glyphs)
+        if not level.shop_interior[y, x]:  # from inside the squares stay open, or the hero could not walk out
+            walkable &= ~self.closed_shop()
 
         for my, mx in list(zip(*np.nonzero(utils.isin(self.glyphs, G.MONS)))):
             mon = MON.permonst(self.glyphs[my][mx])
