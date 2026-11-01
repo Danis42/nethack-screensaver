@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-01
-last_activity_desc: exp 36 dropped; baseline ffe48bd (2304 games); exp 37 exp/human-valk benching (job 69)
+last_activity_desc: exp 36 dropped; baseline ffe48bd (2304 games); exp 37 kept (human Valkyrie, baseline d5f032c); exp 38 control benching (job 70)
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -96,7 +96,7 @@ Full log in PROJECT.md Key Decisions. Recent, affecting current work:
 
 ### Blockers/Concerns
 
-- [Phase 2] Every game is a dwarvish Valkyrie since `0b09707` (owner, until the first ascension). Baseline `p1-baseline` = `0b09707` (2304 seeds stored); older numbers are not comparable.
+- [Phase 2] Every game is a neutral human Valkyrie since experiment 37 (d5f032c, 2026-11-01); dwarvish before that. Older numbers are not comparable.
 - [Phase 1+] 46/2304 baseline games (median Dlvl 24) end on the 120 s watchdog: the bot hangs deep in the dungeon. Needs a stack dump on watchdog and a fix before the deep rungs can be measured.
 - [Phase 1] 2026-10-24 fix `16a6cb8`: a panic loop that keeps the screen changing (empty-bag loot menu) grew workers to 11 GB; the watchdog now also fires when the game turn stalls for 120 s and only 20 panics are kept. The empty-bag menu itself is not fixed (parse in item_manager / loot).
 - [Phases 4-8] Nothing above rung 9 (Medusa, 14 of 2304 games) has been reached; these phases depend on the staged-start harness (STAGE-01, whose `wizard=True` route is unvalidated against `NetHackChallenge` and seeding).
@@ -261,7 +261,9 @@ Resume steps:
    All ~/screens-* worktrees removed 2026-11-01 (owner): worktrees now only in .worktrees/, removed after use; branches kept.
    Mines check done (FOOD-NH5.md end): branch food collected, Sokoban already before Mines' End, stuck reports do not predict starvation; 61% of starvers die before Minetown. Gap: corpses T3000-6000 (peaceful gnomes/dwarves for a dwarf) and permafood after T6000.
    Owner delegated the race question 2026-11-01 ('argue with the facts and choose'). Exp 37 = job 69 exp/human-valk (.worktrees/human-valk, val-hum-fem-neu, plan_for gives Sokoban first) vs ffe48bd, metric starved. Keep only if starved better AND dlvl10, rung7, rung8 not worse (rule set before results).
-   NEXT: read job 69, then remove .worktrees/human-valk. Then get_items_below_me 556 (8), stuck endings.
+   Exp 37 KEPT, merged 3d163d9 (job 69 @576: starved -9.0 [-14.7, -3.3]; rung3 +12.5, rung4 +9.0, dlvl10 +1.0, rung7 +2.3, rung8 +0.9, deaths by T1500 15 vs 6). Every game is now val-hum-fem-neu; replaces the dwarvish rule. NEW BASELINE d5f032c (576 games). Race and route changed together.
+   Exp 38 = job 70 exp/dwarf-soko ac51970 (.worktrees/dwarf-soko: dwarf on Sokoban-first) vs d5f032c, metric starved: the control separating race from route. If dwarf is better or equal on starved and deep rungs, the route did the work: reconsider race. Else human stands.
+   NEXT: read job 70, remove the worktree. Then get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
