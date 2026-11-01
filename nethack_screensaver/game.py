@@ -35,9 +35,9 @@ FARMING = (Milestone.BE_ON_FIRST_LEVEL,)
 # panic_on_errors=True turns upstream assertions into AgentPanic: the bot replans instead of
 # crashing; its cyclic-panic guard and NLE's no-progress timeout still end a stuck game.
 AGENT_ARGS = dict(panic_on_errors=True, verbose=False)
-# Until the first ascension every game is a dwarvish Valkyrie (owner, 2026-10-23): the strongest
-# early game, and Mines natives are peaceful to dwarves. "@" brings random characters back.
-CHARACTER = "val-dwa-fem-law"
+# Until the first ascension every game is a human Valkyrie: neutral, so Mines natives are hostile, which
+# makes them food and experience. "@" brings random characters back.
+CHARACTER = "val-hum-fem-neu"
 
 
 class WatchdogTimeout(KeyboardInterrupt):
