@@ -1304,3 +1304,11 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   final XL 7 vs 8; deaths by T3000 22 vs 57, so the dwarf survives the start better.
 - Decision: dropped (branch kept). Race did most of experiment 37's work, about 6.6 of the 9.0 on starved; the route the rest (separate
   runs, so rough). Human stands; its weak spot is the early game.
+
+#### Experiment 39: `exp/mines-detour` - leave the Mines at once when only looking for Sokoban (NetHack 5)
+- Candidate `56a6fab`; baseline `d5f032c`; primary metric `rung4`. Rule set before the result: keep if rung4 is better and starved, dlvl10, rung7 are not worse.
+- Research: `.planning/research/MINES-ENTRY-NH5.md`. 50 of 107 Mines arrivals came by the wrong stairs on FIND_SOKOBAN and stayed 1212 turns.
+- Bench @ 2304 (job 71): rung4 +2.0 [+0.4, +3.6] -> better. Hand comparison: rung2 +1.7, rung3 +3.0, dlvl6 +2.7; starved +0.3, dlvl10 -1.1 [-2.9, +0.6],
+  rung7 +0.3, rung5 -0.6, rung8 -0.2, all no measurable difference. Games ending in the Mines 631 vs 799. The gain fades below Sokoban.
+- Decision: kept, merged (eb72207). New baseline `56a6fab` (2304 games, same bot code as eb72207).
+
