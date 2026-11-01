@@ -100,6 +100,17 @@ def hunger_prayer_gap(weak_turns):
 DEADLY_CONDITIONS = nh.BL_MASK_STONE | nh.BL_MASK_SLIME | nh.BL_MASK_STRNGL | nh.BL_MASK_FOODPOIS | nh.BL_MASK_TERMILL
 DEADLY_PRAYER_GAP = 50  # turns: right after a prayer the condition is either fixed or the god will not help
 
+def storeroom_chests(glyphs, radius=6, count=3):
+    """Chests in a group: NetHack 5's Storeroom themed room, any depth, where 3 of 4 chests are mimics.
+    A disguised mimic skips its turn, so passing by is safe; a lone chest is the level's supply chest."""
+    chests = utils.isin(glyphs, G.CHEST)
+    mask = np.zeros_like(chests)
+    positions = list(zip(*np.nonzero(chests)))
+    for y, x in positions:
+        mask[y, x] = sum(abs(y - oy) <= radius and abs(x - ox) <= radius for oy, ox in positions) >= count
+    return mask
+
+
 def diagonal_blocked_square(message, here, target):
     """ Square NetHack would not let us cross diagonally, judging by its refusal message """
     if "move diagonally out of an intact doorway" in message:
@@ -1080,6 +1091,8 @@ class Agent:
 
         if self._last_turn - self._allow_walking_through_traps_turn > 50:
             walkable &= ~utils.isin(level.objects, G.TRAPS)
+
+        walkable &= ~storeroom_chests(self.glyphs)
 
         for my, mx in list(zip(*np.nonzero(utils.isin(self.glyphs, G.MONS)))):
             mon = MON.permonst(self.glyphs[my][mx])
