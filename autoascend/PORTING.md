@@ -1281,3 +1281,9 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   starved -4.5 [-9.0, +0.0], crashed -1.2 [-2.2, -0.2]; deaths by T1500 6 vs 11. Deaths in the Mines before Minetown 170 vs
   138: more heroes get there.
 - Decision: kept, merged. New baseline `ffe48bd` (576 games stored). Early mimic deaths no longer block experiment 31.
+
+#### Experiment 36: `exp/dlvl1-stairs` retried on the shop wall (NetHack 5)
+- Candidate `48a2051` (experiment 31 rebased on main); baseline `ffe48bd`; primary metric `rung2`.
+- Bench @ 2304 (job 68): rung2 -1.3 [-4.0, +1.5] -> no measurable difference. Hand comparison: Mines T1490 vs T2941 but rung1
+  +0.4, rung5 -2.3 [-4.4, -0.1], starved -0.6, deaths by T1500 81 vs 32.
+- Decision: dropped (branch kept). With shops closed the fast start still costs levels. Baseline `ffe48bd` now has 2304 games.

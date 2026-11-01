@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-01
-last_activity_desc: exp 35 kept (baseline ffe48bd), exp 36 exp/dlvl1-stairs benching (job 68)
+last_activity_desc: exp 36 dropped; baseline ffe48bd (2304 games); Mines food check next
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -257,7 +257,9 @@ Resume steps:
    Exp 35 exp/shop-wall KEPT, merged fa04add (job 67 @576: mimic -2.1 [-3.9, -0.3]; rung1 +5.2, starved -4.5, crashed -1.2). NEW BASELINE ffe48bd (576 games, job 68 extends it as needed).
    Exp 36 = job 68 exp/dlvl1-stairs 48a2051 (rebased on main; retry of exp 31) vs ffe48bd, metric rung2; watch early deaths and Mines deaths at XL <= 5 (exp 31, 33: faster can mean weaker).
    Human ascension food study (FOOD-NH5.md end): humans eat what they burn (950-1000 per 1000T), bot 883 -> 707 -> 538; corpses equal, gap is rations and kills. Next food step: measure how much of NH5's placed food (Mines branch item, supply chests) the bot collects.
-   NEXT: read job 68. Then get_items_below_me 556 (8), stuck endings.
+   Exp 36 exp/dlvl1-stairs DROPPED (job 68 @2304: rung2 -1.3 [-4.0, +1.5], rung5 -2.3, deaths by T1500 81 vs 32, Mines T1490 vs T2941). Baseline ffe48bd, 2304 games. rung metrics count that rung or higher, so rung2 is not 'reached Minetown'.
+   All ~/screens-* worktrees removed 2026-11-01 (owner): worktrees now only in .worktrees/, removed after use; branches kept.
+   NEXT: Mines check (FOOD-NH5.md end): deep Mines time before Sokoban, starvation below Minetown, Mines branch food collected. Then get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
