@@ -144,3 +144,12 @@ Forum opinion, and none of it is measured. Main findings:
 - Prayer: one player starved after spending the first prayer on HP.
 - Sokoban deaths: leocrotta, elves. Advice: unburdened, HP 40+, pet, escape item, done by about XL 9-10.
 - Elves do not respect Elbereth; in 5.0 you cannot fight on it, blocked monsters attack anyway (ascension plan should note).
+
+## Mines check on `ffe48bd` (2026-11-01, 2304 stored games, 88 traced seeds)
+
+- 540 games starve (23.4%): 190 in the Mines before Minetown, 139 in the main dungeon never having reached the Mines, 107 in the Mines
+  past Minetown, 100 in the main dungeon after the Mines, 4 elsewhere. 512 of 540 hold no food at the end.
+- Branch food is collected: 71 of 88 seeds showed the branch level; a ration-type item was seen there in 69, picked up in 60.
+  Pickup counts rely on a message regex.
+- The bot already visits Sokoban before Mines' End (199 of 200 games), so the "Minetown, Sokoban, rest of the Mines" route adds little.
+- So the deep-Mines and branch-food ideas are not the lever: 61% of starvers die before Minetown.
