@@ -154,3 +154,18 @@ Forum opinion, and none of it is measured. Main findings:
 - The bot already visits Sokoban before Mines' End (199 of 200 games), so the "Minetown, Sokoban, rest of the Mines" route adds little.
 - So the deep-Mines and branch-food ideas are not the lever: 61% of starvers die before Minetown.
 - Stuck reports do not explain starvation: 62% of all games get one, and they starve at 23% vs 24% without one. Most starvers have no single blocker.
+
+## Corpse nutrition, humans vs bot (2026-11-01)
+
+Same 69 human ascensions (all roles, 3.6) and 58 bot games. Estimated nutrition per 1000 turns:
+
+| Turns | Corpses human / bot | Other food human / bot |
+|---|---|---|
+| 3000-6000 | 459 / 234 | 420 / 449 |
+| 6000-10000 | 532 / 360 | 427 / 177 |
+
+- Corpse gap: humans ate 8.2 corpses per game in T3000-6000 (mean 167), the bot 5.5 (mean 127). Gnome, gnome lord and dwarf are 25% of
+  human corpses there and absent from the bot's top list, since they are peaceful to a dwarf. They explain about 100 of the 225 gap.
+- Permafood gap appears after T6000. Part of the human supply may be 3.6 death drops.
+- Open owner question: human Valkyrie instead of dwarvish (hostile gnomes are food and XP, but the Mines get deadlier). Dwarvish is the
+  owner's standing choice until the first ascension; not changed. Bench it as one experiment if the owner agrees.
