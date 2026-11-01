@@ -1297,3 +1297,10 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
   dlvl10 +1.0, rung7 +2.3, rung8 +0.9, rung2 -0.9, rung5 -1.7 (all intervals span 0), rung1 -9.4 (route), ants +3.1 [+0.4, +5.9],
   final XL 8 vs 7. Deaths by T1500 15 vs 6: earlier deaths cost something.
 - Decision: kept, merged. New baseline `d5f032c` (576 games). Replaces the dwarvish rule (owner delegated the choice 2026-11-01).
+
+#### Experiment 38: `exp/dwarf-soko` - dwarvish Valkyrie on the Sokoban-first route (control for 37) (NetHack 5)
+- Candidate `ac51970`; baseline `d5f032c`; primary metric `starved`. Same route on both sides, so only the race differs.
+- Bench @ 576 (job 70): starved +6.6 [+0.9, +12.3] -> worse. Hand comparison: rung5 -5.7 [-10.0, -1.5], rung7 -3.8 [-7.0, -0.7], dlvl10 -4.7,
+  final XL 7 vs 8; deaths by T3000 22 vs 57, so the dwarf survives the start better.
+- Decision: dropped (branch kept). Race did most of experiment 37's work, about 6.6 of the 9.0 on starved; the route the rest (separate
+  runs, so rough). Human stands; its weak spot is the early game.
