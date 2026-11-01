@@ -1287,3 +1287,13 @@ About half of the stairs buckets are going up (out of the Mines), which the stuc
 - Bench @ 2304 (job 68): rung2 -1.3 [-4.0, +1.5] -> no measurable difference. Hand comparison: Mines T1490 vs T2941 but rung1
   +0.4, rung5 -2.3 [-4.4, -0.1], starved -0.6, deaths by T1500 81 vs 32.
 - Decision: dropped (branch kept). With shops closed the fast start still costs levels. Baseline `ffe48bd` now has 2304 games.
+
+#### Experiment 37: `exp/human-valk` - neutral human Valkyrie instead of dwarvish (NetHack 5)
+- Reason: FOOD-NH5.md: gnomes and dwarves are 25% of human corpses at T3000-6000 and peaceful to a dwarf. Neutral, because dwarves are
+  lawful and would often stay peaceful to a lawful human. `plan_for` also sends non-dwarves to Sokoban first, so race and route changed
+  together. Rule set before the run: keep only if starved is better and dlvl10, rung7, rung8 are not worse.
+- Candidate `d5f032c`; baseline `ffe48bd`; primary metric `starved`.
+- Bench @ 576 (job 69): starved -9.0 [-14.7, -3.3] -> better. Hand comparison: rung3 +12.5 [+7.0, +18.0], rung4 +9.0 [+3.7, +14.3],
+  dlvl10 +1.0, rung7 +2.3, rung8 +0.9, rung2 -0.9, rung5 -1.7 (all intervals span 0), rung1 -9.4 (route), ants +3.1 [+0.4, +5.9],
+  final XL 8 vs 7. Deaths by T1500 15 vs 6: earlier deaths cost something.
+- Decision: kept, merged. New baseline `d5f032c` (576 games). Replaces the dwarvish rule (owner delegated the choice 2026-11-01).
