@@ -7,7 +7,7 @@ status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-01
-last_activity_desc: exp 36 dropped; baseline ffe48bd (2304 games); food studies done, owner decision pending on race
+last_activity_desc: exp 36 dropped; baseline ffe48bd (2304 games); exp 37 exp/human-valk benching (job 69)
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -260,7 +260,8 @@ Resume steps:
    Exp 36 exp/dlvl1-stairs DROPPED (job 68 @2304: rung2 -1.3 [-4.0, +1.5], rung5 -2.3, deaths by T1500 81 vs 32, Mines T1490 vs T2941). Baseline ffe48bd, 2304 games. rung metrics count that rung or higher, so rung2 is not 'reached Minetown'.
    All ~/screens-* worktrees removed 2026-11-01 (owner): worktrees now only in .worktrees/, removed after use; branches kept.
    Mines check done (FOOD-NH5.md end): branch food collected, Sokoban already before Mines' End, stuck reports do not predict starvation; 61% of starvers die before Minetown. Gap: corpses T3000-6000 (peaceful gnomes/dwarves for a dwarf) and permafood after T6000.
-   NEXT: owner decision on benching a human Valkyrie (standing rule: dwarvish). Then get_items_below_me 556 (8), stuck endings.
+   Owner delegated the race question 2026-11-01 ('argue with the facts and choose'). Exp 37 = job 69 exp/human-valk (.worktrees/human-valk, val-hum-fem-neu, plan_for gives Sokoban first) vs ffe48bd, metric starved. Keep only if starved better AND dlvl10, rung7, rung8 not worse (rule set before results).
+   NEXT: read job 69, then remove .worktrees/human-valk. Then get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
