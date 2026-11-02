@@ -520,7 +520,7 @@ class Inventory:
 
             # NetHack 5 names the container: "The chest is locked.", "Hmmm, the chest turns out to be locked."
             if ' turns out to be locked.' in self.agent.single_message or \
-                    re.search(r'\b(It|The [a-z ]+) is locked\.', self.agent.single_message):
+                    re.search(r'\b(It|The [a-z ]+(?: named [^.]+)?) is locked\.', self.agent.single_message):
                 content.locked = True
                 yield A.Command.ESC
                 return

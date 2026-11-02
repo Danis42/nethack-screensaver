@@ -33,6 +33,7 @@ class Stage:
     identify: bool = True  # False keeps the kit unidentified (price groups, read-testing)
     max_steps: int | None = None  # item tests stop early: the check is the inventory, not survival
     quaff: tuple[str, ...] = field(default_factory=tuple)  # potions drunk before the bot starts (inventory text)
+    drop: tuple[str, ...] = field(default_factory=tuple)  # items put on the floor before the bot starts
 
 
 # A kit that a bot reaching the level could plausibly have (ASCENSION-PLAN-NH5.md); grows with the phases.
@@ -65,6 +66,7 @@ ITEM_TESTS = {
     "kit-scroll-prices": Stage(None, xl=8, wield=None, max_steps=1500, identify=False, wishes=(
         "uncursed +0 plate mail", "2 uncursed scrolls of enchant armor", "uncursed scroll of identify",
         "uncursed scroll of destroy armor")),
+    "kit-chest": Stage(None, xl=8, wield=None, max_steps=400, wishes=("locked chest",), drop=("chest",)),
     "kit-wish": Stage(None, xl=8, wield=None, max_steps=600, identify=False, wishes=("wand of wishing",)),
     "kit-levitation": Stage(None, xl=8, wield=None, max_steps=600, wishes=(
         "uncursed ring of levitation", "wooden flute")),
@@ -199,6 +201,11 @@ def apply_stage(env, stage: Stage) -> dict:
         letter = inventory_letter(env, potion)
         if letter is not None:
             send(env, ["q", letter])
+            settle(env)
+    for name in stage.drop:
+        letter = inventory_letter(env, name)
+        if letter is not None:
+            send(env, ["d", letter])
             settle(env)
     if stage.level is None:  # item tests: the bot itself puts the kit on
         settle(env)
