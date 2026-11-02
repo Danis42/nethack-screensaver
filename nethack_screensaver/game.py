@@ -18,7 +18,7 @@ from autoascend.global_logic import Milestone
 from autoascend.glyph import MON
 from autoascend.item import flatten_items
 from autoascend.plans import DEFAULT_STRATEGY, STRATEGIES, choose_strategy, plan_for, race_from_welcome
-from nethack_screensaver import dungeon_truth, fixed_clock, staging
+from nethack_screensaver import dungeon_truth, fixed_clock, snapshots, staging
 
 HP = 10
 MAX_HP = 11
@@ -80,6 +80,7 @@ class GameResult:
     stuck_reports: list = field(default_factory=list)  # one row per stuck-watch firing (autoascend/stuck.py)
     watchdog_stack: list = field(default_factory=list)  # "dir/file.py:line function", innermost last
     stage: str | None = None  # staged (wizard-mode) game: never mixed into natural-play rates
+    snapshots: dict = field(default_factory=dict)  # hero stats per depth/rung/end (nethack_screensaver/snapshots.py)
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -126,6 +127,14 @@ def _ladder(wrapper, end_reason: str, turns: int) -> tuple[dict, int]:
         return {}, 0
     ladder.finish(end_reason, turns)
     return dict(ladder.reached), ladder.highest()
+
+
+def _reached(wrapper) -> tuple:
+    """Rung keys the ladder has seen so far (read only; empty before the agent exists)."""
+    try:
+        return tuple(wrapper.agent.global_logic.ladder.reached)
+    except Exception:
+        return ()
 
 
 def _has_loot(wrapper) -> bool:
@@ -310,11 +319,13 @@ def run_game(
     prev_chars = None
     watchdog = _ScreenWatchdog(watchdog_seconds)
     ctx = _DeathContext()
+    recorder = snapshots.Recorder()
     truth_for = set()  # agents that got the layout (a pinned role resets the env and makes a new agent)
 
     def on_step(obs):
         nonlocal max_depth, turns, xp_level, prev_chars
         ctx.observe(obs)
+        recorder.observe(obs, _reached(wrapper))
         agent = getattr(wrapper, "agent", None)
         if agent is not None and id(agent) not in truth_for and _give_ladder_truth(wrapper, env):
             truth_for.add(id(agent))
@@ -368,7 +379,8 @@ def run_game(
                       food_at_end=_food_at_end(wrapper), events=_events(wrapper),
                       stuck_reports=_stuck_reports(wrapper), dungeon_at_end=ctx.dungeon_at_end,
                       level_at_end=ctx.level_at_end, watchdog_stack=watchdog_stack,
-                      outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)), stage=stage)
+                      outcome=outcome(strategy, end_reason, max_depth, _has_loot(wrapper)), stage=stage,
+                      snapshots=recorder.result())
 
 
 def _farming(wrapper) -> bool:
