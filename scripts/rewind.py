@@ -5,7 +5,7 @@ deaths were bad luck (survived by a reseed 100 turns back) or something older (n
 A replay is exact: same seed, same bot, same reseeds -> same game (checked 2026-11-02). Reseeds change the core
 and display RNGs only (NLE screens-nh5 cb9d6572f: lgen 0), so levels not yet made come from the new dice too.
 
-    python scripts/rewind.py --seeds 0-19 --procs 11 --out runs.jsonl
+    python scripts/rewind.py --seeds 0-19 --procs 10 --out runs.jsonl
 """
 import argparse
 import json
@@ -122,7 +122,7 @@ def main():
         return
     ap = argparse.ArgumentParser()
     ap.add_argument("--seeds", required=True)
-    ap.add_argument("--procs", type=int, default=11)
+    ap.add_argument("--procs", type=int, default=10)
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
     todo, lock = seeds_arg(args.seeds), threading.Lock()

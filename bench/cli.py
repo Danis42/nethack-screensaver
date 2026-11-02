@@ -22,7 +22,7 @@ URL = os.environ.get("SCREENS_BENCH_URL", "http://127.0.0.1:8765")
 WORKER_PYTHON = Path(os.environ.get("SCREENS_BENCH_PYTHON", sys.executable)).expanduser()
 
 
-def build_app(workers=11, data_dir=DATA, cache_dir=CACHE):
+def build_app(workers=10, data_dir=DATA, cache_dir=CACHE):
     data_dir, cache_dir = Path(data_dir), Path(cache_dir)
     store = Store(data_dir / "results.db")
     store.interrupt_unfinished()
@@ -99,7 +99,7 @@ def main(argv=None):
 
     p = sub.add_parser("serve", help="run the bench server")
     p.add_argument("--port", type=int, default=8765)
-    p.add_argument("--workers", type=int, default=11)
+    p.add_argument("--workers", type=int, default=10)
     p.set_defaults(fn=_serve)
 
     p = sub.add_parser("wait", help="block until a job ends, then print it")
