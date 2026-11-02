@@ -6,7 +6,7 @@ current_phase_name: Port to NetHack 5.0
 status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-11-01
+last_activity: 2026-11-02
 last_activity_desc: exp 36 dropped; baseline ffe48bd (2304 games); exp 39 exp/mines-detour benching (job 71); baseline d5f032c
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
@@ -270,7 +270,10 @@ Resume steps:
    Owner 2026-11-01: (1) store rich stats per game: snapshot at first arrival per depth, at each rung, at death and about 200 turns before it (XL, HP, AC, stats, gear, item counts, kills, damage taken); recording only, same seeds must play identically; rerun the baseline once. (2) Rewind tool (track B). (3) Stage requirements: which arrival stats predict surviving each stage; thresholds from data, checked on held-out games, then a gate tested on the bench.
    Exp 39 KEPT (job 71): rung4 +2.0 [+0.4, +3.6], merged eb72207, baseline 56a6fab (2304 games). Gain fades below Sokoban.
    Strength per depth (.planning/research/STRENGTH-PER-DEPTH.md): XL and HP match humans to Dlvl 10-12; AC is the gap, bot stops at -3/-4, humans -6 at Dlvl 10, -12 at Dlvl 18. Why it stops is unknown.
-   NEXT: stats recording (with gear detail, to answer why AC stops), rerun baseline once, stage requirements, rewind tool, refresh the Medusa and later-stage audit (ASCENSION-ROUTE-AUDIT.md is 3.6). XL 14 cannot be ground: see XL14-NH5.md. Later: get_items_below_me 556 (8), stuck endings.
+   2026-11-02: stats recording DONE, merged 87e0af5 (nethack_screensaver/snapshots.py, GameResult.snapshots: depth/rung/end/before_end;
+   XL, HP, AC, attributes, kills, damage taken, gear, class counts, full inventory; ~12 KB/game). 44 seeds of 56a6fab replay identically.
+   Job 72 = baseline 87e0af5, 2304 games (same game code as 56a6fab plus recording). Next: AC/gear analysis on job 72, then stage requirements.
+   NEXT (was): stats recording (with gear detail, to answer why AC stops), rerun baseline once, stage requirements, rewind tool, refresh the Medusa and later-stage audit (ASCENSION-ROUTE-AUDIT.md is 3.6). XL 14 cannot be ground: see XL14-NH5.md. Later: get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
    XL 14 plan: .planning/research/XL14-NH5.md (Castle before Quest; pluslvl sets XP to threshold; chest gain level; eels
