@@ -278,6 +278,9 @@ Resume steps:
    Rewind tool step 1 DONE: NLE screens-nh5 cb9d6572f (nle_set_seed lgen 0 = dice only; venv rebuilt); seed 0 reseeded at T3000
    twice -> identical (T13166), other seed differs, unreseeded = stored. Scratch: reseed.py. Step 2: infinite-lives runner
    (scripts/rewind.py: on death replay from start with reseed at D-100 x5, then D-1000, D-5000), ~20 seeds. Step 3: death sorter ~200 deaths.
+   Rewind step 2 DONE (scripts/rewind.py, research/REWIND-20.md): 20 seeds, 182 deaths: 68% saved by reseed 100 back, 16% 1000,
+   9% 5000 (mostly hunger), 8% never. Ceiling with infinite lives = Medusa's level (1 seed); nobody passes Medusa.
+   Bench and rewind now default to 10 workers (owner). Bench server restarted (NH5 python, 10 workers).
    NEXT (was): stats recording (with gear detail, to answer why AC stops), rerun baseline once, stage requirements, rewind tool, refresh the Medusa and later-stage audit (ASCENSION-ROUTE-AUDIT.md is 3.6). XL 14 cannot be ground: see XL14-NH5.md. Later: get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
