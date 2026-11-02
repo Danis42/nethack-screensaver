@@ -1,8 +1,8 @@
 ---
 gsd_state_version: "1.0"
 milestone: v0.1.0
-current_phase: "02.1"
-current_phase_name: Port to NetHack 5.0
+current_phase: "02.2"
+current_phase_name: Full Ascension Ruleset
 status: discussing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
@@ -281,6 +281,8 @@ Resume steps:
    Rewind step 2 DONE (scripts/rewind.py, research/REWIND-20.md): 20 seeds, 182 deaths: 68% saved by reseed 100 back, 16% 1000,
    9% 5000 (mostly hunger), 8% never. Ceiling with infinite lives = Medusa's level (1 seed); nobody passes Medusa.
    Bench and rewind now default to 10 workers (owner). Bench server restarted (NH5 python, 10 workers).
+   OWNER 2026-11-02: implement the full ascension ruleset (ROADMAP Phase 02.2), then bot-plays/Claude-steers check, then
+   playbook + infinite-lives runs, then survival. Early-game bench experiments PAUSED. Part 1 starts with item skills (a).
    NEXT (was): stats recording (with gear detail, to answer why AC stops), rerun baseline once, stage requirements, rewind tool, refresh the Medusa and later-stage audit (ASCENSION-ROUTE-AUDIT.md is 3.6). XL 14 cannot be ground: see XL14-NH5.md. Later: get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".

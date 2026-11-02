@@ -121,6 +121,24 @@ ported to 5.0's messages, objects, monsters and levels, and its results compared
 Plans:
 - [ ] TBD (run /gsd-plan-phase 02.1 to break down)
 
+### Phase 02.2: Full Ascension Ruleset (INSERTED)
+
+**Goal:** The bot has rules for the whole route, so it could in theory ascend (owner 2026-11-02). Built in route
+order, each stage tested on a wizard-mode staged start (nethack_screensaver/staging.py) and done when the bot
+passes it in most staged seeds. Source: .planning/research/ASCENSION-PLAN-NH5.md (capability gaps 1-12).
+**Depends on:** Phase 02.1. Early-game bench experiments paused until Part 4 (owner).
+Parts:
+1. Ruleset, in order: (a) item skills: rings/amulets, armour by property, read scrolls by price-ID, unicorn horn,
+   levitation control, instruments, wish list, pry chests; (b) Medusa: dig down going down, cross with
+   reflection/blindfold + levitation going up; (c) Castle: passtune Mastermind, wand chest, wishes, trap doors;
+   (d) XL 14 and the Valkyrie Quest; (e) Gehennom: no prayer/Elbereth/sacrifice, dig down, Vlad, Wizard's Tower,
+   vibrating square, invocation, Sanctum; (f) climb with the Amulet, Planes, Astral; (g) one pilgrim plan
+   from turn 1 to ascension in autoascend/plans.py. No-harm check on the natural bench when early code changes.
+2. Owner check of the plan: the bot plays full games, Claude steers at key moments (stage starts, emergencies).
+   If that gives too little control, split the game into stages and Claude plays them by hand.
+3. Ascension playbook written up; infinite-lives runs (scripts/rewind.py) on ~20 seeds with the new rules.
+4. Back to survival experiments on the bench until the survival rate improves.
+
 ### Phase 3: Gearing Up
 
 **Goal**: The bot arrives deep wearing and carrying what real ascenders do: armour with low AC, magic resistance, reflection, and working wands and rings.
