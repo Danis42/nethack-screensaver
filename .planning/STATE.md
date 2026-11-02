@@ -3,11 +3,11 @@ gsd_state_version: "1.0"
 milestone: v0.1.0
 current_phase: "02.2"
 current_phase_name: Full Ascension Ruleset
-status: discussing
+status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-02
-last_activity_desc: exp 36 dropped; baseline ffe48bd (2304 games); exp 39 exp/mines-detour benching (job 71); baseline d5f032c
+last_activity_desc: Phase 02.2 Part 1a item skills built (feat/item-skills); no-harm bench job 73 running
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -296,6 +296,10 @@ Resume steps:
    Prayer study (6c7bfef, 2304 games): 339 games anger Tyr; 368 later prayers, 0 recognised successes; ends 281 starved,
    34 wrath, 24 other, median 472 turns left; 34/36 wrath deaths Fainting with no food. So "no prayer after a failed
    prayer" only relabels deaths: DEMOTED. Anger is a symptom; the lever is food supply.
+   2026-11-02 late: Phase 02.2 Part 1a built on feat/item-skills (plan .planning/phases/02.2-full-ascension-ruleset/02.2-01-PLAN.md):
+   rings/amulets, armour by property, unicorn horn, scrolls, wish list, pry chests, levitation/tune primitives; staged
+   kit-* tests pass 11-12/12. Job 73 = no-harm bench f4870b4 vs 87e0af5, metric rung2. If no significant loss: merge, then
+   Part 1b (Medusa: dig down; levitation crossing with reflection/blindfold). AC-GAP code cause was WRONG (corrected).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
