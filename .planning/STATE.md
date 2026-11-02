@@ -7,7 +7,7 @@ status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-02
-last_activity_desc: Phase 02.2 Part 1a item skills built (feat/item-skills); no-harm bench job 73 running
+last_activity_desc: Part 1a built, playbook written; job 73 running; next: hand-played games
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -300,6 +300,14 @@ Resume steps:
    rings/amulets, armour by property, unicorn horn, scrolls, wish list, pry chests, levitation/tune primitives; staged
    kit-* tests pass 11-12/12. Job 73 = no-harm bench f4870b4 vs 87e0af5, metric rung2. If no significant loss: merge, then
    Part 1b (Medusa: dig down; levitation crossing with reflection/blindfold). AC-GAP code cause was WRONG (corrected).
+   SESSION END 2026-11-02 (owner): playbook written: .planning/research/ASCENSION-PLAYBOOK-NH5.md (whole route, stage by
+   stage, HAVE/BUILT/MISSING per rule). Branches (local, unmerged, stacked): main 605089d <- feat/item-skills (Part 1a,
+   f4870b4 + state 7a9bf52) <- feat/medusa (dig for GO_DOWN + rise_one_level 9f3d261, passtune solver c4123d1, playbook
+   6772def). Checked out: feat/medusa. Job 73 (no-harm bench f4870b4 vs 87e0af5, metric rung2) was left RUNNING.
+   NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
+   after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND,
+   using the playbook as the checklist; note stage requirements found, near-deaths, wrong/missing rules. 3) Then back
+   to testing with the bot (Part 1b-1g).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
