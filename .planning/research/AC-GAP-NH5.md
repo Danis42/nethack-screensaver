@@ -18,3 +18,18 @@ works (wiki Protection); Minetown's temple is on the route. Price grows with pea
 
 Open: gold carried at Minetown arrival (job 72 snapshots); how often Minetown has a priest in 5.0; human
 ascenders' protection purchases (dumplogs: "You feel a feeling of ..." / attributes).
+
+Full pass, job 72 (87e0af5, 2304 games), first arrival per Dlvl (Dlvl 1 snapshot is before the start kit shows):
+| Dlvl | n | AC | slots | cloak | helm | gloves | boots | shield | body | ench sum |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 5 | 1918 | 1 | 3 | 45% | 83% | 3% | 35% | 99% | 51% | +3 |
+| 7 | 1566 | -1 | 5 | 75% | 92% | 6% | 68% | 95% | 64% | +3 |
+| 10 | 807 | -3 | 5 | 76% | 97% | 13% | 89% | 96% | 68% | +3 |
+| 15 | 183 | -4 | 5 | 64% | 99% | 30% | 94% | 97% | 66% | +3 |
+| 20 | 70 | -4 | 5 | 53% | 96% | 41% | 93% | 99% | 79% | +3 |
+Confirmed: enchantment never grows (no scroll reading), gloves rare, cloak share falls below Dlvl 10 (lost, not replaced: unchecked),
+a third of arrivals have no body armour.
+Gold (rung snapshots): Mines median 41 (XL 4), Oracle 92 (XL 6), Sokoban 183 (XL 7), Minetown 121 (XL 8), p90 483.
+Protection at XL 8 needs about 2400-4000: about 1% of Minetown arrivals could pay. Protection is not cheap for this bot;
+gold supply is the blocker. Bot picks gold up (item priority), drops it only for vault guards (71 of 2304 games).
+Levers left: enchant armour (read scrolls: price-id or read-test), body armour and gloves, cloak replacement.

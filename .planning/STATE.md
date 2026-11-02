@@ -273,6 +273,11 @@ Resume steps:
    2026-11-02: stats recording DONE, merged 87e0af5 (nethack_screensaver/snapshots.py, GameResult.snapshots: depth/rung/end/before_end;
    XL, HP, AC, attributes, kills, damage taken, gear, class counts, full inventory; ~12 KB/game). 44 seeds of 56a6fab replay identically.
    Job 72 = baseline 87e0af5, 2304 games (same game code as 56a6fab plus recording). Next: AC/gear analysis on job 72, then stage requirements.
+   Job 72 done (87e0af5, 2304 games with snapshots). AC gap (research/AC-GAP-NH5.md): ench never grows (bot never reads scrolls),
+   gloves rare, 1/3 no body armour; protection unaffordable (Minetown gold median 121 at XL 8, NH5 price ~2400+).
+   Rewind tool step 1 DONE: NLE screens-nh5 cb9d6572f (nle_set_seed lgen 0 = dice only; venv rebuilt); seed 0 reseeded at T3000
+   twice -> identical (T13166), other seed differs, unreseeded = stored. Scratch: reseed.py. Step 2: infinite-lives runner
+   (scripts/rewind.py: on death replay from start with reseed at D-100 x5, then D-1000, D-5000), ~20 seeds. Step 3: death sorter ~200 deaths.
    NEXT (was): stats recording (with gear detail, to answer why AC stops), rerun baseline once, stage requirements, rewind tool, refresh the Medusa and later-stage audit (ASCENSION-ROUTE-AUDIT.md is 3.6). XL 14 cannot be ground: see XL14-NH5.md. Later: get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".
