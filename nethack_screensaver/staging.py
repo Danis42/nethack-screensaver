@@ -69,7 +69,10 @@ ITEM_TESTS = {
     "kit-chest": Stage(None, xl=8, wield=None, max_steps=400, wishes=("locked chest",), drop=("chest",)),
     "kit-wish": Stage(None, xl=8, wield=None, max_steps=600, identify=False, wishes=("wand of wishing",)),
     "kit-levitation": Stage(None, xl=8, wield=None, max_steps=600, wishes=(
-        "uncursed ring of levitation", "wooden flute")),
+        "uncursed ring of levitation", "wooden flute", "uncursed ring of free action",
+        "uncursed ring of slow digestion")),
+    "kit-levitation-boots": Stage(None, xl=8, wield=None, max_steps=600, wishes=(
+        "uncursed +0 levitation boots", "uncursed +0 iron shoes")),
 }
 STAGES.update(ITEM_TESTS)
 

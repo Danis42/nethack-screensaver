@@ -64,6 +64,7 @@ class Inventory:
         self.agent = agent
         self.item_manager = ItemManager(self.agent)
         self.items = InventoryItems(self.agent)
+        self.levitation_wanted = False  # set by start_levitation: keeps the source on (wear_* leave it alone)
 
         self._previous_blstats = None
         self.items_below_me = None
@@ -254,8 +255,8 @@ class Inventory:
             self.agent.step(A.Command.REMOVE)
             if 'What do you want to remove?' in self.agent.message:
                 self.agent.type_text(letter)
-            ok = not ('cursed' in self.agent.message or "can't" in self.agent.message or
-                      'You are not wearing' in self.agent.message)
+            ok = not (re.search(r'\b(It is|They are|seems to be) cursed', self.agent.message) or
+                      "You can't" in self.agent.message or 'You are not wearing' in self.agent.message)
         if ok:
             self.agent.stats_logger.log_event('remove')
         return ok
@@ -293,7 +294,7 @@ class Inventory:
         worn = [i for i in items if i.equipped and i.category in (nh.RING_CLASS, nh.AMULET_CLASS)]
         for item in worn:
             if item is not amulet and item not in rings and item.status != Item.CURSED and \
-                    not self._levitating_item(item):
+                    not (self._levitating_item(item) and self.levitation_wanted):
                 return 'remove', item
         if amulet is not None and not amulet.equipped:
             if any(i.category == nh.AMULET_CLASS for i in worn):
@@ -365,9 +366,102 @@ class Inventory:
         if not yielded:
             yield False
 
+    # Levitation (Part 1a D-09): primitives for the Medusa, Castle and Planes skills (Parts 1b, 1c, 1f).
+    TONAL_INSTRUMENTS = ('wooden flute', 'magic flute', 'tooled horn', 'frost horn', 'fire horn', 'bugle',
+                         'wooden harp', 'magic harp')
+
+    def levitating(self):
+        return bool(self.agent.blstats.prop_mask & nh.BL_MASK_LEV)
+
+    def levitation_source(self):
+        """A non-cursed ring of levitation (preferred: one action on and off) or pair of levitation boots."""
+        found = [i for i in self.items.all_items if i.is_unambiguous() and i.status != Item.CURSED and
+                 ((i.category == nh.RING_CLASS and i.objs[0].name == 'levitation') or
+                  (i.is_armor() and i.objs[0].name == 'levitation boots'))]
+        found.sort(key=lambda i: i.category != nh.RING_CLASS)
+        return found[0] if found else None
+
+    def start_levitation(self):
+        """Put the levitation source on. False if none or the game refused (a cursed ring blocks both hands)."""
+        source = self.levitation_source()
+        if source is None:
+            return False
+        self.levitation_wanted = True
+        if source.equipped:
+            return self.levitating()
+        if source.category == nh.RING_CLASS:
+            rings = [i for i in self.items.all_items if i.category == nh.RING_CLASS and i.equipped]
+            if len(rings) >= 2:
+                spare = next((r for r in rings if r.status != Item.CURSED), None)
+                if spare is None or not self.remove(spare):
+                    return False
+                source = self.levitation_source()
+            ok = self.put_on(source)
+        else:
+            if self.items.boots is not None:
+                if self.items.boots.status == Item.CURSED or not self.takeoff(self.items.boots):
+                    return False
+                source = self.levitation_source()
+            ok = self.wear(source)
+        if ok:
+            self.agent.stats_logger.log_event('levitation_on')
+        return ok and self.levitating()
+
+    def stop_levitation(self):
+        """Take the levitation source off; the hero floats down where he is (never over water or lava)."""
+        self.levitation_wanted = False
+        worn = [i for i in self.items.all_items if i.equipped and self._levitating_item(i)]
+        for item in worn:
+            ok = self.takeoff(item) if item.is_armor() else self.remove(item)
+            if not ok:
+                return False
+        if worn:
+            self.agent.stats_logger.log_event('levitation_off')
+        return not self.levitating()
+
+    def tonal_instrument(self):
+        return next((i for i in self.items.all_items if i.is_unambiguous() and
+                     i.objs[0].name in self.TONAL_INSTRUMENTS), None)
+
+    def play_tune(self, notes):
+        """Play five notes (A-G) on a tonal instrument; the passtune when the game offers it. Returns the
+        message, which tells the Mastermind result at the Castle ("You hear 2 tumblers click and 1 gear turn.")."""
+        instrument = self.tonal_instrument()
+        if instrument is None:
+            return None
+        instrument = self.move_to_inventory(instrument)
+        letter = self.items.get_letter(instrument)
+
+        def answers():
+            for _ in range(4):
+                msg = self.agent.single_message
+                if 'Improvise?' in msg:
+                    yield 'n'
+                elif 'Play the passtune?' in msg:
+                    yield 'y'
+                elif 'What tune are you playing?' in msg:
+                    yield from notes
+                    yield '\r'
+                    return
+                else:
+                    return
+
+        with self.agent.atom_operation():
+            self.agent.step(A.Command.APPLY)
+            if 'What do you want to use or apply?' not in self.agent.message:
+                return None
+            self.agent.step(letter, answers())
+            message = self.agent.message
+        self.agent.stats_logger.log_event('play_tune')
+        return message
+
     def _levitating_item(self, item):
         """A worn levitation ring/amulet belongs to the levitation skill, not to wear_accessories."""
-        return item.is_unambiguous() and item.objs[0].name in ('levitation', 'amulet of flying')
+        if not item.is_unambiguous():
+            return False
+        name = item.objs[0].name
+        return (item.category == nh.RING_CLASS and name == 'levitation') or \
+            name in ('levitation boots', 'amulet of flying')
 
     def use_container(self, container, items_to_put, items_to_take, items_to_put_counts=None,
                       items_to_take_counts=None):
@@ -1430,6 +1524,9 @@ class Inventory:
                 if best_armorset[slot] == getattr(self.items, name) or \
                         (getattr(self.items, name) is not None and getattr(self.items, name).status == Item.CURSED):
                     continue
+                if slot == O.ARM_BOOTS and self.levitation_wanted and self.items.boots is not None and \
+                        self._levitating_item(self.items.boots):
+                    continue  # the levitation skill wears them
                 additional_cond = True
                 if slot == O.ARM_SHIELD:
                     additional_cond &= self.items.main_hand is None or not self.items.main_hand.objs[0].bi
