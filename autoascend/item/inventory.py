@@ -13,8 +13,9 @@ from autoascend.exceptions import AgentPanic
 from autoascend.glyph import G
 from autoascend.item import ItemManager, Item, ContainerContent, check_if_triggered_container_trap, \
     find_equivalent_item, flatten_items
-from autoascend.item import accessories
+from autoascend.item import accessories, scrolls
 from autoascend.item.inventory_items import InventoryItems
+from autoascend.level import Level
 from autoascend.strategy import Strategy
 
 
@@ -292,6 +293,66 @@ class Inventory:
             if not ring.equipped and len(worn_rings) < 2:
                 return 'put_on', ring
         return None
+
+    def read(self, item):
+        """Read a scroll; an identify menu gets the best unidentified item (item/scrolls.py)."""
+        item = self.move_to_inventory(item)
+        letter = self.items.get_letter(item)
+
+        def identify_menu():
+            while self.agent.single_popup and \
+                    any('What would you like to identify' in line for line in self.agent.single_popup):
+                choice = scrolls.identify_choice(self.agent.single_popup)
+                if choice is None:
+                    yield A.Command.ESC
+                    return
+                yield choice
+                yield '\r'
+
+        with self.agent.atom_operation():
+            self.agent.step(A.Command.READ)
+            if 'What do you want to read?' not in self.agent.message:
+                return False
+            self.agent.step(letter, identify_menu())
+        self.agent.stats_logger.log_event('read_scroll')
+        return True
+
+    def _scroll_state(self):
+        items = list(self.items.all_items)
+        worn_armor = [i for i in items if i.is_armor() and i.equipped]
+        weapon = self.items.main_hand
+        p = self.agent.character.prop
+        return dict(
+            impaired=p.confusion or p.stun or p.hallu or p.blind,
+            worn_armor_mods=[i.modifier for i in worn_armor],
+            weapon_mod=None if weapon is None or not weapon.is_weapon() else (weapon.modifier or 0),
+            cursed_equipped=any(i.equipped and i.status == Item.CURSED for i in items),
+            unidentified=any(not i.is_unambiguous() and i.category in (nh.RING_CLASS, nh.AMULET_CLASS, nh.WAND_CLASS)
+                             for i in items),
+        )
+
+    @utils.debug_log('inventory.read_scrolls')
+    @Strategy.wrap
+    def read_scrolls(self):
+        """Plan decision D-06: one wanted scroll per pass (reading rebuilds the inventory)."""
+        if self.agent.character.prop.polymorph or \
+                self.agent.current_level().dungeon_number == Level.SOKOBAN:
+            yield False
+        yielded = False
+        for _ in range(5):
+            state = self._scroll_state()
+            item = next((i for i in self.items.all_items if scrolls.should_read(i, **state)), None)
+            if item is None:
+                break
+            if not yielded:
+                yielded = True
+                yield True
+            if not item.is_unambiguous():
+                self.agent.stats_logger.log_event('read_unknown_scroll')
+            if not self.read(item):
+                return
+        if not yielded:
+            yield False
 
     def _levitating_item(self, item):
         """A worn levitation ring/amulet belongs to the levitation skill, not to wear_accessories."""
@@ -1009,6 +1070,7 @@ class Inventory:
                 .before(self.check_containers())
                 .before(self.wear_best_stuff())
                 .before(self.wear_accessories())
+                .before(self.read_scrolls())
                 .before(self.wand_engrave_identify())
                 .before(self.go_to_unchecked_containers())
                 .before(self.check_items()

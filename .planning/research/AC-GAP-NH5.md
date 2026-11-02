@@ -39,3 +39,9 @@ unknown (allow_unknown_status=False from wear_best_stuff); found armour is mostl
 for Part 4: altar-test (Minetown temple), pet-test (pet steps on cursed items reluctantly), or accept unknown non-cursed-looking
 armour with a remove-curse fallback. Check first: how often the bot carries/sees unknown armour (snapshots: inventory text).
 Part 1a must also wear armour by property (MR, reflection, levitation, speed), not by AC alone.
+
+CORRECTION 2026-11-02 (Part 1a staged test kit-scroll-prices): the "code cause" above is wrong. item_manager.py:241-243
+turns every UNKNOWN status into UNCURSED after parsing ("FIXME: it gives a better score"), so get_best_armorset never
+sees an unknown status and unknown-B/U/C armour IS worn (seed 1: "a plate mail" worn on turn 91). The AC gap's cause is
+open again: candidates are supply (gloves 3-13%, body armour 51-68%), no enchanting (Part 1a now reads known enchant
+armour), and lost cloaks. Side effect: cursed armour is put on as if uncursed.
