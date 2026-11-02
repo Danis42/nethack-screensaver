@@ -32,6 +32,7 @@ class Stage:
     strategy: str = "daredevil"  # plan for the bot (autoascend/plans.py): a deep start dives, not back to the Mines
     identify: bool = True  # False keeps the kit unidentified (price groups, read-testing)
     max_steps: int | None = None  # item tests stop early: the check is the inventory, not survival
+    quaff: tuple[str, ...] = field(default_factory=tuple)  # potions drunk before the bot starts (inventory text)
 
 
 # A kit that a bot reaching the level could plausibly have (ASCENSION-PLAN-NH5.md); grows with the phases.
@@ -56,8 +57,8 @@ ITEM_TESTS = {
     "kit-armour": Stage(None, xl=8, wield=None, max_steps=1500, wishes=(
         "uncursed +0 cloak of magic resistance", "uncursed +3 elven cloak", "uncursed +0 speed boots",
         "uncursed +2 fumble boots", "uncursed +0 levitation boots")),
-    "kit-unihorn": Stage(None, xl=8, wield=None, max_steps=1500, wishes=(
-        "uncursed unicorn horn", "3 uncursed potions of confusion", "2 uncursed potions of hallucination")),
+    "kit-unihorn": Stage(None, xl=8, wield=None, max_steps=300, quaff=("hallucination", "confusion"), wishes=(
+        "uncursed unicorn horn", "uncursed potion of confusion", "uncursed potion of hallucination")),
     "kit-scrolls": Stage(None, xl=8, wield=None, max_steps=1500, wishes=(
         "uncursed +0 plate mail", "2 uncursed scrolls of enchant armor", "uncursed scroll of remove curse",
         "cursed -1 leather gloves", "uncursed scroll of enchant weapon", "uncursed scroll of fire")),
@@ -171,6 +172,14 @@ def equip(env, wield: str | None) -> None:
         settle(env)
 
 
+def inventory_letter(env, text: str) -> str | None:
+    obs = env._get_observation(env.last_observation)
+    for letter, row in zip(obs["inv_letters"], obs["inv_strs"]):
+        if letter and text in bytes(row).decode("latin1"):
+            return chr(int(letter))
+    return None
+
+
 def apply_stage(env, stage: Stage) -> dict:
     """Set the stage up and return the fresh observation for the bot."""
     settle(env)
@@ -185,6 +194,11 @@ def apply_stage(env, stage: Stage) -> dict:
         send(env, [CTRL_I, CTRL_I])  # wizard identify menu, then ^I again: identify all of it
         settle(env)
         send(env, [ESC])
+    for potion in stage.quaff:
+        letter = inventory_letter(env, potion)
+        if letter is not None:
+            send(env, ["q", letter])
+            settle(env)
     if stage.level is None:  # item tests: the bot itself puts the kit on
         settle(env)
         return env._get_observation(env.last_observation)
