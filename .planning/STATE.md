@@ -305,8 +305,11 @@ Resume steps:
    f4870b4 + state 7a9bf52) <- feat/medusa (dig for GO_DOWN + rise_one_level 9f3d261, passtune solver c4123d1, playbook
    6772def). Checked out: feat/medusa. Job 73 (no-harm bench f4870b4 vs 87e0af5, metric rung2) was left RUNNING.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
-   after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND,
-   using the playbook as the checklist; note stage requirements found, near-deaths, wrong/missing rules. 3) Then back
+   after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
+   OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
+   rule gets: trigger (message / blstats / map / inventory the program can see), action (exact keys, prompt answers,
+   order), done-when (message or state), if-it-fails, evidence (game seen in or source line). Mark vague, wrong and
+   missing rules; record XL/AC/HP/items per stage; unreached stages stay "unchecked". 3) Then back
    to testing with the bot (Part 1b-1g).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
