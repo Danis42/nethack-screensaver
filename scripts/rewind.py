@@ -16,6 +16,7 @@ import threading
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 BACKS = (100, 1000, 5000)  # turns to rewind, tried in order
 TRIES = 5  # reseeds per rewind distance
 SURVIVED = 200  # a retry survives a death when it lives this many turns past it
