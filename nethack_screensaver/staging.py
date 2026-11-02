@@ -65,6 +65,7 @@ ITEM_TESTS = {
     "kit-scroll-prices": Stage(None, xl=8, wield=None, max_steps=1500, identify=False, wishes=(
         "uncursed +0 plate mail", "2 uncursed scrolls of enchant armor", "uncursed scroll of identify",
         "uncursed scroll of destroy armor")),
+    "kit-wish": Stage(None, xl=8, wield=None, max_steps=600, identify=False, wishes=("wand of wishing",)),
     "kit-levitation": Stage(None, xl=8, wield=None, max_steps=600, wishes=(
         "uncursed ring of levitation", "wooden flute")),
 }

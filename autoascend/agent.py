@@ -20,6 +20,7 @@ from .item import Item, flatten_items
 from .item.inventory import Inventory
 from .level import Level
 from .monster_tracker import MonsterTracker, disappearance_mask
+from .item import wishes
 from .stats_logger import StatsLogger
 from .strategy import Strategy
 
@@ -521,10 +522,10 @@ class Agent:
             return
 
         if observation['misc'][1]:  # entering text
-            if "You may wish for an object." in self.message:
-                # TODO: wishing strategy
-                # TODO: assume wished item as blessed
-                self.step('b', iter('lessed greased +2 gray dragon scale mail\r'))
+            if "You may wish for an object." in self.message or 'For what do you wish' in self.message:
+                text = wishes.next_wish(flatten_items(self.inventory.items))  # Part 1a D-07
+                self.stats_logger.log_event('wish')
+                self.step(text[0], iter(text[1:] + '\r'))
                 return
             else:
                 self.step(A.Command.ESC)
