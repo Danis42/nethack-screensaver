@@ -283,6 +283,8 @@ Resume steps:
    Bench and rewind now default to 10 workers (owner). Bench server restarted (NH5 python, 10 workers).
    OWNER 2026-11-02: implement the full ascension ruleset (ROADMAP Phase 02.2), then bot-plays/Claude-steers check, then
    playbook + infinite-lives runs, then survival. Early-game bench experiments PAUSED. Part 1 starts with item skills (a).
+   Part 1a survey: commands used today: APPLY, DIP, EAT, ENGRAVE, LOOT, OFFER, PRAY, QUAFF, TAKEOFF, WEAR, WIELD, ZAP; none of
+   PUTON/REMOVE/READ/PLAY/FORCE/INVOKE. AC cause found: unknown-B/U/C armour is never worn (AC-GAP-NH5.md), fix in Part 4.
    NEXT (was): stats recording (with gear detail, to answer why AC stops), rerun baseline once, stage requirements, rewind tool, refresh the Medusa and later-stage audit (ASCENSION-ROUTE-AUDIT.md is 3.6). XL 14 cannot be ground: see XL14-NH5.md. Later: get_items_below_me 556 (8), stuck endings.
    Exp queue also: exp/scuffed-shop-sign (worktree ../screens-sign, off main, metric rung2 or a shopkeeper metric):
    7 of 24 replayed shopkeeper deaths are kicks at a scuffed sign. See LADDER-NH5.md "Angry peacefuls".

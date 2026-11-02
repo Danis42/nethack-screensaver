@@ -33,3 +33,9 @@ Gold (rung snapshots): Mines median 41 (XL 4), Oracle 92 (XL 6), Sokoban 183 (XL
 Protection at XL 8 needs about 2400-4000: about 1% of Minetown arrivals could pay. Protection is not cheap for this bot;
 gold supply is the blocker. Bot picks gold up (item priority), drops it only for vault guards (71 of 2304 games).
 Levers left: enchant armour (read scrolls: price-id or read-test), body armour and gloves, cloak replacement.
+
+Code cause (2026-11-02): Inventory.get_best_armorset (autoascend/item/inventory.py:884) skips armour whose B/U/C status is
+unknown (allow_unknown_status=False from wear_best_stuff); found armour is mostly unknown, so it is never worn. Fix ideas
+for Part 4: altar-test (Minetown temple), pet-test (pet steps on cursed items reluctantly), or accept unknown non-cursed-looking
+armour with a remove-curse fallback. Check first: how often the bot carries/sees unknown armour (snapshots: inventory text).
+Part 1a must also wear armour by property (MR, reflection, levitation, speed), not by AC alone.
