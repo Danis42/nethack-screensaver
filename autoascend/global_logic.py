@@ -305,7 +305,8 @@ class GlobalLogic:
         return outcome
 
     def _deep_dig_due(self):
-        return self.milestone == Milestone.DIVE and self.agent.blstats.time >= self._next_deep_dig and \
+        return self.milestone in (Milestone.DIVE, Milestone.GO_DOWN) and \
+            self.agent.blstats.time >= self._next_deep_dig and \
             self.agent.current_level().dungeon_number == Level.DUNGEONS_OF_DOOM and \
             self.agent.current_level().level_number >= DEEP_DIG_DLVL and \
             self.agent.current_level().key() not in self._undiggable and \

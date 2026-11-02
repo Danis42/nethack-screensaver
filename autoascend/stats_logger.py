@@ -60,6 +60,7 @@ class StatsLogger:
             "levitation_on": 0,
             "levitation_off": 0,
             "play_tune": 0,
+            "rise_one_level": 0,
             **{f"cast_{n}": 0 for n in character.ALL_SPELL_NAMES},
             **{f"cast_fail_{n}": 0 for n in character.ALL_SPELL_NAMES},
         }

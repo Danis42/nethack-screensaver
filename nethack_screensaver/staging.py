@@ -75,6 +75,8 @@ ITEM_TESTS = {
         "uncursed +0 levitation boots", "uncursed +0 iron shoes")),
 }
 STAGES.update(ITEM_TESTS)
+# primitive self-tests at a real level (scripts/item_selftest.py)
+STAGES["kit-rise"] = Stage("medusa", xl=14, max_steps=60, wishes=MIDGAME_KIT + ("2 cursed potions of gain level",))
 
 
 class StagedChallenge(NetHackChallenge):
