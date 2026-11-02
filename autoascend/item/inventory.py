@@ -13,6 +13,7 @@ from autoascend.exceptions import AgentPanic
 from autoascend.glyph import G
 from autoascend.item import ItemManager, Item, ContainerContent, check_if_triggered_container_trap, \
     find_equivalent_item, flatten_items
+from autoascend.item import accessories
 from autoascend.item.inventory_items import InventoryItems
 from autoascend.strategy import Strategy
 
@@ -211,6 +212,90 @@ class Inventory:
             assert is_take_off_message(), self.agent.message
 
         return True
+
+    def put_on(self, item, hand=None):
+        """Put on a ring (hand 'r'/'l', else the free one) or an amulet. False if the game refused."""
+        item = self.move_to_inventory(item)
+        if item.equipped:
+            return True
+        letter = self.items.get_letter(item)
+        with self.agent.atom_operation():
+            self.agent.step(A.Command.PUTON)
+            if 'What do you want to put on?' not in self.agent.message:
+                return False  # "You are already wearing ...", "You cannot ... while ..." (polymorphed, full hands)
+            self.agent.type_text(letter)
+            if 'Right or Left?' in self.agent.message:
+                if hand is None:
+                    worn = [bytes(t).decode('latin1') for t in self.agent.last_observation['inv_strs']]
+                    hand = 'l' if any('(on right hand)' in t for t in worn) else 'r'
+                self.agent.type_text(hand)
+            ok = bool(re.search(r'\(on (left|right) hand\)|\(being worn\)', self.agent.message))
+        if ok:
+            self.agent.stats_logger.log_event('put_on')
+        return ok
+
+    def remove(self, item):
+        """Take off a ring or an amulet. False if it is cursed or the game refused."""
+        assert item is not None and item.equipped, item
+        letter = self.items.get_letter(item)
+        with self.agent.atom_operation():
+            self.agent.step(A.Command.REMOVE)
+            if 'What do you want to remove?' in self.agent.message:
+                self.agent.type_text(letter)
+            ok = not ('cursed' in self.agent.message or "can't" in self.agent.message or
+                      'You are not wearing' in self.agent.message)
+        if ok:
+            self.agent.stats_logger.log_event('remove')
+        return ok
+
+    def _reflection_from_armor(self):
+        return any(i.is_armor() and i.equipped and i.is_unambiguous() and i.object.power == 65
+                   for i in self.items.all_items)
+
+    @utils.debug_log('inventory.wear_accessories')
+    @Strategy.wrap
+    def wear_accessories(self):
+        """Rings and amulets by plan decisions D-02/D-03 (item/accessories.py). One action per pass: every
+        action rebuilds the inventory items, so the plan is made again each time (as wear_best_stuff does)."""
+        if self.agent.character.prop.polymorph:
+            yield False
+        yielded = False
+        for _ in range(6):  # at most 2 rings + 1 amulet off and on
+            action = self._next_accessory_action()
+            if action is None:
+                break
+            if not yielded:
+                yielded = True
+                yield True
+            verb, item = action
+            if not (self.remove(item) if verb == 'remove' else self.put_on(item)):
+                return
+        if not yielded:
+            yield False
+
+    def _next_accessory_action(self):
+        items = list(self.items.all_items)
+        keep_free = any(i.category == nh.RING_CLASS and self._levitating_item(i) for i in items)
+        amulet, rings = accessories.best_accessories(items, reflection_elsewhere=self._reflection_from_armor(),
+                                                     keep_hand_free=keep_free)
+        worn = [i for i in items if i.equipped and i.category in (nh.RING_CLASS, nh.AMULET_CLASS)]
+        for item in worn:
+            if item is not amulet and item not in rings and item.status != Item.CURSED and \
+                    not self._levitating_item(item):
+                return 'remove', item
+        if amulet is not None and not amulet.equipped:
+            if any(i.category == nh.AMULET_CLASS for i in worn):
+                return None  # the worn amulet is cursed
+            return 'put_on', amulet
+        worn_rings = [i for i in worn if i.category == nh.RING_CLASS]
+        for ring in rings:
+            if not ring.equipped and len(worn_rings) < 2:
+                return 'put_on', ring
+        return None
+
+    def _levitating_item(self, item):
+        """A worn levitation ring/amulet belongs to the levitation skill, not to wear_accessories."""
+        return item.is_unambiguous() and item.objs[0].name in ('levitation', 'amulet of flying')
 
     def use_container(self, container, items_to_put, items_to_take, items_to_put_counts=None,
                       items_to_take_counts=None):
@@ -899,8 +984,11 @@ class Inventory:
             if item.status not in allowed_statuses and not is_dragonscale_armor:
                 continue
 
+            if accessories.never_wear(item.object):
+                continue
+
             slot = item.object.sub
-            ac = item.get_ac()
+            ac = item.get_ac() - accessories.armor_bonus(item.object)  # value by property, not AC alone
 
             if self.agent.character.role == Character.MONK and slot == O.ARM_SUIT:
                 continue
@@ -920,6 +1008,7 @@ class Inventory:
             self.pickup_and_drop_items()
                 .before(self.check_containers())
                 .before(self.wear_best_stuff())
+                .before(self.wear_accessories())
                 .before(self.wand_engrave_identify())
                 .before(self.go_to_unchecked_containers())
                 .before(self.check_items()

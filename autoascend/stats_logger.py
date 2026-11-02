@@ -40,6 +40,17 @@ class StatsLogger:
             "quest_portal_gave_up": 0,
             "boulder_push_try": 0,
             "boulder_pushed": 0,
+            # item skills (Phase 02.2 Part 1a)
+            "put_on": 0,
+            "remove": 0,
+            "read_scroll": 0,
+            "read_unknown_scroll": 0,
+            "unihorn": 0,
+            "wish": 0,
+            "levitation_on": 0,
+            "levitation_off": 0,
+            "play_tune": 0,
+            "force_lock": 0,
             **{f"cast_{n}": 0 for n in character.ALL_SPELL_NAMES},
             **{f"cast_fail_{n}": 0 for n in character.ALL_SPELL_NAMES},
         }

@@ -308,6 +308,8 @@ def run_game(
     env_class = NetHackChallenge if stage is None else staging.StagedChallenge
     if stage is not None and strategy is None:
         strategy = staging.STAGES[stage].strategy
+    if stage is not None and max_steps is None:
+        max_steps = staging.STAGES[stage].max_steps
     env = env_class(no_progress_timeout=1000, fix_moon_phase=seed is not None,
                     character=CHARACTER if role is None else "@")
     if seed is not None:
