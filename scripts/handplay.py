@@ -114,7 +114,9 @@ class Game:
         if not (0 <= x < 79 and 1 <= y <= 21):
             return False
         g = self.glyph(x, y)
-        return bool(nh.glyph_is_monster(g) and not nh.glyph_is_pet(g)) and (x, y) != self.pos()
+        # blind: attackers are remembered as "unseen creature" (invisible-monster marker)
+        return bool((nh.glyph_is_monster(g) and not nh.glyph_is_pet(g)) or nh.glyph_is_invisible(g)) \
+            and (x, y) != self.pos()
 
     def settle(self):
         """Dismiss --More-- (collecting its text) until none is left."""
@@ -247,7 +249,7 @@ class Game:
         return f"ok ({self.turn() - t} turns)"
 
     def c_keys(self, *ks) -> str:
-        self.send(parse_keys(list(ks)))
+        self.send(parse_keys([" ".join(ks)]))  # the command was split on spaces: put them back (wish texts)
         return "ok"
 
     def c_look(self) -> str:
