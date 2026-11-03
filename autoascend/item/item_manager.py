@@ -239,6 +239,8 @@ class ItemManager:
                     self.update_possible_objects(item)
 
         # FIXME: it gives a better score. Implement it in item equipping
+        # buc_known keeps the truth for wielding: a cursed weapon welds (Inventory.get_best_melee_weapon)
+        item.buc_known = item.status != Item.UNKNOWN
         if item.status == Item.UNKNOWN:
             item.status = Item.UNCURSED
 
