@@ -305,6 +305,12 @@ Resume steps:
    f4870b4 + state 7a9bf52) <- feat/medusa (dig for GO_DOWN + rise_one_level 9f3d261, passtune solver c4123d1, playbook
    6772def). Checked out: feat/medusa. Job 73 (no-harm bench f4870b4 vs 87e0af5, metric rung2) was left RUNNING.
    2026-11-03: job 73 was INTERRUPTED at 192 pairs (rung2 +0.0, open; server restart). Restarted as job 74 (same spec, stored games reused).
+   Job 74 DONE: WORSE (rung2 -3.4 [-6.0, -0.8] @2304; rung1 -3.8, rung4 -3.4). Cause: prying_blade wielded unknown-BUC
+   daggers (item_manager stores unknown as UNCURSED); cursed ones welded: cursed weapon wielded at death 215 vs 46,
+   dagger wielded on reaching Dlvl 4 49 vs 7. Fix c49e3ee on feat/item-skills (blade must have known BUC); feat/medusa
+   rebased on it. Job 75 = c49e3ee vs 87e0af5, metric rung2 (no-harm check again). Merge only if not worse.
+   Hand play: scripts/handplay.py (checked commands, game's own square descriptions); seed 1 at T1444 Dlvl 4,
+   notes .planning/hand-games/seed1/NOTES.md (F1-F17).
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
