@@ -30,9 +30,25 @@ def dig_tool(items, empty_wands=()):
     return pick
 
 
+WET = (SS.S_pool, SS.S_water, SS.S_lava, SS.S_lavawall)
+
+
+def _near(mask):
+    """Squares with a True square among their 8 neighbours or on themselves."""
+    padded = np.pad(mask, 1)
+    h, w = mask.shape
+    return np.logical_or.reduce([padded[1 + dy:1 + dy + h, 1 + dx:1 + dx + w]
+                                 for dy in (-1, 0, 1) for dx in (-1, 0, 1)])
+
+
 def dig_square(objects, shop, dis, here):
-    """Nearest reachable plain floor square outside shops (the hero's own square first), or None."""
-    ok = np.isin(objects, list(DIGGABLE_FLOOR)) & ~shop & (dis >= 0)
+    """Nearest reachable plain floor square outside shops (the hero's own square first), or None.
+
+    Never next to water or lava: dig.c:606 fillholetyp fills the hole with water (a moat square is enough) and the
+    hero falls in (staged medusa, map 3). On a level with known water an unexplored neighbour may be water too."""
+    wet = np.isin(objects, WET)
+    risky = wet | (objects == SS.S_stone) if wet.any() else wet
+    ok = np.isin(objects, list(DIGGABLE_FLOOR)) & ~shop & (dis >= 0) & ~_near(risky)
     if ok[here]:
         return here
     if not ok.any():
