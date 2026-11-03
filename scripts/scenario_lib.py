@@ -97,8 +97,13 @@ SCENARIOS: dict[str, Scenario] = {
     "eye-telepathy": Scenario(
         stage=dict(level=None, xl=8, wield=None, max_steps=400, wishes=("uncursed towel",)),
         monsters=("floating eye",),
-        checks={"telepathy gained": said("mental acuity"),
+        checks={"eye killed": lambda r: any(re.search(r"You (kill|destroy) (it|the floating eye)!", m)
+                                            for m in r["messages"]),
+                "corpse eaten if left": lambda r: (not any("floating eye corpse" in m for m in r["messages"])
+                                                   or any("mental acuity" in m for m in r["messages"])),
+                "telepathy gained": said("mental acuity"),
                 "never frozen": never("You are frozen"),
                 "alive": alive},
-        note="floating eye created next to the hero"),
+        seeds="1-8",
+        note="floating eye created next to the hero; ~1/2 of eyes leave a corpse (mon.c), so telepathy <= ~50%"),
 }

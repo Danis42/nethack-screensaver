@@ -326,6 +326,11 @@ Resume steps:
    Job 75 DONE: c49e3ee no measurable difference (rung2 -1.1 [-3.6, +1.5]; rung1 -2.3 [-4.6, -0.1] watch); cursed
    weapon at death 42 (base 48, f4870b4 245). feat/item-skills MERGED to main 656c7c2 (game code = c49e3ee: NEW BASELINE,
    2304 games stored under c49e3ee). Job 76 (exp/known-buc-wield vs 87e0af5) running; rebase it on main if kept.
+   2026-11-03 END (usage limit): exp/eye-telepathy (worktree .worktrees/eye-telepathy, off main 656c7c2) built:
+   scenario eye killed 5/8 -> 8/8, corpse eaten 7/8 -> 8/8; next: measure eye/blindfold frequency (eyetrace,
+   needs idle cores), then bench vs c49e3ee. Job 76 (exp/known-buc-wield vs 87e0af5) running: read it, rebase on main if kept.
+   feat/medusa: water fix 5497600 validated by scenario medusa-dig; next Medusa problem: nobody gets below (map 3 no dry
+   square -> levitation/cold crossing; map 2 titan). Remove .worktrees/eye-telepathy after use.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
