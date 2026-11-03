@@ -22,6 +22,7 @@ class Scenario:
     checks: dict[str, Callable[[dict], bool]]
     monsters: tuple[str, ...] = ()  # created next to the hero after the setup (wizard ^G)
     dips: tuple[tuple[str, str], ...] = ()  # (item text, potion text): #dip the item into the potion after setup
+    eat: tuple[str, ...] = ()  # inventory texts eaten after the setup (e.g. a floating eye corpse: telepathy)
     keys: tuple[str, ...] = ()  # raw key strings sent after the setup and before the dips (e.g. "w-" bare hands)
     seeds: str = "1-12"
     note: str = ""
@@ -93,6 +94,21 @@ SCENARIOS: dict[str, Scenario] = {
                 "got below Medusa": lambda r: r["result"].get("max_depth", 0) > r["start_depth"]},
         seeds="1-12", strategy="daredevil",
         note="arrival on Medusa's level with a pick-axe; map varies by seed"),
+    # Levitation crossing (medusa.py): ring of levitation + reflection + telepathy (eaten eye) + blindfold.
+    "medusa-levitate": Scenario(
+        stage=dict(level="medusa", xl=14, max_steps=3000,
+                   wishes=("blessed +2 dwarvish mithril coat", "blessed +2 dwarvish iron helm",
+                           "blessed +2 iron shoes", "pick-axe", "blessed fixed +2 long sword",
+                           "4 blessed potions of extra healing", "uncursed unicorn horn", "2 lizard corpses",
+                           "blindfold", "blessed amulet of reflection", "blessed ring of levitation",
+                           "floating eye corpse")),
+        eat=("floating eye corpse",),
+        checks={"telepathic (setup)": said("mental acuity"),
+                "crossed by levitation": event("medusa_landed"),
+                "not drowned": never("You drown"),
+                "got below Medusa": lambda r: r["result"].get("max_depth", 0) > r["start_depth"]},
+        seeds="1-8", strategy="daredevil",
+        note="arrival on Medusa's level; dig where dry, else levitate to the stairs/Medusa"),
     # Telepathy rule (TELEPATHY-NH5.md): a floating eye next to the hero, a towel in the pack.
     "eye-telepathy": Scenario(
         stage=dict(level=None, xl=8, wield=None, max_steps=400, wishes=("uncursed towel",)),

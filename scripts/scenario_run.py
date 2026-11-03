@@ -43,6 +43,11 @@ state = {"start_depth": 0}
 
 def prepare(env, _stage):
     obs = setup.apply_stage(env, stage)
+    for item in sc.eat:
+        letter = setup.inventory_letter(env, item)
+        if letter:
+            setup.send(env, "e" + letter)
+            setup.settle(env)
     for keys in sc.keys:
         setup.send(env, keys)
         setup.settle(env)

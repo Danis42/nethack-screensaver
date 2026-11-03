@@ -5,6 +5,7 @@ from nle.nethack import actions as A
 from . import objects as O
 from . import boulders
 from . import digging
+from . import medusa
 from . import quest_portal
 from . import soko_solver
 from .soko_solver import search as soko_search
@@ -235,6 +236,8 @@ class GlobalLogic:
         self._progress = ProgressWatch(STUCK_TURNS)
         self._mines_dive_over = False  # a diver in the Mines heads down them until stuck (Mines' End)
         self._undiggable = set()  # levels whose floor was too hard to dig through
+        self._medusa_crossed = set()  # levels crossed by levitation (medusa.py)
+        self._next_medusa_try = 0
         self._dig_level, self._dig_retries = None, 0
         self._next_deep_dig = 0  # turn of the next deep-dive dig attempt
         self.stuck_reports = []  # one row per stuck-watch firing (autoascend/stuck.py), for the results
@@ -323,6 +326,64 @@ class GlobalLogic:
         if outcome != 'fell':
             self._next_deep_dig = self.agent.blstats.time + DEEP_DIG_RETRY_TURNS
         return outcome == 'fell'
+
+    def _medusa_peek(self, blindfold):
+        """Blindfold on for one look: telepathy (intrinsic or a helm) shows Medusa through walls and water."""
+        a = self.agent
+        letter = a.inventory.items.get_letter(blindfold)
+        with a.atom_operation():
+            a.step(A.Command.PUTON)
+            if 'What do you want to put on?' not in a.message:
+                return None
+            a.type_text(letter)
+            target = medusa.crossing_target(a.glyphs, G.STAIR_DOWN, MEDUSA)
+            a.step(A.Command.REMOVE)
+            if 'What do you want to remove?' in a.message:
+                a.type_text(letter)
+        return target
+
+    def _cross_medusa(self):
+        """Levitate over Medusa's water to her island when digging cannot (medusa.py, MEDUSA-NH5.md): needs a
+        levitation source and reflection (her gaze then kills her). True if the hero landed on the far side."""
+        a = self.agent
+        level = a.current_level()
+        if level.dungeon_number != Level.DUNGEONS_OF_DOOM or level.level_number < 21 or \
+                level.key() in self._medusa_crossed or a.blstats.time < self._next_medusa_try:
+            return False
+        wet = utils.isin(level.objects, digging.WET)
+        if wet.sum() < 200:  # Medusa's level is mostly water; other deep levels have little or none
+            return False
+        self._next_medusa_try = a.blstats.time + 200
+        inv = a.inventory
+        if inv.levitation_source() is None:
+            a.stats_logger.log_event('medusa_no_levitation')
+            return False
+        if not (inv._reflection_from_armor() or any(i.equipped for i in inv._known('amulet of reflection'))):
+            a.stats_logger.log_event('medusa_no_reflection')
+            return False
+        target = medusa.crossing_target(a.glyphs, G.STAIR_DOWN, MEDUSA)
+        if target is None:
+            blindfold = next((i for i in inv._known('blindfold') + inv._known('towel') if i.status != Item.CURSED),
+                             None)
+            if blindfold is not None:
+                target = self._medusa_peek(blindfold)
+        if target is None:
+            a.stats_logger.log_event('medusa_no_target')
+            return False
+        land = medusa.landing_square(level.walkable, wet, target)
+        if land is None or not inv.start_levitation():
+            return False
+        a.stats_logger.log_event('medusa_levitate')
+        for _ in range(8):
+            if (a.blstats.y, a.blstats.x) == land:
+                break
+            a._fast_go_to(*land)
+        if (a.blstats.y, a.blstats.x) != land:
+            return False  # still levitating: the next try goes on from here
+        inv.stop_levitation()
+        self._medusa_crossed.add(level.key())
+        a.stats_logger.log_event('medusa_landed')
+        return True
 
     def _stuck(self):
         return self._progress.stuck(self.agent.current_level().key(), self.milestone, self.agent.blstats.time)
@@ -1014,6 +1075,8 @@ class GlobalLogic:
                 self.plan.bail_out()
                 continue
             if self._dig_deep():
+                continue
+            if self._cross_medusa():
                 continue
             if self._stuck():
                 self.agent.stats_logger.log_event('stuck_dive')

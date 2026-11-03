@@ -24,3 +24,16 @@ When a floating eye is seen and the hero has no telepathy:
 3. Never with another hostile adjacent; never in Sokoban (luck) concerns: none for eyes.
 Measure first (needs free cores): how often the bot sees a floating eye per game and by which Dlvl, how often it
 already eats one by chance ("mental acuity" in messages), whether it carries a blindfold/towel when it meets one.
+
+## Measurement 2026-11-03 (100 natural games on main c49c201, scratchpad eyetrace.py)
+| | games |
+|---|---|
+| saw a floating eye | 87 (median first sight T2729, Dlvl 4) |
+| killed >= 1 eye (ranged, already) | 79 (309 kills in all) |
+| gained telepathy | 48 (median T3495) |
+| killed eyes but never telepathic | 31 |
+| blindfold or towel carried at the first eye | 15 |
+=> The blindfold-melee rule (exp/eye-telepathy) fires in ~15% of games. The bigger lever: the 31 games that kill eyes
+and lose the corpse (pet eats it, the bot checks corpses only every 5 turns and never when Satiated). Next rule: after
+"You kill the floating eye" with no telepathy, go to the corpse and eat it at once (Satiated: still eat; a 10-nutrition
+corpse cannot choke unless already oversatiated - check eat.c choking rule first).

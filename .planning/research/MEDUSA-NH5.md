@@ -49,3 +49,12 @@ Medusa killed (logged in 130): median T29317, quartiles T22669-T36008.
    water within 1 (digging.dig_square does not check: MISSING, small fix).
 4. Stage requirement for Medusa (candidate, to test on staged runs): telepathy + blindfold + (levitation or cold or
    a dry dig square) + reflection or blindfold for Medusa.
+
+## Levitation crossing (feat/medusa, 2026-11-03; autoascend/medusa.py + GlobalLogic._cross_medusa)
+Source checks: '>' does not work while levitating (do.c:1154); levitation does NOT stop an eel from drowning the hero
+(uhitm.c:3389 checks only swimming/amphibious/breathless): kill or avoid sea monsters, or magical breathing; kicking
+while levitating misses small targets 1/3 (dokick.c:154). Rule: on a deep mostly-water level when digging fails, with a
+levitation source and reflection, target = down stairs if seen, else Medusa (telepathic peek with a blindfold), land on
+the nearest dry walkable square, take levitation off. Scenario medusa-levitate seed 1: the extra wishes change the RNG,
+so seed 1 became map 2 (gremlin + invisible titan killed the XL14 hero at T47) and the hero levitated from the start
+(check: does the bot put the ring on by itself?). Not yet validated on map 3.

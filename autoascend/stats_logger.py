@@ -9,6 +9,11 @@ class StatsLogger:
     def __init__(self):
         self._values = {
             "agent_panic": 0,
+            "medusa_no_levitation": 0,
+            "medusa_no_reflection": 0,
+            "medusa_no_target": 0,
+            "medusa_levitate": 0,
+            "medusa_landed": 0,
             "stoning_cure_eaten": 0,
             "deadly_trouble_prayer": 0,
             "elbereth_write": 0,
