@@ -66,3 +66,28 @@ Tool: scripts/handplay.py (keys.log + seed rebuild the game). Findings feed ASCE
   prayer: a wasted prayer is the cost of a wrong trouble rule; (c) SAVED by Elbereth in the dust
   (E - n Elbereth): "The giant bat turns to flee"; rested on it from HP 3 to 13 in 60 turns undisturbed,
   even with a bow gnome on the level. Unknown potions at HP 3: NOT quaffed (acid / sickness can kill).
+- F18 (T1523): second floating eye killed by a magic missile on the BOUNCE (the zap missed, the bounce hit
+  it) and the bounce hit me for 10 too. No corpse. Same rule as F17: rays bounce at nearby walls.
+
+## DEATH T1539, Dlvl 4, XL 4, HP 31 max, AC 4: "killed by a giant bat, while sleeping"
+Chain (each link is a rule):
+1. T1128 wielded an untested dagger to pry a box -> cursed, welded (F12). From then on: d4 dagger at Basic
+   skill, many misses (about half my swings missed bats/homunculus/iguana).
+   SAME BUG IN THE BOT: job 74 found prying_blade wields unknown-BUC daggers (cursed weapon wielded at death
+   215 vs 46 games); fixed in c49e3ee. The hand game found it independently.
+2. T1246 prayer spent on a welded weapon that is not trouble (F12 correction) -> no prayer left later.
+3. T1529-1539 fought a homunculus (sleep bite; Valkyrie has no sleep resistance) in a dark corridor at
+   HP 22 -> 14 with a known giant bat still loose on the level. Asleep twice; the second sleep let the bat
+   bite 3 times: HP 12 -> 0.
+Rules for the bot (new or sharpened):
+- R1 sleep-biters (homunculus 'i', also later: sleep rays, potions): without sleep resistance, fight them
+  only at high HP and with no other hostile on the level in view/known nearby; else Elbereth first
+  (homunculi respect it) or leave.
+- R2 when HP < 50% and a second monster is known nearby: stop meleeing, write Elbereth, rest on it
+  (it worked at F17: HP 3 -> 25 untouched).
+- R3 never wield an item whose curse status is unknown (prying, swapping, trying a weapon). Test on an
+  altar first (Dlvl 2 and 3 both had altars) - drop-test every picked-up weapon before using it.
+- R4 prayer only for real trouble per pray.c (in_trouble): low HP per critically_low_hp, Weak, stoning etc.
+  A welded one-hander with an uncursed shield is minor trouble only (needs timeout < 100).
+Stage numbers at death: T1539, Dlvl 4, XL 4, AC 4, maxHP 31, Mines branch not found (Dlvl 2 and 4 partly
+explored, 3 fully). Human ascenders enter the Mines at T1173 (MINES-ENTRY-NH5.md).
