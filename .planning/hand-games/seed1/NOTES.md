@@ -4,7 +4,7 @@ Tool: scripts/handplay.py (keys.log + seed rebuild the game). Findings feed ASCE
 
 ## Findings
 - F1 (T1): NetHack 5 Valkyrie starts with a +1 spear and +0 dagger, NOT a long sword (src/u_init.c:160).
-  Excalibur (fountain.c:404) needs a LONG_SWORD found or bought, XL >= 5. Playbook rule missing: pick up / buy
+  CORRECTED: Excalibur (fountain.c:404) is lawful-only (neutral = cursed sword) and 1/30 per dip: not for us. Old text: pick up / buy
   a long sword; dip at a fountain at XL 5+. Staged kits assume a long sword.
 - F2 (T44-160, Dlvl 2): arrival room sealed: one locked door + one hidden door (found after ~10 searches next
   to the wall) leading to a dead end. Kicking the locked door opened it in 3 kicks. Rule: in a closed start room,

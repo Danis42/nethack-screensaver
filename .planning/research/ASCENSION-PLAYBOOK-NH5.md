@@ -63,7 +63,9 @@ Mines gnomes, dwarves and hobbits are hostile: fights in the Mines, but dwarves'
 - Boxes: #untrap before #loot/#force (a fire trap took 3 max HP and burnt armour). Pry only with a known
   uncursed spare blade (0.8%/turn break, about 12% per lock); bash otherwise (1/3 destroys box + potions).
 - A floating eye in a corridor is a wall: route around or wait (it follows slowly). Never throw the only weapon.
-- NetHack 5 Valkyrie starts with a +1 spear and a dagger, no long sword: Excalibur needs a found long sword.
+- NetHack 5 Valkyrie starts with a +1 spear and a dagger, no long sword. NO EXCALIBUR for us: fountain.c:404 gives it only
+  to lawful heroes (neutral: the sword is cursed, the fountain vanishes) and only 1 in 30 dips for non-Knights.
+  Never dip a long sword. Weapon plan needs a different answer (Mjollnir by sacrifice gift, Frost Brand/other wish).
 
 ### Things never to do (from deaths on the bench)
 - Melee floating eyes (HAVE: exp 21), cockatrices bare-handed or chickatrice corpses; eat cockatrice, Medusa, Green-slime.
