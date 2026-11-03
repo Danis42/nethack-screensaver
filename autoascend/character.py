@@ -5,6 +5,7 @@ import numpy as np
 from nle.nethack import actions as A
 
 from . import objects as O
+from .telepathy import TELEPATHY_MESSAGES
 
 ALL_SPELL_NAMES = [
     "force bolt",
@@ -265,6 +266,7 @@ class Character:
     def __init__(self, agent):
         self.agent = agent
         self.prop = Property(agent)
+        self.telepathic = False
         self.role = None
         self.alignment = None
         self.race = None
@@ -284,6 +286,8 @@ class Character:
     def update(self):
         if "aren't able to use or apply tools in your current form." in self.agent.message:
             self.nohands_glyph = self.agent.glyphs[self.agent.blstats.y, self.agent.blstats.x]
+        if any(text in self.agent.message for text in TELEPATHY_MESSAGES):
+            self.telepathic = True  # intrinsic, eat.c:1075
         if 'You feel feverish.' in self.agent.message:
             self.is_lycanthrope = True
         if 'You feel purified.' in self.agent.message:

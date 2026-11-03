@@ -9,6 +9,7 @@ import numpy as np
 from nle.nethack import actions as A
 
 from . import combat
+from . import telepathy
 from . import utils
 from .character import Character
 from .exceptions import AgentPanic, AgentFinished, AgentChangeStrategy
@@ -1522,6 +1523,74 @@ class Agent:
             return False
 
         return True
+
+    def take_off_blindfold(self):
+        """Remove a worn blindfold or towel, read from the live inventory lines (Item objects may be stale here)."""
+        for letter, text in zip(self.last_observation['inv_letters'], self.last_observation['inv_strs']):
+            text = bytes(text).decode('latin1')
+            if ('blindfold' in text or 'towel' in text) and ('(being worn)' in text or 'around your' in text
+                                                             or 'over your' in text):
+                self.step(A.Command.REMOVE)
+                if 'What do you want to remove?' in self.message:
+                    self.type_text(chr(letter))
+                return 'You can see again' in self.message or 'You take off' in self.message or \
+                    'You were wearing' in self.message
+        return False
+
+    @utils.debug_log('get_telepathy')
+    @Strategy.wrap
+    def get_telepathy(self):
+        """Kill a floating eye blind (blindfold or towel on) and leave its corpse to eat_corpses_from_ground.
+
+        telepathy.py, TELEPATHY-NH5.md. While blind the kill reads "You kill it!", which _update_level_corpses
+        ignores, so the corpse is registered here."""
+        blindfold = next((i for i in flatten_items(self.inventory.items)
+                          if i.is_unambiguous() and i.object.name in ('blindfold', 'towel') and i.status != Item.CURSED),
+                         None)
+        target = telepathy.eye_target(self.get_visible_monsters(), self.character.telepathic, blindfold is not None)
+        if target is None:
+            yield False
+        yield True
+        ey, ex = target
+        if not utils.adjacent((self.blstats.y, self.blstats.x), (ey, ex)):
+            self.go_to(ey, ex, stop_one_before=True, max_steps=30)
+            if not utils.adjacent((self.blstats.y, self.blstats.x), (ey, ex)):
+                return
+        killed = False
+        # one atomic block: a preempting strategy must not take over while the hero is blindfolded
+        with self.atom_operation():
+            if not blindfold.equipped:
+                self.inventory.put_on(blindfold)  # its check wants "(being worn)"; a towel says "around your head"
+                if "can't see any more" not in self.message and 'now wearing' not in self.message:
+                    self.stats_logger.log_event('telepathy_no_blindfold')
+                    self.take_off_blindfold()
+                    return
+            self.stats_logger.log_event('telepathy_attempt')
+            try:
+                for _ in range(15):
+                    if not utils.adjacent((self.blstats.y, self.blstats.x), (ey, ex)):
+                        break
+                    self.step(A.Command.FIGHT)
+                    self.direction(ey, ex)
+                    if re.search(r'You (kill|destroy) (it|the floating eye)!', self.message):
+                        killed = True
+                        break
+                    if 'You attack thin air' in self.message or 'You harmlessly attack' in self.message:
+                        break  # the eye moved away
+            finally:
+                self.take_off_blindfold()
+        if killed:
+            self.stats_logger.log_event('telepathy_eye_killed')
+            eye_id = MON.from_name(telepathy.EYE) - nh.GLYPH_MON_OFF
+            self.current_level().corpses_to_eat[ey, ex][eye_id] = self.blstats.time
+            # eat it now, before the pet does (about half the eyes leave a corpse, mon.c:3247)
+            self.move(ey, ex)
+            if (self.blstats.y, self.blstats.x) == (ey, ex):
+                corpse = next((i for i in self.inventory.items_below_me
+                               if i.is_corpse() and i.monster_id == eye_id), None)
+                if corpse is not None and self.blstats.hunger_state != Hunger.SATIATED:
+                    self.inventory.eat(corpse)
+                    self.stats_logger.log_event('telepathy_eye_eaten')
 
     @utils.debug_log('eat_corpses_from_ground')
     @Strategy.wrap
