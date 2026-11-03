@@ -119,7 +119,14 @@ Mines gnomes, dwarves and hobbits are hostile: fights in the Mines, but dwarves'
 ## Stage 5. Medusa (Dlvl 21-24)
 
 - Going down: do not explore. From Dlvl 21 dig down on arrival (no hardfloor on any of the 4 maps); the Castle floor
-  is undiggable, so the dig stops there. BUILT (track-b: 7 of 12 staged games reached the Castle level; now also for
+  is undiggable, so the dig stops there.
+  CORRECTED (staged hand game medusa seed 1, 2026-11-03): a hole dug with water (moat) among its 8 neighbours fills
+  with water and drops the hero in it (dig.c:606 fillholetyp). Dry arrival squares: medusa-1 32/67, medusa-2 46/53,
+  medusa-3 0/16 (dig impossible: levitate, freeze the water, or another crossing), medusa-4 6/51 (one corner).
+  Digging under attack never progresses (dig.c:1355: each attack stops the occupation before dig() runs): clear
+  the attackers first. medusa-3 has ~20 blinding ravens: without telepathy blind melee loses (-51 HP for 2 kills);
+  with telepathy fight-first works (17+ kills, 2 extra healings). Elbereth fails against a crowd (monmove.c:918
+  panic attack). Stage requirement candidate: telepathy before Medusa. BUILT (track-b: 7 of 12 staged games reached the Castle level; now also for
   the pilgrim's GO_DOWN on feat/medusa). If digging is impossible: levitate across (ring/boots) with reflection or a
   blindfold on, kill Medusa only with reflection. Levitation primitives BUILT (1a), crossing route MISSING.
 - Coming back up (to reach the Quest, and later with the Amulet): from the Castle take its up stairs to Medusa's down

@@ -29,3 +29,20 @@ Level: Medusa variant with trees and ~20 ravens (+ wood nymph), Dlvl 26. Arrival
 - Staged kit gap: MIDGAME_KIT has no telepathy and no ranged/area attack; the real hero would have Excalibur
   at most. The stage requirement for Medusa probably includes telepathy (intrinsic) - check human
   ascension data (NLD-NAO) for telepathy before Medusa.
+
+## Replay with the fight-first plan (same seed, 2026-11-03)
+- M5 blind melee (no telepathy): 2 ravens killed in 18 turns for -51 HP: swings go at "it" squares the fast
+  ravens already left. Not sustainable against 20+ ravens.
+- M6 with telepathy (wizard wish: helm of telepathy, swapped for the +2 dwarvish helm, AC -10 -> -7): blind but
+  every raven visible. T26-T127: about 17 ravens + a baby gray dragon + a jellyfish killed, 2 extra healings
+  used, HP ended 85/127 and rising: the swarm thins and fewer reach the hero. Fight-first WORKS with
+  telepathy. Stage requirement candidate: telepathy (intrinsic or helm) before Medusa. CHECK with human data.
+- M7 DIG DOWN NEXT TO WATER FILLS THE HOLE: "As you dig, the hole fills with water! You fall into the shallow
+  sea!" (twice; armour rusted AC -7 -> -5; sinking can drown a heavy hero). SOURCE dig.c:606 fillholetyp: any
+  moat among the 8 neighbours fills the pit/hole with chance moat/(moat+1); pools count /3.
+  STATIC CHECK of the 4 maps (arrival region = teleport_region dir=down): floor squares with no water within 1:
+  medusa-1 32 of 67, medusa-2 46 of 53, medusa-3 0 of 16 (dig impossible), medusa-4 6 of 51 (one corner,
+  (67-69,2-3) in map coordinates). Dry land elsewhere on medusa-3 ((58,16)) is not reachable on foot.
+  => Playbook rule "dig down on arrival" is wrong for medusa-3 and needs a dry-square search on medusa-4.
+     Bot: digging.dig_square must require no water within 1 square; on medusa-3 crossing needs levitation
+     (or water walking / freezing the water with a wand of cold).
