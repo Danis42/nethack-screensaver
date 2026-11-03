@@ -38,7 +38,8 @@ from nethack_screensaver import fixed_clock  # noqa: E402
 TOKENS = {"<esc>": 27, "<ret>": 13, "<sp>": 32, "<tab>": 9, "<bs>": 8}
 DIRS = {"h": (-1, 0), "l": (1, 0), "k": (0, -1), "j": (0, 1), "y": (-1, -1), "u": (1, -1), "b": (-1, 1), "n": (1, 1)}
 NAMES = {"y": "NW", "k": "N", "u": "NE", "h": "W", "l": "E", "b": "SW", "j": "S", "n": "SE"}
-OBS_KEYS = ("glyphs", "blstats", "tty_chars", "tty_cursor", "screen_descriptions", "message", "inv_strs")
+OBS_KEYS = ("glyphs", "blstats", "tty_chars", "tty_cursor", "screen_descriptions", "message", "inv_strs",
+            "inv_letters", "inv_oclasses")
 
 
 def parse_keys(args: list[str]) -> list[int]:
@@ -60,14 +61,20 @@ def parse_keys(args: list[str]) -> list[int]:
 
 
 class Game:
-    def __init__(self, seed: int, log: Path | None):
+    def __init__(self, seed: int, log: Path | None, stage: str | None = None):
         fixed_clock.pin(seed)
         from nle.env.tasks import NetHackChallenge
+        from nethack_screensaver import staging
         from nethack_screensaver.game import CHARACTER
-        self.env = NetHackChallenge(no_progress_timeout=10**9, fix_moon_phase=True, character=CHARACTER,
-                                    observation_keys=OBS_KEYS)
+        # a staged game (staging.py): wizard mode, kit by wishes, teleport to the stage level; the setup keys are
+        # not in keys.log, a resume rebuilds the stage from the seed first
+        env_class = NetHackChallenge if stage is None else staging.StagedChallenge
+        self.env = env_class(no_progress_timeout=10**9, fix_moon_phase=True, character=CHARACTER,
+                             observation_keys=OBS_KEYS)
         type(self.env.nethack).set_initial_seeds(self.env.nethack, seed, seed, False)
         self.env.reset()
+        if stage is not None:
+            staging.apply_stage(self.env, staging.STAGES[stage])
         self.done = False
         self.log = None
         if log is not None and log.exists():  # resume: replay the keys of this game
@@ -328,10 +335,10 @@ class Game:
         return "\n".join(results) + "\n" + self.view(show_map)
 
 
-def serve(seed: int, d: Path):
+def serve(seed: int, d: Path, stage: str | None = None):
     d.mkdir(parents=True, exist_ok=True)
-    (d / "meta.json").write_text(json.dumps({"seed": seed}))
-    game = Game(seed, d / "keys.log")
+    (d / "meta.json").write_text(json.dumps({"seed": seed, "stage": stage}))
+    game = Game(seed, d / "keys.log", stage)
     sock_path = d / "sock"
     sock_path.unlink(missing_ok=True)
     srv = socket.socket(socket.AF_UNIX)
@@ -367,10 +374,11 @@ def main():
     ap.add_argument("--seed", type=int)
     ap.add_argument("--dir", type=Path, required=True)
     ap.add_argument("--nomap", action="store_true")
+    ap.add_argument("--stage", help="staged start (nethack_screensaver/staging.py STAGES), wizard mode")
     a = ap.parse_args()
     if a.cmd == "serve":
         fixed_clock.ensure_preloaded()
-        serve(a.seed, a.dir)
+        serve(a.seed, a.dir, a.stage)
     elif a.cmd == "quit":
         print(client(a.dir, {"quit": True}), end="")
     else:
