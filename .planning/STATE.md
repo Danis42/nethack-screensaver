@@ -316,6 +316,13 @@ Resume steps:
    (handplay.py --stage); staged Medusa (seed 1) died T42: dig-down never progresses under attack (dig.c:1355,
    attacks stop the occupation before dig() runs) and Elbereth fails against a crowd (monmove.c:918 panic
    attack); notes .planning/hand-games/medusa-seed1/NOTES.md. Key logs removed (owner).
+   2026-11-03 TESTING CHANGE (owner): targeted scenarios first, bench only as no-harm gate for common-path changes, a
+   full ladder run per milestone. scripts/scenario_run.py + scripts/scenario_lib.py (wizard setups + pass/fail
+   checks; --tree any checkout, e.g. ~/.cache/screens-bench/worktrees/<sha>; SCENARIO_HOOK debug file).
+   Validated: pry-cursed-dagger f4870b4 0/4 -> c49e3ee 4/4; wield-unknown-cursed 87e0af5 0/4 -> 65d3307 3/4 (no weld
+   4/4); eye-telepathy current 1/4 (bot throws once, wanders; kitten eats corpse); medusa-dig flooded 3/4 -> 0/4 after
+   5497600 (update_level never stored water; unseen = -1). Nobody gets below Medusa yet (map 3 no dry square, map 2
+   dies to titan/gremlin). Research notes: MEDUSA-NH5.md, TELEPATHY-NH5.md, GUIDE-MAG-R342.md (no Excalibur: neutral).
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
