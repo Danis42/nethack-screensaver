@@ -323,6 +323,9 @@ Resume steps:
    4/4); eye-telepathy current 1/4 (bot throws once, wanders; kitten eats corpse); medusa-dig flooded 3/4 -> 0/4 after
    5497600 (update_level never stored water; unseen = -1). Nobody gets below Medusa yet (map 3 no dry square, map 2
    dies to titan/gremlin). Research notes: MEDUSA-NH5.md, TELEPATHY-NH5.md, GUIDE-MAG-R342.md (no Excalibur: neutral).
+   Job 75 DONE: c49e3ee no measurable difference (rung2 -1.1 [-3.6, +1.5]; rung1 -2.3 [-4.6, -0.1] watch); cursed
+   weapon at death 42 (base 48, f4870b4 245). feat/item-skills MERGED to main 656c7c2 (game code = c49e3ee: NEW BASELINE,
+   2304 games stored under c49e3ee). Job 76 (exp/known-buc-wield vs 87e0af5) running; rebase it on main if kept.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
