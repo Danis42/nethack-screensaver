@@ -311,6 +311,11 @@ Resume steps:
    rebased on it. Job 75 = c49e3ee vs 87e0af5, metric rung2 (no-harm check again). Merge only if not worse.
    Hand play: scripts/handplay.py (checked commands, game's own square descriptions); seed 1 at T1444 Dlvl 4,
    notes .planning/hand-games/seed1/NOTES.md (F1-F17).
+   2026-11-03 later: Job 76 queued = exp/known-buc-wield 65d3307 (off main: weapons only of known B/U/C; baseline
+   87e0af5 ends 46/2304 games wielding a cursed weapon) vs 87e0af5, metric rung2. Hand play: staged starts work
+   (handplay.py --stage); staged Medusa (seed 1) died T42: dig-down never progresses under attack (dig.c:1355,
+   attacks stop the occupation before dig() runs) and Elbereth fails against a crowd (monmove.c:918 panic
+   attack); notes .planning/hand-games/medusa-seed1/NOTES.md. Key logs removed (owner).
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
