@@ -1,7 +1,7 @@
 """Hand-played NetHack 5 games (Claude plays by hand to refine the ascension playbook).
 
 One seeded game runs in a background server; each client call sends commands and prints what the hero sees.
-Every key that reaches NetHack is appended to <dir>/keys.log, so a restarted server resumes the same game.
+A restarted server starts the game fresh (no key log: owner, 2026-11-03).
 
   python scripts/handplay.py serve --seed 7 --dir .planning/hand-games/seed7      # background
   python scripts/handplay.py do --dir ... 'look'
@@ -61,13 +61,12 @@ def parse_keys(args: list[str]) -> list[int]:
 
 
 class Game:
-    def __init__(self, seed: int, log: Path | None, stage: str | None = None):
+    def __init__(self, seed: int, stage: str | None = None):
         fixed_clock.pin(seed)
         from nle.env.tasks import NetHackChallenge
         from nethack_screensaver import staging
         from nethack_screensaver.game import CHARACTER
-        # a staged game (staging.py): wizard mode, kit by wishes, teleport to the stage level; the setup keys are
-        # not in keys.log, a resume rebuilds the stage from the seed first
+        # a staged game (staging.py): wizard mode, kit by wishes, teleport to the stage level
         env_class = NetHackChallenge if stage is None else staging.StagedChallenge
         self.env = env_class(no_progress_timeout=10**9, fix_moon_phase=True, character=CHARACTER,
                              observation_keys=OBS_KEYS)
@@ -76,11 +75,6 @@ class Game:
         if stage is not None:
             staging.apply_stage(self.env, staging.STAGES[stage])
         self.done = False
-        self.log = None
-        if log is not None and log.exists():  # resume: replay the keys of this game
-            for k in [int(x) for x in log.read_text().split()]:
-                self.key(k)
-        self.log = log
         self.msgs: list[str] = []
 
     # --- raw access -------------------------------------------------------------------------------------------
@@ -91,9 +85,6 @@ class Game:
         if self.done:
             return
         self.env.last_observation, self.done = self.env.nethack.step(k)
-        if self.log is not None:
-            with self.log.open("a") as f:
-                f.write(f"{k}\n")
 
     def lines(self) -> list[str]:
         return [bytes(r).decode("latin1").rstrip() for r in self.obs("tty_chars")]
@@ -338,7 +329,7 @@ class Game:
 def serve(seed: int, d: Path, stage: str | None = None):
     d.mkdir(parents=True, exist_ok=True)
     (d / "meta.json").write_text(json.dumps({"seed": seed, "stage": stage}))
-    game = Game(seed, d / "keys.log", stage)
+    game = Game(seed, stage)
     sock_path = d / "sock"
     sock_path.unlink(missing_ok=True)
     srv = socket.socket(socket.AF_UNIX)
