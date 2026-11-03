@@ -733,6 +733,12 @@ class Agent:
         level.objects[mask] = self.glyphs[mask]
         level.walkable[mask] = False
 
+        # water and lava were never recorded: digging.dig_square needs them (a hole next to water floods, dig.c:606)
+        mask = utils.isin(self.glyphs, digging.WET)
+        level.seen[mask] = True
+        level.objects[mask] = self.glyphs[mask]
+        level.walkable[mask] = False
+
         self._update_level_items()
         self._update_level_shops()
 

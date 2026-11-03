@@ -73,6 +73,16 @@ def test_on_a_water_level_unknown_neighbours_count_as_water():
     assert dig_square(objects, shop, dis, (5, 10)) == (5, 11)
 
 
+def test_on_a_water_level_never_seen_squares_count_as_water():
+    objects, shop, dis = _map()
+    objects[:] = -1  # Level.objects: never seen
+    objects[4:7, 10:20] = SS.S_room
+    objects[20, 70] = SS.S_pool
+    dis[4:7, 10:20] = 1
+    dis[5, 10] = 0
+    assert dig_square(objects, shop, dis, (5, 10)) == (5, 11)
+
+
 def test_corridor_in_rock_stays_diggable_on_a_dry_level():
     objects, shop, dis = _map()
     objects[5, 5] = SS.S_corr

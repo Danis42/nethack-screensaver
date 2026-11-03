@@ -47,7 +47,8 @@ def dig_square(objects, shop, dis, here):
     Never next to water or lava: dig.c:606 fillholetyp fills the hole with water (a moat square is enough) and the
     hero falls in (staged medusa, map 3). On a level with known water an unexplored neighbour may be water too."""
     wet = np.isin(objects, WET)
-    risky = wet | (objects == SS.S_stone) if wet.any() else wet
+    unknown = (objects == -1) | (objects == SS.S_stone)  # Level.objects keeps -1 for squares never seen
+    risky = wet | unknown if wet.any() else wet
     ok = np.isin(objects, list(DIGGABLE_FLOOR)) & ~shop & (dis >= 0) & ~_near(risky)
     if ok[here]:
         return here
