@@ -39,6 +39,7 @@ class Item:
         self.naming = naming
         self.comment = comment
         self.text = text
+        self.buc_known = status != Item.UNKNOWN  # item_manager later stores an unknown status as UNCURSED
 
         self.content = None  # for checked containers it will be set after the constructor
         self.container_id = None  # for containers and possible containers it will be set after the constructor

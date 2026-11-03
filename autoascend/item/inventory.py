@@ -50,6 +50,11 @@ def prying_blade(items):
     return min(blades, key=lambda item: item.object.sub, default=None)
 
 
+def _wieldable_status_known(item):
+    """A weapon may be (or stay) wielded only when its curse status is known or it is already in hand."""
+    return getattr(item, 'buc_known', True) or item.equipped
+
+
 class Inventory:
     _name_to_category = {
         'Amulets': nh.AMULET_CLASS,
@@ -1077,7 +1082,8 @@ class Inventory:
         best_dps = utils.calc_dps(*self.agent.character.get_melee_bonus(None, large_monster=False))
         for item in flatten_items(items):
             if item.is_weapon() and \
-                    (item.status in [Item.UNCURSED, Item.BLESSED] or
+                    (item.status in [Item.UNCURSED, Item.BLESSED] and (_wieldable_status_known(item) or
+                                                                       allow_unknown_status) or
                      (allow_unknown_status and item.status == Item.UNKNOWN)):
                 to_hit, dmg = self.agent.character.get_melee_bonus(item, large_monster=False)
                 dps = utils.calc_dps(to_hit, dmg)
@@ -1105,7 +1111,8 @@ class Inventory:
         for launcher in launchers:
             for ammo in ammo_list + additional_ammo:
                 if ammo.is_fired_projectile(launcher):
-                    if launcher.status in [Item.UNCURSED, Item.BLESSED] or \
+                    if launcher.status in [Item.UNCURSED, Item.BLESSED] and \
+                            (_wieldable_status_known(launcher) or allow_unknown_status) or \
                             (allow_unknown_status and launcher.status == Item.UNKNOWN):
                         valid_combinations.append((launcher, ammo))
 
