@@ -6,7 +6,7 @@ current_phase_name: Full Ascension Ruleset
 status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-11-02
+last_activity: 2026-11-03
 last_activity_desc: Part 1a built, playbook written; job 73 running; next: hand-played games
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
@@ -304,6 +304,7 @@ Resume steps:
    stage, HAVE/BUILT/MISSING per rule). Branches (local, unmerged, stacked): main 605089d <- feat/item-skills (Part 1a,
    f4870b4 + state 7a9bf52) <- feat/medusa (dig for GO_DOWN + rise_one_level 9f3d261, passtune solver c4123d1, playbook
    6772def). Checked out: feat/medusa. Job 73 (no-harm bench f4870b4 vs 87e0af5, metric rung2) was left RUNNING.
+   2026-11-03: job 73 was INTERRUPTED at 192 pairs (rung2 +0.0, open; server restart). Restarted as job 74 (same spec, stored games reused).
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
