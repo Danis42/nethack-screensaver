@@ -26,9 +26,11 @@ def test_unload_drops_heaviest_spare_items_first_and_food_last():
     assert [i.name for i in order] == ["rocks", "pick-axe", "wand", "apple"]
 
 
-def _weapon(name, status=Item.UNCURSED):
+def _weapon(name, status=Item.UNCURSED, text=None, modifier=None, equipped=False):
+    if text is None:
+        text = {Item.UNCURSED: 'an uncursed ', Item.CURSED: 'a cursed ', Item.BLESSED: 'a blessed '}[status] + name
     return SimpleNamespace(object=O.from_name(name), status=status, is_weapon=lambda: True,
-                           is_unambiguous=lambda: True)
+                           is_unambiguous=lambda: True, text=text, modifier=modifier, equipped=equipped)
 
 
 def test_prying_blade_prefers_the_dagger():
@@ -38,3 +40,16 @@ def test_prying_blade_prefers_the_dagger():
 
 def test_prying_blade_skips_cursed_and_non_blades():
     assert prying_blade([_weapon('dagger', Item.CURSED), _weapon('spear'), _weapon('dwarvish mattock')]) is None
+
+
+def test_prying_blade_skips_a_blade_of_unknown_curse_status():
+    # item_manager stores unknown B/U/C as UNCURSED; a cursed blade welds to the hand (seen in hand game seed 1,
+    # and job 74: cursed weapon wielded at death 215 vs 46 games)
+    unknown = _weapon('dagger', Item.UNCURSED, text='a dagger')
+    assert prying_blade([unknown]) is None
+
+
+def test_prying_blade_accepts_known_enchantment_or_the_wielded_blade():
+    # implicit_uncursed: "a +0 dagger" is uncursed; the blade already in hand cannot weld anew
+    assert prying_blade([_weapon('dagger', text='a +0 dagger', modifier=0)]) is not None
+    assert prying_blade([_weapon('dagger', text='a dagger (weapon in right hand)', equipped=True)]) is not None

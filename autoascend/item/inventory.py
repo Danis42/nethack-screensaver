@@ -33,10 +33,19 @@ def items_to_unload(items, keep=()):
 FORCE_LOCK_TRIES = 2
 
 
+def buc_known(item):
+    text = item.text or ''
+    return item.equipped or item.modifier is not None or 'uncursed' in text or 'blessed' in text
+
+
 def prying_blade(items):
-    """The non-cursed blade to force a lock with, smallest skill first (daggers), or None."""
+    """The non-cursed blade to force a lock with, smallest skill first (daggers), or None.
+
+    Only a blade whose curse status is really known: item_manager stores unknown B/U/C as UNCURSED, and
+    wielding a cursed blade welds it to the hand (job 74: cursed weapon wielded at death 215 vs 46 games).
+    Known means "uncursed"/"blessed" in its text, a known enchantment (implicit_uncursed), or already wielded."""
     blades = [item for item in items if item.is_weapon() and item.is_unambiguous()
-              and item.status in (Item.UNCURSED, Item.BLESSED)
+              and item.status in (Item.UNCURSED, Item.BLESSED) and buc_known(item)
               and O.P_DAGGER <= item.object.sub <= O.P_SABER and item.object.sub != O.P_PICK_AXE]
     return min(blades, key=lambda item: item.object.sub, default=None)
 
