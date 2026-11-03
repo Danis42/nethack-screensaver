@@ -25,8 +25,12 @@ Mines gnomes, dwarves and hobbits are hostile: fights in the Mines, but dwarves'
 - Pray for hunger only when Weak and the prayer timeout is safe (about 1000 turns since the last one). HAVE.
 
 ### Prayer (PRAYER-NH5.md)
-- Safe only with Luck >= 0, god not angry, timeout low. Fixes: HP < 1/7 (or < 6), Weak, stoning, sliming, strangling,
+- Safe only with Luck >= 0, god not angry, timeout low. Fixes: low HP, Weak, stoning, sliming, strangling,
   food poisoning, illness, lava. HAVE (HP, hunger, deadly conditions).
+  CORRECTED (hand game seed 1, pray.c:116 critically_low_hp): low HP = HP <= 5 or HP <= maxHP/5 at XL 1-5,
+  /6 at XL 6-13, /7 at XL 14-21, /8 at XL 22-29, /9 at 30. Major trouble needs timeout <= 200, minor < 100.
+  Start timeout 300; after a success rnz(350). A welded one-handed weapon with an uncursed shield is only MINOR
+  trouble (engrave.c:473 freehand). Too-soon prayer: Luck -3, anger +1, timeout +rnz(250) (pray.c:2316).
 - After a failed prayer ("You feel that Odin is displeased" / "Thou hast angered me"): no prayer until a sacrifice at
   a neutral altar brings reconciliation. MISSING (demoted on the bench: it relabels deaths, the cure is food).
 - Never pray in Gehennom (Moloch answers). MISSING.
@@ -46,6 +50,20 @@ Mines gnomes, dwarves and hobbits are hostile: fights in the Mines, but dwarves'
   alignment, dunce cap; never put on unknown rings or amulets.
 - Note (2026-11-02): the bot treats unknown-B/U/C items as uncursed, so it can put on cursed armour. Altar-test at
   Minetown before wearing new armour once that rule exists. MISSING.
+
+### From hand game seed 1 (2026-11-03, .planning/hand-games/seed1/NOTES.md, died T1539 Dlvl 4)
+- Never wield an item of unknown curse status, also not to pry a lock: drop-test on an altar first. The bot
+  had this bug (job 74: cursed weapon wielded at death 215 vs 46; fix c49e3ee). MISSING beyond prying.
+- Rays bounce: never zap a ray wand (magic missile, sleep, fire, cold, lightning, death) along a line with a
+  wall within ~8 squares behind the target; twice the bounce hit the zapper (HP 14 -> 2). MISSING.
+- HP < 50% with a second hostile known nearby: write Elbereth in the dust and rest on it (worked: HP 3 -> 25
+  untouched, giant bat fled). HAVE partly (elbereth_write), check the trigger.
+- Sleep-biters (homunculus) without sleep resistance: only at high HP with no other hostile around; a sleep
+  plus a giant bat killed the hero from HP 12. MISSING.
+- Boxes: #untrap before #loot/#force (a fire trap took 3 max HP and burnt armour). Pry only with a known
+  uncursed spare blade (0.8%/turn break, about 12% per lock); bash otherwise (1/3 destroys box + potions).
+- A floating eye in a corridor is a wall: route around or wait (it follows slowly). Never throw the only weapon.
+- NetHack 5 Valkyrie starts with a +1 spear and a dagger, no long sword: Excalibur needs a found long sword.
 
 ### Things never to do (from deaths on the bench)
 - Melee floating eyes (HAVE: exp 21), cockatrices bare-handed or chickatrice corpses; eat cockatrice, Medusa, Green-slime.
