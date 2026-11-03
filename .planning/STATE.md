@@ -331,6 +331,10 @@ Resume steps:
    needs idle cores), then bench vs c49e3ee. Job 76 (exp/known-buc-wield vs 87e0af5) running: read it, rebase on main if kept.
    feat/medusa: water fix 5497600 validated by scenario medusa-dig; next Medusa problem: nobody gets below (map 3 no dry
    square -> levitation/cold crossing; map 2 titan). Remove .worktrees/eye-telepathy after use.
+   Job 76 DONE: 65d3307 rung2 -0.5 [-1.2, +0.2] no difference; rung4 -0.9 [-1.6, -0.1] borderline (2nd borderline
+   side dip after job 75 rung1: watch); cursed weapon at death 48 -> 6. MERGED: main c49c201 = c49e3ee + weapon rule
+   (no stored games yet: needs a baseline run). exp/eye-telepathy rebased on main (381899d). Eye trace of 100 natural
+   games on main running (scratchpad eyetrace.py) to decide whether the telepathy rule is worth a bench.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
