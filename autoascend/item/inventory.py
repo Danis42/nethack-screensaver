@@ -13,7 +13,9 @@ from autoascend.exceptions import AgentPanic
 from autoascend.glyph import G
 from autoascend.item import ItemManager, Item, ContainerContent, check_if_triggered_container_trap, \
     find_equivalent_item, flatten_items
+from autoascend.item import accessories, scrolls
 from autoascend.item.inventory_items import InventoryItems
+from autoascend.level import Level
 from autoascend.strategy import Strategy
 
 
@@ -26,6 +28,26 @@ def items_to_unload(items, keep=()):
     spare = [i for i in items
              if i not in keep and not i.equipped and i.can_be_dropped_from_inventory()]
     return sorted(spare, key=lambda i: (i.category == nh.FOOD_CLASS, -i.weight()))
+
+
+FORCE_LOCK_TRIES = 2
+
+
+def buc_known(item):
+    text = item.text or ''
+    return item.equipped or item.modifier is not None or 'uncursed' in text or 'blessed' in text
+
+
+def prying_blade(items):
+    """The non-cursed blade to force a lock with, smallest skill first (daggers), or None.
+
+    Only a blade whose curse status is really known: item_manager stores unknown B/U/C as UNCURSED, and
+    wielding a cursed blade welds it to the hand (job 74: cursed weapon wielded at death 215 vs 46 games).
+    Known means "uncursed"/"blessed" in its text, a known enchantment (implicit_uncursed), or already wielded."""
+    blades = [item for item in items if item.is_weapon() and item.is_unambiguous()
+              and item.status in (Item.UNCURSED, Item.BLESSED) and buc_known(item)
+              and O.P_DAGGER <= item.object.sub <= O.P_SABER and item.object.sub != O.P_PICK_AXE]
+    return min(blades, key=lambda item: item.object.sub, default=None)
 
 
 class Inventory:
@@ -51,6 +73,7 @@ class Inventory:
         self.agent = agent
         self.item_manager = ItemManager(self.agent)
         self.items = InventoryItems(self.agent)
+        self.levitation_wanted = False  # set by start_levitation: keeps the source on (wear_* leave it alone)
 
         self._previous_blstats = None
         self.items_below_me = None
@@ -212,6 +235,243 @@ class Inventory:
 
         return True
 
+    def put_on(self, item, hand=None):
+        """Put on a ring (hand 'r'/'l', else the free one) or an amulet. False if the game refused."""
+        item = self.move_to_inventory(item)
+        if item.equipped:
+            return True
+        letter = self.items.get_letter(item)
+        with self.agent.atom_operation():
+            self.agent.step(A.Command.PUTON)
+            if 'What do you want to put on?' not in self.agent.message:
+                return False  # "You are already wearing ...", "You cannot ... while ..." (polymorphed, full hands)
+            self.agent.type_text(letter)
+            if 'Right or Left?' in self.agent.message:
+                if hand is None:
+                    worn = [bytes(t).decode('latin1') for t in self.agent.last_observation['inv_strs']]
+                    hand = 'l' if any('(on right hand)' in t for t in worn) else 'r'
+                self.agent.type_text(hand)
+            ok = bool(re.search(r'\(on (left|right) hand\)|\(being worn\)', self.agent.message))
+        if ok:
+            self.agent.stats_logger.log_event('put_on')
+        return ok
+
+    def remove(self, item):
+        """Take off a ring or an amulet. False if it is cursed or the game refused."""
+        assert item is not None and item.equipped, item
+        letter = self.items.get_letter(item)
+        with self.agent.atom_operation():
+            self.agent.step(A.Command.REMOVE)
+            if 'What do you want to remove?' in self.agent.message:
+                self.agent.type_text(letter)
+            ok = not (re.search(r'\b(It is|They are|seems to be) cursed', self.agent.message) or
+                      "You can't" in self.agent.message or 'You are not wearing' in self.agent.message)
+        if ok:
+            self.agent.stats_logger.log_event('remove')
+        return ok
+
+    def _reflection_from_armor(self):
+        return any(i.is_armor() and i.equipped and i.is_unambiguous() and i.object.power == 65
+                   for i in self.items.all_items)
+
+    @utils.debug_log('inventory.wear_accessories')
+    @Strategy.wrap
+    def wear_accessories(self):
+        """Rings and amulets by plan decisions D-02/D-03 (item/accessories.py). One action per pass: every
+        action rebuilds the inventory items, so the plan is made again each time (as wear_best_stuff does)."""
+        if self.agent.character.prop.polymorph:
+            yield False
+        yielded = False
+        for _ in range(6):  # at most 2 rings + 1 amulet off and on
+            action = self._next_accessory_action()
+            if action is None:
+                break
+            if not yielded:
+                yielded = True
+                yield True
+            verb, item = action
+            if not (self.remove(item) if verb == 'remove' else self.put_on(item)):
+                return
+        if not yielded:
+            yield False
+
+    def _next_accessory_action(self):
+        items = list(self.items.all_items)
+        keep_free = any(i.category == nh.RING_CLASS and self._levitating_item(i) for i in items)
+        amulet, rings = accessories.best_accessories(items, reflection_elsewhere=self._reflection_from_armor(),
+                                                     keep_hand_free=keep_free)
+        worn = [i for i in items if i.equipped and i.category in (nh.RING_CLASS, nh.AMULET_CLASS)]
+        for item in worn:
+            if item is not amulet and item not in rings and item.status != Item.CURSED and \
+                    not (self._levitating_item(item) and self.levitation_wanted):
+                return 'remove', item
+        if amulet is not None and not amulet.equipped:
+            if any(i.category == nh.AMULET_CLASS for i in worn):
+                return None  # the worn amulet is cursed
+            return 'put_on', amulet
+        worn_rings = [i for i in worn if i.category == nh.RING_CLASS]
+        for ring in rings:
+            if not ring.equipped and len(worn_rings) < 2:
+                return 'put_on', ring
+        return None
+
+    def read(self, item):
+        """Read a scroll; an identify menu gets the best unidentified item (item/scrolls.py)."""
+        item = self.move_to_inventory(item)
+        letter = self.items.get_letter(item)
+
+        def identify_menu():
+            while self.agent.single_popup and \
+                    any('What would you like to identify' in line for line in self.agent.single_popup):
+                choice = scrolls.identify_choice(self.agent.single_popup)
+                if choice is None:
+                    yield A.Command.ESC
+                    return
+                yield choice
+                yield '\r'
+
+        with self.agent.atom_operation():
+            self.agent.step(A.Command.READ)
+            if 'What do you want to read?' not in self.agent.message:
+                return False
+            self.agent.step(letter, identify_menu())
+        self.agent.stats_logger.log_event('read_scroll')
+        return True
+
+    def _scroll_state(self):
+        items = list(self.items.all_items)
+        worn_armor = [i for i in items if i.is_armor() and i.equipped]
+        weapon = self.items.main_hand
+        p = self.agent.character.prop
+        return dict(
+            impaired=p.confusion or p.stun or p.hallu or p.blind,
+            worn_armor_mods=[i.modifier for i in worn_armor],
+            weapon_mod=None if weapon is None or not weapon.is_weapon() else (weapon.modifier or 0),
+            cursed_equipped=any(i.equipped and i.status == Item.CURSED for i in items),
+            unidentified=any(not i.is_unambiguous() and i.category in (nh.RING_CLASS, nh.AMULET_CLASS, nh.WAND_CLASS)
+                             for i in items),
+        )
+
+    @utils.debug_log('inventory.read_scrolls')
+    @Strategy.wrap
+    def read_scrolls(self):
+        """Plan decision D-06: one wanted scroll per pass (reading rebuilds the inventory)."""
+        if self.agent.character.prop.polymorph or \
+                self.agent.current_level().dungeon_number == Level.SOKOBAN:
+            yield False
+        yielded = False
+        for _ in range(5):
+            state = self._scroll_state()
+            item = next((i for i in self.items.all_items if scrolls.should_read(i, **state)), None)
+            if item is None:
+                break
+            if not yielded:
+                yielded = True
+                yield True
+            if not item.is_unambiguous():
+                self.agent.stats_logger.log_event('read_unknown_scroll')
+            if not self.read(item):
+                return
+        if not yielded:
+            yield False
+
+    # Levitation (Part 1a D-09): primitives for the Medusa, Castle and Planes skills (Parts 1b, 1c, 1f).
+    TONAL_INSTRUMENTS = ('wooden flute', 'magic flute', 'tooled horn', 'frost horn', 'fire horn', 'bugle',
+                         'wooden harp', 'magic harp')
+
+    def levitating(self):
+        return bool(self.agent.blstats.prop_mask & nh.BL_MASK_LEV)
+
+    def levitation_source(self):
+        """A non-cursed ring of levitation (preferred: one action on and off) or pair of levitation boots."""
+        found = [i for i in self.items.all_items if i.is_unambiguous() and i.status != Item.CURSED and
+                 ((i.category == nh.RING_CLASS and i.objs[0].name == 'levitation') or
+                  (i.is_armor() and i.objs[0].name == 'levitation boots'))]
+        found.sort(key=lambda i: i.category != nh.RING_CLASS)
+        return found[0] if found else None
+
+    def start_levitation(self):
+        """Put the levitation source on. False if none or the game refused (a cursed ring blocks both hands)."""
+        source = self.levitation_source()
+        if source is None:
+            return False
+        self.levitation_wanted = True
+        if source.equipped:
+            return self.levitating()
+        if source.category == nh.RING_CLASS:
+            rings = [i for i in self.items.all_items if i.category == nh.RING_CLASS and i.equipped]
+            if len(rings) >= 2:
+                spare = next((r for r in rings if r.status != Item.CURSED), None)
+                if spare is None or not self.remove(spare):
+                    return False
+                source = self.levitation_source()
+            ok = self.put_on(source)
+        else:
+            if self.items.boots is not None:
+                if self.items.boots.status == Item.CURSED or not self.takeoff(self.items.boots):
+                    return False
+                source = self.levitation_source()
+            ok = self.wear(source)
+        if ok:
+            self.agent.stats_logger.log_event('levitation_on')
+        return ok and self.levitating()
+
+    def stop_levitation(self):
+        """Take the levitation source off; the hero floats down where he is (never over water or lava)."""
+        self.levitation_wanted = False
+        worn = [i for i in self.items.all_items if i.equipped and self._levitating_item(i)]
+        for item in worn:
+            ok = self.takeoff(item) if item.is_armor() else self.remove(item)
+            if not ok:
+                return False
+        if worn:
+            self.agent.stats_logger.log_event('levitation_off')
+        return not self.levitating()
+
+    def tonal_instrument(self):
+        return next((i for i in self.items.all_items if i.is_unambiguous() and
+                     i.objs[0].name in self.TONAL_INSTRUMENTS), None)
+
+    def play_tune(self, notes):
+        """Play five notes (A-G) on a tonal instrument; the passtune when the game offers it. Returns the
+        message, which tells the Mastermind result at the Castle ("You hear 2 tumblers click and 1 gear turn.")."""
+        instrument = self.tonal_instrument()
+        if instrument is None:
+            return None
+        instrument = self.move_to_inventory(instrument)
+        letter = self.items.get_letter(instrument)
+
+        def answers():
+            for _ in range(4):
+                msg = self.agent.single_message
+                if 'Improvise?' in msg:
+                    yield 'n'
+                elif 'Play the passtune?' in msg:
+                    yield 'y'
+                elif 'What tune are you playing?' in msg:
+                    yield from notes
+                    yield '\r'
+                    return
+                else:
+                    return
+
+        with self.agent.atom_operation():
+            self.agent.step(A.Command.APPLY)
+            if 'What do you want to use or apply?' not in self.agent.message:
+                return None
+            self.agent.step(letter, answers())
+            message = self.agent.message
+        self.agent.stats_logger.log_event('play_tune')
+        return message
+
+    def _levitating_item(self, item):
+        """A worn levitation ring/amulet belongs to the levitation skill, not to wear_accessories."""
+        if not item.is_unambiguous():
+            return False
+        name = item.objs[0].name
+        return (item.category == nh.RING_CLASS and name == 'levitation') or \
+            name in ('levitation boots', 'amulet of flying')
+
     def use_container(self, container, items_to_put, items_to_take, items_to_put_counts=None,
                       items_to_take_counts=None):
         assert container in self.items.all_items or container in self.items_below_me
@@ -363,7 +623,7 @@ class Inventory:
 
             # NetHack 5 names the container: "The chest is locked.", "Hmmm, the chest turns out to be locked."
             if ' turns out to be locked.' in self.agent.single_message or \
-                    re.search(r'\b(It|The [a-z ]+) is locked\.', self.agent.single_message):
+                    re.search(r'\b(It|The [a-z ]+(?: named [^.]+)?) is locked\.', self.agent.single_message):
                 content.locked = True
                 yield A.Command.ESC
                 return
@@ -899,8 +1159,11 @@ class Inventory:
             if item.status not in allowed_statuses and not is_dragonscale_armor:
                 continue
 
+            if accessories.never_wear(item.object):
+                continue
+
             slot = item.object.sub
-            ac = item.get_ac()
+            ac = item.get_ac() - accessories.armor_bonus(item.object)  # value by property, not AC alone
 
             if self.agent.character.role == Character.MONK and slot == O.ARM_SUIT:
                 continue
@@ -920,6 +1183,8 @@ class Inventory:
             self.pickup_and_drop_items()
                 .before(self.check_containers())
                 .before(self.wear_best_stuff())
+                .before(self.wear_accessories())
+                .before(self.read_scrolls())
                 .before(self.wand_engrave_identify())
                 .before(self.go_to_unchecked_containers())
                 .before(self.check_items()
@@ -1268,6 +1533,9 @@ class Inventory:
                 if best_armorset[slot] == getattr(self.items, name) or \
                         (getattr(self.items, name) is not None and getattr(self.items, name).status == Item.CURSED):
                     continue
+                if slot == O.ARM_BOOTS and self.levitation_wanted and self.items.boots is not None and \
+                        self._levitating_item(self.items.boots):
+                    continue  # the levitation skill wears them
                 additional_cond = True
                 if slot == O.ARM_SHIELD:
                     additional_cond &= self.items.main_hand is None or not self.items.main_hand.objs[0].bi
@@ -1371,8 +1639,33 @@ class Inventory:
                     if fail_msg is not None and check_if_triggered_container_trap(fail_msg):
                         raise AgentPanic('triggered trap while looting')
                 self.check_container_content(item)
+                if item.shop_status == Item.NOT_SHOP and item.content is not None and item.content.locked:
+                    forced = self.force_lock_below_me()
+                    if forced == 'open':
+                        item.content.locked = False
+                        self.check_container_content(item)
+                    if forced is not None:
+                        self.agent.inventory.items_below_me = None
+                        self.get_items_below_me()
+                        return
         if not yielded:
             yield False
+
+    def force_lock_below_me(self):
+        """ Pry with a blade, up to FORCE_LOCK_TRIES times. Bashing wakes the level and may destroy the box with its
+        potions (lock.c forcelock), so it is only for a hero without a blade. """
+        forced = None
+        for _ in range(FORCE_LOCK_TRIES):
+            blade = prying_blade(self.items.all_items)
+            if blade is None:
+                self.agent.stats_logger.log_event('force_lock_no_blade')
+            elif not self.wield(blade):
+                break
+            forced = self.agent.force_lock_below_me()
+            if forced is not None:
+                break
+        self.agent.wield_best_melee_weapon()
+        return forced
 
     @utils.debug_log('inventory.go_to_item_to_pickup')
     @Strategy.wrap

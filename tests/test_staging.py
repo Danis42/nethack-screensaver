@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
 from autoascend.character import Character
-from nethack_screensaver.staging import STAGES, level_letter
+from nethack_screensaver.staging import ITEM_TESTS, STAGES, level_letter
 
 MENU = [" Level teleport to where:",
         " The Dungeons of Doom: levels 1 to 26",
@@ -22,8 +22,13 @@ def test_finds_special_levels_in_the_teleport_menu():
 
 
 def test_every_stage_has_a_level_and_an_experience_level():
-    for stage in STAGES.values():
-        assert stage.level and 1 <= stage.xl <= 30
+    for name, stage in STAGES.items():
+        assert (stage.level or name in ITEM_TESTS) and 1 <= stage.xl <= 30
+
+
+def test_item_tests_stay_on_dlvl_1_and_stop_early():
+    for stage in ITEM_TESTS.values():
+        assert stage.level is None and stage.max_steps
 
 
 def _enhance(popup):

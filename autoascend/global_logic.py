@@ -1052,6 +1052,7 @@ class GlobalLogic:
                 ]),
             ])
             .preempt(self.agent, [
+                self.agent.use_unicorn_horn(),
                 self.wait_out_unexpected_state_strategy(),
             ])
             .preempt(self.agent, [

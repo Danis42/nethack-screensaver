@@ -20,6 +20,7 @@ from .item import Item, flatten_items
 from .item.inventory import Inventory
 from .level import Level
 from .monster_tracker import MonsterTracker, disappearance_mask
+from .item import wishes
 from .stats_logger import StatsLogger
 from .strategy import Strategy
 
@@ -98,6 +99,8 @@ def hunger_prayer_gap(weak_turns):
 # Conditions that kill within a few turns and that a prayer fixes (pray.c TROUBLE_STONED, _SLIMED, _STRANGLED,
 # _SICK). Dying is certain without help, so a prayer that may come too soon is still worth it.
 DEADLY_CONDITIONS = nh.BL_MASK_STONE | nh.BL_MASK_SLIME | nh.BL_MASK_STRNGL | nh.BL_MASK_FOODPOIS | nh.BL_MASK_TERMILL
+UNIHORN_SICK_TRIES = 3  # applies of a horn before praying for food poisoning / illness
+UNIHORN_TRIES = 10  # applies per bout of confusion/stun/hallucination/blindness
 DEADLY_PRAYER_GAP = 50  # turns: right after a prayer the condition is either fixed or the god will not help
 
 SHOP_MIN_XL = 8
@@ -165,6 +168,7 @@ class Agent:
         self.last_bfs_dis = None
         self.last_bfs_step = None
         self.last_prayer_turn = None
+        self._unihorn_sick_tries = 0
         self.weak_since = None  # game turn the hero became Weak, None while better fed
         self._previous_glyphs = None
         self._last_turn = -1
@@ -518,10 +522,10 @@ class Agent:
             return
 
         if observation['misc'][1]:  # entering text
-            if "You may wish for an object." in self.message:
-                # TODO: wishing strategy
-                # TODO: assume wished item as blessed
-                self.step('b', iter('lessed greased +2 gray dragon scale mail\r'))
+            if "You may wish for an object." in self.message or 'For what do you wish' in self.message:
+                text = wishes.next_wish(flatten_items(self.inventory.items))  # Part 1a D-07
+                self.stats_logger.log_event('wish')
+                self.step(text[0], iter(text[1:] + '\r'))
                 return
             else:
                 self.step(A.Command.ESC)
@@ -821,6 +825,23 @@ class Agent:
                 self.stats_logger.log_event('untrap_success')
                 return True
             return False
+
+    def force_lock_below_me(self):
+        """ Force the first locked box here with the wielded weapon.
+        Return None if it stayed locked, 'open' if the lock broke, 'destroyed' if the box broke with it """
+        with self.atom_operation():
+            self.step(A.Command.FORCE)
+            if 'force its lock?' not in self.single_message:
+                return None
+            self.type_text('y')
+            if 'You succeed in forcing the lock.' not in self.message:
+                self.stats_logger.log_event('force_lock_fail')
+                return None
+            self.stats_logger.log_event('force_lock_success')
+            if 'In fact, you' in self.message:
+                self.stats_logger.log_event('force_lock_destroyed')
+                return 'destroyed'
+            return 'open'
 
     def untrap_container_below_me(self):
         """ Return None if succesfull else fail message """
@@ -1601,6 +1622,15 @@ class Agent:
                 self.inventory.eat(cure)
                 return
 
+        sick = self.blstats.prop_mask & (nh.BL_MASK_FOODPOIS | nh.BL_MASK_TERMILL)
+        if not sick:
+            self._unihorn_sick_tries = 0
+        elif self._unihorn_sick_tries < UNIHORN_SICK_TRIES and self.unicorn_horn() is not None:
+            yield True  # a horn cures sickness without spending the prayer (Part 1a D-05)
+            self._unihorn_sick_tries += 1
+            self.apply_unicorn_horn()
+            return
+
         if self.blstats.prop_mask & DEADLY_CONDITIONS and \
                 (self.last_prayer_turn is None or self.blstats.time - self.last_prayer_turn > DEADLY_PRAYER_GAP):
             yield True
@@ -1686,6 +1716,46 @@ class Agent:
                      item.monster_id in [MON.from_name(n) - nh.GLYPH_MON_OFF for n in ['lichen']]):
                 return item
         return None
+
+    def unicorn_horn(self):
+        """A unicorn horn known not to be cursed (a cursed one causes the ailments it should cure)."""
+        for item in flatten_items(self.inventory.items):
+            if item.is_unambiguous() and item.object.name == 'unicorn horn' and \
+                    item.status in (Item.UNCURSED, Item.BLESSED):
+                return item
+        return None
+
+    def apply_unicorn_horn(self):
+        horn = self.inventory.move_to_inventory(self.unicorn_horn())
+        with self.atom_operation():
+            self.step(A.Command.APPLY)
+            if 'What do you want to use or apply?' not in self.message:
+                return False
+            self.type_text(self.inventory.items.get_letter(horn))
+        self.stats_logger.log_event('unihorn')
+        return True
+
+    def _blindfolded(self):
+        return any(item.equipped and item.is_unambiguous() and item.object.name in ('blindfold', 'towel')
+                   for item in flatten_items(self.inventory.items))
+
+    @utils.debug_log('use_unicorn_horn')
+    @Strategy.wrap
+    def use_unicorn_horn(self):
+        """Confusion, stun, hallucination, blindness (not a worn blindfold): apply a horn instead of waiting."""
+        mask = self.blstats.prop_mask
+        ailing = mask & (nh.BL_MASK_CONF | nh.BL_MASK_STUN | nh.BL_MASK_HALLU) or \
+            (mask & nh.BL_MASK_BLIND and not self._blindfolded())
+        if not ailing or self.unicorn_horn() is None:
+            yield False
+        yield True
+        for _ in range(UNIHORN_TRIES):
+            mask = self.blstats.prop_mask
+            if not (mask & (nh.BL_MASK_CONF | nh.BL_MASK_STUN | nh.BL_MASK_HALLU) or
+                    (mask & nh.BL_MASK_BLIND and not self._blindfolded())):
+                return
+            if self.unicorn_horn() is None or not self.apply_unicorn_horn():
+                return
 
     @utils.debug_log('cure_disease')
     @Strategy.wrap

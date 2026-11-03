@@ -32,6 +32,15 @@ def seeds(text):
     return out
 
 
+ITEM_EVENTS = ("put_on", "remove", "read", "unihorn", "wish", "levitat", "play", "force")
+
+
+def gear(result):
+    """Worn or wielded items in the last snapshot of the game."""
+    snaps = result.get("snapshots") or {}
+    return (snaps.get("end") or snaps.get("before_end") or {}).get("gear", [])
+
+
 def play(stage, seed):
     env = {**os.environ, "PYTHONHASHSEED": "0", "PYTHONPATH": str(REPO)}
     proc = subprocess.run([sys.executable, "-c", ONE_GAME, stage, str(seed)], cwd=REPO, env=env,
@@ -48,6 +57,7 @@ def main():
     ap.add_argument("--seeds", default="1-12")
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--out")
+    ap.add_argument("--items", action="store_true", help="print worn gear and item-skill events (kit-* stages)")
     args = ap.parse_args()
     with ThreadPoolExecutor(args.jobs) as pool:
         results = list(pool.map(lambda s: play(args.stage, s), seeds(args.seeds)))
@@ -55,6 +65,10 @@ def main():
         Path(args.out).write_text("".join(json.dumps(r) + "\n" for r in results))
     for r in results:
         print(f"{r['seed']:5d} T{r['turns']:6d} Dlvl{r.get('max_depth', 0):3d}  {r['end_reason'][:90]}")
+        if args.items:
+            print("      gear: " + "; ".join(gear(r)))
+            print("      events: " + ", ".join(f"{k}={v}" for k, v in sorted((r.get("events") or {}).items())
+                                            if k.startswith(ITEM_EVENTS)))
     ends = collections.Counter(r["end_reason"].split(":")[0] for r in results)
     print(f"{args.stage}: {len(results)} games, median turns "
           f"{sorted(r['turns'] for r in results)[len(results) // 2]}, ends {dict(ends)}")

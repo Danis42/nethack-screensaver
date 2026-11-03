@@ -25,11 +25,15 @@ WIZARD_PROMPTS = {"Die?": "y", "Advance skills without practice?": "n",
 
 @dataclass(frozen=True)
 class Stage:
-    level: str  # special level name as the ^V menu lists it: "medusa", "castle", "valley", "Val-strt", ...
+    level: str | None  # special level name as the ^V menu lists it ("medusa", "castle", "Val-strt"); None stays put
     xl: int = 1
     wishes: tuple[str, ...] = field(default_factory=tuple)
     wield: str | None = "long sword"  # wielded before the teleport (part of the item's name)
     strategy: str = "daredevil"  # plan for the bot (autoascend/plans.py): a deep start dives, not back to the Mines
+    identify: bool = True  # False keeps the kit unidentified (price groups, read-testing)
+    max_steps: int | None = None  # item tests stop early: the check is the inventory, not survival
+    quaff: tuple[str, ...] = field(default_factory=tuple)  # potions drunk before the bot starts (inventory text)
+    drop: tuple[str, ...] = field(default_factory=tuple)  # items put on the floor before the bot starts
 
 
 # A kit that a bot reaching the level could plausibly have (ASCENSION-PLAN-NH5.md); grows with the phases.
@@ -45,6 +49,32 @@ STAGES = {
                                                           "blessed amulet of reflection",
                                                           "blessed ring of levitation")),
 }
+# Item-skill tests (Phase 02.2 Part 1a): Dlvl 1, the kit in the pack (not worn), a short game; the check is
+# the end-of-game inventory and the bot's event counters (scripts/staged_run.py prints both).
+ITEM_TESTS = {
+    "kit-accessories": Stage(None, xl=8, wield=None, max_steps=1500, wishes=(
+        "uncursed ring of slow digestion", "uncursed ring of free action", "uncursed ring of teleportation",
+        "uncursed amulet of life saving", "uncursed amulet of strangulation")),
+    "kit-armour": Stage(None, xl=8, wield=None, max_steps=1500, wishes=(
+        "uncursed +0 cloak of magic resistance", "uncursed +3 elven cloak", "uncursed +0 speed boots",
+        "uncursed +2 fumble boots", "uncursed +0 levitation boots")),
+    "kit-unihorn": Stage(None, xl=8, wield=None, max_steps=300, quaff=("hallucination", "confusion"), wishes=(
+        "uncursed unicorn horn", "uncursed potion of confusion", "uncursed potion of hallucination")),
+    "kit-scrolls": Stage(None, xl=8, wield=None, max_steps=1500, wishes=(
+        "uncursed +0 plate mail", "2 uncursed scrolls of enchant armor", "uncursed scroll of remove curse",
+        "cursed -1 leather gloves", "uncursed scroll of enchant weapon", "uncursed scroll of fire")),
+    "kit-scroll-prices": Stage(None, xl=8, wield=None, max_steps=1500, identify=False, wishes=(
+        "uncursed +0 plate mail", "2 uncursed scrolls of enchant armor", "uncursed scroll of identify",
+        "uncursed scroll of destroy armor")),
+    "kit-chest": Stage(None, xl=8, wield=None, max_steps=400, wishes=("locked chest",), drop=("chest",)),
+    "kit-wish": Stage(None, xl=8, wield=None, max_steps=600, identify=False, wishes=("wand of wishing",)),
+    "kit-levitation": Stage(None, xl=8, wield=None, max_steps=600, wishes=(
+        "uncursed ring of levitation", "wooden flute", "uncursed ring of free action",
+        "uncursed ring of slow digestion")),
+    "kit-levitation-boots": Stage(None, xl=8, wield=None, max_steps=600, wishes=(
+        "uncursed +0 levitation boots", "uncursed +0 iron shoes")),
+}
+STAGES.update(ITEM_TESTS)
 
 
 class StagedChallenge(NetHackChallenge):
@@ -148,6 +178,14 @@ def equip(env, wield: str | None) -> None:
         settle(env)
 
 
+def inventory_letter(env, text: str) -> str | None:
+    obs = env._get_observation(env.last_observation)
+    for letter, row in zip(obs["inv_letters"], obs["inv_strs"]):
+        if letter and text in bytes(row).decode("latin1"):
+            return chr(int(letter))
+    return None
+
+
 def apply_stage(env, stage: Stage) -> dict:
     """Set the stage up and return the fresh observation for the bot."""
     settle(env)
@@ -158,9 +196,23 @@ def apply_stage(env, stage: Stage) -> dict:
         send(env, [CTRL_W])
         send(env, wish + "\r")
         settle(env)
-    send(env, [CTRL_I, CTRL_I])  # wizard identify menu, then ^I again: identify all of it
-    settle(env)
-    send(env, [ESC])
+    if stage.identify:
+        send(env, [CTRL_I, CTRL_I])  # wizard identify menu, then ^I again: identify all of it
+        settle(env)
+        send(env, [ESC])
+    for potion in stage.quaff:
+        letter = inventory_letter(env, potion)
+        if letter is not None:
+            send(env, ["q", letter])
+            settle(env)
+    for name in stage.drop:
+        letter = inventory_letter(env, name)
+        if letter is not None:
+            send(env, ["d", letter])
+            settle(env)
+    if stage.level is None:  # item tests: the bot itself puts the kit on
+        settle(env)
+        return env._get_observation(env.last_observation)
     equip(env, stage.wield)
     if not teleport_to(env, stage.level):
         raise RuntimeError(f"stage level not found in the ^V menu: {stage.level}")
