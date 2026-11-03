@@ -134,6 +134,9 @@ Mines gnomes, dwarves and hobbits are hostile: fights in the Mines, but dwarves'
   water to cross. BUILT (rise_one_level, self-test 4/4). Alternative: confused or cursed scroll of teleportation
   (random, fails with the Amulet).
 - Status: staged medusa batch (12 seeds) pending on feat/medusa.
+- Research 2026-11-03 (MEDUSA-NH5.md): humans cross by levitation / water walking / freezing (85% / 42% / 78% carry
+  the item at the end), carry a blindfold or towel (96%) and are telepathic (95%, mostly an eaten floating eye).
+  New early rule candidate: kill floating eyes at range and eat the corpse (telepathy). MISSING.
 
 ## Stage 6. Castle
 
