@@ -345,6 +345,11 @@ Resume steps:
    rung8 4.6%, rung9 7 games, dlvl10 35.8%; starved 15.7%, ants 5.0%, rays 3.3%, eye 3 games, crashed 0.5% (13),
    median depth 8. main c49c201 is now the stored baseline. Crashes: corpse-prefix names (pickled/deep fried <monster>,
    monster.py:45) 3, heavy iron ball prompt 2, "cannot reach the doorway" 2, go_to no reachable neighbor 2.
+   2026-11-04: bench web page got "Stop all jobs" and "Shut down bench" buttons (main 41a783c). Medusa-levitate crashes
+   (seeds 2, 7) fixed: pickup while levitating, #terrain while confused (menu answer sent as a move), #apply in a
+   handless form. feat/medusa 1a84cc0; all scenarios: 0 crashes, crossed 1/8 (stage strength problem remains).
+   Same fixes for main: exp/disoriented 7514591 (worktree .worktrees/disoriented); job 78 = 7514591 vs c49c201,
+   metric rung2 (no-harm gate). Merge if not worse; then rebase feat/medusa on main.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
