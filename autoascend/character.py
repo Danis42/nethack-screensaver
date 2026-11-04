@@ -274,8 +274,16 @@ class Character:
         self.upgradable_skills = dict()
 
         self.is_lycanthrope = False
+        self.nohands_glyph = None  # hero glyph of a form the game refused #apply in (apply.c doapply: nohands)
+
+    def can_apply(self):
+        """False while the hero is in a form the game already refused #apply in."""
+        return not (self.nohands_glyph is not None and self.prop.polymorph and
+                    self.agent.glyphs[self.agent.blstats.y, self.agent.blstats.x] == self.nohands_glyph)
 
     def update(self):
+        if "aren't able to use or apply tools in your current form." in self.agent.message:
+            self.nohands_glyph = self.agent.glyphs[self.agent.blstats.y, self.agent.blstats.x]
         if 'You feel feverish.' in self.agent.message:
             self.is_lycanthrope = True
         if 'You feel purified.' in self.agent.message:

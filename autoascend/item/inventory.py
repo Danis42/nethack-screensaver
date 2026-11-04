@@ -440,6 +440,8 @@ class Inventory:
     def play_tune(self, notes):
         """Play five notes (A-G) on a tonal instrument; the passtune when the game offers it. Returns the
         message, which tells the Mastermind result at the Castle ("You hear 2 tumblers click and 1 gear turn.")."""
+        if not self.agent.character.can_apply():
+            return None
         instrument = self.tonal_instrument()
         if instrument is None:
             return None
@@ -794,6 +796,8 @@ class Inventory:
                     else:
                         items = []
                         letters = []
+                elif self.levitating():
+                    items, letters = [], []  # "You cannot reach the floor.": the pickup menu would not open
                 else:
                     self.agent.step(A.Command.PICKUP)  # FIXME: parse LOOK output, add this fragment to pickup method
                     lifting = re.search(r'You have (?:a little|much) trouble lifting (.*)\.  Continue\? \[ynq\]',
@@ -841,7 +845,8 @@ class Inventory:
                                                                                   self.agent.blstats.x)))
 
                 here = (*self.agent.current_level().key(), self.agent.blstats.y, self.agent.blstats.x)
-                if self._out_of_reach == here:
+                if self._out_of_reach == here or self.levitating():
+                    # pit edge, or levitating ("You cannot reach the floor."): nothing here can be picked up or eaten
                     items, letters = [], []
                 else:
                     self._out_of_reach = None

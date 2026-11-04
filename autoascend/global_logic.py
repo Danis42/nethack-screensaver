@@ -507,7 +507,7 @@ class GlobalLogic:
                                     item.object in [O.from_name('pick-axe'), O.from_name('dwarvish mattock')]:
                                 pickaxe = item
                                 break
-                        if pickaxe is not None:
+                        if pickaxe is not None and self.agent.character.can_apply():
                             with self.agent.atom_operation():
                                 pickaxe = self.agent.inventory.move_to_inventory(pickaxe)
                                 self.agent.step(A.Command.APPLY)

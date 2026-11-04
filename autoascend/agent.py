@@ -792,6 +792,9 @@ class Agent:
     ######## TRIVIAL ACTIONS
 
     def check_terrain(self, force):
+        prop = self.character.prop
+        if prop.confusion or prop.stun or prop.hallu:
+            return  # "You are too disoriented for this." (detect.c reveal_terrain); the menu answer would be a move
         if force or self._last_terrain_check is None or self.blstats.time - self._last_terrain_check > 50:
             self._last_terrain_check = self.blstats.time
             with self.atom_operation():
@@ -1726,6 +1729,8 @@ class Agent:
         return None
 
     def apply_unicorn_horn(self):
+        if not self.character.can_apply():
+            return False
         horn = self.inventory.move_to_inventory(self.unicorn_horn())
         with self.atom_operation():
             self.step(A.Command.APPLY)
