@@ -1,6 +1,7 @@
 import json
 import socket
 import subprocess
+import threading
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -133,3 +134,26 @@ def test_results_carry_the_ladder_even_without_reference_ascensions(bench_app):
     assert bench_app.yardstick() == {}
     rows = bench_app.results("main")["ladder"]
     assert [r["rung"] for r in rows] == list(range(1, 18))
+
+
+def test_stop_all_and_shutdown_over_http(bench_app):
+    httpd, stop = serve(bench_app, port=0)
+    serving = threading.Thread(target=httpd.serve_forever, daemon=True)
+    serving.start()
+    http = f"http://127.0.0.1:{httpd.server_address[1]}"
+    try:
+        jobs = [_req(http + "/api/jobs", "POST", {"kind": "baseline", "ref": "main", "games": 3})[1]["job_id"]
+                for _ in range(2)]
+        assert _req(http + "/api/stop-all", "POST", {}) == (200, {"stopped": jobs})
+        assert all(bench_app.store.job(j)["state"] == "stopped" for j in jobs)
+        late = _req(http + "/api/jobs", "POST", {"kind": "baseline", "ref": "main", "games": 3})[1]["job_id"]
+        assert _req(http + "/api/shutdown", "POST", {}) == (200, {"stopped": [late], "shutting_down": True})
+        serving.join(timeout=10)
+        assert not serving.is_alive() and stop.is_set()
+    finally:
+        httpd.server_close()
+
+
+def test_shutdown_needs_a_serving_server(bench_app):
+    with pytest.raises(ValueError, match="cannot shut itself down"):
+        bench_app.shutdown()

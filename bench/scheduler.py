@@ -46,6 +46,17 @@ class Scheduler:
                 return True
         return False
 
+    def stop_all(self):
+        """Stop the active job and every queued one. Stored games stay. Returns the stopped job ids."""
+        stopped = []
+        if self.job is not None:
+            stopped.append(self.job["id"])
+            self._end("stopped", self.job["result"])
+        while (job := self.store.next_queued()) is not None:
+            self.store.set_job(job["id"], "stopped")
+            stopped.append(job["id"])
+        return stopped
+
     def tick(self):
         self._collect()
         if self.job is None:
