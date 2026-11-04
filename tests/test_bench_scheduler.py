@@ -153,3 +153,18 @@ def test_verdict_pairs_games_by_seed(tmp_path):
     _run(s, ticks=20000)
     v = store.job(job)["result"]["verdict"]
     assert v["pairs"] == v["checkpoint"]
+
+
+def test_stop_all_stops_the_active_job_and_the_queue(tmp_path):
+    s, store, played, workers = _scheduler(tmp_path, lambda sha, i: _game(3), slots=2)
+    first = s.submit("baseline", {"ref": "main", "sha": "base", "games": 100})
+    second = s.submit("baseline", {"ref": "x", "sha": "other", "games": 2})
+    for _ in range(3):
+        s.tick()
+    stored = store.count("base")
+    assert s.stop_all() == [first, second]
+    assert store.job(first)["state"] == store.job(second)["state"] == "stopped"
+    assert all(w.closed for w in workers) and s.job is None
+    _run(s)
+    assert store.count("base") == stored and store.count("other") == 0
+    assert s.stop_all() == []

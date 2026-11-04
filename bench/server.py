@@ -21,6 +21,7 @@ class App:
         self.repo, self.cache_dir = Path(repo), Path(cache_dir)
         self.lock = threading.RLock()
         self.imports = {"running": False, "last": None}
+        self.request_exit = None  # set by serve(): ends serve_forever from a request thread
 
     def _sha(self, ref):
         return gitrefs.resolve(self.repo, ref)
@@ -55,6 +56,20 @@ class App:
     def stop(self, job_id=None):
         with self.lock:
             return {"stopped": self.scheduler.stop(job_id)}
+
+    def stop_all(self):
+        with self.lock:
+            return {"stopped": self.scheduler.stop_all()}
+
+    def shutdown(self):
+        """Stop every job, close the workers and end the server process (serve() sets request_exit)."""
+        if self.request_exit is None:
+            raise ValueError("this server cannot shut itself down")
+        with self.lock:
+            stopped = self.scheduler.stop_all()
+            self.scheduler.shutdown()
+        self.request_exit()
+        return {"stopped": stopped, "shutting_down": True}
 
     def job(self, job_id):
         job = self.store.job(int(job_id))
@@ -225,6 +240,10 @@ def make_handler(app):
                         return app.start_experiment(**body)
                     raise ValueError("kind must be baseline or experiment")
                 return self._handle(start)
+            if path == "/api/stop-all":
+                return self._handle(app.stop_all)
+            if path == "/api/shutdown":
+                return self._handle(app.shutdown)
             if path == "/api/import":
                 return self._handle(lambda: app.start_import(**self._body()))
             self._send(404, {"error": f"no route {path}"})
@@ -252,5 +271,12 @@ def serve(app, port=8765, host="127.0.0.1"):
                              f"(http://{host}:{port})")
         raise
     stop = threading.Event()
+
+    def request_exit():
+        stop.set()
+        # httpd.shutdown() waits for serve_forever, so it must not run on the request thread
+        threading.Thread(target=httpd.shutdown, daemon=True).start()
+
+    app.request_exit = request_exit
     threading.Thread(target=app.loop, args=(stop,), daemon=True).start()
     return httpd, stop

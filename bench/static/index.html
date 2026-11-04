@@ -26,6 +26,7 @@ th { color:var(--muted); font-weight:500; }
 form { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:8px 0 0; }
 input, select, button { font:inherit; padding:3px 6px; color:var(--fg); background:var(--bg); border:1px solid var(--line); border-radius:4px; }
 button { cursor:pointer; }
+button.danger { color:var(--bad); border-color:var(--bad); }
 </style>
 </head>
 <body>
@@ -36,7 +37,9 @@ button { cursor:pointer; }
   <div id="job-body" class="muted">loading…</div>
   <form id="baseline-form">Baseline <input name="ref" value="main" size="12"> games <input name="games" value="576" size="5"> <button>Start</button></form>
   <form id="experiment-form">Experiment <input name="candidate" placeholder="branch" size="14"> vs <input name="baseline" value="main" size="12"> metric <select name="metric" id="metric-select"></select> <button>Start</button></form>
-  <form id="stop-form"><button>Stop current job</button></form>
+  <form id="stop-form"><button>Stop current job</button>
+    <button type="button" id="stop-all">Stop all jobs</button>
+    <button type="button" id="shutdown" class="danger">Shut down bench</button></form>
   <div id="form-error" class="worse"></div>
 </section>
 <section id="experiment"><h2>Experiment</h2><div id="experiment-body" class="muted">no experiment yet</div></section>
@@ -157,9 +160,10 @@ function renderAscenders(r) {
   $('ascenders-body').innerHTML = html;
 }
 
-let timer = null;
+let timer = null, serverDown = false;
 async function refresh() {
   clearTimeout(timer);
+  if (serverDown) return;
   let busy = false;
   try {
     const s = await api('/api/status');
@@ -197,6 +201,19 @@ $('experiment-form').onsubmit = e => {
   send('/api/jobs', 'POST', {kind: 'experiment', candidate: f.candidate.value, baseline: f.baseline.value, metric: f.metric.value});
 };
 $('stop-form').onsubmit = e => { e.preventDefault(); send('/api/jobs', 'DELETE'); };
+$('stop-all').onclick = () => {
+  if (window.confirm('Stop the running job and drop every queued job? Stored games stay.')) send('/api/stop-all', 'POST', {});
+};
+$('shutdown').onclick = async () => {
+  if (!window.confirm('Stop all jobs, kill the workers and shut the bench server down?')) return;
+  try {
+    const r = await api('/api/shutdown', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}'});
+    $('job-body').textContent = `Bench server shut down (stopped jobs: ${r.stopped.join(', ') || 'none'}). Start it again with: bench.cli serve`;
+    $('form-error').textContent = '';
+    serverDown = true;
+    clearTimeout(timer);
+  } catch (err) { $('form-error').textContent = err.message; }
+};
 
 api('/api/metrics').then(metrics => {
   $('metric-select').innerHTML = Object.entries(metrics).filter(([, m]) => m.kind === 'rate')
