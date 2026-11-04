@@ -6,7 +6,7 @@ current_phase_name: Full Ascension Ruleset
 status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-11-03
+last_activity: 2026-11-04
 last_activity_desc: Part 1a built, playbook written; job 73 running; next: hand-played games
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
@@ -341,6 +341,10 @@ Resume steps:
    scenario medusa-levitate 8 seeds: crossed 1/8 (seed 5), 0 drowned, but heroes die in 30-150 turns (master mind
    flayer, water troll, xorn, titan): stage requirement problem; telepathy setup failed 3/8 (eat step); 2 crashes
    (Cyclic Panic assertion, seeds 2 and 7) to look at. Job 77 = baseline c49c201 (new main) 2304 games, running.
+   2026-11-04: Job 77 DONE (baseline c49c201 = main, 2304 games): rung2 56.6%, rung4 33.8%, rung6 15.9%, rung7 7.9%,
+   rung8 4.6%, rung9 7 games, dlvl10 35.8%; starved 15.7%, ants 5.0%, rays 3.3%, eye 3 games, crashed 0.5% (13),
+   median depth 8. main c49c201 is now the stored baseline. Crashes: corpse-prefix names (pickled/deep fried <monster>,
+   monster.py:45) 3, heavy iron ball prompt 2, "cannot reach the doorway" 2, go_to no reachable neighbor 2.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
