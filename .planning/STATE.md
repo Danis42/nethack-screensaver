@@ -7,7 +7,7 @@ status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-04
-last_activity_desc: Part 1a built, playbook written; job 73 running; next: hand-played games
+last_activity_desc: bench stop/shutdown buttons; Medusa crash fixes merged (main 7514591); next: eye-corpse rule
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -349,7 +349,13 @@ Resume steps:
    (seeds 2, 7) fixed: pickup while levitating, #terrain while confused (menu answer sent as a move), #apply in a
    handless form. feat/medusa 1a84cc0; all scenarios: 0 crashes, crossed 1/8 (stage strength problem remains).
    Same fixes for main: exp/disoriented 7514591 (worktree .worktrees/disoriented); job 78 = 7514591 vs c49c201,
-   metric rung2 (no-harm gate). Merge if not worse; then rebase feat/medusa on main.
+   metric rung2 (no-harm gate). Job 78 STOPPED by the owner at 1152/1400 games: rung2 +0.1 [-1.5, +1.7], no
+   difference; crashed 6/1400 (0.43%) vs 12/2304 (0.52%). MERGED: main 7514591 (game code changed: the stored
+   baseline is still c49c201; 1400 games stored under 7514591; finish job 78's spec to get 2304). main merged into
+   feat/medusa 8ea898b (suite 543 passed). Worktree main-check removed.
+   NEXT SESSION (2026-11-05): eat-the-eye-corpse rule (exp/eye-telepathy, .worktrees/eye-telepathy: rebase on
+   main first) -> scenario eye-telepathy, then no-harm bench vs 7514591 (first finish its baseline to 2304); then
+   Medusa stage strength (heroes die after crossing) and hand play per the owner plan below.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
