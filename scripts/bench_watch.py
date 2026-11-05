@@ -22,7 +22,8 @@ PERIOD = 300
 
 
 def call(method, path):
-    req = urllib.request.Request(URL + path, method=method)
+    req = urllib.request.Request(URL + path, method=method, data=b"{}" if method != "GET" else None,
+                                 headers={"Content-Type": "application/json"})  # server refuses writes without it
     return json.load(urllib.request.urlopen(req, timeout=30))
 
 
