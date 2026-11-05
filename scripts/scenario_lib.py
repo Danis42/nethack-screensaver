@@ -123,6 +123,16 @@ SCENARIOS: dict[str, Scenario] = {
                 "alive": alive},
         seeds="1-8",
         note="floating eye created next to the hero; ~1/2 of eyes leave a corpse (mon.c), so telepathy <= ~50%"),
+    # Stationary passive monsters (SURVIVAL-NH5.md): never melee a spotted jelly (acid passive, speed 0).
+    "jelly": Scenario(
+        stage=dict(level=None, xl=6, max_steps=400),
+        monsters=("spotted jelly",),
+        checks={"never meleed": lambda r: not any(re.search(r"You (hit|miss|smite) the spotted jelly", m)
+                                                  for m in r["messages"]),
+                "no acid": never("You are splashed by the spotted jelly's acid"),
+                "alive": alive},
+        seeds="1-12",
+        note="spotted jelly created next to the hero on Dlvl 1"),
     # Eat-the-eye rule (eat_eye_corpse): no blindfold, the bot kills the eye its own way; a corpse left must be eaten.
     "eye-natural": Scenario(
         stage=dict(level=None, xl=8, max_steps=400),
