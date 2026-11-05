@@ -70,3 +70,23 @@ Aleax + crushing, fire elemental, giant eel drowning. Crossing 4/10.
 3. Walk away from slow heavy hitters (mumak speed 9) instead of trading blows.
 4. Scroll identification so enchant armour gets read (biggest AC lever, 79% of humans).
 5. Crisis tools (section 3a) once the apply detail is known.
+
+## 8. External answers R01/R02 checked against 5.0 source (2026-11-05)
+DeepSeek (external/R01-deepseek.md, R02-deepseek.md): every checked claim correct. Gemini (R0x-gemei.md): several
+wrong (fire vortex speed 15, passive 2d6, gem luck +2/+5 for unknown/named, "graciously" for valuable) - do not use.
+Verified:
+- Passive damage = (monster level + 1)d<damd> when damn is 0 (uhitm.c:5885-5889); shock/fire/cold passives fire
+  with 2/3 chance and only while the monster is alive (uhitm.c:6019); energy vortex L6 -> 7d4 (avg 17.5) per hit.
+  Speeds: energy vortex 20, fire vortex 22 (Gehennom only, G_HELL), fire elemental 12.
+- Unicorns: on teleport levels they never step onto the hero's lines (monmove.c:2116 NOTONL); on no-teleport
+  levels (Sokoban) they may (monmove.c:1939). So a unicorn melee means the bot closed in - the bot's
+  movement_priority.py engages unicorns freely at HP >= 15 (code fact).
+- Gems (dothrow.c gem_accept 2318-2372): any gem OR glass thrown at a unicorn makes it peaceful. Co-aligned (gray
+  for a neutral Valkyrie): identified +5 Luck, named +2, unknown +1 ("gratefully"); unknown glass "graciously", no
+  Luck. Cross-aligned: identified rn2(7)-3, else rn2(3)-1.
+- Killing a co-aligned unicorn: -5 Luck (mon.c:3666).
+- 5.0 unicorn horn fixes sick, blind, hallucination, vomiting, confusion, stun, deaf; NO attribute restoration
+  (apply.c:2312-2330).
+New rule candidates: (a) never close in on a hostile unicorn (drop the HP>=15 engage branch); (b) throw any gem or
+glass at a hostile unicorn that blocks the way (pacifies it); (c) throw gems at gray unicorns for Luck;
+(d) energy vortex: ranged only, never melee without shock resistance (17 HP per hit at 2/3).
