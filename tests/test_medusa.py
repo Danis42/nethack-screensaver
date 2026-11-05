@@ -1,5 +1,6 @@
 import numpy as np
 
+from autoascend import medusa
 from autoascend.medusa import crossing_target, landing_square
 
 STAIRS, MEDUSA = {7}, {9}
@@ -21,3 +22,15 @@ def test_landing_square_is_dry_and_nearest():
     wet[10, 60] = True
     assert landing_square(walkable, wet, (10, 60)) in ((10, 59), (10, 61))
     assert landing_square(walkable, wet, (10, 62)) == (10, 62)
+
+
+def test_stall_landing_here_if_dry_else_a_dry_neighbour():
+    walkable = np.ones((5, 5), bool)
+    wet = np.zeros((5, 5), bool)
+    assert medusa.stall_landing(walkable, wet, (2, 2)) == (2, 2)
+    wet[2, 2] = True
+    wet[1, :] = True
+    wet[2, 1] = wet[2, 3] = True
+    assert medusa.stall_landing(walkable, wet, (2, 2)) in {(3, 1), (3, 2), (3, 3)}
+    wet[3, :] = True
+    assert medusa.stall_landing(walkable, wet, (2, 2)) is None

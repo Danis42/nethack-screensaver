@@ -30,3 +30,17 @@ def landing_square(walkable, wet, target):
     d = np.maximum(abs(ys - target[0]), abs(xs - target[1]))
     i = int(np.argmin(d))
     return int(ys[i]), int(xs[i])
+
+
+def stall_landing(walkable, wet, pos):
+    """Where to land when the crossing stops short (a closed or locked door: no kicking while levitating,
+    dokick.c:921): here if dry, else a dry walkable neighbour, else None (keep floating)."""
+    y, x = pos
+    if walkable[y, x] and not wet[y, x]:
+        return y, x
+    h, w = walkable.shape
+    for ny in range(max(0, y - 1), min(h, y + 2)):
+        for nx in range(max(0, x - 1), min(w, x + 2)):
+            if (ny, nx) != (y, x) and walkable[ny, nx] and not wet[ny, nx]:
+                return ny, nx
+    return None

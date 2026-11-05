@@ -14,6 +14,7 @@ class StatsLogger:
             "medusa_no_target": 0,
             "medusa_levitate": 0,
             "medusa_landed": 0,
+            "medusa_landed_at_door": 0,
             "telepathy_attempt": 0,
             "telepathy_eye_killed": 0,
             "telepathy_eye_eaten": 0,

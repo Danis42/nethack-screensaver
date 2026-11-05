@@ -375,11 +375,25 @@ class GlobalLogic:
             return False
         a.stats_logger.log_event('medusa_levitate')
         for _ in range(8):
-            if (a.blstats.y, a.blstats.x) == land:
+            pos = (a.blstats.y, a.blstats.x)
+            if pos == land:
                 break
             a._fast_go_to(*land)
+            if (a.blstats.y, a.blstats.x) == pos and 'door' in a.message:
+                break  # "That door is closed." / "This door is locked.": travel will not get further
         if (a.blstats.y, a.blstats.x) != land:
-            return False  # still levitating: the next try goes on from here
+            # Medusa's building has closed or locked doors (dat/medusa-*.lua); no kicking while levitating
+            # (dokick.c:921): land in front of the door and let exploration open or kick it.
+            short = medusa.stall_landing(level.walkable, wet, (a.blstats.y, a.blstats.x)) \
+                if 'door' in a.message else None
+            if short is None:
+                return False  # still levitating: the next try goes on from here
+            if short != (a.blstats.y, a.blstats.x):
+                a.move(*short)
+            if (a.blstats.y, a.blstats.x) != short:
+                return False
+            a.stats_logger.log_event('medusa_landed_at_door')
+            land = short
         inv.stop_levitation()
         self._medusa_crossed.add(level.key())
         a.stats_logger.log_event('medusa_landed')
