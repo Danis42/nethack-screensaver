@@ -40,8 +40,11 @@ class Stage:
 MIDGAME_KIT = ("blessed +2 dwarvish mithril coat", "blessed +2 dwarvish iron helm", "blessed +2 iron shoes",
                "pick-axe", "blessed fixed +2 long sword", "4 blessed potions of extra healing",
                "uncursed unicorn horn", "2 lizard corpses", "blindfold")
+# Human 3.6 ascensions at arrival on Medusa's level (72 NLD-NAO games, 59 with a Medusa kill, 2026-11-05):
+# AC median -14 (p75 -11, p90 -9), XL 13, max HP 110. MIDGAME_KIT alone gives about AC -10; these two make -14.
+MEDUSA_ARMOUR = ("blessed +0 cloak of protection", "blessed +0 leather gloves")
 STAGES = {
-    "medusa": Stage("medusa", xl=14, wishes=MIDGAME_KIT + ("blessed amulet of reflection",)),
+    "medusa": Stage("medusa", xl=14, wishes=MIDGAME_KIT + MEDUSA_ARMOUR + ("blessed amulet of reflection",)),
     "castle": Stage("castle", xl=14, wishes=MIDGAME_KIT + ("blessed amulet of reflection",
                                                           "blessed ring of levitation", "wooden flute")),
     "quest": Stage("Val-strt", xl=14, wishes=MIDGAME_KIT),
