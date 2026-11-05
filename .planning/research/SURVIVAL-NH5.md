@@ -22,7 +22,13 @@ AC median -14 (p75 -11, p90 -9), XL 13, max HP 110; Castle arrival AC -17, XL 14
 ## 3. What humans do in a crisis on Dlvl 20+ (HP below 1/3 after being above 2/3)
 69 crises in 72 games (median 1 per game): first recognised action
 apply 51% | nothing seen 16% | zap 9% | read 6% | quaff 6% | pray 4% | cast 4% | up stairs 3% | Elbereth 1%.
-What is applied: see section 3a (pending).
+### 3a. What is applied (35 crises, next three message lines)
+stethoscope ~14 ("Status of <monster>: Level L HP h(H) AC a": a free action to see whether the monster is nearly
+dead; most then keep fighting), bag of holding ~8 (take out healing potions / scrolls), magic whistle 4 (pets),
+expensive camera 1, unlock/lock a door 2, blindfold 1, unicorn horn 1, pick-axe 1.
+Conclusion: deep down humans rarely escape. Crises are rare (1 per game) and are met by informed fighting plus
+healing; survival comes from strength (AC, HP), not escape tricks. For the bot: close the AC gap first
+(enchant armour via scroll identification), then healing access; escape rules matter less than expected.
 
 ## 4. The bot's low-HP behaviour (autoascend/agent.py emergency_strategy, combat/fight_heur.py)
 - quaff a known healing potion below 1/3 HP; pray below about 1/6-1/7 HP if 500+ turns since the last prayer.
