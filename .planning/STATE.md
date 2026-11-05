@@ -372,6 +372,21 @@ Resume steps:
    OPEN: 7/10 staged heroes still die (crowd at T85, jabberwock T48, minotaur, storm giant, Aleax, fire
    elemental, giant eel drowning). Next: classify these deaths against human play (escape items, Elbereth,
    retreat upstairs, speed) before building anything.
+   2026-11-05 evening (session end, PC shut down): Job 81 = exp/stationary-passive a810318 (never melee spotted/
+   ochre jelly, green/red/yellow mold: ONLY_RANGED_SLOW_MONSTERS) vs e1d8086, rung2 no-harm gate. Stopped at
+   shutdown with 1152 pairs: -2.7 pts [-6.7, +1.3] (192: -3.6, 384: -4.2, 576: -4.0). Gate NOT passed (needs lo >= -2).
+   NEXT: rerun/extend job 81 to 2304 with scripts/bench_watch.py --gate <id>; if still negative, look at stuck games
+   (jelly/mold blocking a Mines passage) and the jelly death counts before any fix.
+   Research (all in .planning/research/): SURVIVAL-NH5.md, SCROLL-ID-NH5.md; external/PROMPTS.md R01-R16 for
+   ChatGPT/DeepSeek (Gemini dropped: worst answers); answers in external/R0x-<agent>.md. Claude's own R03, R05, R07
+   written and compared with ChatGPT (R05: elves carry elven mithril 1/4; R07: confused genocide kills the hero,
+   blessed destroy armour cancel keeps the random target, cursed genocide 'none' still makes a monster). Owner brings
+   more ChatGPT results next session: compare each with R0x-claude.md (write Claude's own first if missing).
+   Planned build after job 81: scroll price-ID: 1) NLE option price_quotes, 2) item parser '{buy X sell Y}' suffix,
+   3) sell-offer ID in shops buying scrolls (drop on costly square, answer n; ignore 'only'/credit/'uninterested'),
+   4) read safe groups; plus prompt handlers: blessed fire position (never escape), blessed destroy armour (cheapest
+   piece, escape is not a cancel), genocide by BUC. Candidates: damage-based retreat threshold (R03), unicorns (gems,
+   never melee hostile), elven mithril pickup/wear check, gloves/cloak cause checks.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
