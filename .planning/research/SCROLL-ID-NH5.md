@@ -43,8 +43,13 @@ answer. Cursed destroy armour disintegrates (or -1 and stun if the piece is curs
    value is knowing the appearance for every later copy. Cursed scrolls make it worse: read-test only uncursed
    (altar-tested) scrolls.
 
-## Human practice
-(see section "Human reads" below; NLD 3.6 scan pending)
+## Human practice (72 NLD 3.6 ascensions, reads before the Medusa kill; scratch scroll_reads.py)
+Reads per game: median 29 (p25 18, p75 39); 18.5 on Dlvl <= 10. Outcomes of 2512 reads (first matching message
+within 4 lines; about half unmatched): identify 16.2%, enchant weapon 12.3%, enchant armour 9.3% (56 of 72 games),
+remove curse 3.7%, magic mapping 2.9%, teleport 1.3%, light 1.1%, genocide 1.0%, amnesia 0.2%, destroy armour 0.1%
+(3 reads), punishment 1 read. Blind reading would give destroy armour ~4.5%, amnesia ~3.5%, punishment ~1.5%.
+Conclusion: humans identify first (price, then identify scrolls) and then read a lot; they do not read blind.
+Bot plan: A (sell-price ID) first; no blind read-testing.
 
 ## Proposed order
 A. Sell-price identification in shops that buy scrolls (risk-free, Minetown general store on the route).
