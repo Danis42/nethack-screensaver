@@ -1588,9 +1588,45 @@ class Agent:
             if (self.blstats.y, self.blstats.x) == (ey, ex):
                 corpse = next((i for i in self.inventory.items_below_me
                                if i.is_corpse() and i.monster_id == eye_id), None)
-                if corpse is not None and self.blstats.hunger_state != Hunger.SATIATED:
+                if corpse is not None and telepathy.may_eat_eye(self.blstats.hunger_state, self.character.overfull):
                     self.inventory.eat(corpse)
                     self.stats_logger.log_event('telepathy_eye_eaten')
+
+    @utils.debug_log('eat_eye_corpse')
+    @Strategy.wrap
+    def eat_eye_corpse(self):
+        """Go to a fresh floating eye corpse and eat it at once, Satiated or not (telepathy.may_eat_eye).
+
+        Eye trace 2026-11-03 (100 games): 31 kill an eye but stay without telepathy; eat_corpses_from_ground looks
+        only every 5 turns and never while Satiated, so the pet or the clock gets the corpse first."""
+        if self.character.telepathic or self.character.prop.hallu:
+            yield False
+        if not telepathy.may_eat_eye(self.blstats.hunger_state, self.character.overfull):
+            yield False
+        level = self.current_level()
+        eye_id = MON.from_name(telepathy.EYE) - nh.GLYPH_MON_OFF
+        squares = [pos for pos in telepathy.eye_corpse_squares(level.corpses_to_eat, eye_id, self.blstats.time)
+                   if not level.shop[pos]]
+        if not squares:
+            yield False
+        dis = self.bfs()
+        squares = sorted((pos for pos in squares if dis[pos] != -1), key=lambda pos: dis[pos])
+        if not squares:
+            yield False
+        yield True
+        ty, tx = squares[0]
+        if (self.blstats.y, self.blstats.x) != (ty, tx):
+            self.go_to(ty, tx, max_steps=30)
+            if (self.blstats.y, self.blstats.x) != (ty, tx):
+                return
+        corpse = next((i for i in self.inventory.items_below_me
+                       if i.is_corpse() and i.monster_id == eye_id), None)
+        if corpse is None:
+            level.corpses_to_eat[ty, tx].pop(eye_id, None)  # no corpse dropped, or the pet ate it
+            self.stats_logger.log_event('telepathy_eye_corpse_gone')
+            return
+        self.inventory.eat(corpse)
+        self.stats_logger.log_event('telepathy_eye_eaten')
 
     @utils.debug_log('eat_corpses_from_ground')
     @Strategy.wrap

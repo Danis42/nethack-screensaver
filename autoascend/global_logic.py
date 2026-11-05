@@ -1059,6 +1059,7 @@ class GlobalLogic:
                 self.agent.cure_disease().every(5),
             ])
             .preempt(self.agent, [
+                self.agent.eat_eye_corpse(),
                 self.agent.get_telepathy(),
             ])
             .preempt(self.agent, [

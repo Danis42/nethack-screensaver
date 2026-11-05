@@ -21,3 +21,22 @@ def eye_target(monsters, telepathic, has_blindfold):
         return None
     _, y, x, _, _ = min(eyes, key=lambda m: m[0])
     return int(y), int(x)
+
+# A corpse up to 50 turns old is never rotten: eat.c rottenfood rotted = age / (10 + rn2(20)), rotten above 5.
+EYE_CORPSE_MAX_AGE = 50
+OVERFULL_MESSAGE = "hard time getting all of it down"  # eat.c:3315, nutrition >= 1500
+
+
+def may_eat_eye(hunger_state, overfull):
+    """Eat a floating eye corpse now? Yes, even Satiated, unless the hero may be near 2000 nutrition.
+
+    Choking needs nutrition >= 2000 and a meal started while Satiated (eat.c:3138/3297). The eye gives 10. The game
+    warns at >= 1500 (OVERFULL_MESSAGE); `overfull` = that warning was seen since the hero was last below Satiated."""
+    from .glyph import Hunger
+    return not (hunger_state == Hunger.SATIATED and overfull)
+
+
+def eye_corpse_squares(corpses_to_eat, eye_id, now):
+    """Squares of the level's corpses_to_eat ({(y, x): {monster_id: kill turn}}) holding a fresh floating eye."""
+    return [pos for pos, mapping in corpses_to_eat.items()
+            if eye_id in mapping and now - mapping[eye_id] <= EYE_CORPSE_MAX_AGE]
