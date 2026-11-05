@@ -40,7 +40,7 @@ ascensions (scratch scroll_reads.py); bot data = bench e1d8086 (1152 games).
    - "What would you like to identify first?" -> scrolls.identify_choice (have it).
    - "Where do you want to center the explosion?" -> a visible square 2+ away inside the highlighted range,
      preferably on a hostile; NEVER escape (explodes on the hero x5).
-   - "Where do you want to center the cloud?" -> a visible square with a hostile, 2+ away; escape is safe
+   - "Where do you want to center the stinking cloud?" ("the cloud?" once known) -> a visible square with a hostile, 2+ away; escape is safe
      ("Never mind", scroll used).
    - "What type of monster do you want to genocide?" -> known uncursed: "soldier ant" early (31 of 1152 bot
      deaths), later "master mind flayer"; BUC unknown: do not read genocide (cursed creates the named monster).
@@ -57,3 +57,18 @@ ascensions (scratch scroll_reads.py); bot data = bench e1d8086 (1152 games).
 
 ## Open questions
 - none open from the source side; NLE prompt rendering to confirm in a staged game.
+
+## Compared with ChatGPT R07 (2026-11-05)
+Agreement on: blessed fire never escape (explodes on the hero), stinking cloud escape is safe, genocide prompts by
+BUC, cursed/confused teleport = level teleport, some_armor order, blessed destroy armour getobj("destroy").
+Missed by me, all checked in the 5.0 source:
+- CONFUSED unblessed genocide kills a human hero: do_genocide(!cursed | 2*Confusion), flag 2 = PLAYER genocides
+  the hero's own race, death "genocidal confusion" (read.c:1737, 2838-2843, 2970). The bot already never reads
+  while confused; this makes that rule fatal-critical.
+- Blessed destroy armour: an invalid or cancelled pick keeps the random some_armor() target (read.c:1366-1372),
+  so escape is NOT a cancel. Answer with the cheapest worn piece.
+- Cursed genocide with "none"/escape still creates a random monster (rndmonst when !REALLY, read.c:2848, 2877).
+- Remove curse (non-cursed, not confused) ends punishment; the iron ball stays on the floor (read.c:1599).
+- Stinking cloud prompt text is "center the stinking cloud?" while unknown (read.c:3086, mention_stinking).
+Not taken: wiki-based altar/fire precautions (no 5.0 source); ChatGPT's 79.6% "at least one identify in 8" is
+the plain table number and matches mine (18%).
