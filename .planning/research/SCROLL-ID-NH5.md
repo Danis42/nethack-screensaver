@@ -55,3 +55,24 @@ Bot plan: A (sell-price ID) first; no blind read-testing.
 A. Sell-price identification in shops that buy scrolls (risk-free, Minetown general store on the route).
 B. Read any scroll whose candidates are all safe (have it) + make sure enchant armour candidates count as wanted.
 C. Then consider read-testing uncursed scrolls of appearances with 2+ copies, if A+B leave most unknown.
+
+## External answers checked against 5.0 source (2026-11-05)
+R04/R05/R07 DeepSeek: mostly correct for 3.6/3.7; two 5.0 differences found below. R01 ChatGPT: cites the 5.0
+release source directly; every checked number matches (7d4 passive, 2/3 chance, fire vortex speed 22).
+
+Sell price (shk.c:3150-3180, 5.0): offer = base/2 (base/3 with dunce cap, Tourist below XL 15, or a shirt with no
+body armour/cloak); unidentified non-gem items: x3/4 when shopkeeper m_id % 4 == 0 (per shopkeeper, as DeepSeek
+said). Prompt (shk.c:4137): "<Shk> offers[ only] N gold piece(s) for your <item>.  Sell it?" answered with
+nyaq; 'n' keeps the item (marked no_charge). "only" = short funds: do not use that number.
+
+NEW 5.0 OPTION price_quotes (include/optlist.h:598, default Off, settable): the game records every buy and sell
+quote per object type (shk.c:439 record_price_quote) and appends it to unidentified item names:
+"<name> {buy 106 sell 40}" or ranges "{buy 80-106}" (shk.c:454 append_price_quote, objnam.c:1676). With it on,
+the bot reads prices straight from inventory text; every shop visit (buy prices of items on the floor, sell
+offers) feeds it. Needs: option in the NLE options string + item parser support for the {...} suffix.
+
+Enchant armour amount (read.c:1178-1220, 5.0 - differs from 3.6 and from R05):
+s = (4 - spe) / 2, +1 if elven (or Wizard cornuthaum), +1 if the armour is non-magical, +1 if blessed;
+s <= 0 -> 0 (or 1 with chance 1/spe); else rnd(s). So an UNCURSED scroll on +0 plain armour adds 1-3.
+Evaporation: spe > 3 (> 5 elven) and rn2(spe) before the read. Every +1 is +1 AC on any piece, so R05's "enchant
+the highest base-AC piece first" is wrong; the limit is per piece (+3), which is why spreading over pieces is good.

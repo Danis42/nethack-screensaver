@@ -90,3 +90,5 @@ Verified:
 New rule candidates: (a) never close in on a hostile unicorn (drop the HP>=15 engage branch); (b) throw any gem or
 glass at a hostile unicorn that blocks the way (pacifies it); (c) throw gems at gray unicorns for Luck;
 (d) energy vortex: ranged only, never melee without shock resistance (17 HP per hit at 2/3).
+- R01 ChatGPT (external/R01-chatgpt.md) is the best R01 answer: 5.0 release source cited; adds that monster
+  level (and so passive dice) can exceed base level (makemon.c adj_lev), and swallowed heroes cannot engrave.
