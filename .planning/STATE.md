@@ -6,7 +6,7 @@ current_phase_name: Full Ascension Ruleset
 status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-11-04
+last_activity: 2026-11-05
 last_activity_desc: bench stop/shutdown buttons; Medusa crash fixes merged (main 7514591); next: eye-corpse rule
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
@@ -356,6 +356,11 @@ Resume steps:
    NEXT SESSION (2026-11-05): eat-the-eye-corpse rule (exp/eye-telepathy, .worktrees/eye-telepathy: rebase on
    main first) -> scenario eye-telepathy, then no-harm bench vs 7514591 (first finish its baseline to 2304); then
    Medusa stage strength (heroes die after crossing) and hand play per the owner plan below.
+   2026-11-05: exp/eye-telepathy rebased on main 7514591 (93fb928) + eat_eye_corpse rule e1d8086: after any eye
+   kill go to the corpse and eat it at once, Satiated too unless "hard time getting all of it down" was seen
+   (choke needs >= 2000 nutrition, eat.c:3138; warning at 1500). Scenario eye-natural (3c4876b on feat/medusa, no
+   towel, 12 seeds): kills 7/12; branch eats the one corpse main leaves (seed 12); 5 kills drop no corpse, 1 pet ate.
+   Job 79 = e1d8086 vs 7514591, metric rung2 (no-harm gate; also plays 7514591 baseline games). Merge if not worse.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
