@@ -76,3 +76,10 @@ s = (4 - spe) / 2, +1 if elven (or Wizard cornuthaum), +1 if the armour is non-m
 s <= 0 -> 0 (or 1 with chance 1/spe); else rnd(s). So an UNCURSED scroll on +0 plain armour adds 1-3.
 Evaporation: spe > 3 (> 5 elven) and rn2(spe) before the read. Every +1 is +1 AC on any piece, so R05's "enchant
 the highest base-AC piece first" is wrong; the limit is per piece (+3), which is why spreading over pieces is good.
+R04 ChatGPT (external/R04-chatgpt.md): best R04 answer, 5.0 source cited; spot-checked: "seems uninterested"
+(shk.c:3995), no-gold credit = offer*9/10 with "cannot pay you at present. Will you accept N in credit for ..."
+(shk.c:4049-4055), Bazaar Town general store chance=60 (minetn-7.lua:111) - all correct. Adds: drop on a costly
+square (not the door); a deliberate 'd' asks, accidental drops sell without asking; angry keepers take the item;
+answer n (q would set later sale prompts to n). Minetown general store: guaranteed in Alley/Grotto/Bustling
+(minetn-3/5/6), 90% in Town Square/College (2/4), 60% in Bazaar (7); College Town (4) has a guaranteed bookstore;
+Orcish Town (1) none. Scroll quote 30 = base 60 (normal keeper) or 80 (low keeper): both safe to read.
