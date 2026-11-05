@@ -20,7 +20,10 @@ CTRL_I, CTRL_V, CTRL_W = 9, 22, 23
 MORE = ("--More--", "(end)")
 # wizard-only prompts: a death stays a death; skills advance only with practice
 WIZARD_PROMPTS = {"Die?": "y", "Advance skills without practice?": "n",
-                  "Where do you want to be teleported?": "\x1b"}  # wizard has teleport control
+                  "Where do you want to be teleported?": "\x1b",  # wizard has teleport control
+                  # no wizard luck: pray.c:2233 forced success, pray.c:1790 sure gift, teleport.c:869, steed.c:185
+                  "Force the gods to be pleased?": "n", "Gift an artifact?": "n", "Override?": "n",
+                  "Force the mount to succeed?": "n"}
 
 
 @dataclass(frozen=True)
@@ -34,6 +37,7 @@ class Stage:
     max_steps: int | None = None  # item tests stop early: the check is the inventory, not survival
     quaff: tuple[str, ...] = field(default_factory=tuple)  # potions drunk before the bot starts (inventory text)
     drop: tuple[str, ...] = field(default_factory=tuple)  # items put on the floor before the bot starts
+    eat: tuple[str, ...] = field(default_factory=tuple)  # eaten before the teleport (inventory text), e.g. an eye
 
 
 # A kit that a bot reaching the level could plausibly have (ASCENSION-PLAN-NH5.md); grows with the phases.
@@ -214,6 +218,11 @@ def apply_stage(env, stage: Stage) -> dict:
         letter = inventory_letter(env, name)
         if letter is not None:
             send(env, ["d", letter])
+            settle(env)
+    for food in stage.eat:  # before the teleport: on the target level monsters interrupt the meal
+        letter = inventory_letter(env, food)
+        if letter is not None:
+            send(env, ["e", letter])
             settle(env)
     if stage.level is None:  # item tests: the bot itself puts the kit on
         settle(env)

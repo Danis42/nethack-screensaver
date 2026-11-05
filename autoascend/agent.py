@@ -539,7 +539,9 @@ class Agent:
             return
 
         if b'[yn]' in bytes(observation['tty_chars'].reshape(-1)):
-            self.type_text('y')
+            # A seducer asks before taking each worn item off; 'n' keeps it on (mhitu.c:2329 mayberem).
+            # Staged Medusa seed 1: cloak and gloves off, then a red dragon's fire killed the hero.
+            self.type_text('n' if b'"Shall I remove your' in bytes(observation['tty_chars'].reshape(-1)) else 'y')
             return
 
         self._is_reading_message_or_popup = False

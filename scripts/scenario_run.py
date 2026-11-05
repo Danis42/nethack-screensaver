@@ -142,6 +142,8 @@ def run(name, tree, seed_text, jobs, verbose, show=False):
         if show:
             for line in rec.get("hook", []):
                 print("      " + line)
+            if os.environ.get("SCENARIO_TAIL"):
+                print("      last messages: " + " | ".join(rec["messages"][-int(os.environ["SCENARIO_TAIL"]):]))
             print("      inventory: " + " ; ".join(rec["inventory"]))
             print("      first messages: " + " | ".join(rec["messages"][:SHOW_N]))
             if os.environ.get("SCENARIO_EVENTS"):

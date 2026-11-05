@@ -336,6 +336,10 @@ class Character:
             else:
                 assert 0, repr(text)
 
+        # ^X lists intrinsics only with full enlightenment (wizard mode: staged games), insight.c:1582
+        if 'You are telepathic' in text:
+            self.telepathic = True
+
         self.role = self.name_to_role[role]
         self.alignment = self.name_to_alignment[alignment]
         self.race = self.name_to_race[race]
