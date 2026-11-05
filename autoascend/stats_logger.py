@@ -9,6 +9,11 @@ class StatsLogger:
     def __init__(self):
         self._values = {
             "agent_panic": 0,
+            "telepathy_attempt": 0,
+            "telepathy_eye_killed": 0,
+            "telepathy_eye_eaten": 0,
+            "telepathy_eye_corpse_gone": 0,
+            "telepathy_no_blindfold": 0,
             "stoning_cure_eaten": 0,
             "deadly_trouble_prayer": 0,
             "elbereth_write": 0,
