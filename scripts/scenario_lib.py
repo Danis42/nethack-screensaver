@@ -122,4 +122,17 @@ SCENARIOS: dict[str, Scenario] = {
                 "alive": alive},
         seeds="1-8",
         note="floating eye created next to the hero; ~1/2 of eyes leave a corpse (mon.c), so telepathy <= ~50%"),
+    # Eat-the-eye rule (eat_eye_corpse): no blindfold, the bot kills the eye its own way; a corpse left must be eaten.
+    "eye-natural": Scenario(
+        stage=dict(level=None, xl=8, max_steps=400),
+        monsters=("floating eye",),
+        checks={"eye killed": lambda r: any(re.search(r"(You (kill|destroy) the floating eye|"
+                                                      r"The floating eye is (killed|destroyed))!", m)
+                                            for m in r["messages"]),
+                "corpse eaten if seen": lambda r: (not any("floating eye corpse" in m for m in r["messages"])
+                                                   or any("mental acuity" in m for m in r["messages"])),
+                "telepathy gained": said("mental acuity"),
+                "alive": alive},
+        seeds="1-12",
+        note="no towel; ~1/2 of eyes leave a corpse (mon.c), so telepathy <= ~50%"),
 }

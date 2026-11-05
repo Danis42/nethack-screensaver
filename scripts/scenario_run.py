@@ -10,6 +10,7 @@ PYTHONHASHSEED=0 and the fixed clock, like the bench. Exit code 0 when every che
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -69,6 +70,7 @@ def prepare(env, _stage):
 target.STAGES[name] = stage
 target.apply_stage = prepare
 import os
+import re
 if os.environ.get("SCENARIO_HOOK"):              # debug: a file run in this process (wrap functions, print HOOK lines)
     exec(open(os.environ["SCENARIO_HOOK"]).read())
 messages, seen = [], set()
@@ -142,6 +144,10 @@ def run(name, tree, seed_text, jobs, verbose, show=False):
                 print("      " + line)
             print("      inventory: " + " ; ".join(rec["inventory"]))
             print("      first messages: " + " | ".join(rec["messages"][:SHOW_N]))
+            if os.environ.get("SCENARIO_EVENTS"):
+                print("      events: " + str({k: v for k, v in (rec["result"].get("events") or {}).items() if re.search(os.environ["SCENARIO_EVENTS"], k) and v}))
+            if os.environ.get("SCENARIO_GREP"):
+                print("      grep: " + " | ".join(m for m in rec["messages"] if re.search(os.environ["SCENARIO_GREP"], m)))
     n = len(records)
     summary = "  ".join(f"{check} {count}/{n}" for check, count in passed.items())
     print(f"{name}: {summary}   ({sc.note})")
