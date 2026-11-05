@@ -5,6 +5,8 @@ import numpy as np
 from nle.nethack import actions as A
 
 from . import objects as O
+from .glyph import Hunger
+from .telepathy import TELEPATHY_MESSAGES, OVERFULL_MESSAGE
 
 ALL_SPELL_NAMES = [
     "force bolt",
@@ -265,6 +267,7 @@ class Character:
     def __init__(self, agent):
         self.agent = agent
         self.prop = Property(agent)
+        self.telepathic = False
         self.role = None
         self.alignment = None
         self.race = None
@@ -274,6 +277,7 @@ class Character:
         self.upgradable_skills = dict()
 
         self.is_lycanthrope = False
+        self.overfull = False  # "hard time getting all of it down" seen while Satiated (telepathy.may_eat_eye)
         self.nohands_glyph = None  # hero glyph of a form the game refused #apply in (apply.c doapply: nohands)
 
     def can_apply(self):
@@ -284,6 +288,12 @@ class Character:
     def update(self):
         if "aren't able to use or apply tools in your current form." in self.agent.message:
             self.nohands_glyph = self.agent.glyphs[self.agent.blstats.y, self.agent.blstats.x]
+        if any(text in self.agent.message for text in TELEPATHY_MESSAGES):
+            self.telepathic = True  # intrinsic, eat.c:1075
+        if OVERFULL_MESSAGE in self.agent.message:
+            self.overfull = True
+        elif self.agent.blstats.hunger_state != Hunger.SATIATED:
+            self.overfull = False
         if 'You feel feverish.' in self.agent.message:
             self.is_lycanthrope = True
         if 'You feel purified.' in self.agent.message:
