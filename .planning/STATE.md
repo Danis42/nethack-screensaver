@@ -361,6 +361,17 @@ Resume steps:
    (choke needs >= 2000 nutrition, eat.c:3138; warning at 1500). Scenario eye-natural (3c4876b on feat/medusa, no
    towel, 12 seeds): kills 7/12; branch eats the one corpse main leaves (seed 12); 5 kills drop no corpse, 1 pet ate.
    Job 79 = e1d8086 vs 7514591, metric rung2 (no-harm gate; also plays 7514591 baseline games). Merge if not worse.
+   2026-11-05 later: Job 79 STOPPED at 1152 (owner rule: stop when clear; watcher lo >= -2 pts): rung2 +1.8
+   [-1.5, +5.2]; MERGED main 0e6f5f4 (game code = e1d8086, 1152 games stored). main merged into feat/medusa.
+   Medusa stage strength (feat/medusa 08f3834..6696b63): humans at Medusa arrival (72 NLD 3.6 ascensions, 59 with
+   a Medusa kill): AC -14 (p75 -11, p90 -9), XL 13, max HP 110; Castle arrival AC -17. Stage now adds cloak of
+   protection + leather gloves (about -14). Stage fixes: eye eaten before the teleport; wizard luck prompts
+   answered n (forced prayer success was ON before: older staged results too optimistic); bot refuses seducers
+   ("Shall I remove your"); ^X "You are telepathic" read. Crossing: travel stalled at Medusa's locked doors
+   (no kicking while levitating, dokick.c:921) -> land at the door: crossed 1/10 -> 4/10, seed 1 went down.
+   OPEN: 7/10 staged heroes still die (crowd at T85, jabberwock T48, minotaur, storm giant, Aleax, fire
+   elemental, giant eel drowning). Next: classify these deaths against human play (escape items, Elbereth,
+   retreat upstairs, speed) before building anything.
    NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
    after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
    OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
