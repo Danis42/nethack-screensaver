@@ -43,3 +43,10 @@
 ## Open questions
 - Why the bot's cloak share falls from 76% to 53% after Dlvl 10.
 - Why gloves stay rare: supply (few drops) or pickup/wear rules.
+
+## Compared with ChatGPT R05 (2026-11-05)
+Agreement on: some_armor order, 5.0 enchant formula (ChatGPT has it right; DeepSeek had 3.6), evaporation at
+spe > 3 / > 5 elven (ChatGPT adds: 3/4 chance at +4, 5/6 at elven +6), dwarf odds.
+Missed by me: elves carry an elven mithril coat with 1/4 (rn2(2) then rn2(2), makemon.c:226-229); hobbits 1/10.
+Elves are frequent in bot games (Woodland/Green/Grey-elf killed 50 of 1152 heroes in job 79), so killing them
+is also the most common chance at elven mithril (AC 5, safe to +5): check whether the bot picks it up and wears it.
