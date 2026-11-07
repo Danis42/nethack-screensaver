@@ -6,8 +6,8 @@ current_phase_name: Full Ascension Ruleset
 status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-11-05
-last_activity_desc: bench stop/shutdown buttons; Medusa crash fixes merged (main 7514591); next: eye-corpse rule
+last_activity: 2026-11-07
+last_activity_desc: job 82 (stationary-passive) done at 2304, gate not passed; next: per-seed Minetown loss check
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -394,6 +394,17 @@ Resume steps:
    order), done-when (message or state), if-it-fails, evidence (game seen in or source line). Mark vague, wrong and
    missing rules; record XL/AC/HP/items per stage; unreached stages stay "unchecked". 3) Then back
    to testing with the bot (Part 1b-1g).
+   2026-11-07 (session end): bench restarted (`uv run screens-bench serve --workers 10`; watcher
+   `uv run python scripts/bench_watch.py --gate <id>`). Job 81 rerun as JOB 82 (a810318 vs e1d8086, rung2), reused the
+   1152 stored pairs, DONE at 2304: rung2 -1.5 pts [-3.6, +0.7] "no measurable difference", but the no-harm GATE is NOT
+   passed (lo -3.6 < -2). Not merged. Candidate stats (1193 stored games before the rest ran): spotted jelly deaths
+   28/2304 on baseline, gone from the candidate's top killers; dlvl6 77.0 vs 76.5, dlvl10 37.0 vs 36.8, crashed
+   0.42 vs 0.52%; small dips in rung1 (74.5 vs 75.3) and rung4 (33.0 vs 34.6). Bench and watcher stopped, no job open.
+   NEXT SESSION: 1) start the bench; per-seed diff of job 82: seeds where baseline reaches Minetown and the candidate
+   does not -> replay a few (guess, unchecked: a jelly/mold blocks a narrow Mines passage, so the bot can neither
+   kill nor pass it). Fix idea if confirmed: allow melee when the passive monster blocks the only path (or ranged
+   attack/throw daggers), then re-bench. If not explainable, drop exp/stationary-passive and remove .worktrees/stationary.
+   2) then the scroll price-ID build (plan above); 3) owner's new ChatGPT answers, compare with R0x-claude.md.
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
