@@ -19,6 +19,7 @@ from autoascend.glyph import MON
 from autoascend.item import flatten_items
 from autoascend.plans import DEFAULT_STRATEGY, STRATEGIES, choose_strategy, plan_for, race_from_welcome
 from nethack_screensaver import dungeon_truth, fixed_clock, snapshots, staging
+from nethack_screensaver.options import GAME_OPTIONS
 
 HP = 10
 MAX_HP = 11
@@ -311,7 +312,7 @@ def run_game(
     if stage is not None and max_steps is None:
         max_steps = staging.STAGES[stage].max_steps
     env = env_class(no_progress_timeout=1000, fix_moon_phase=seed is not None,
-                    character=CHARACTER if role is None else "@")
+                    character=CHARACTER if role is None else "@", options=GAME_OPTIONS)
     if seed is not None:
         # NetHackChallenge blocks the instance method; the class's own one still works
         type(env.nethack).set_initial_seeds(env.nethack, seed, seed, False)
