@@ -7,7 +7,7 @@ from nle.nethack import actions as A
 from autoascend import objects as O, utils
 from autoascend.character import Character
 from autoascend.glyph import MON
-from autoascend.item import Item
+from autoascend.item import Item, shop_sell
 
 
 class ContainerContent:
@@ -68,6 +68,7 @@ class ItemManager:
         self.glyph_to_object = {}
         self._last_object_glyph_mapping_update_step = None
         self._glyph_to_price_range = {}
+        self._glyph_to_sell_costs = {}  # glyph -> base prices left after a shopkeeper's sell offer (shop_sell.py)
 
         self._is_not_bag_of_tricks = set()
 
@@ -164,6 +165,17 @@ class ItemManager:
 
                 # update mapping for that object
                 self.possible_objects_from_glyph(item.glyphs[0])
+
+    def sell_offer_identification(self, glyph, offer, *, shirt_or_dunce):
+        """Narrow `glyph` to the base prices a shopkeeper's per-item sell `offer` allows. False (nothing
+        recorded) if no remaining identity fits, which means the offer was not a plain sell price."""
+        costs = {o.cost for o in self.possible_objects_from_glyph(glyph) if hasattr(o, 'cost')}
+        allowed = shop_sell.costs_for_offer(offer, costs, shirt_or_dunce=shirt_or_dunce)
+        if not allowed:
+            return False
+        self._glyph_to_sell_costs[glyph] = allowed
+        self.possible_objects_from_glyph(glyph)  # update the glyph <-> object mapping
+        return True
 
     def price_identification(self):
         if self.agent.character.prop.hallu:
@@ -267,6 +279,9 @@ class ItemManager:
                 continue
             if glyph in self._glyph_to_price_range and hasattr(obj, 'cost') and \
                     not self._glyph_to_price_range[glyph][0] <= obj.cost <= self._glyph_to_price_range[glyph][1]:
+                continue
+            if glyph in self._glyph_to_sell_costs and hasattr(obj, 'cost') and \
+                    obj.cost not in self._glyph_to_sell_costs[glyph]:
                 continue
             if glyph in self._glyph_to_possible_wand_types and obj not in self._glyph_to_possible_wand_types[glyph]:
                 continue
