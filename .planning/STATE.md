@@ -384,7 +384,9 @@ Resume steps:
    soldier-ant poison; 5.0 priest: answer the 2nd suggested number, first buy = AC -2..-4 for 2400-4000 gold at XL 8;
    vault = ~200 + 200 x depth gold). R08-R10 compared too
    (eels drown a levitating hero; Medusa digging down lands outside the Castle moat; Castle has no down stairs,
-   trap doors only; castle chest locked: force with a spare blade, never blunt). Still unsent: R11-R16. Compare each new answer
+   trap doors only; castle chest locked: force with a spare blade, never blunt). R11-R16 checked
+   (5.0 Valkyrie starts with a +1 spear and gets stealth at XL 3; ritual: ring the Bell < 5 turns before
+   reading the Book; R14/R15 web-only, CodeHack paper unread). All 16 prompts answered. Compare each new answer
    with R0x-claude.md (write Claude's own first if missing).
    Planned build after job 81: scroll price-ID: 1) NLE option price_quotes, 2) item parser '{buy X sell Y}' suffix,
    3) sell-offer ID in shops buying scrolls (drop on costly square, answer n; ignore 'only'/credit/'uninterested'),
