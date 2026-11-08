@@ -4,8 +4,8 @@ In a shop that buys scrolls the bot drops one unknown scroll, reads the shopkeep
 (the scroll stays the hero's and is picked up again for free). The offer narrows the scroll's base price:
 NetHack 5.0 shk.c set_cost() pays base/2 (base/3 with a dunce cap or a visible shirt), and a quarter of
 shopkeepers (m_id % 4 == 0, not visible to the bot) pay 3/4 of that for unidentified items. Offers that are not
-the real price are ignored: "offers only" (shopkeeper short of gold) and "in credit" (shopkeeper without gold);
-both are also why the price_quotes "{sell X}" suffix cannot be trusted for this."""
+the real price are ignored: "offers only" (shopkeeper short of gold) and "in credit" (shopkeeper without gold).
+NetHack records both in its price memory too, so the price_quotes "{sell X}" suffix is not used for this."""
 import re
 
 # shop types that buy scrolls (5.0 shknam.c shtypes: general store, second-hand bookstore, rare books)
