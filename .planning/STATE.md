@@ -6,8 +6,8 @@ current_phase_name: Full Ascension Ruleset
 status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-11-07
-last_activity_desc: job 82 (stationary-passive) done at 2304, gate not passed; next: per-seed Minetown loss check
+last_activity: 2026-11-08
+last_activity_desc: job 82 per-seed check done (no Mines block; dropped exp/stationary-passive); next: scroll price-ID build
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -411,6 +411,13 @@ Resume steps:
    kill nor pass it). Fix idea if confirmed: allow melee when the passive monster blocks the only path (or ranged
    attack/throw daggers), then re-bench. If not explainable, drop exp/stationary-passive and remove .worktrees/stationary.
    2) then the scroll price-ID build (plan above); 3) owner's new ChatGPT answers, compare with R0x-claude.md.
+   2026-11-08: step 1 DONE. Job 82 per-seed: Minetown lost 252 / gained 224 seeds (p~0.2, chance); deaths in the
+   Mines before Minetown 302 cand vs 309 base, so NO Mines-blocking jelly. Candidate ~1 pt lower on every rung
+   (mines 57.5/58.6, minetown 17.9/19.1, sokoban 24.7/26.7, dlvl15 6.3/7.3); jelly/mold deaths 15 vs 38.
+   Dropped exp/stationary-passive, removed .worktrees/stationary. Weapon check (e1d8086, 2304 end snapshots): the bot
+   wields the starting +1 spear in 2029, nothing in 148, daggers in ~46; it never upgrades (5.0 start = spear, not
+   long sword). Candidate experiment (research first): wield a better found weapon (long sword d8/d12, Valkyrie
+   Expert) and find why 6 % end bare-handed. All 16 ChatGPT prompts answered and checked (R0x-claude.md).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
