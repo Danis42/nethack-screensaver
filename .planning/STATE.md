@@ -380,8 +380,10 @@ Resume steps:
    Research (all in .planning/research/): SURVIVAL-NH5.md, SCROLL-ID-NH5.md; external/PROMPTS.md R01-R16 for
    ChatGPT/DeepSeek (Gemini dropped: worst answers); answers in external/R0x-<agent>.md. Claude's own R03, R05, R07
    written and compared with ChatGPT (R05: elves carry elven mithril 1/4; R07: confused genocide kills the hero,
-   blessed destroy armour cancel keeps the random target, cursed genocide 'none' still makes a monster). Owner brings
-   more ChatGPT results next session: compare each with R0x-claude.md (write Claude's own first if missing).
+   blessed destroy armour cancel keeps the random target, cursed genocide 'none' still makes a monster). 2026-11-08: R03, R06 compared (stairs shed all four killers;
+   soldier-ant poison; 5.0 priest: answer the 2nd suggested number, first buy = AC -2..-4 for 2400-4000 gold at XL 8;
+   vault = ~200 + 200 x depth gold). Still unsent to ChatGPT: R08-R16 (R09 Medusa first). Compare each new answer
+   with R0x-claude.md (write Claude's own first if missing).
    Planned build after job 81: scroll price-ID: 1) NLE option price_quotes, 2) item parser '{buy X sell Y}' suffix,
    3) sell-offer ID in shops buying scrolls (drop on costly square, answer n; ignore 'only'/credit/'uninterested'),
    4) read safe groups; plus prompt handlers: blessed fire position (never escape), blessed destroy armour (cheapest

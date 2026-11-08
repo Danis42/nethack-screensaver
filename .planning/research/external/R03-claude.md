@@ -39,3 +39,16 @@
 
 ## Open questions
 - Share of these deaths where the bot was already below the rule-1 threshold when it started the fight.
+
+## Compared with ChatGPT R03 (2026-11-08)
+- Agrees: all four stat lines, speeds (hero 12 / fast avg 16), Elbereth works on all four, 5.0 panic attack.
+- Extra in ChatGPT, verified: none of the four follows the hero on stairs (no M2_STALK, mondata.c:1211-1226), so
+  stairs are a clean escape; prayer "low HP" at XL 6-13 is HP <= 5 or HP <= max/6, max capped at 15 x XL
+  (pray.c:116-140), i.e. 10-14 HP for max 60-85; burdened removes the speed edge (fast 16 -> 12).
+- Missed by both, from source: soldier ant sting poisons 1 hit in 8 (uhitm.c:3154); then 1/30 "deadly" =
+  6 + 4d6 (10-34) HP, death only if HP <= that, else lose half of it from max HP and Con/Str (attrib.c:361-382);
+  otherwise mostly 6-15 extra HP or Str loss. Valkyries have no poison resistance.
+- ChatGPT uses maximum damage (60/36/28) as HP floors; Claude uses average x speed. Max is safer but would make
+  the bot flee every mumak at HP < 61, i.e. almost always: use average x speed with a margin, plus "never
+  melee a mumak at XL <= 10".
+- Owlbear is M2_NASTY (monsters.h:2392); not used by either answer yet.
