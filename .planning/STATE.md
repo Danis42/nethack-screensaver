@@ -7,7 +7,7 @@ status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-08
-last_activity_desc: job 82 per-seed check done (no Mines block; dropped exp/stationary-passive); next: price-ID step 3 on feat/price-quotes
+last_activity_desc: price-ID step 3 built on feat/price-quotes, bench job 83 (no-harm gate); next: read job 83, A/A check of baseline e1d8086
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -425,6 +425,33 @@ Resume steps:
    (shk.c:439), so after one sell offer every item of that type shows {sell X}: step 3 = in a shop that buys
    scrolls, drop an unknown scroll, answer n, read the suffix; base = 2X normal or 8X/3 (1/4 of keepers, R04).
    Then 4) read safe groups; then bench all steps together (common-path change).
+   2026-11-08 later: step 3 BUILT differently. Steps 1-2 REVERTED on feat/price-quotes (d72f4ad): NetHack also
+   records "offers only" (keeper short of gold) and credit offers in that price memory, so the {sell X} suffix is
+   not reliable and nothing would read it (no-unused-records). Step 3 (3aeef1a + doc 07e8e81): new
+   autoascend/item/shop_sell.py (offer parser, shk.c set_cost replica incl. dunce/shirt base/3 and m_id%4 keepers
+   3/4, costs_for_offer), ItemManager.sell_offer_identification narrows possible objects by cost,
+   Inventory.sell_offer_identify (in gather_items before read_scrolls): in shop types 1/3/10 or unknown (0), on a
+   shop-interior square with nothing below, drop 1 unknown scroll, answer n, narrow, pick it up. Step 4 already
+   existed (scrolls.py reads when all remaining identities are SAFE_UNKNOWN). 4 tests (tests/test_shop_sell.py).
+   20 seeded games: 18 offers in 3 games, 0 mismatches, every scroll picked up again. Lesson: StatsLogger raises
+   KeyError on an unregistered event name and Strategy swallows it -> register every new log_event name.
+   Pre-existing bug (23 stored games, many SHAs): OverflowError global_logic.py:116 add_item (float infinity).
+   scripts/bench_watch.py is only on feat/medusa: from other branches run a copy with `python3 -I <copy> --gate <id>`.
+   JOB 83 (07e8e81 vs e1d8086, rung2, no-harm gate): @1152 -1.9 pts [-5.4, +1.6]; DONE @2304: -1.7 pts [-3.6, +0.2] "no measurable
+   difference", GATE NOT PASSED (lo < -2), NOT merged. Almost the same as job 82 (-1.5 [-3.6, +0.7]).
+   Determinism check (stored games, same seed): 07e8e81 vs e1d8086 identical end (turns, score, rung) in 866/2304
+   seeds; games ending before turn 1500: 66/71 identical (so ~7 % divergence even where shops cannot matter).
+   a810318 vs e1d8086: 462/2304. Bench JSON has no per-game event counts, so how often sell_offer_identify ran
+   cannot be counted from stored games. JOB 84 queued at session end: A/A test main 0e6f5f4 (game code identical to
+   e1d8086) vs stored e1d8086, rung2. If 0e6f5f4 is also ~-1.5 pts, the stored e1d8086 baseline is lucky / the
+   environment drifted: then re-store a fresh baseline and judge 82/83 again against it (merge feat/price-quotes
+   if it passes). If job 84 is ~0, job 83's loss is real: per-seed look at the lost Minetown seeds.
+   NEXT SESSION: 1) start the bench (`uv run screens-bench serve --workers 10`) if it is not running; read JOB 84
+   (A/A). If it did not finish (server died with the session), rerun it; watcher copy: python3 -I
+   scripts/bench_watch.py from feat/medusa (no --gate for an A/A). Then act as written under JOB 83 above.
+   2) Why 5/71 short games diverge with identical early play: find the nondeterminism source (time, dict order,
+   threads?) - it adds noise to every paired bench.
+   3) then: weapon upgrade research, the 6 % bare-handed games, the OverflowError fix, merge feat/medusa.
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
