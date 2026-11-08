@@ -105,33 +105,3 @@ def test_shop_line_cut_short_of_the_limit():
 
 def test_smooth_shield_is_reflection():
     assert ItemManager.parse_text('a smooth shield')[0][0].name == 'shield of reflection'
-
-
-# NetHack 5 option price_quotes appends the prices seen for an unidentified type (shk.c append_price_quote)
-def test_price_quote_suffix_parses():
-    for text in ['an uncursed scroll labeled FOOBIE BLETCH {sell 10}',
-                 '2 uncursed scrolls labeled FOOBIE BLETCH {buy 26-35 sell 10}',
-                 'a scroll labeled FOOBIE BLETCH {buy 133}',
-                 'an uncursed scroll labeled FOOBIE BLETCH {sell 20-30}']:
-        objs, glyphs, count, status, modifier, equipped, *rest = ItemManager.parse_text(text, nh.SCROLL_CLASS)
-        assert all(o.name and isinstance(o.name, str) for o in objs) and len(objs) > 1, text
-        assert not equipped
-
-
-def test_price_quote_after_worn_info_keeps_equipped():
-    objs, glyphs, count, status, modifier, equipped, *rest = ItemManager.parse_text(
-        'an uncursed +0 pair of combat boots (being worn) {sell 4}')
-    assert equipped and all(o.name.endswith('boots') for o in objs)
-
-
-def test_price_quote_cut_at_the_line_limit_is_dropped():
-    text = 'an uncursed thoroughly burnt thoroughly rotted +2 cloak of displacement (being worn) {buy 66 sell 33}'
-    assert len(text) > 80
-    full = ItemManager.parse_text(text)
-    assert ItemManager.parse_text(text[:80]) == full
-    assert ItemManager.parse_text(text[:86]) == full  # cut inside "{buy 66"
-
-
-def test_game_options_turn_price_quotes_on():
-    from nethack_screensaver.options import GAME_OPTIONS
-    assert 'price_quotes' in GAME_OPTIONS and set(nh.NETHACKOPTIONS) <= set(GAME_OPTIONS)

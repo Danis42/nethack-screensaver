@@ -33,16 +33,8 @@ _KNOWN_INFOS = ['being worn', 'wielded', 'weapon in hand', 'weapon in hands', 'a
                 'at the ready', 'in quiver', 'in quiver pouch', 'lit', 'chained to you', 'on left hand', 'on right hand']
 
 
-_PRICE_QUOTE = re.compile(r' \{(?:buy \d+(?:-\d+)?)?(?: ?sell \d+(?:-\d+)?)?\}$')  # option price_quotes (shk.c)
-
-
 def _repair_cut_text(text):
-    """Complete or drop a "(...)" suffix that NLE cut off at the line limit; drop a cut "{...}" price quote."""
-    quote = _PRICE_QUOTE.search(text)
-    if quote:
-        return _repair_cut_text(text[:quote.start()]) + quote.group()
-    if ' {' in text and '}' not in text.rsplit(' {', 1)[1]:
-        text = text.rsplit(' {', 1)[0]
+    """Complete or drop a "(...)" suffix that NLE cut off at the line limit."""
     if text.endswith(')') or ' (' not in text:
         return text
     head, fragment = text.rsplit(' (', 1)
@@ -323,7 +315,6 @@ class ItemManager:
             r'( \(([0-9]+:[0-9]+|no charge)\))?'
             r'( \(((?!for sale|unpaid|contents)[a-zA-Z][a-zA-Z0-9;, ]*)\)(; slippery\))?)?'  # NetHack 5 can append "; slippery)" after the paren
             r'( \((?:(for sale|unpaid), )?(\d+ aum, )?((\d+)[a-zA-Z- ]+|no charge)\))?'
-            r'( \{(?:buy \d+(?:-\d+)?)?(?: ?sell \d+(?:-\d+)?)?\})?'  # option price_quotes; unused for now
             r'$',
             text)
         assert len(matches) <= 1, text
@@ -338,8 +329,7 @@ class ItemManager:
             name,
             _, uses,
             _, info, _,
-            _, shop_status, _, _, shop_price,
-            _
+            _, shop_status, _, _, shop_price
         ) = matches[0]
         # TODO: effects, uses
 

@@ -15,8 +15,6 @@ import nle.env.base as nle_base
 import nle.nethack as nethack
 from nle.env.tasks import NetHackChallenge
 
-from nethack_screensaver.options import GAME_OPTIONS
-
 ENTER, ESC = 13, 27
 CTRL_I, CTRL_V, CTRL_W = 9, 22, 23
 MORE = ("--More--", "(end)")
@@ -87,7 +85,7 @@ class StagedChallenge(NetHackChallenge):
         # wizard mode renames the hero "wizard", which drops NLE's name-suffix character choice: pass options
         if character is not None and character != "@":
             role, race, gender, align = character.split("-")
-            kwargs["options"] = tuple(kwargs.get("options") or GAME_OPTIONS) + (
+            kwargs["options"] = tuple(nethack.NETHACKOPTIONS) + (
                 f"role:{role}", f"race:{race}", f"gender:{gender}", f"align:{align}")
         real = nle_base.nethack.Nethack
         nle_base.nethack.Nethack = lambda *a, **k: real(*a, **{**k, "wizard": True})
