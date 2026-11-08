@@ -7,7 +7,7 @@ status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-08
-last_activity_desc: job 82 per-seed check done (no Mines block; dropped exp/stationary-passive); next: scroll price-ID build
+last_activity_desc: job 82 per-seed check done (no Mines block; dropped exp/stationary-passive); next: price-ID step 3 on feat/price-quotes
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -418,6 +418,13 @@ Resume steps:
    wields the starting +1 spear in 2029, nothing in 148, daggers in ~46; it never upgrades (5.0 start = spear, not
    long sword). Candidate experiment (research first): wield a better found weapon (long sword d8/d12, Valkyrie
    Expert) and find why 6 % end bare-handed. All 16 ChatGPT prompts answered and checked (R0x-claude.md).
+   Price-ID steps 1-2 DONE on branch feat/price-quotes (from main, a773502): options.py GAME_OPTIONS = NLE
+   defaults + price_quotes, used by game.py and staging.py; parser strips " {buy X sell Y}" (also cut at 80
+   chars); 4 tests; 538 pass; 10 seeded games 0 exceptions (not benched yet). handplay.py exists only on
+   feat/medusa: pass options=GAME_OPTIONS there after merging. NetHack records seen prices per real type
+   (shk.c:439), so after one sell offer every item of that type shows {sell X}: step 3 = in a shop that buys
+   scrolls, drop an unknown scroll, answer n, read the suffix; base = 2X normal or 8X/3 (1/4 of keepers, R04).
+   Then 4) read safe groups; then bench all steps together (common-path change).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
