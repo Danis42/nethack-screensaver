@@ -54,6 +54,8 @@ class StatsLogger:
             "remove": 0,
             "read_scroll": 0,
             "read_unknown_scroll": 0,
+            "sell_offer_id": 0,  # price-ID step 3: a sell offer narrowed a scroll (shop_sell.py)
+            "sell_offer_mismatch": 0,  # an offer no remaining identity fits (formula check)
             "unihorn": 0,
             "wish": 0,
             "levitation_on": 0,

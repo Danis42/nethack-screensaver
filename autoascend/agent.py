@@ -661,6 +661,11 @@ class Agent:
             level.shop[mask] = True
             if mask[self.blstats.y, self.blstats.x] and shop_type is not None:
                 level.shop_type[mask] = shop_type
+            else:
+                # squares seen after the welcome belong to the same keeper's shop: give them its type
+                known = set(np.unique(level.shop_type[mask]).tolist()) - {SHOP.UNKNOWN}
+                if len(known) == 1:
+                    level.shop_type[mask & (level.shop_type == SHOP.UNKNOWN)] = known.pop()
             level.shop_interior[mask & ~utils.dilate(entry, radius=1, with_diagonal=False)] = True
 
     def _update_level_corpses(self):
