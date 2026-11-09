@@ -4,6 +4,8 @@ from nle.nethack import actions as A
 
 from . import objects as O
 from . import boulders
+from . import digging
+from . import medusa
 from . import quest_portal
 from . import soko_solver
 from .soko_solver import search as soko_search
@@ -33,6 +35,11 @@ DRAWBRIDGE = frozenset({SS.S_vodbridge, SS.S_hodbridge, SS.S_vcdbridge, SS.S_hcd
 MEDUSA = frozenset({MON.fn('Medusa')})
 BOULDER_PUSHES_PER_LEVEL = 30
 STUCK_TURNS = 2500  # no new level and no new milestone for this long: give up the route and dive
+DIG_RETRIES = 5  # interrupted digs per level before giving up on digging there
+DIG_RETRY_TURNS = 50  # an interrupted dig is tried again this many turns later
+DIG_MIN_HP = 9  # falling through a hole deals 1d6 per level fallen (NetHack 5)
+DEEP_DIG_DLVL = 21  # Medusa's level is Dlvl 21-28 (1-4 above the Castle, which is Dlvl 25-29)
+DEEP_DIG_RETRY_TURNS = 20  # an interrupted deep dig is tried again this many turns later
 PORTAL_HUNT_TURNS = 1500  # on the Quest portal level, this long to walk every square for the portal
 _PRIZES = None
 
@@ -173,6 +180,11 @@ class ItemPriority(ItemPriorityBase):
         for item in filter(is_kept_stoning_cure, items):  # medicine against petrification; never rots
             add_item(item, count=2)
 
+        for item in items:  # one pick-axe: digs down off a level the bot is stuck on (digging.py)
+            if item.is_unambiguous() and item.object == O.from_name('pick-axe') and item.status != Item.CURSED:
+                add_item(item, count=1)
+                break
+
         if self._take_sacrificial_corpses:
             for item in filter(self.agent.global_logic.can_sacrify, items):
                 add_item(item)
@@ -223,6 +235,11 @@ class GlobalLogic:
         self._live_blocked = 0
         self._progress = ProgressWatch(STUCK_TURNS)
         self._mines_dive_over = False  # a diver in the Mines heads down them until stuck (Mines' End)
+        self._undiggable = set()  # levels whose floor was too hard to dig through
+        self._medusa_crossed = set()  # levels crossed by levitation (medusa.py)
+        self._next_medusa_try = 0
+        self._dig_level, self._dig_retries = None, 0
+        self._next_deep_dig = 0  # turn of the next deep-dive dig attempt
         self.stuck_reports = []  # one row per stuck-watch firing (autoascend/stuck.py), for the results
         self._prize_baseline = None  # possible prizes already held on reaching the top Sokoban level
         self._prize_found = False
@@ -273,6 +290,114 @@ class GlobalLogic:
 
     def _diving_in_mines(self):
         return self.agent.current_level().dungeon_number == Level.GNOMISH_MINES and not self._mines_dive_over
+
+    def _dig_down_when_stuck(self):
+        """A stuck diver digs through the floor (digging.py). Returns Agent.dig_down's outcome, or None if not tried."""
+        level = self.agent.current_level()
+        if level.key() != self._dig_level:
+            self._dig_level, self._dig_retries = level.key(), 0
+        if self.milestone != Milestone.DIVE or level.key() in self._undiggable or \
+                level.dungeon_number == Level.SOKOBAN or \
+                (level.dungeon_number == Level.GNOMISH_MINES and self._mines_dive_over) or \
+                self.agent.blstats.hitpoints < DIG_MIN_HP:
+            return None
+        outcome = self.agent.dig_down()
+        self.agent.stats_logger.log_event(f'dig_{outcome}')
+        if outcome == 'undiggable':
+            self._undiggable.add(level.key())
+        return outcome
+
+    def _deep_dig_due(self):
+        return self.milestone in (Milestone.DIVE, Milestone.GO_DOWN) and \
+            self.agent.blstats.time >= self._next_deep_dig and \
+            self.agent.current_level().dungeon_number == Level.DUNGEONS_OF_DOOM and \
+            self.agent.current_level().level_number >= DEEP_DIG_DLVL and \
+            self.agent.current_level().key() not in self._undiggable and \
+            digging.dig_tool(self.agent.inventory.items, self.agent.empty_wands) is not None
+
+    def _dig_deep(self):
+        """A diver from Dlvl 21 down digs through the floor on arrival instead of exploring. Medusa's level is
+        always this deep and its floor is diggable on all 4 maps: digging skips the water, her island and her
+        gaze, where the explorer hangs or the hero drowns (staged games); the Castle floor is undiggable, so the
+        dig stops there (ASCENSION-PLAN-NH5.md). True if the hero fell."""
+        if not self._deep_dig_due():
+            return False
+        outcome = self._dig_down_when_stuck()
+        if outcome != 'fell':
+            self._next_deep_dig = self.agent.blstats.time + DEEP_DIG_RETRY_TURNS
+        return outcome == 'fell'
+
+    def _medusa_peek(self, blindfold):
+        """Blindfold on for one look: telepathy (intrinsic or a helm) shows Medusa through walls and water."""
+        a = self.agent
+        letter = a.inventory.items.get_letter(blindfold)
+        with a.atom_operation():
+            a.step(A.Command.PUTON)
+            if 'What do you want to put on?' not in a.message:
+                return None
+            a.type_text(letter)
+            target = medusa.crossing_target(a.glyphs, G.STAIR_DOWN, MEDUSA)
+            a.step(A.Command.REMOVE)
+            if 'What do you want to remove?' in a.message:
+                a.type_text(letter)
+        return target
+
+    def _cross_medusa(self):
+        """Levitate over Medusa's water to her island when digging cannot (medusa.py, MEDUSA-NH5.md): needs a
+        levitation source and reflection (her gaze then kills her). True if the hero landed on the far side."""
+        a = self.agent
+        level = a.current_level()
+        if level.dungeon_number != Level.DUNGEONS_OF_DOOM or level.level_number < 21 or \
+                level.key() in self._medusa_crossed or a.blstats.time < self._next_medusa_try:
+            return False
+        wet = utils.isin(level.objects, digging.WET)
+        if wet.sum() < 200:  # Medusa's level is mostly water; other deep levels have little or none
+            return False
+        self._next_medusa_try = a.blstats.time + 200
+        inv = a.inventory
+        if inv.levitation_source() is None:
+            a.stats_logger.log_event('medusa_no_levitation')
+            return False
+        if not (inv._reflection_from_armor() or any(i.equipped for i in inv._known('amulet of reflection'))):
+            a.stats_logger.log_event('medusa_no_reflection')
+            return False
+        target = medusa.crossing_target(a.glyphs, G.STAIR_DOWN, MEDUSA)
+        if target is None:
+            blindfold = next((i for i in inv._known('blindfold') + inv._known('towel') if i.status != Item.CURSED),
+                             None)
+            if blindfold is not None:
+                target = self._medusa_peek(blindfold)
+        if target is None:
+            a.stats_logger.log_event('medusa_no_target')
+            return False
+        land = medusa.landing_square(level.walkable, wet, target)
+        if land is None or not inv.start_levitation():
+            return False
+        a.stats_logger.log_event('medusa_levitate')
+        for _ in range(8):
+            pos = (a.blstats.y, a.blstats.x)
+            if pos == land:
+                break
+            a._fast_go_to(*land)
+            if (a.blstats.y, a.blstats.x) == pos and 'door' in a.message:
+                break  # "That door is closed." / "This door is locked.": travel will not get further
+        if (a.blstats.y, a.blstats.x) != land:
+            # Medusa's building has closed or locked doors (dat/medusa-*.lua); no kicking while levitating
+            # (dokick.c:921): land in front of the door and let exploration open or kick it.
+            short = medusa.stall_landing(level.walkable, wet, (a.blstats.y, a.blstats.x)) \
+                if 'door' in a.message else None
+            if short is None:
+                return False  # still levitating: the next try goes on from here
+            if short != (a.blstats.y, a.blstats.x):
+                a.move(*short)
+            if (a.blstats.y, a.blstats.x) != short:
+                return False
+            a.stats_logger.log_event('medusa_landed_at_door')
+            land = short
+        inv.stop_levitation()
+        self._medusa_crossed.add(level.key())
+        a.stats_logger.log_event('medusa_landed')
+        return True
 
     def _stuck(self):
         return self._progress.stuck(self.agent.current_level().key(), self.milestone, self.agent.blstats.time)
@@ -963,15 +1088,26 @@ class GlobalLogic:
             if self._should_bail():
                 self.plan.bail_out()
                 continue
+            if self._dig_deep():
+                continue
+            if self._cross_medusa():
+                continue
             if self._stuck():
                 self.agent.stats_logger.log_event('stuck_dive')
                 self._report_stuck(level)
-                if self.milestone != Milestone.DIVE:
+                was_diving = self.milestone == Milestone.DIVE
+                if not was_diving:
                     self.plan.dive_instead()
-                elif self._diving_in_mines():
-                    self._mines_dive_over = True  # bottom of the Mines: back up, dive the main dungeon
-                else:
-                    self.agent.stats_logger.log_event('stuck_diving')  # no downstairs found
+                dug = self._dig_down_when_stuck()
+                if dug == 'stopped' and self._dig_retries < DIG_RETRIES:
+                    self._dig_retries += 1  # interrupted (a monster?): try again soon, not in STUCK_TURNS
+                    self._progress.restart(self.agent.blstats.time - STUCK_TURNS + DIG_RETRY_TURNS)
+                    continue
+                if dug != 'fell' and was_diving:
+                    if self._diving_in_mines():
+                        self._mines_dive_over = True  # bottom of the Mines: back up, dive the main dungeon
+                    else:
+                        self.agent.stats_logger.log_event('stuck_diving')  # no downstairs found
                 self._progress.restart(self.agent.blstats.time)
                 continue
             if condition():
@@ -1024,7 +1160,7 @@ class GlobalLogic:
                 .preempt(self.agent, [
                     self.agent.exploration.explore_stairs(go_to_strategy, all=True).condition(explore_stairs_condition),
                 ])
-                .until(self.agent, lambda: condition() or self._should_bail() or self._stuck())
+                .until(self.agent, lambda: condition() or self._should_bail() or self._stuck() or self._deep_dig_due())
             ).run()
 
     def global_strategy(self):

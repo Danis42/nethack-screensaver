@@ -258,7 +258,8 @@ class Inventory:
                     worn = [bytes(t).decode('latin1') for t in self.agent.last_observation['inv_strs']]
                     hand = 'l' if any('(on right hand)' in t for t in worn) else 'r'
                 self.agent.type_text(hand)
-            ok = bool(re.search(r'\(on (left|right) hand\)|\(being worn\)', self.agent.message))
+            ok = bool(re.search(r'\(on (left|right) hand\)|\(being worn\)|You are now wearing',
+                                self.agent.message))
         if ok:
             self.agent.stats_logger.log_event('put_on')
         return ok
@@ -486,6 +487,32 @@ class Inventory:
         if worn:
             self.agent.stats_logger.log_event('levitation_off')
         return not self.levitating()
+
+    def _known(self, name, category=None):
+        return [i for i in self.items.all_items if i.is_unambiguous() and i.objs[0].name == name and
+                (category is None or i.category == category)]
+
+    def rise_one_level(self):
+        """Quaff a cursed potion of gain level: the hero rises through the ceiling to the level above, with no
+        water to cross (the way back past Medusa, MEDUSA-RETURN-NH5.md). Without reflection a blindfold goes on
+        first against her gaze. True if the potion was drunk."""
+        potion = next((i for i in self._known('gain level', nh.POTION_CLASS) if i.status == Item.CURSED), None)
+        if potion is None:
+            return False
+        blindfold = None
+        if not self._reflection_from_armor() and \
+                not any(i.equipped for i in self._known('amulet of reflection')):
+            blindfold = next((i for i in self._known('blindfold') + self._known('towel')
+                              if i.status != Item.CURSED), None)
+            if blindfold is not None and not blindfold.equipped and not self.put_on(blindfold):
+                blindfold = None
+        self.quaff(potion)
+        self.agent.stats_logger.log_event('rise_one_level')
+        if blindfold is not None:
+            worn = next((i for i in self._known('blindfold') + self._known('towel') if i.equipped), None)
+            if worn is not None:
+                self.remove(worn)
+        return True
 
     def tonal_instrument(self):
         return next((i for i in self.items.all_items if i.is_unambiguous() and

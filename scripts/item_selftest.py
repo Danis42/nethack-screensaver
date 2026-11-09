@@ -35,7 +35,16 @@ def check_tune(agent):
     return {"message": tail, "ok": message is not None and "CDEFG" in message and not tail.rstrip().endswith("]")}
 
 
-CHECKS = {"levitation": ("kit-levitation", check_levitation), "tune": ("kit-levitation", check_tune),
+def check_rise(agent):
+    before = agent.blstats.depth
+    drank = agent.inventory.rise_one_level()
+    after = agent.blstats.depth
+    blind = agent.character.prop.blind
+    return {"before": before, "after": after, "drank": drank, "blind_after": blind,
+            "msg": agent.message[-120:], "ok": drank and after == before - 1}
+
+
+CHECKS = {"rise": ("kit-rise", check_rise),"levitation": ("kit-levitation", check_levitation), "tune": ("kit-levitation", check_tune),
           "levitation-boots": ("kit-levitation-boots", check_levitation)}
 
 

@@ -9,6 +9,12 @@ class StatsLogger:
     def __init__(self):
         self._values = {
             "agent_panic": 0,
+            "medusa_no_levitation": 0,
+            "medusa_no_reflection": 0,
+            "medusa_no_target": 0,
+            "medusa_levitate": 0,
+            "medusa_landed": 0,
+            "medusa_landed_at_door": 0,
             "telepathy_attempt": 0,
             "telepathy_eye_killed": 0,
             "telepathy_eye_eaten": 0,
@@ -43,6 +49,12 @@ class StatsLogger:
             "shop_door_spared": 0,
             "standoff_ignored": 0,
             "zap_empty_wand": 0,
+            "dig_fell": 0,
+            "dig_undiggable": 0,
+            "dig_stopped": 0,
+            "dig_no_tool": 0,
+            "dig_no_square": 0,
+            "dig_no_prompt": 0,
             "quest_portal_level_seen": 0,
             "quest_portal_entered": 0,
             "quest_portal_left": 0,
@@ -61,6 +73,7 @@ class StatsLogger:
             "levitation_on": 0,
             "levitation_off": 0,
             "play_tune": 0,
+            "rise_one_level": 0,
             **{f"cast_{n}": 0 for n in character.ALL_SPELL_NAMES},
             **{f"cast_fail_{n}": 0 for n in character.ALL_SPELL_NAMES},
         }

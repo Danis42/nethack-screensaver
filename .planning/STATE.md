@@ -6,8 +6,8 @@ current_phase_name: Full Ascension Ruleset
 status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-11-02
-last_activity_desc: Phase 02.2 Part 1a item skills built (feat/item-skills); no-harm bench job 73 running
+last_activity: 2026-11-09
+last_activity_desc: price-ID fixed and merged (job 86 passed); job 87 no-harm gate feat/medusa vs main c074c1c
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -300,6 +300,166 @@ Resume steps:
    rings/amulets, armour by property, unicorn horn, scrolls, wish list, pry chests, levitation/tune primitives; staged
    kit-* tests pass 11-12/12. Job 73 = no-harm bench f4870b4 vs 87e0af5, metric rung2. If no significant loss: merge, then
    Part 1b (Medusa: dig down; levitation crossing with reflection/blindfold). AC-GAP code cause was WRONG (corrected).
+   SESSION END 2026-11-02 (owner): playbook written: .planning/research/ASCENSION-PLAYBOOK-NH5.md (whole route, stage by
+   stage, HAVE/BUILT/MISSING per rule). Branches (local, unmerged, stacked): main 605089d <- feat/item-skills (Part 1a,
+   f4870b4 + state 7a9bf52) <- feat/medusa (dig for GO_DOWN + rise_one_level 9f3d261, passtune solver c4123d1, playbook
+   6772def). Checked out: feat/medusa. Job 73 (no-harm bench f4870b4 vs 87e0af5, metric rung2) was left RUNNING.
+   2026-11-03: job 73 was INTERRUPTED at 192 pairs (rung2 +0.0, open; server restart). Restarted as job 74 (same spec, stored games reused).
+   Job 74 DONE: WORSE (rung2 -3.4 [-6.0, -0.8] @2304; rung1 -3.8, rung4 -3.4). Cause: prying_blade wielded unknown-BUC
+   daggers (item_manager stores unknown as UNCURSED); cursed ones welded: cursed weapon wielded at death 215 vs 46,
+   dagger wielded on reaching Dlvl 4 49 vs 7. Fix c49e3ee on feat/item-skills (blade must have known BUC); feat/medusa
+   rebased on it. Job 75 = c49e3ee vs 87e0af5, metric rung2 (no-harm check again). Merge only if not worse.
+   Hand play: scripts/handplay.py (checked commands, game's own square descriptions); seed 1 at T1444 Dlvl 4,
+   notes .planning/hand-games/seed1/NOTES.md (F1-F17).
+   2026-11-03 later: Job 76 queued = exp/known-buc-wield 65d3307 (off main: weapons only of known B/U/C; baseline
+   87e0af5 ends 46/2304 games wielding a cursed weapon) vs 87e0af5, metric rung2. Hand play: staged starts work
+   (handplay.py --stage); staged Medusa (seed 1) died T42: dig-down never progresses under attack (dig.c:1355,
+   attacks stop the occupation before dig() runs) and Elbereth fails against a crowd (monmove.c:918 panic
+   attack); notes .planning/hand-games/medusa-seed1/NOTES.md. Key logs removed (owner).
+   2026-11-03 TESTING CHANGE (owner): targeted scenarios first, bench only as no-harm gate for common-path changes, a
+   full ladder run per milestone. scripts/scenario_run.py + scripts/scenario_lib.py (wizard setups + pass/fail
+   checks; --tree any checkout, e.g. ~/.cache/screens-bench/worktrees/<sha>; SCENARIO_HOOK debug file).
+   Validated: pry-cursed-dagger f4870b4 0/4 -> c49e3ee 4/4; wield-unknown-cursed 87e0af5 0/4 -> 65d3307 3/4 (no weld
+   4/4); eye-telepathy current 1/4 (bot throws once, wanders; kitten eats corpse); medusa-dig flooded 3/4 -> 0/4 after
+   5497600 (update_level never stored water; unseen = -1). Nobody gets below Medusa yet (map 3 no dry square, map 2
+   dies to titan/gremlin). Research notes: MEDUSA-NH5.md, TELEPATHY-NH5.md, GUIDE-MAG-R342.md (no Excalibur: neutral).
+   Job 75 DONE: c49e3ee no measurable difference (rung2 -1.1 [-3.6, +1.5]; rung1 -2.3 [-4.6, -0.1] watch); cursed
+   weapon at death 42 (base 48, f4870b4 245). feat/item-skills MERGED to main 656c7c2 (game code = c49e3ee: NEW BASELINE,
+   2304 games stored under c49e3ee). Job 76 (exp/known-buc-wield vs 87e0af5) running; rebase it on main if kept.
+   2026-11-03 END (usage limit): exp/eye-telepathy (worktree .worktrees/eye-telepathy, off main 656c7c2) built:
+   scenario eye killed 5/8 -> 8/8, corpse eaten 7/8 -> 8/8; next: measure eye/blindfold frequency (eyetrace,
+   needs idle cores), then bench vs c49e3ee. Job 76 (exp/known-buc-wield vs 87e0af5) running: read it, rebase on main if kept.
+   feat/medusa: water fix 5497600 validated by scenario medusa-dig; next Medusa problem: nobody gets below (map 3 no dry
+   square -> levitation/cold crossing; map 2 titan). Remove .worktrees/eye-telepathy after use.
+   Job 76 DONE: 65d3307 rung2 -0.5 [-1.2, +0.2] no difference; rung4 -0.9 [-1.6, -0.1] borderline (2nd borderline
+   side dip after job 75 rung1: watch); cursed weapon at death 48 -> 6. MERGED: main c49c201 = c49e3ee + weapon rule
+   (no stored games yet: needs a baseline run). exp/eye-telepathy rebased on main (381899d). Eye trace of 100 natural
+   games on main running (scratchpad eyetrace.py) to decide whether the telepathy rule is worth a bench.
+   Later 2026-11-03: eye trace (100 games, main): 87 see an eye, 79 kill one, 48 telepathic, 31 kill eyes but lose the
+   corpse, 15 carry a blindfold -> next telepathy rule = eat the eye corpse right after any kill (exp/eye-telepathy
+   blind-melee part fires rarely). Levitation crossing built on feat/medusa (41b3284, medusa.py + _cross_medusa):
+   scenario medusa-levitate 8 seeds: crossed 1/8 (seed 5), 0 drowned, but heroes die in 30-150 turns (master mind
+   flayer, water troll, xorn, titan): stage requirement problem; telepathy setup failed 3/8 (eat step); 2 crashes
+   (Cyclic Panic assertion, seeds 2 and 7) to look at. Job 77 = baseline c49c201 (new main) 2304 games, running.
+   2026-11-04: Job 77 DONE (baseline c49c201 = main, 2304 games): rung2 56.6%, rung4 33.8%, rung6 15.9%, rung7 7.9%,
+   rung8 4.6%, rung9 7 games, dlvl10 35.8%; starved 15.7%, ants 5.0%, rays 3.3%, eye 3 games, crashed 0.5% (13),
+   median depth 8. main c49c201 is now the stored baseline. Crashes: corpse-prefix names (pickled/deep fried <monster>,
+   monster.py:45) 3, heavy iron ball prompt 2, "cannot reach the doorway" 2, go_to no reachable neighbor 2.
+   2026-11-04: bench web page got "Stop all jobs" and "Shut down bench" buttons (main 41a783c). Medusa-levitate crashes
+   (seeds 2, 7) fixed: pickup while levitating, #terrain while confused (menu answer sent as a move), #apply in a
+   handless form. feat/medusa 1a84cc0; all scenarios: 0 crashes, crossed 1/8 (stage strength problem remains).
+   Same fixes for main: exp/disoriented 7514591 (worktree .worktrees/disoriented); job 78 = 7514591 vs c49c201,
+   metric rung2 (no-harm gate). Job 78 STOPPED by the owner at 1152/1400 games: rung2 +0.1 [-1.5, +1.7], no
+   difference; crashed 6/1400 (0.43%) vs 12/2304 (0.52%). MERGED: main 7514591 (game code changed: the stored
+   baseline is still c49c201; 1400 games stored under 7514591; finish job 78's spec to get 2304). main merged into
+   feat/medusa 8ea898b (suite 543 passed). Worktree main-check removed.
+   NEXT SESSION (2026-11-05): eat-the-eye-corpse rule (exp/eye-telepathy, .worktrees/eye-telepathy: rebase on
+   main first) -> scenario eye-telepathy, then no-harm bench vs 7514591 (first finish its baseline to 2304); then
+   Medusa stage strength (heroes die after crossing) and hand play per the owner plan below.
+   2026-11-05: exp/eye-telepathy rebased on main 7514591 (93fb928) + eat_eye_corpse rule e1d8086: after any eye
+   kill go to the corpse and eat it at once, Satiated too unless "hard time getting all of it down" was seen
+   (choke needs >= 2000 nutrition, eat.c:3138; warning at 1500). Scenario eye-natural (3c4876b on feat/medusa, no
+   towel, 12 seeds): kills 7/12; branch eats the one corpse main leaves (seed 12); 5 kills drop no corpse, 1 pet ate.
+   Job 79 = e1d8086 vs 7514591, metric rung2 (no-harm gate; also plays 7514591 baseline games). Merge if not worse.
+   2026-11-05 later: Job 79 STOPPED at 1152 (owner rule: stop when clear; watcher lo >= -2 pts): rung2 +1.8
+   [-1.5, +5.2]; MERGED main 0e6f5f4 (game code = e1d8086, 1152 games stored). main merged into feat/medusa.
+   Medusa stage strength (feat/medusa 08f3834..6696b63): humans at Medusa arrival (72 NLD 3.6 ascensions, 59 with
+   a Medusa kill): AC -14 (p75 -11, p90 -9), XL 13, max HP 110; Castle arrival AC -17. Stage now adds cloak of
+   protection + leather gloves (about -14). Stage fixes: eye eaten before the teleport; wizard luck prompts
+   answered n (forced prayer success was ON before: older staged results too optimistic); bot refuses seducers
+   ("Shall I remove your"); ^X "You are telepathic" read. Crossing: travel stalled at Medusa's locked doors
+   (no kicking while levitating, dokick.c:921) -> land at the door: crossed 1/10 -> 4/10, seed 1 went down.
+   OPEN: 7/10 staged heroes still die (crowd at T85, jabberwock T48, minotaur, storm giant, Aleax, fire
+   elemental, giant eel drowning). Next: classify these deaths against human play (escape items, Elbereth,
+   retreat upstairs, speed) before building anything.
+   2026-11-05 evening (session end, PC shut down): Job 81 = exp/stationary-passive a810318 (never melee spotted/
+   ochre jelly, green/red/yellow mold: ONLY_RANGED_SLOW_MONSTERS) vs e1d8086, rung2 no-harm gate. Stopped at
+   shutdown with 1152 pairs: -2.7 pts [-6.7, +1.3] (192: -3.6, 384: -4.2, 576: -4.0). Gate NOT passed (needs lo >= -2).
+   NEXT: rerun/extend job 81 to 2304 with scripts/bench_watch.py --gate <id>; if still negative, look at stuck games
+   (jelly/mold blocking a Mines passage) and the jelly death counts before any fix.
+   Research (all in .planning/research/): SURVIVAL-NH5.md, SCROLL-ID-NH5.md; external/PROMPTS.md R01-R16 for
+   ChatGPT/DeepSeek (Gemini dropped: worst answers); answers in external/R0x-<agent>.md. Claude's own R03, R05, R07
+   written and compared with ChatGPT (R05: elves carry elven mithril 1/4; R07: confused genocide kills the hero,
+   blessed destroy armour cancel keeps the random target, cursed genocide 'none' still makes a monster). 2026-11-08: R03, R06 compared (stairs shed all four killers;
+   soldier-ant poison; 5.0 priest: answer the 2nd suggested number, first buy = AC -2..-4 for 2400-4000 gold at XL 8;
+   vault = ~200 + 200 x depth gold). R08-R10 compared too
+   (eels drown a levitating hero; Medusa digging down lands outside the Castle moat; Castle has no down stairs,
+   trap doors only; castle chest locked: force with a spare blade, never blunt). R11-R16 checked
+   (5.0 Valkyrie starts with a +1 spear and gets stealth at XL 3; ritual: ring the Bell < 5 turns before
+   reading the Book; R14/R15 web-only, CodeHack paper unread). All 16 prompts answered. Compare each new answer
+   with R0x-claude.md (write Claude's own first if missing).
+   Planned build after job 81: scroll price-ID: 1) NLE option price_quotes, 2) item parser '{buy X sell Y}' suffix,
+   3) sell-offer ID in shops buying scrolls (drop on costly square, answer n; ignore 'only'/credit/'uninterested'),
+   4) read safe groups; plus prompt handlers: blessed fire position (never escape), blessed destroy armour (cheapest
+   piece, escape is not a cancel), genocide by BUC. Candidates: damage-based retreat threshold (R03), unicorns (gems,
+   never melee hostile), elven mithril pickup/wear check, gloves/cloak cause checks.
+   NEXT SESSION (owner plan): 1) read job 73; if no significant loss merge feat/item-skills to main (then feat/medusa
+   after its staged medusa batch, 12 seeds, needs the bench idle: 10-core rule). 2) Claude PLAYS SOME GAMES BY HAND.
+   OWNER GOAL for these games: refine ASCENSION-PLAYBOOK-NH5.md until the Python bot can use it as a ruleset. Every
+   rule gets: trigger (message / blstats / map / inventory the program can see), action (exact keys, prompt answers,
+   order), done-when (message or state), if-it-fails, evidence (game seen in or source line). Mark vague, wrong and
+   missing rules; record XL/AC/HP/items per stage; unreached stages stay "unchecked". 3) Then back
+   to testing with the bot (Part 1b-1g).
+   2026-11-07 (session end): bench restarted (`uv run screens-bench serve --workers 10`; watcher
+   `uv run python scripts/bench_watch.py --gate <id>`). Job 81 rerun as JOB 82 (a810318 vs e1d8086, rung2), reused the
+   1152 stored pairs, DONE at 2304: rung2 -1.5 pts [-3.6, +0.7] "no measurable difference", but the no-harm GATE is NOT
+   passed (lo -3.6 < -2). Not merged. Candidate stats (1193 stored games before the rest ran): spotted jelly deaths
+   28/2304 on baseline, gone from the candidate's top killers; dlvl6 77.0 vs 76.5, dlvl10 37.0 vs 36.8, crashed
+   0.42 vs 0.52%; small dips in rung1 (74.5 vs 75.3) and rung4 (33.0 vs 34.6). Bench and watcher stopped, no job open.
+   NEXT SESSION: 1) start the bench; per-seed diff of job 82: seeds where baseline reaches Minetown and the candidate
+   does not -> replay a few (guess, unchecked: a jelly/mold blocks a narrow Mines passage, so the bot can neither
+   kill nor pass it). Fix idea if confirmed: allow melee when the passive monster blocks the only path (or ranged
+   attack/throw daggers), then re-bench. If not explainable, drop exp/stationary-passive and remove .worktrees/stationary.
+   2) then the scroll price-ID build (plan above); 3) owner's new ChatGPT answers, compare with R0x-claude.md.
+   2026-11-08: step 1 DONE. Job 82 per-seed: Minetown lost 252 / gained 224 seeds (p~0.2, chance); deaths in the
+   Mines before Minetown 302 cand vs 309 base, so NO Mines-blocking jelly. Candidate ~1 pt lower on every rung
+   (mines 57.5/58.6, minetown 17.9/19.1, sokoban 24.7/26.7, dlvl15 6.3/7.3); jelly/mold deaths 15 vs 38.
+   Dropped exp/stationary-passive, removed .worktrees/stationary. Weapon check (e1d8086, 2304 end snapshots): the bot
+   wields the starting +1 spear in 2029, nothing in 148, daggers in ~46; it never upgrades (5.0 start = spear, not
+   long sword). Candidate experiment (research first): wield a better found weapon (long sword d8/d12, Valkyrie
+   Expert) and find why 6 % end bare-handed. All 16 ChatGPT prompts answered and checked (R0x-claude.md).
+   Price-ID steps 1-2 DONE on branch feat/price-quotes (from main, a773502): options.py GAME_OPTIONS = NLE
+   defaults + price_quotes, used by game.py and staging.py; parser strips " {buy X sell Y}" (also cut at 80
+   chars); 4 tests; 538 pass; 10 seeded games 0 exceptions (not benched yet). handplay.py exists only on
+   feat/medusa: pass options=GAME_OPTIONS there after merging. NetHack records seen prices per real type
+   (shk.c:439), so after one sell offer every item of that type shows {sell X}: step 3 = in a shop that buys
+   scrolls, drop an unknown scroll, answer n, read the suffix; base = 2X normal or 8X/3 (1/4 of keepers, R04).
+   Then 4) read safe groups; then bench all steps together (common-path change).
+   2026-11-08 later: step 3 BUILT differently. Steps 1-2 REVERTED on feat/price-quotes (d72f4ad): NetHack also
+   records "offers only" (keeper short of gold) and credit offers in that price memory, so the {sell X} suffix is
+   not reliable and nothing would read it (no-unused-records). Step 3 (3aeef1a + doc 07e8e81): new
+   autoascend/item/shop_sell.py (offer parser, shk.c set_cost replica incl. dunce/shirt base/3 and m_id%4 keepers
+   3/4, costs_for_offer), ItemManager.sell_offer_identification narrows possible objects by cost,
+   Inventory.sell_offer_identify (in gather_items before read_scrolls): in shop types 1/3/10 or unknown (0), on a
+   shop-interior square with nothing below, drop 1 unknown scroll, answer n, narrow, pick it up. Step 4 already
+   existed (scrolls.py reads when all remaining identities are SAFE_UNKNOWN). 4 tests (tests/test_shop_sell.py).
+   20 seeded games: 18 offers in 3 games, 0 mismatches, every scroll picked up again. Lesson: StatsLogger raises
+   KeyError on an unregistered event name and Strategy swallows it -> register every new log_event name.
+   Pre-existing bug (23 stored games, many SHAs): OverflowError global_logic.py:116 add_item (float infinity).
+   scripts/bench_watch.py is only on feat/medusa: from other branches run a copy with `python3 -I <copy> --gate <id>`.
+   JOB 83 (07e8e81 vs e1d8086, rung2, no-harm gate): @1152 -1.9 pts [-5.4, +1.6]; DONE @2304: -1.7 pts [-3.6, +0.2] "no measurable
+   difference", GATE NOT PASSED (lo < -2), NOT merged. Almost the same as job 82 (-1.5 [-3.6, +0.7]).
+   Determinism check (stored games, same seed): 07e8e81 vs e1d8086 identical end (turns, score, rung) in 866/2304
+   seeds; games ending before turn 1500: 66/71 identical (so ~7 % divergence even where shops cannot matter).
+   a810318 vs e1d8086: 462/2304. Bench JSON has no per-game event counts, so how often sell_offer_identify ran
+   cannot be counted from stored games. JOB 84 queued at session end: A/A test main 0e6f5f4 (game code identical to
+   e1d8086) vs stored e1d8086, rung2. If 0e6f5f4 is also ~-1.5 pts, the stored e1d8086 baseline is lucky / the
+   environment drifted: then re-store a fresh baseline and judge 82/83 again against it (merge feat/price-quotes
+   if it passes). If job 84 is ~0, job 83's loss is real: per-seed look at the lost Minetown seeds.
+   2026-11-09: A/A job 84/85 (0e6f5f4 vs stored e1d8086): 199/199 seeds IDENTICAL (turns, score, depth, end).
+   The bench is deterministic; the stored baseline is not lucky; the "7 % short-game divergence" was the code change,
+   not noise (item 2 of the old plan closed). Watcher caveat: bench_watch.py stops an A/A at once (hi < +2) - don't run it on A/A.
+   Job 83 cause (action trace, seed 1112): 1438/2304 games diverged, only 213 had an offer. shop_type 0 squares
+   include outline spill outside the door (agent._update_level_shops BFS), and squares seen after the welcome
+   never got the type: the bot dropped every unknown scroll outside an armour shop, no offer, marked tested.
+   Fix 230339b: TRY_SHOPS = known scroll-buying types only; the known type spreads over the keeper's outline;
+   a drop with no keeper answer (shk.c sellobj reactions) marks the square, not the scroll. Seed 1112 replays
+   identical to e1d8086. JOB 86 (230339b vs e1d8086, rung2, gate): +0.0 [-1.9, +1.9] @384 PASSED; diverged
+   94 vs 318 (07e8e81) on the same seeds, games with an offer 70 vs 37, 0 mismatches. MERGED main c074c1c.
+   main merged into feat/medusa (555 pass). JOB 87 = no-harm gate feat/medusa vs main c074c1c, rung2 (also
+   stores the c074c1c baseline). If it passes: merge feat/medusa to main; c074c1c+medusa is the new baseline.
+   NEXT: read job 87 -> merge or per-seed look; then weapon upgrade research (wields the start spear in 88 %),
+   the 6 % bare-handed games, the OverflowError (global_logic.py add_item, float infinity).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
