@@ -6,8 +6,8 @@ current_phase_name: Full Ascension Ruleset
 status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-11-08
-last_activity_desc: price-ID step 3 built on feat/price-quotes, bench job 83 (no-harm gate); next: read job 83, A/A check of baseline e1d8086
+last_activity: 2026-11-09
+last_activity_desc: price-ID fixed and merged (job 86 passed); job 87 no-harm gate feat/medusa vs main c074c1c
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -446,12 +446,20 @@ Resume steps:
    e1d8086) vs stored e1d8086, rung2. If 0e6f5f4 is also ~-1.5 pts, the stored e1d8086 baseline is lucky / the
    environment drifted: then re-store a fresh baseline and judge 82/83 again against it (merge feat/price-quotes
    if it passes). If job 84 is ~0, job 83's loss is real: per-seed look at the lost Minetown seeds.
-   NEXT SESSION: 1) start the bench (`uv run screens-bench serve --workers 10`) if it is not running; read JOB 84
-   (A/A). If it did not finish (server died with the session), rerun it; watcher copy: python3 -I
-   scripts/bench_watch.py from feat/medusa (no --gate for an A/A). Then act as written under JOB 83 above.
-   2) Why 5/71 short games diverge with identical early play: find the nondeterminism source (time, dict order,
-   threads?) - it adds noise to every paired bench.
-   3) then: weapon upgrade research, the 6 % bare-handed games, the OverflowError fix, merge feat/medusa.
+   2026-11-09: A/A job 84/85 (0e6f5f4 vs stored e1d8086): 199/199 seeds IDENTICAL (turns, score, depth, end).
+   The bench is deterministic; the stored baseline is not lucky; the "7 % short-game divergence" was the code change,
+   not noise (item 2 of the old plan closed). Watcher caveat: bench_watch.py stops an A/A at once (hi < +2) - don't run it on A/A.
+   Job 83 cause (action trace, seed 1112): 1438/2304 games diverged, only 213 had an offer. shop_type 0 squares
+   include outline spill outside the door (agent._update_level_shops BFS), and squares seen after the welcome
+   never got the type: the bot dropped every unknown scroll outside an armour shop, no offer, marked tested.
+   Fix 230339b: TRY_SHOPS = known scroll-buying types only; the known type spreads over the keeper's outline;
+   a drop with no keeper answer (shk.c sellobj reactions) marks the square, not the scroll. Seed 1112 replays
+   identical to e1d8086. JOB 86 (230339b vs e1d8086, rung2, gate): +0.0 [-1.9, +1.9] @384 PASSED; diverged
+   94 vs 318 (07e8e81) on the same seeds, games with an offer 70 vs 37, 0 mismatches. MERGED main c074c1c.
+   main merged into feat/medusa (555 pass). JOB 87 = no-harm gate feat/medusa vs main c074c1c, rung2 (also
+   stores the c074c1c baseline). If it passes: merge feat/medusa to main; c074c1c+medusa is the new baseline.
+   NEXT: read job 87 -> merge or per-seed look; then weapon upgrade research (wields the start spear in 88 %),
+   the 6 % bare-handed games, the OverflowError (global_logic.py add_item, float infinity).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
