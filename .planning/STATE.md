@@ -7,7 +7,7 @@ status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-09
-last_activity_desc: price-ID and feat/medusa merged (jobs 86, 87 passed); baseline dec417a; next weapon upgrade research
+last_activity_desc: weapon study; job 89 exp/wield-artifacts (Mjollnir) vs dec417a running; stop for today after it
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -460,8 +460,20 @@ Resume steps:
    stores the c074c1c baseline). If it passes: merge feat/medusa to main; c074c1c+medusa is the new baseline.
    JOB 87 PASSED (+0.9 [-1.4, +3.2] @1152; crashes 6 vs 10; agent_panic per game 537 vs 435, watch it).
    feat/medusa MERGED main e586de2 (tree = dec417a). BASELINE = dec417a games (1152; extend to 2304 when needed).
-   NEXT: then weapon upgrade research (wields the start spear in 88 %),
-   the 6 % bare-handed games, the OverflowError (global_logic.py add_item, float infinity).
+   Job 88: baseline dec417a extended to 2304 games.
+   Weapon study (dec417a end snapshots, 1158 games): +1 spear wielded in 984; better melee weapons almost never
+   found (3 long swords, 1 katana). ~100 end bare-handed: spear stolen by wood nymphs (steal.c:436 takes uwep
+   when the pick is gloves), or lycanthropy; most carry unknown-status daggers/spears/scimitars they will not wield
+   (known-buc rule 65d3307). 60 artifact weapons carried, NONE wielded (41 Mjollnir = altar gifts, always uncursed,
+   pray.c bestow_artifact). JOB 89 = exp/wield-artifacts 72ca0b6 (.worktrees/wield-artifacts) vs dec417a, dlvl10:
+   artifacts count as known-status for wielding; Demonbane = silver mace in 5.0. Smoke: seeds 1322, 1250 wield
+   Mjollnir. Rule set before results: keep if dlvl10 lo > 0; if not significant, merge only if lo >= -2 and the
+   artifact-wielding games reach deeper on average. Owner: stop for today after job 89.
+   NEXT SESSION: 1) read job 89 (if not acted on yet), merge/drop per the rule, remove .worktrees/wield-artifacts.
+   2) exp: bare-handed fallback - with no weapon in hand, wield the best unknown-status one-handed weapon
+   (risk ~10 % cursed vs bare d2); separate experiment. 3) nymphs: kill at range or avoid melee (they steal the
+   weapon). 4) agent_panic per game rose 537 vs 435 with feat/medusa - find which panics. 5) OverflowError
+   global_logic.py add_item (float infinity).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
