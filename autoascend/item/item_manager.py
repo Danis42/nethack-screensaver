@@ -483,8 +483,12 @@ class ItemManager:
             name = 'orcish dagger'
             dmg_bonus = 3.5  # +1d6
             to_hit_bonus = 1.5  # 1d2
-        elif name in ['Sunsword', 'Frost Brand', 'Fire Brand', 'Demonbane', 'Giantslayer']:
+        elif name in ['Sunsword', 'Frost Brand', 'Fire Brand', 'Giantslayer']:
             name = 'long sword'
+            dmg_bonus = 5.5  # TODO: x2
+            to_hit_bonus = 3  # 1d5
+        elif name == 'Demonbane':  # a silver mace in NetHack 5.0 (artilist.h), a long sword in 3.6
+            name = 'silver mace'
             dmg_bonus = 5.5  # TODO: x2
             to_hit_bonus = 3  # 1d5
         elif name == 'Vorpal Blade':
