@@ -482,6 +482,14 @@ Resume steps:
    batched no-harm gates for independent fixes, an experiment queue that runs unattended, and a log of when new
    code first fires. Rough estimate given to owner: switch 1-2 sessions; Medusa 2-3, Castle 3-5, strength 3-5,
    Gehennom to invocation 10-15, Planes 5-8 sessions (25-40 to a first possible ascension, very uncertain).
+   OWNER 2026-11-09 (added to the switch): THIRD TRACK = Claude-steered teaching games. The bot plays, Claude
+   decides at hard points (Medusa, Castle, Planes, emergencies); every Claude decision is logged with the game
+   situation; recurring decisions become bot rules (playbook-to-ruleset); progress measure = Claude interventions
+   per game -> 0. Not benchable (not deterministic): bot rules derived from it still go through the bench.
+   Steered ascension = milestone; the goal stays a bot-alone ascension. Start from scripts/handplay.py.
+   Also take into the switch: read BotHack / nethack_astra end-game logic (ideas, not code) and make
+   "dig for victory" the default Gehennom route (code only Valley, Vlad's, Wizard's Tower, vibrating square,
+   invocation, way up). OPEN QUESTION to owner: subagents for building stages in parallel (yes/no, how many).
    NEXT SESSION: 0) DO THE SWITCH: rewrite ROADMAP.md working order, build the bench queue/batched gate/trigger
    log, make infinite-lives a routine job, then start the Medusa staged track.
    1) start the bench if not running; baseline for experiments = 72ca0b6.
