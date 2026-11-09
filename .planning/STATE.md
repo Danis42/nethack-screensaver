@@ -475,7 +475,16 @@ Resume steps:
    Where we are (72ca0b6, 2304 games): Mines 76 %, Minetown 59 %, Oracle 56 %, Sokoban 35 %, Sokoban solved /
    Mines' End 19 %, Dlvl 15+ 9 %, Quest 6 %, Medusa 1.1 % (25), Castle 0; deepest Dlvl 29. Ceiling with current
    code = Medusa's level (no Castle/Gehennom code; infinite-lives runs never passed Medusa).
-   NEXT SESSION: 1) start the bench if not running; baseline for experiments = 72ca0b6.
+   OWNER DECISION 2026-11-09: switch the working order next session (~1-2 sessions for the switch):
+   main track = end game in staged starts (Medusa crossing reliable first, then Castle, Valley, Gehennom,
+   invocation, Planes), each skill measured by staged success rate; infinite-lives runs (scripts/rewind.py) as the
+   deep-game progress measure. Background track = strength package on the natural bench (armour/AC gap), with
+   batched no-harm gates for independent fixes, an experiment queue that runs unattended, and a log of when new
+   code first fires. Rough estimate given to owner: switch 1-2 sessions; Medusa 2-3, Castle 3-5, strength 3-5,
+   Gehennom to invocation 10-15, Planes 5-8 sessions (25-40 to a first possible ascension, very uncertain).
+   NEXT SESSION: 0) DO THE SWITCH: rewrite ROADMAP.md working order, build the bench queue/batched gate/trigger
+   log, make infinite-lives a routine job, then start the Medusa staged track.
+   1) start the bench if not running; baseline for experiments = 72ca0b6.
    2) exp: bare-handed fallback - with no weapon in hand, wield the best unknown-status one-handed weapon
    (risk ~10 % cursed vs bare d2); separate experiment. 3) nymphs: kill at range or avoid melee (they steal the
    weapon). 4) agent_panic per game rose 537 vs 435 with feat/medusa - find which panics. 5) OverflowError
