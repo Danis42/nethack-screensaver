@@ -51,8 +51,12 @@ def prying_blade(items):
 
 
 def _wieldable_status_known(item):
-    """A weapon may be (or stay) wielded only when its curse status is known or it is already in hand."""
-    return getattr(item, 'buc_known', True) or item.equipped
+    """A weapon may be (or stay) wielded only when its curse status is known or it is already in hand.
+
+    Artifact weapons (item_manager gives them a dmg_bonus) count as known: altar gifts are always uncursed
+    (5.0 pray.c bestow_artifact), and the dec417a baseline ends with 41 Mjollnir and 19 other artifacts
+    carried, none wielded."""
+    return getattr(item, 'buc_known', True) or item.equipped or getattr(item, 'dmg_bonus', None) is not None
 
 
 class Inventory:
