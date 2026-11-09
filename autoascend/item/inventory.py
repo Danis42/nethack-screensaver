@@ -88,6 +88,7 @@ class Inventory:
         self.skip_engrave_counter = 0
         self._out_of_reach = None  # (level, y, x) of items at the bottom of a pit we stand at the edge of
         self._sell_tested_glyphs = set()  # scroll glyphs already offered to a shopkeeper (sell_offer_identify)
+        self._no_shop_reaction = set()  # (level key, y, x) where a drop got no shopkeeper answer: not tried again
 
     def on_panic(self):
         self.items_below_me = None
@@ -364,7 +365,8 @@ class Inventory:
         y, x = self.agent.blstats.y, self.agent.blstats.x
         prop = self.agent.character.prop
         if prop.hallu or prop.blind or prop.polymorph or self.items_below_me or \
-                not level.shop_interior[y, x] or level.shop_type[y, x] not in shop_sell.TRY_SHOPS:
+                not level.shop_interior[y, x] or level.shop_type[y, x] not in shop_sell.TRY_SHOPS or \
+                (level.key(), y, x) in self._no_shop_reaction:
             return None
         return next((i for i in self.items.all_items
                      if i.category == nh.SCROLL_CLASS and len(i.glyphs) == 1 and len(i.objs) > 1 and
@@ -396,6 +398,11 @@ class Inventory:
             offer = shop_sell.parse_sell_offer(message)
             if 'Sell it?' in message or 'Sell them?' in message or ' in credit ' in message:
                 self.agent.step('n')
+        if not shop_sell.shop_reacted(message):
+            # not a square the keeper deals on: the scroll is still untested, this square is
+            level = self.agent.current_level()
+            self._no_shop_reaction.add((level.key(), self.agent.blstats.y, self.agent.blstats.x))
+            self._sell_tested_glyphs.discard(glyph)
         if offer is not None:
             known = self.item_manager.sell_offer_identification(glyph, offer, shirt_or_dunce=shirt_or_dunce)
             self.agent.stats_logger.log_event('sell_offer_id' if known else 'sell_offer_mismatch')

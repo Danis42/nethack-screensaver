@@ -10,8 +10,20 @@ import re
 
 # shop types that buy scrolls (5.0 shknam.c shtypes: general store, second-hand bookstore, rare books)
 BUYS_SCROLLS = frozenset({1, 3, 10})
-# a shop whose type the bot has not read yet is tried too: one that does not buy says "seems uninterested"
-TRY_SHOPS = BUYS_SCROLLS | {0}
+# Only shops whose type the bot has read. Type 0 (not read) was tried too until bench job 83: the shop outline
+# (agent._update_level_shops) can spill out through the door, so type-0 "shop" squares are often outside the
+# shop; every unknown scroll was dropped there for no offer and marked tested (seed 1112).
+TRY_SHOPS = BUYS_SCROLLS
+
+# 5.0 shk.c sellobj(): every answer of a shopkeeper who is in the shop and awake. A plain "You drop ..." with none
+# of these means the square was not a shop floor the keeper deals on (outline spill, or keeper away/asleep).
+_REACTIONS = (' offers ', ' seems uninterested', ' cannot pay you', 'Thank you, scum', ' smirks with satisfaction',
+              'Thank you for your contribution')
+
+
+def shop_reacted(message):
+    """True if the drop message carries a shopkeeper's answer (sellobj)."""
+    return any(r in message for r in _REACTIONS)
 
 _OFFER = re.compile(r' offers (\d+) gold pieces? for (?:your|the) ')
 
