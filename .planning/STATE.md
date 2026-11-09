@@ -489,7 +489,11 @@ Resume steps:
    Steered ascension = milestone; the goal stays a bot-alone ascension. Start from scripts/handplay.py.
    Also take into the switch: read BotHack / nethack_astra end-game logic (ideas, not code) and make
    "dig for victory" the default Gehennom route (code only Valley, Vlad's, Wizard's Tower, vibrating square,
-   invocation, way up). OPEN QUESTION to owner: subagents for building stages in parallel (yes/no, how many).
+   invocation, way up). SUBAGENTS (owner yes 2026-11-09, with guards): only after Medusa is solved;
+   2 per wave (wave 1 Castle + Vlad's or Wizard's Tower; wave 2 Valley/dig route + invocation, way up); ask the
+   owner again before each wave with the concrete tasks; each subagent gets one bounded stage with a clear
+   finish test and must report a working, tested step early; stop a subagent that burns tokens without progress;
+   never start a wave late in the token budget.
    NEXT SESSION: 0) DO THE SWITCH: rewrite ROADMAP.md working order, build the bench queue/batched gate/trigger
    log, make infinite-lives a routine job, then start the Medusa staged track.
    1) start the bench if not running; baseline for experiments = 72ca0b6.
