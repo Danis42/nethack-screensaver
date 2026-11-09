@@ -472,6 +472,9 @@ Resume steps:
    JOB 89 KEPT: dlvl10 +0.8 [+0.2, +1.5] @2304 ("better"); 126 games end wielding an artifact: mean max depth
    11.0 vs 9.3, Dlvl 10+ 75 vs 58, median turns 11840 vs 9536; 0 crashes. MERGED main fba3d33 (557 pass),
    worktree removed. NEW BASELINE 72ca0b6 (2304 games; game code = main fba3d33).
+   Where we are (72ca0b6, 2304 games): Mines 76 %, Minetown 59 %, Oracle 56 %, Sokoban 35 %, Sokoban solved /
+   Mines' End 19 %, Dlvl 15+ 9 %, Quest 6 %, Medusa 1.1 % (25), Castle 0; deepest Dlvl 29. Ceiling with current
+   code = Medusa's level (no Castle/Gehennom code; infinite-lives runs never passed Medusa).
    NEXT SESSION: 1) start the bench if not running; baseline for experiments = 72ca0b6.
    2) exp: bare-handed fallback - with no weapon in hand, wield the best unknown-status one-handed weapon
    (risk ~10 % cursed vs bare d2); separate experiment. 3) nymphs: kill at range or avoid melee (they steal the
