@@ -7,7 +7,7 @@ status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-09
-last_activity_desc: weapon study; job 89 exp/wield-artifacts (Mjollnir) vs dec417a running; stop for today after it
+last_activity_desc: job 89 wield-artifacts KEPT and merged; baseline 72ca0b6; session ended
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -469,7 +469,10 @@ Resume steps:
    artifacts count as known-status for wielding; Demonbane = silver mace in 5.0. Smoke: seeds 1322, 1250 wield
    Mjollnir. Rule set before results: keep if dlvl10 lo > 0; if not significant, merge only if lo >= -2 and the
    artifact-wielding games reach deeper on average. Owner: stop for today after job 89.
-   NEXT SESSION: 1) read job 89 (if not acted on yet), merge/drop per the rule, remove .worktrees/wield-artifacts.
+   JOB 89 KEPT: dlvl10 +0.8 [+0.2, +1.5] @2304 ("better"); 126 games end wielding an artifact: mean max depth
+   11.0 vs 9.3, Dlvl 10+ 75 vs 58, median turns 11840 vs 9536; 0 crashes. MERGED main fba3d33 (557 pass),
+   worktree removed. NEW BASELINE 72ca0b6 (2304 games; game code = main fba3d33).
+   NEXT SESSION: 1) start the bench if not running; baseline for experiments = 72ca0b6.
    2) exp: bare-handed fallback - with no weapon in hand, wield the best unknown-status one-handed weapon
    (risk ~10 % cursed vs bare d2); separate experiment. 3) nymphs: kill at range or avoid melee (they steal the
    weapon). 4) agent_panic per game rose 537 vs 435 with feat/medusa - find which panics. 5) OverflowError
