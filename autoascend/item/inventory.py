@@ -13,7 +13,7 @@ from autoascend.exceptions import AgentPanic
 from autoascend.glyph import G
 from autoascend.item import ItemManager, Item, ContainerContent, check_if_triggered_container_trap, \
     find_equivalent_item, flatten_items
-from autoascend.item import accessories, scrolls
+from autoascend.item import accessories, scrolls, shop_sell
 from autoascend.item.inventory_items import InventoryItems
 from autoascend.level import Level
 from autoascend.strategy import Strategy
@@ -87,6 +87,8 @@ class Inventory:
 
         self.skip_engrave_counter = 0
         self._out_of_reach = None  # (level, y, x) of items at the bottom of a pit we stand at the edge of
+        self._sell_tested_glyphs = set()  # scroll glyphs already offered to a shopkeeper (sell_offer_identify)
+        self._no_shop_reaction = set()  # (level key, y, x) where a drop got no shopkeeper answer: not tried again
 
     def on_panic(self):
         self.items_below_me = None
@@ -357,6 +359,58 @@ class Inventory:
             unidentified=any(not i.is_unambiguous() and i.category in (nh.RING_CLASS, nh.AMULET_CLASS, nh.WAND_CLASS)
                              for i in items),
         )
+
+    def _sell_test_scroll(self):
+        """An unknown scroll worth offering to the shopkeeper here, or None (shop_sell.py)."""
+        level = self.agent.current_level()
+        y, x = self.agent.blstats.y, self.agent.blstats.x
+        prop = self.agent.character.prop
+        if prop.hallu or prop.blind or prop.polymorph or self.items_below_me or \
+                not level.shop_interior[y, x] or level.shop_type[y, x] not in shop_sell.TRY_SHOPS or \
+                (level.key(), y, x) in self._no_shop_reaction:
+            return None
+        return next((i for i in self.items.all_items
+                     if i.category == nh.SCROLL_CLASS and len(i.glyphs) == 1 and len(i.objs) > 1 and
+                     i.shop_status == Item.NOT_SHOP and i.glyphs[0] not in self._sell_tested_glyphs), None)
+
+    def _shirt_or_dunce(self):
+        """shk.c set_cost(): a dunce cap or a shirt with no suit or cloak over it cuts offers to a third."""
+        items = self.items
+        helm = items.helm
+        return (helm is not None and helm.is_unambiguous() and helm.object == O.from_name('dunce cap')) or \
+            (items.shirt is not None and items.suit is None and items.cloak is None)
+
+    @utils.debug_log('inventory.sell_offer_identify')
+    @Strategy.wrap
+    def sell_offer_identify(self):
+        """Price-ID step 3: drop one unknown scroll in a shop that buys scrolls, read the offer, answer "n",
+        pick the scroll up again (free: it stays ours)."""
+        item = self._sell_test_scroll()
+        if item is None:
+            yield False
+        yield True
+        glyph = item.glyphs[0]
+        self._sell_tested_glyphs.add(glyph)
+        letter = self.items.all_letters[self.items.all_items.index(item)]
+        shirt_or_dunce = self._shirt_or_dunce()
+        with self.agent.atom_operation():
+            self.agent.step(A.Command.DROP, iter(([] if item.count == 1 else ['1']) + [letter]))
+            message = self.agent.message
+            offer = shop_sell.parse_sell_offer(message)
+            if 'Sell it?' in message or 'Sell them?' in message or ' in credit ' in message:
+                self.agent.step('n')
+        if not shop_sell.shop_reacted(message):
+            # not a square the keeper deals on: the scroll is still untested, this square is
+            level = self.agent.current_level()
+            self._no_shop_reaction.add((level.key(), self.agent.blstats.y, self.agent.blstats.x))
+            self._sell_tested_glyphs.discard(glyph)
+        if offer is not None:
+            known = self.item_manager.sell_offer_identification(glyph, offer, shirt_or_dunce=shirt_or_dunce)
+            self.agent.stats_logger.log_event('sell_offer_id' if known else 'sell_offer_mismatch')
+        self.get_items_below_me()
+        mine = [i for i in self.items_below_me if i.glyphs == [glyph]]
+        if mine:
+            self.pickup(mine[0])
 
     @utils.debug_log('inventory.read_scrolls')
     @Strategy.wrap
@@ -1223,6 +1277,7 @@ class Inventory:
                 .before(self.check_containers())
                 .before(self.wear_best_stuff())
                 .before(self.wear_accessories())
+                .before(self.sell_offer_identify())
                 .before(self.read_scrolls())
                 .before(self.wand_engrave_identify())
                 .before(self.go_to_unchecked_containers())
