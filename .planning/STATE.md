@@ -7,7 +7,7 @@ status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-09
-last_activity_desc: price-ID fixed and merged (job 86 passed); job 87 no-harm gate feat/medusa vs main c074c1c
+last_activity_desc: price-ID and feat/medusa merged (jobs 86, 87 passed); baseline dec417a; next weapon upgrade research
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -458,7 +458,9 @@ Resume steps:
    94 vs 318 (07e8e81) on the same seeds, games with an offer 70 vs 37, 0 mismatches. MERGED main c074c1c.
    main merged into feat/medusa (555 pass). JOB 87 = no-harm gate feat/medusa vs main c074c1c, rung2 (also
    stores the c074c1c baseline). If it passes: merge feat/medusa to main; c074c1c+medusa is the new baseline.
-   NEXT: read job 87 -> merge or per-seed look; then weapon upgrade research (wields the start spear in 88 %),
+   JOB 87 PASSED (+0.9 [-1.4, +3.2] @1152; crashes 6 vs 10; agent_panic per game 537 vs 435, watch it).
+   feat/medusa MERGED main e586de2 (tree = dec417a). BASELINE = dec417a games (1152; extend to 2304 when needed).
+   NEXT: then weapon upgrade research (wields the start spear in 88 %),
    the 6 % bare-handed games, the OverflowError (global_logic.py add_item, float infinity).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
