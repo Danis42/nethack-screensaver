@@ -54,8 +54,10 @@ STAGES = {
     "medusa": Stage("medusa", xl=14, wishes=MIDGAME_KIT + MEDUSA_ARMOUR + (
         "blessed amulet of reflection", "blessed ring of levitation", "floating eye corpse"),
         eat=("floating eye corpse",)),
-    "castle": Stage("castle", xl=14, wishes=MIDGAME_KIT + ("blessed amulet of reflection",
-                                                          "blessed ring of levitation", "wooden flute")),
+    # the Castle comes after Medusa: at least the Medusa stage's kit (armour, telepathy)
+    "castle": Stage("castle", xl=14, wishes=MIDGAME_KIT + MEDUSA_ARMOUR + (
+        "blessed amulet of reflection", "blessed ring of levitation", "wooden flute", "floating eye corpse"),
+        eat=("floating eye corpse",)),
     "quest": Stage("Val-strt", xl=14, wishes=MIDGAME_KIT),
     "valley": Stage("valley", xl=16, wishes=MIDGAME_KIT + ("blessed +2 gray dragon scale mail",
                                                           "blessed amulet of reflection",
@@ -222,9 +224,10 @@ def apply_stage(env, stage: Stage) -> dict:
         send(env, wish + "\r")
         settle(env)
     if stage.identify:
-        send(env, [CTRL_I, CTRL_I])  # wizard identify menu, then ^I again: identify all of it
+        # wizard identify menu, ^I again selects all of it, Enter confirms (ESC cancelled it: the Medusa and Castle
+        # stages ran with unknown potions, amulet and ring until 2026-11-11)
+        send(env, [CTRL_I, CTRL_I, "\r"])
         settle(env)
-        send(env, [ESC])
     for potion in stage.quaff:
         letter = inventory_letter(env, potion)
         if letter is not None:

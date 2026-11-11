@@ -4,6 +4,7 @@ from nle.nethack import actions as A
 
 from . import objects as O
 from . import boulders
+from . import castle
 from . import digging
 from . import medusa
 from . import quest_portal
@@ -238,6 +239,8 @@ class GlobalLogic:
         self._undiggable = set()  # levels whose floor was too hard to dig through
         self._medusa_crossed = set()  # levels crossed by levitation (medusa.py)
         self._next_medusa_try = 0
+        self._next_castle_try = 0
+        self._next_castle_breakout = 0
         self._dig_level, self._dig_retries = None, 0
         self._next_deep_dig = 0  # turn of the next deep-dive dig attempt
         self.stuck_reports = []  # one row per stuck-watch firing (autoascend/stuck.py), for the results
@@ -403,6 +406,132 @@ class GlobalLogic:
         inv.stop_levitation()
         self._medusa_crossed.add(level.key())
         a.stats_logger.log_event('medusa_landed')
+        return True
+
+    def _castle_candidate(self):
+        """Dungeons of Doom, Dlvl 25+ (the Castle is Dlvl 25-29) and no down stairs seen (the Castle has none)."""
+        level = self.agent.current_level()
+        return level.dungeon_number == Level.DUNGEONS_OF_DOOM and level.level_number >= 25 and \
+            not utils.isin(level.objects, G.STAIR_DOWN).any()
+
+    def _castle_flipped(self):
+        level = self.agent.current_level()
+        ys, xs = np.nonzero(utils.isin(level.objects, DRAWBRIDGE))
+        return castle.frame(list(zip(ys.tolist(), xs.tolist())), utils.isin(level.objects, digging.WET),
+                            level.objects != -1)
+
+    def _castle_due(self):
+        """Cheap check for the strategy loop: the Castle rules have something to do now."""
+        if self.agent.blstats.time < self._next_castle_try or not self._castle_candidate():
+            return False
+        return self._castle_flipped() is not None or self._castle_breakout_due()
+
+    def _castle_breakout_due(self):
+        a = self.agent
+        level = a.current_level()
+        return a.blstats.time >= self._next_castle_breakout and \
+            boulders.nothing_left(level.seen, level.walkable, a.bfs(), utils.isin(level.objects, G.STAIR_DOWN))
+
+    def _castle_breakout(self):
+        """The Castle's mazes are full of boulders and traps (sp_lev.c fill: boulders, then random traps): staged
+        heroes sat for thousands of turns in a pocket round the up stairs and starved (12 of 20, 2026-11-11).
+        When nothing reachable is left: walk over known traps on this level, then break the nearest boulder in
+        the way with the pick-axe (the mazes outside the castle map are not Sokoban: no penalty). True if acted."""
+        a = self.agent
+        level = a.current_level()
+        if not self._castle_candidate() or self._castle_flipped() is not None or not self._castle_breakout_due():
+            return False
+        self._next_castle_breakout = a.blstats.time + 5
+        if level.key() not in a.trap_walk_levels:
+            a.trap_walk_levels.add(level.key())
+            a.last_bfs_step = -1  # the cached path search still avoids traps
+            a.stats_logger.log_event('castle_trap_walk')
+            return True
+        pick = next((i for i in flatten_items(a.inventory.items) if i.is_unambiguous() and
+                     i.objs[0].name in ('pick-axe', 'dwarvish mattock')), None)
+        if pick is None:
+            self._next_castle_breakout = a.blstats.time + 1000
+            return False
+        dis = a.bfs()
+        target = boulders.break_candidate(utils.isin(a.glyphs, G.BOULDER), dis, level.seen)
+        if target is None:
+            self._next_castle_breakout = a.blstats.time + 200
+            return False
+        stand, boulder = target
+        if (a.blstats.y, a.blstats.x) != stand:
+            a.go_to(*stand)
+            if (a.blstats.y, a.blstats.x) != stand:
+                return True
+        a.stats_logger.log_event('castle_break_boulder')
+        a.dig_toward(pick, *boulder)
+        return True
+
+    def _pass_castle(self):
+        """Castle back entry (castle.py): reach the far courtyard (walking if it is the one in reach, else
+        levitating round the moat), land, kick the back door open and step onto the trap door behind it, which
+        drops the hero into the Valley. True if it acted."""
+        a = self.agent
+        level = a.current_level()
+        if a.blstats.time < self._next_castle_try or not self._castle_candidate():
+            return False
+        flipped = self._castle_flipped()
+        if flipped is None:
+            return self._castle_breakout()
+        inv = a.inventory
+        stand, door, trap = (castle.to_screen(flipped, p) for p in (castle.STAND, castle.DOOR, castle.TRAP_DOOR))
+        if (a.blstats.y, a.blstats.x) != stand and not inv.levitating() and a.bfs()[stand] >= 0:
+            a.stats_logger.log_event('castle_walk')
+            a.go_to(*stand)
+            if (a.blstats.y, a.blstats.x) != stand:
+                self._next_castle_try = a.blstats.time + 3
+                return True
+        pos = (a.blstats.y, a.blstats.x)
+        if pos != stand:
+            if inv.levitation_source() is None and not inv.levitating():
+                a.stats_logger.log_event('castle_no_levitation')
+                self._next_castle_try = a.blstats.time + 1000
+                return False
+            wet = utils.isin(level.objects, digging.WET)
+            passable = level.walkable | wet | castle.outside_mask(flipped, wet.shape)
+            path = castle.float_path(passable, pos, stand)
+            if path is None:
+                a.stats_logger.log_event('castle_no_path')
+                self._next_castle_try = a.blstats.time + 100
+                return False
+            if not inv.levitating() and not inv.start_levitation():
+                self._next_castle_try = a.blstats.time + 100
+                return False
+            a.stats_logger.log_event('castle_float')
+            try:
+                for step in path[1:]:
+                    a.move(*step)
+                    if (a.blstats.y, a.blstats.x) != step:
+                        break
+            except AgentPanic:
+                # a peaceful or unseen monster on the way: try again shortly
+                self._next_castle_try = a.blstats.time + 3
+                return True
+            except AgentChangeStrategy:
+                a.stats_logger.log_event('castle_interrupted')
+                raise
+            if (a.blstats.y, a.blstats.x) != stand:
+                self._next_castle_try = a.blstats.time + 3
+                return True
+        if inv.levitating() and not inv.stop_levitation():
+            self._next_castle_try = a.blstats.time + 100
+            return False
+        try:
+            if a.glyphs[door] in G.DOOR_CLOSED:
+                a.stats_logger.log_event('castle_kick')
+                a.kick(*door)
+            else:
+                a.stats_logger.log_event('castle_trap_door')
+                a.move(*door)
+                a.move(*trap)  # the hero falls to the Valley: move() panics on the changed position
+        except AgentPanic:
+            self._next_castle_try = a.blstats.time + 3
+        if a.current_level().key() != level.key():
+            a.stats_logger.log_event('castle_fell')
         return True
 
     def _stuck(self):
@@ -1098,6 +1227,8 @@ class GlobalLogic:
                 continue
             if self._cross_medusa():
                 continue
+            if self._pass_castle():
+                continue
             if self._stuck():
                 self.agent.stats_logger.log_event('stuck_dive')
                 self._report_stuck(level)
@@ -1166,7 +1297,8 @@ class GlobalLogic:
                 .preempt(self.agent, [
                     self.agent.exploration.explore_stairs(go_to_strategy, all=True).condition(explore_stairs_condition),
                 ])
-                .until(self.agent, lambda: condition() or self._should_bail() or self._stuck() or self._deep_dig_due())
+                .until(self.agent, lambda: condition() or self._should_bail() or self._stuck() or self._deep_dig_due() or
+                                     self._castle_due())
             ).run()
 
     def global_strategy(self):

@@ -6,7 +6,7 @@ current_phase_name: Full Ascension Ruleset
 status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
-last_activity: 2026-11-09
+last_activity: 2026-11-11
 last_activity_desc: job 89 wield-artifacts KEPT and merged; baseline 72ca0b6; session ended
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
@@ -531,6 +531,35 @@ Resume steps:
    NEXT: 1) read job 90 (natural no-harm job for main 8cea210 vs 72ca0b6 (also stores the new baseline; game code changed only
    at Dlvl 21+ and statue names). 2) Castle stage (staged_run castle) baseline + first Castle rules. 3) Medusa:
    titan map arrival (kill/avoid the caster, or escape at once when "Monsters appear from nowhere").
+   2026-11-11 (2nd part, owner: "start on the castle rules while job 90 runs"): JOB 90 DONE: no-harm shown at 192
+   pairs, diff +0.0 (stopped by the watcher) -> main 9054ea1 is the natural baseline candidate (game code unchanged
+   above Dlvl 21). CASTLE TRACK (autoascend/castle.py, global_logic _pass_castle/_castle_breakout), measure =
+   staged castle seeds 1-20, "below" = max depth > arrival depth:
+   - STAGING BUG FIXED (affects all staged results before today): the wizard identify menu was cancelled with ESC
+     (needs Enter) -> kits were UNIDENTIFIED (4 murky potions never quaffed, amulet unknown) and the levitation ring
+     was put on at stage time (the "levitation" skip saw "a coral ring") -> heroes floated from turn 1 (could not
+     dig, engrave or kick). Medusa re-measured with the fix (medusa-ident9): 9/20 (was 10/20: same level).
+   - Castle stage now = Medusa kit + flute (+ cloak/gloves, eaten floating eye): humans are at least as armoured.
+   - Castle facts (5.0 castle.lua/src): map at screen (y3, x8), mirrored left-right on some seeds (noflipy only),
+     the hero arrives on the WEST side either way (so sometimes on the back side); raised drawbridge shows on the
+     portcullis (display.c:2394) which sits in a dark wall and is seldom seen -> detect by the lit courtyard +
+     moat; key square mid-courtyard edge = moat (front) / floor (back). Back door (map 56,8) is locked, trap door
+     right behind it (55,8) -> Valley. No kicking while levitating (dokick.c:921); levitation does not stop eel
+     drowning (uhitm.c:3389); maze fill: 0-1 minotaur (sp_lev.c:2956), boulders, random traps.
+   - Rule: reach map (57,8) (walk if reachable, else levitate round the moat over a template path), land, kick the
+     door, step west onto the trap door. Breakout (castle candidate = DoD Dlvl>=25 without '>' seen, no frame
+     yet, nothing reachable left): known traps walkable on that level (agent.trap_walk_levels), then break the
+     nearest boulder with the pick-axe (boulders.break_candidate, agent.dig_toward). _castle_due() in the dive
+     loop's until-condition (else the rule ran only ~8 times in 1500 turns).
+   - Results: castle-base1 0/20 (12 seeds boxed in maze pockets by boulders+traps, starved) -> back2 (no
+     breakout) 2/20 -> back3 5/20, no starvation, all deaths in fights: eels drowning 4 (1, 6, 10, 15), sharks
+     3, xorns 3, minotaurs 2, master mind flayers 2. The float crosses ~26 moat squares (no dry way round) and
+     every interruption stops the hero over the water. Medusa-stage games now also pass the Castle (medusa-ident9
+     seed 10: Dlvl 27 -> 30 Valley; seed 3 fell too).
+   NEXT (Castle): eel grip escape (wiki Giant eel: putting on a levitation ring makes a holding eel let go;
+   Elbereth scares eels; oilskin cloak prevents the grip), keep floating past sea monsters instead of fighting
+   over water; why prayers right before death did not save (seeds 4, 9, 12, 16 in back3); medusa_no_reflection
+   7x in medusa-ident9 seed 16 and medusa_no_levitation seed 15 with an identified kit (check).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
