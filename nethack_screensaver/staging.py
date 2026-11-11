@@ -16,7 +16,7 @@ import nle.nethack as nethack
 from nle.env.tasks import NetHackChallenge
 
 ENTER, ESC = 13, 27
-CTRL_I, CTRL_V, CTRL_W = 9, 22, 23
+CTRL_I, CTRL_T, CTRL_V, CTRL_W = 9, 20, 22, 23
 MORE = ("--More--", "(end)")
 # wizard-only prompts: a death stays a death; skills advance only with practice
 WIZARD_PROMPTS = {"Die?": "y", "Advance skills without practice?": "n",
@@ -38,6 +38,8 @@ class Stage:
     quaff: tuple[str, ...] = field(default_factory=tuple)  # potions drunk before the bot starts (inventory text)
     drop: tuple[str, ...] = field(default_factory=tuple)  # items put on the floor before the bot starts
     eat: tuple[str, ...] = field(default_factory=tuple)  # eaten before the teleport (inventory text), e.g. an eye
+    # a natural arrival comes down the stairs: stand on the up stairs (the hero's way back), not a random spot
+    on_upstairs: bool = True
 
 
 # A kit that a bot reaching the level could plausibly have (ASCENSION-PLAN-NH5.md); grows with the phases.
@@ -48,7 +50,10 @@ MIDGAME_KIT = ("blessed +2 dwarvish mithril coat", "blessed +2 dwarvish iron hel
 # AC median -14 (p75 -11, p90 -9), XL 13, max HP 110. MIDGAME_KIT alone gives about AC -10; these two make -14.
 MEDUSA_ARMOUR = ("blessed +0 cloak of protection", "blessed +0 leather gloves")
 STAGES = {
-    "medusa": Stage("medusa", xl=14, wishes=MIDGAME_KIT + MEDUSA_ARMOUR + ("blessed amulet of reflection",)),
+    # human 5.0 ascenders (MEDUSA-NH5.md, 199 dumplogs): levitation item 85 %, telepathic 95 %, reflection 83 %
+    "medusa": Stage("medusa", xl=14, wishes=MIDGAME_KIT + MEDUSA_ARMOUR + (
+        "blessed amulet of reflection", "blessed ring of levitation", "floating eye corpse"),
+        eat=("floating eye corpse",)),
     "castle": Stage("castle", xl=14, wishes=MIDGAME_KIT + ("blessed amulet of reflection",
                                                           "blessed ring of levitation", "wooden flute")),
     "quest": Stage("Val-strt", xl=14, wishes=MIDGAME_KIT),
@@ -171,7 +176,7 @@ def equip(env, wield: str | None) -> None:
     hands = iter("rl")
     for letter, oclass, text in zip(obs["inv_letters"], obs["inv_oclasses"], obs["inv_strs"]):
         text = bytes(text).decode("latin1").rstrip("\x00 ")
-        if not letter or "(being worn)" in text or "(weapon in" in text or "(on " in text:
+        if not letter or "(being worn)" in text or "(weapon in" in text or "(on " in text or "levitation" in text:
             continue
         if oclass == nethack.ARMOR_CLASS:
             keys = ["W", int(letter)]
@@ -185,6 +190,17 @@ def equip(env, wield: str | None) -> None:
         if "ring-finger" in screen_top(env):
             send(env, [next(hands, "l")])
         settle(env)
+
+
+def to_upstairs(env) -> None:
+    """Wizard ^T (ignores no-teleport levels, teleport.c scrolltele) to the up stairs: getpos '<' jumps the cursor
+    to a seen staircase. The ^V arrival region lies around the up stairs, so they are usually in view."""
+    send(env, [CTRL_T])
+    if "Where do you want to be teleported?" not in screen_top(env):
+        settle(env)
+        return
+    send(env, ["<", "."])
+    settle(env)
 
 
 def inventory_letter(env, text: str) -> str | None:
@@ -231,4 +247,6 @@ def apply_stage(env, stage: Stage) -> dict:
     if not teleport_to(env, stage.level):
         raise RuntimeError(f"stage level not found in the ^V menu: {stage.level}")
     settle(env)
+    if stage.on_upstairs:
+        to_upstairs(env)
     return env._get_observation(env.last_observation)

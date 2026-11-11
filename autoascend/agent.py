@@ -190,6 +190,7 @@ class Agent:
         self._allow_walking_through_traps_turn = -float('inf')
         self._allow_attack_all_turn = -float('inf')
         self._monster_since = {}  # (level, y, x, glyph) -> first turn fight2 saw that monster there
+        self._stair_escape_fail_turn = -float('inf')
 
         self.last_cast_fail_turn = defaultdict(lambda: -float('inf'))
 
@@ -1402,6 +1403,9 @@ class Agent:
                 actions, monsters, (self.blstats.y, self.blstats.x),
                 self.inventory.items.main_hand is None and self.inventory.items.gloves is None)
 
+            if self._stair_escape_due(monsters):
+                actions = [(1000, ('upstairs',))]
+
             if allow_attack_all:
                 attack_actions = [a for a in actions if a[1][0] in ('melee', 'ranged', 'zap')]
                 if attack_actions:
@@ -1420,7 +1424,64 @@ class Agent:
                 with self.env.debug_log(actions_str):
                     wait_counter = self._fight2_perform_action(best_action, wait_counter)
 
+    def _stair_escape_due(self, monsters):
+        """combat/stair_escape.py: on a deep level, on the up stairs, below half HP, a non-stalker adjacent."""
+        if self._last_turn - self._stair_escape_fail_turn < 20:
+            return False
+        y, x = self.blstats.y, self.blstats.x
+        target = self._stair_escape_target()
+        distance = None if target is None else 0 if target == (y, x) else int(self.bfs()[target])
+        near = [m[3] for m in monsters if utils.adjacent((y, x), (m[1], m[2]))]
+        return combat.stair_escape.should_escape(self.blstats.depth, distance, self.blstats.hitpoints,
+                                                 self.blstats.max_hitpoints, near)
+
+    def _stair_escape_target(self):
+        """The nearest reachable up stairs (y, x) on this level, or None."""
+        y, x = self.blstats.y, self.blstats.x
+        level = self.current_level()
+        if level.objects[y, x] in G.STAIR_UP:
+            return y, x
+        dis = self.bfs()
+        best = None
+        for sy, sx in zip(*utils.isin(level.objects, G.STAIR_UP).nonzero()):
+            if dis[sy, sx] > 0 and (best is None or dis[sy, sx] < dis[best]):
+                best = (int(sy), int(sx))
+        return best
+
+    def _stair_escape(self):
+        """Climb, then rest on the level above until HP is back, a hostile shows up, or hunger gets weak."""
+        target = self._stair_escape_target()
+        if target is None:
+            return
+        if target != (self.blstats.y, self.blstats.x):
+            pos, turn = (self.blstats.y, self.blstats.x), self.blstats.time
+            try:
+                self.go_to(*target, max_steps=1)  # one step per fight round: re-check the fight after it
+            except AgentPanic:
+                pass
+            if (self.blstats.y, self.blstats.x) == pos and self.blstats.time == turn:  # a monster blocks the way
+                self._stair_escape_fail_turn = self._last_turn
+                self.stats_logger.log_event('stair_escape_failed')
+            return
+        depth = self.blstats.depth
+        self.direction('<')
+        if self.blstats.depth == depth:  # "too heavy to climb", held, ...: fight on
+            self._stair_escape_fail_turn = self._last_turn
+            self.stats_logger.log_event('stair_escape_failed')
+            return
+        self.stats_logger.log_event('stair_escape')
+        rested = 0
+        while not combat.stair_escape.rest_done(self.blstats.hitpoints, self.blstats.max_hitpoints, rested,
+                                                bool(self.get_visible_monsters()),
+                                                self.blstats.hunger_state >= Hunger.WEAK):
+            turn = self.blstats.time
+            self.search(10)
+            rested += max(1, self.blstats.time - turn)
+
     def _fight2_perform_action(self, best_action, wait_counter):
+        if best_action[0] == 'upstairs':
+            self._stair_escape()
+            return 0
         if best_action[0] == 'move':
             _, dy, dx = best_action
             target_y, target_x = self.blstats.y + dy, self.blstats.x + dx

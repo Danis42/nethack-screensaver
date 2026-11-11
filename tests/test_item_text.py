@@ -105,3 +105,8 @@ def test_shop_line_cut_short_of_the_limit():
 
 def test_smooth_shield_is_reflection():
     assert ItemManager.parse_text('a smooth shield')[0][0].name == 'shield of reflection'
+
+
+def test_named_statue_is_a_statue():
+    # Medusa's down stairs hold "a statue of a knight named Perseus" (dat/medusa-*.lua); the name is the monster's
+    assert ItemManager.parse_text('a statue of a knight named Perseus', 14)[0][0].name == 'statue'

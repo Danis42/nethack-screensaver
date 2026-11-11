@@ -34,3 +34,13 @@ def test_stall_landing_here_if_dry_else_a_dry_neighbour():
     assert medusa.stall_landing(walkable, wet, (2, 2)) in {(3, 1), (3, 2), (3, 3)}
     wet[3, :] = True
     assert medusa.stall_landing(walkable, wet, (2, 2)) is None
+
+
+def test_landing_square_must_be_reachable_over_water():
+    walkable = np.zeros((21, 79), bool)
+    wet = np.zeros((21, 79), bool)
+    wet[5, 10:20] = True  # the hero floats in a channel
+    walkable[5, 9] = True  # dry square at the channel's end, far from the target
+    walkable[8, 21] = True  # dry square next to the target, behind a wall (nothing passable between)
+    assert landing_square(walkable, wet, (8, 22)) == (8, 21)
+    assert landing_square(walkable, wet, (8, 22), (5, 15)) == (5, 9)

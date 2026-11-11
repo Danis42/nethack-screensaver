@@ -19,9 +19,30 @@ def crossing_target(glyphs, stairs_down_glyphs, medusa_glyphs):
     return None
 
 
-def landing_square(walkable, wet, target):
-    """The walkable, dry square nearest to target (the target itself first), or None."""
+def float_reach(walkable, wet, start):
+    """Squares a levitating hero can reach from start: floor and water, 8-connected; walls and unknown stop it."""
+    passable = walkable | wet
+    h, w = passable.shape
+    seen = np.zeros_like(passable)
+    seen[start] = True
+    todo = [start]
+    while todo:
+        y, x = todo.pop()
+        for ny in range(max(0, y - 1), min(h, y + 2)):
+            for nx in range(max(0, x - 1), min(w, x + 2)):
+                if passable[ny, nx] and not seen[ny, nx]:
+                    seen[ny, nx] = True
+                    todo.append((ny, nx))
+    return seen
+
+
+def landing_square(walkable, wet, target, start=None):
+    """The walkable, dry square nearest to target (the target itself first), or None. With start, only squares a
+    levitating hero can reach from there count (staged seed 7: the nearest dry square lay behind the walls of
+    Medusa's hall and travel stalled in the moat for 1000 turns)."""
     ok = walkable & ~wet
+    if start is not None:
+        ok &= float_reach(walkable, wet, start)
     if ok[target]:
         return target
     ys, xs = np.nonzero(ok)

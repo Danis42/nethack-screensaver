@@ -12,7 +12,7 @@ from .soko_solver import search as soko_search
 from . import stuck
 from . import utils
 from .character import Character
-from .exceptions import AgentPanic
+from .exceptions import AgentPanic, AgentChangeStrategy
 from .glyph import Hunger, G, MON, SS
 from .item import Item, flatten_items
 from .item.item_priority_base import ItemPriorityBase
@@ -370,22 +370,28 @@ class GlobalLogic:
         if target is None:
             a.stats_logger.log_event('medusa_no_target')
             return False
-        land = medusa.landing_square(level.walkable, wet, target)
+        land = medusa.landing_square(level.walkable, wet, target, (a.blstats.y, a.blstats.x))
         if land is None or not inv.start_levitation():
             return False
         a.stats_logger.log_event('medusa_levitate')
-        for _ in range(8):
-            pos = (a.blstats.y, a.blstats.x)
-            if pos == land:
-                break
-            a._fast_go_to(*land)
-            if (a.blstats.y, a.blstats.x) == pos and 'door' in a.message:
-                break  # "That door is closed." / "This door is locked.": travel will not get further
+        try:
+            for _ in range(8):
+                pos = (a.blstats.y, a.blstats.x)
+                if pos == land:
+                    break
+                a._fast_go_to(*land)
+                if (a.blstats.y, a.blstats.x) == pos:
+                    break  # "This door is locked." or no travel path (staged seed 7: walls round Medusa's hall)
+        except AgentChangeStrategy:
+            # a monster interrupts the trip (staged seed 7: 6 of 6 tries): fight, then go on at once instead of
+            # hovering over the water for MEDUSA_RETRY turns
+            a.stats_logger.log_event('medusa_interrupted')
+            self._next_medusa_try = a.blstats.time + 1
+            raise
         if (a.blstats.y, a.blstats.x) != land:
             # Medusa's building has closed or locked doors (dat/medusa-*.lua); no kicking while levitating
             # (dokick.c:921): land in front of the door and let exploration open or kick it.
-            short = medusa.stall_landing(level.walkable, wet, (a.blstats.y, a.blstats.x)) \
-                if 'door' in a.message else None
+            short = medusa.stall_landing(level.walkable, wet, (a.blstats.y, a.blstats.x))
             if short is None:
                 return False  # still levitating: the next try goes on from here
             if short != (a.blstats.y, a.blstats.x):
