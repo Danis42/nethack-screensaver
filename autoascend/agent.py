@@ -16,7 +16,7 @@ from .character import Character
 from .exceptions import AgentPanic, AgentFinished, AgentChangeStrategy
 from .exploration_logic import ExplorationLogic
 from .global_logic import GlobalLogic, is_stoning_cure
-from .glyph import MON, C, Hunger, G, SHOP
+from .glyph import MON, C, Hunger, G, SHOP, SS
 from .glyph import nh5 as nh5_glyph
 from .item import Item, flatten_items
 from .item.inventory import Inventory
@@ -100,6 +100,10 @@ def hunger_prayer_gap(weak_turns):
 
 # Conditions that kill within a few turns and that a prayer fixes (pray.c TROUBLE_STONED, _SLIMED, _STRANGLED,
 # _SICK). Dying is certain without help, so a prayer that may come too soon is still worth it.
+# messages that end a hold on the hero (monmove.c:369, hack.c:2686, trap.c:4092, end.c:753)
+GRIP_RELEASED = ('You get released', 'You pull free from', 'can no longer hold you', 'releases you')
+MON_S_EEL = MON.permonst(MON.fn("giant eel")).mlet  # the ; class (eels, sharks, krakens)
+WATER_GLYPHS = frozenset({SS.S_pool, SS.S_water})
 DEADLY_CONDITIONS = nh.BL_MASK_STONE | nh.BL_MASK_SLIME | nh.BL_MASK_STRNGL | nh.BL_MASK_FOODPOIS | nh.BL_MASK_TERMILL
 UNIHORN_SICK_TRIES = 3  # applies of a horn before praying for food poisoning / illness
 UNIHORN_TRIES = 10  # applies per bout of confusion/stun/hallucination/blindness
@@ -188,6 +192,7 @@ class Agent:
 
         # when (number of turn) there was last decision about allowing these actions (e.g. agent is somewhat stuck)
         self._allow_walking_through_traps_turn = -float('inf')
+        self.held = False  # a wrapping monster holds the hero (see GRIP_RELEASED)
         self.trap_walk_levels = set()  # level keys where known traps count as walkable (Castle mazes)
         self._allow_attack_all_turn = -float('inf')
         self._monster_since = {}  # (level, y, x, glyph) -> first turn fight2 saw that monster there
@@ -534,6 +539,13 @@ class Agent:
             else:
                 self.step(A.Command.ESC)
                 return
+
+        # a wrap attack took hold (uhitm.c:3384 "%s swings/coils itself around you!"); the later message wins
+        # (staged castle seed 1: released and grabbed again within one message buffer)
+        grip = self.message.rfind('itself around you')
+        release = max(self.message.rfind(m) for m in GRIP_RELEASED)
+        if grip >= 0 or release >= 0:
+            self.held = grip > release
 
         if 'Where do you want to be teleported?' in self.message:
             # TODO: teleport control
@@ -1120,6 +1132,25 @@ class Agent:
             if self.blstats.y != expected_y or self.blstats.x != expected_x:
                 raise AgentPanic(f'agent position do not match after "move": '
                                  f'expected ({expected_y}, {expected_x}), got ({self.blstats.y}, {self.blstats.x})')
+
+    def water_holder(self):
+        """(y, x) of an adjacent monster in water while the hero is held, else None (and the hold is forgotten
+        when no monster is adjacent any more)."""
+        if not self.held:
+            return None
+        y, x = self.blstats.y, self.blstats.x
+        level = self.current_level()
+        adjacent = False
+        for ny in range(max(0, y - 1), min(C.SIZE_Y, y + 2)):
+            for nx in range(max(0, x - 1), min(C.SIZE_X, x + 2)):
+                if (ny, nx) != (y, x) and self.monster_tracker.monster_mask[ny, nx]:
+                    adjacent = True
+                    if level.objects[ny, nx] in WATER_GLYPHS or level.objects[ny, nx] == -1 and \
+                            self.glyphs[ny, nx] in G.MONS and MON.permonst(self.glyphs[ny, nx]).mlet == MON_S_EEL:
+                        return ny, nx
+        if not adjacent:
+            self.held = False
+        return None
 
     def can_engrave(self):
         if self.character.prop.polymorph:
@@ -1869,6 +1900,25 @@ class Agent:
             self._unihorn_sick_tries += 1
             self.apply_unicorn_horn()
             return
+
+        holder = self.water_holder()
+        if holder is not None:
+            # a wrapper in water drowns the hero on its next hit (uhitm.c:3389; levitation does not help):
+            # landing breaks any hold (trap.c:4087 float_down "Startled, ... can no longer hold you!"),
+            # a scared monster lets go (monmove.c:473 monflee -> release_hero; eels respect Elbereth)
+            over_water = self.current_level().objects[self.blstats.y, self.blstats.x] in WATER_GLYPHS
+            if self.inventory.levitating() and not over_water:
+                # never over the moat: the hero sinks like a rock and drowns (staged castle seeds 6, 11)
+                yield True
+                self.stats_logger.log_event('grip_land')
+                self.inventory.stop_levitation()
+                return
+            if not self.inventory.levitating() and self.can_engrave() and \
+                    self.inventory.engraving_below_me.lower() != 'elbereth':
+                yield True
+                self.stats_logger.log_event('grip_elbereth')
+                self.engrave('Elbereth')
+                return
 
         if self.blstats.prop_mask & DEADLY_CONDITIONS and \
                 (self.last_prayer_turn is None or self.blstats.time - self.last_prayer_turn > DEADLY_PRAYER_GAP):

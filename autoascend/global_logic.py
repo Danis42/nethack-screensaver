@@ -38,6 +38,7 @@ BOULDER_PUSHES_PER_LEVEL = 30
 STUCK_TURNS = 2500  # no new level and no new milestone for this long: give up the route and dive
 DIG_RETRIES = 5  # interrupted digs per level before giving up on digging there
 DIG_RETRY_TURNS = 50  # an interrupted dig is tried again this many turns later
+CASTLE_FLOAT_HP = 0.8  # same share as the dive loop's rest-before-exploring rule
 DIG_MIN_HP = 9  # falling through a hole deals 1d6 per level fallen (NetHack 5)
 DEEP_DIG_DLVL = 21  # Medusa's level is Dlvl 21-28 (1-4 above the Castle, which is Dlvl 25-29)
 DEEP_DIG_RETRY_TURNS = 20  # an interrupted deep dig is tried again this many turns later
@@ -497,6 +498,11 @@ class GlobalLogic:
             if path is None:
                 a.stats_logger.log_event('castle_no_path')
                 self._next_castle_try = a.blstats.time + 100
+                return False
+            if not inv.levitating() and a.blstats.hitpoints < CASTLE_FLOAT_HP * a.blstats.max_hitpoints:
+                # the float crosses ~26 moat squares past sharks and eels: start it rested (staged seed 1
+                # floated off at 21/127 HP right after an eel let go)
+                self._next_castle_try = a.blstats.time + 20
                 return False
             if not inv.levitating() and not inv.start_levitation():
                 self._next_castle_try = a.blstats.time + 100
