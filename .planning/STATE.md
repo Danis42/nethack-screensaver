@@ -576,6 +576,13 @@ Resume steps:
      on nearly every float), eels drowning over water (6, 11), xorns, wraith+gas (1), vampire lord in the Valley.
    Medusa re-measured with the prayer fix (medusa-pray10): 13/20 below Medusa (ident9: 9/20), 1 also fell through
    the Castle trap door. Job 92 no-harm: diff +0.0 at 192 pairs (stopped).
+   DROPPED (castle-quiet8, reverted): start the float only with no hostile in view: 9/20 vs 8/20 (noise); floats
+   are still interrupted (attackers appear DURING the float: underwater sharks "something you can't see", xorns
+   from the throne court walking through the castle walls, seed 9 trace T891-930), and seeds 5/14 waited 266/378
+   times for a monster that never came (seed 14 never floated). Better idea, not built: while castle-floating,
+   do not stop to fight (fight2 activation) unless a monster blocks the next path step: hero Fast ~15 outruns
+   shark 12 and xorn 9 over the ~75-square float. Entry point: agent.fight2 first block (the `if not coming ...`
+   return), add a castle-float flag set by global_logic._pass_castle around its step loop.
    NEXT (Castle): stop floating into fights: keep moving past sea monsters/slow ones while levitating (or float only
    when no hostile is in view); Medusa re-measure with the prayer fix (not done yet); job 92 = no-harm gate for
    d77ff25 (grip rule runs at every depth) vs 9054ea1.
