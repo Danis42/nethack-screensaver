@@ -525,7 +525,10 @@ Resume steps:
    Remaining Medusa failures (cross6): early swarm deaths 4 (map 2 titan "summon nasties" next to the arrival:
    seeds 4, 13, 17 at T<60; seed 13/17/10 are the 3 seeds where the hero does not start on the stairs);
    'medusa_no_reflection' in seeds 10/18 in hold8 (reflection lost? not checked); seed 8 starved on the level.
-   NEXT: 1) natural no-harm job for main 8cea210 vs 72ca0b6 (also stores the new baseline; game code changed only
+   Castle stage baseline (castle-base1.jsonl, seeds 1-20): 0/20 below the Castle, 6 dead before T110 (minotaurs:
+   maze level), the rest stall and starve/die (no Castle code: dig_undiggable, no passtune use).
+   JOB 90 STARTED (session end): main 9054ea1 vs 72ca0b6, dlvl10, no-harm gate; watcher bench_watch.py --gate 90.
+   NEXT: 1) read job 90 (natural no-harm job for main 8cea210 vs 72ca0b6 (also stores the new baseline; game code changed only
    at Dlvl 21+ and statue names). 2) Castle stage (staged_run castle) baseline + first Castle rules. 3) Medusa:
    titan map arrival (kill/avoid the caster, or escape at once when "Monsters appear from nowhere").
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
