@@ -560,6 +560,23 @@ Resume steps:
    Elbereth scares eels; oilskin cloak prevents the grip), keep floating past sea monsters instead of fighting
    over water; why prayers right before death did not save (seeds 4, 9, 12, 16 in back3); medusa_no_reflection
    7x in medusa-ident9 seed 16 and medusa_no_levitation seed 15 with an identified kit (check).
+   2026-11-11 (3rd part, owner "yes go" on eels): MERGED main d77ff25 (staged castle 5/20 -> 8/20 below the Castle).
+   - Eel grip (agent.held from messages, the later of grip/release wins; water_holder = adjacent monster on water or
+     an unseen ; class): 5.0 FACT: putting levitation ON does nothing to a hold (trap.c float_up), floating DOWN
+     breaks it ("Startled, ... can no longer hold you!", trap.c:4087); a fleeing monster lets go (monmove.c:473),
+     eels respect Elbereth -> emergency: levitating over DRY ground -> take the ring off ('grip_land'); on the
+     ground -> engrave Elbereth ('grip_elbereth', verified: "You get released! The giant eel turns to flee").
+     Over water: nothing (landing there = "You sink like a rock", drowned seeds 6/11 in castle-pray6).
+   - Castle float only at HP >= 80 % (CASTLE_FLOAT_HP, the dive loop's rest share).
+   - STAGING BUG 2: every wish adds 50-149 to the prayer timeout (zap.c:6421): staged heroes started at ~1700 and
+     every low-HP prayer failed ("Thou hast angered me"/"arrogant"). staging.reset_prayer_timeout: forced wizard
+     prayers (rnz(350)) until ^X shows <= 300 (fresh game value, what agent.is_safe_to_pray assumes). After it:
+     prayers succeed (castle-pray6: 5 seeds "shimmering light"). Results: grip4/grip5 5/20 (rule fires, same
+     count), pray6 8/20, grip7 8/20 (no drowning by landing). Remaining deaths: fights while floating (castle_interrupted
+     on nearly every float), eels drowning over water (6, 11), xorns, wraith+gas (1), vampire lord in the Valley.
+   NEXT (Castle): stop floating into fights: keep moving past sea monsters/slow ones while levitating (or float only
+   when no hostile is in view); Medusa re-measure with the prayer fix (not done yet); job 92 = no-harm gate for
+   d77ff25 (grip rule runs at every depth) vs 9054ea1.
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
