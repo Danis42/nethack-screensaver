@@ -574,6 +574,8 @@ Resume steps:
      prayers succeed (castle-pray6: 5 seeds "shimmering light"). Results: grip4/grip5 5/20 (rule fires, same
      count), pray6 8/20, grip7 8/20 (no drowning by landing). Remaining deaths: fights while floating (castle_interrupted
      on nearly every float), eels drowning over water (6, 11), xorns, wraith+gas (1), vampire lord in the Valley.
+   Medusa re-measured with the prayer fix (medusa-pray10): 13/20 below Medusa (ident9: 9/20), 1 also fell through
+   the Castle trap door. Job 92 no-harm: diff +0.0 at 192 pairs (stopped).
    NEXT (Castle): stop floating into fights: keep moving past sea monsters/slow ones while levitating (or float only
    when no hostile is in view); Medusa re-measure with the prayer fix (not done yet); job 92 = no-harm gate for
    d77ff25 (grip rule runs at every depth) vs 9054ea1.
