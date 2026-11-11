@@ -86,6 +86,8 @@ class StatsLogger:
             "castle_break_boulder": 0,
             "castle_trap_walk": 0,
             "castle_walk": 0,
+            "grip_land": 0,
+            "grip_elbereth": 0,
             "rise_one_level": 0,
             **{f"cast_{n}": 0 for n in character.ALL_SPELL_NAMES},
             **{f"cast_fail_{n}": 0 for n in character.ALL_SPELL_NAMES},

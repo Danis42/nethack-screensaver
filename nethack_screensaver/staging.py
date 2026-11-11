@@ -16,7 +16,7 @@ import nle.nethack as nethack
 from nle.env.tasks import NetHackChallenge
 
 ENTER, ESC = 13, 27
-CTRL_I, CTRL_T, CTRL_V, CTRL_W = 9, 20, 22, 23
+CTRL_I, CTRL_T, CTRL_V, CTRL_W, CTRL_X = 9, 20, 22, 23, 24
 MORE = ("--More--", "(end)")
 # wizard-only prompts: a death stays a death; skills advance only with practice
 WIZARD_PROMPTS = {"Die?": "y", "Advance skills without practice?": "n",
@@ -205,6 +205,52 @@ def to_upstairs(env) -> None:
     settle(env)
 
 
+# Each wish adds 50-149 turns to the prayer timeout (zap.c:6421 "the gods take notice"): a staged kit of ~14 wishes
+# left it at ~1700 (^X, castle seed 6), so every low-HP prayer failed. A hero who gathered the kit in play has
+# usually not prayed for a long time; a forced prayer sets the timeout to rnz(350) (pray.c:1356, draws of 366-662
+# seen on seed 1), repeated until it is at most a fresh game's 300 (u_init.c:1005), which is also what the bot's
+# prayer rule assumes (agent.is_safe_to_pray: never prayed -> safe after turn 300).
+PRAYER_TIMEOUT_MAX = 300
+_PRAY_TIMEOUT = re.compile(r"can't safely pray \((\d+)\)")
+
+
+def prayer_timeout(env) -> int | None:
+    """The prayer timeout from wizard ^X, 0 when it says prayer is safe, None if not shown."""
+    send(env, [CTRL_X])
+    found = None
+    for _ in range(6):
+        text = "\n".join(screen_lines(env))
+        m = _PRAY_TIMEOUT.search(text)
+        if m:
+            found = int(m.group(1))
+        elif "can safely pray" in text:
+            found = 0
+        if found is not None or not re.search(r"\(\d+ of \d+\)|--More--", text):  # ^X is paged "(1 of 2)"
+            break
+        send(env, [" "])
+    send(env, [ESC])
+    settle(env)
+    return found
+
+
+def reset_prayer_timeout(env, tries: int = 20) -> int | None:
+    timeout = prayer_timeout(env)
+    for _ in range(tries):
+        if timeout is None or timeout <= PRAYER_TIMEOUT_MAX:
+            break
+        send(env, "#pray\r")
+        for _ in range(40):  # the pet's fight can fill many --More-- screens
+            top = screen_top(env)
+            if "Are you sure you want to pray?" in top or "Force the gods to be pleased?" in top:
+                send(env, ["y"])
+            elif any(m in line for line in screen_lines(env) for m in MORE):
+                send(env, [ENTER])
+            else:
+                break
+        timeout = prayer_timeout(env)
+    return timeout
+
+
 def inventory_letter(env, text: str) -> str | None:
     obs = env._get_observation(env.last_observation)
     for letter, row in zip(obs["inv_letters"], obs["inv_strs"]):
@@ -228,6 +274,8 @@ def apply_stage(env, stage: Stage) -> dict:
         # stages ran with unknown potions, amulet and ring until 2026-11-11)
         send(env, [CTRL_I, CTRL_I, "\r"])
         settle(env)
+    if stage.wishes:
+        reset_prayer_timeout(env)
     for potion in stage.quaff:
         letter = inventory_letter(env, potion)
         if letter is not None:
