@@ -595,6 +595,17 @@ Resume steps:
    is the risk (sea monsters follow along the water). NEXT (Castle) candidates: shorten/avoid the moat float
    (front entry with the passtune: drawbridge open, cross on the bridge), or kill/scare sea monsters before
    floating; and look at the 5 early deaths (no float involved).
+   DROPPED exp/trap-walk-holding (76ab695, 06e4f59; unmerged): the 2 pit deaths (seeds 3, 8; 689/436 panics) are a
+   fall loop: castle trap_walk_levels makes pits walkable; exploration and check_items pick targets on both sides of
+   a pit corridor and the hero falls back in ~400x. Blocking pits/bear traps/webs on trap-walk levels fixed both
+   (panics 18/16) but boxed seed 3 in (starved, prayed Odin angry); pit-walk fallback when no boulder is left
+   re-opened the loop. castle-pit10: 6/20 vs 8/20. Real fix needed: stop goal oscillation across holding traps
+   (e.g. commit to one target until reached, or skip item targets on trap squares).
+   MINOTAURS: 6 of 14 castle-pit10 failures (5, 8, 10, 15, 16, 18), 3 in grip7: maze minotaur out-damages the
+   staged hero in melee. Elbereth is used in only 3 of them. ELBERETH BUG (all games): fight_heur.elbereth_action
+   counts every adjacent monster, and on an Elbereth square melee gets -100 and 'wait' is preferred, but 5.0
+   monmove.c:283 onscary: minotaurs, @ humans and elves, shopkeepers, guards, blind and peaceful monsters ignore
+   it, and it does nothing in Gehennom. Fix = exp/elbereth-ignorers (natural no-harm gate needed).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
