@@ -501,6 +501,33 @@ Resume steps:
    (risk ~10 % cursed vs bare d2); separate experiment. 3) nymphs: kill at range or avoid melee (they steal the
    weapon). 4) agent_panic per game rose 537 vs 435 with feat/medusa - find which panics. 5) OverflowError
    global_logic.py add_item (float infinity).
+   2026-11-11 SESSION (owner away 2-3 h, "do what gets us closer"): SWITCH started. ROADMAP.md has a
+   "Working Order" section (3 tracks), commit 23f8dad. MEDUSA STAGED TRACK, measure = staged medusa seeds 1-20
+   (`.venv/bin/python scripts/staged_run.py medusa --seeds 1-20 --jobs 10 --out .planning/staged/<name>.jsonl`),
+   "below Medusa" = max depth > depth at the first snapshot (NOT min depth: stair escapes go up).
+   Results (all files in .planning/staged/): old stage on main fba3d33: 0/20 below Medusa, 20/20 dead (no
+   levitation in the kit). Stage fixed (kit2: + ring of levitation + eaten floating eye): 5/20. Natural arrival
+   (kit3: hero ON the up stairs via wizard ^T + getpos '<', 17/20 seeds; ring carried, not worn): 4/20 + 2 crashes
+   on "statue of a knight named Perseus" (parser; fixed). Stair escape (escape4/5): 5/20, early deaths 3 -> 2.
+   Crossing fixes (cross6): 10/20. MERGED main 8cea210 (564 passed). What was built:
+   - combat/stair_escape.py: Dlvl >= 21, HP < 50 %, up stairs within 8 steps, a non-M2_STALK hostile adjacent ->
+     walk/climb, rest to 90 % above (only stalkers follow: dog.c keepdogs, mondata.c levl_follower; minotaur,
+     dragons, ettin, xorn, titan, giants, mind flayers are not stalkers; trolls, gremlins, devils, Aleax are).
+     A blocked step marks a 20-turn fail ('stair_escape_failed'). action_str needed the new action type (an
+     unknown action raised inside fight2 and was swallowed: no events at all - watch for this with new actions).
+   - _cross_medusa: AgentChangeStrategy during the trip -> retry next turn ('medusa_interrupted'; before: hover
+     200 turns over water); any travel stall -> stall_landing; landing_square only on squares reachable floating
+     (medusa.float_reach) - seed 7 hovered 1000 turns in the moat inside Medusa's walls.
+   DROPPED: hold-the-stairs (no moving off the up stairs in deep fights): 8/20 vs 10/20, reverted (hold8.jsonl).
+   NOT a Medusa problem: heroes past Medusa die on the next level (Castle) after 1000s of turns, most fainting
+   (hero has 2 food rations + 2 lizards; natural Dlvl 20+ games carry a median of 3 food items) -> stuck at the
+   Castle = the next stage (Castle code: passtune/drawbridge, trap doors; ASCENSION-PLAN-NH5.md).
+   Remaining Medusa failures (cross6): early swarm deaths 4 (map 2 titan "summon nasties" next to the arrival:
+   seeds 4, 13, 17 at T<60; seed 13/17/10 are the 3 seeds where the hero does not start on the stairs);
+   'medusa_no_reflection' in seeds 10/18 in hold8 (reflection lost? not checked); seed 8 starved on the level.
+   NEXT: 1) natural no-harm job for main 8cea210 vs 72ca0b6 (also stores the new baseline; game code changed only
+   at Dlvl 21+ and statue names). 2) Castle stage (staged_run castle) baseline + first Castle rules. 3) Medusa:
+   titan map arrival (kill/avoid the caster, or escape at once when "Monsters appear from nowhere").
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
