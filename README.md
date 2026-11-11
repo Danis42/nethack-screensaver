@@ -36,7 +36,7 @@ farming XP on Dlvl 1) or has low HP; after 10 quiet moves it fast-forwards at
 `fast_delay` (set it equal to `delay` to turn this off).
 
 Goals: every game plays the ascension route (pilgrim), the project's only priority
-since 2026-10-21 (see `docs/ROADMAP.md`). With `strategy = "random"` each game
+since 2026-10-21. With `strategy = "random"` each game
 secretly follows one strategy instead, picked once the character is known: strong roles (Bar, Sam, Val, Mon) get the hard goals more often, weak ones
 (Arc, Tou, Rog, Hea, Wiz) the easier ones; every role can still get any goal. Pilgrim (aims to ascend)
 tours the Mines, Minetown and Sokoban, then dives; Daredevil (aims to escape in
@@ -46,7 +46,7 @@ escapes. Only the two escapes are reachable for this bot; both head home early
 when they run out of food and prayer. The log records each
 game's `strategy`, `outcome` and the last plan `milestone` it reached.
 
-What to expect (benchmarks of v0.2.0, see `autoascend/PORTING.md`): Sightseer escapes in
+What to expect (benchmarks of v0.2.0, NetHack 3.6): Sightseer escapes in
 about 20% of its games, Treasure hunter in about 15-20% (with the Sokoban prize only
 around 1-2%), Daredevil reaches Dlvl 10+ in about 12-20%; Pilgrim rarely completes its
 tour. Ascension is out of reach for this bot.
@@ -62,8 +62,7 @@ uv run pytest -m slow         # plays real games
 uv run python scripts/benchmark.py -n 50 -j 8
 ```
 
-AutoAscend is MIT licensed (`autoascend/LICENSE`); port notes and benchmark in
-`autoascend/PORTING.md`.
+AutoAscend is MIT licensed (`autoascend/LICENSE`); upstream: maciej-sypetkowski/autoascend @ 8527910.
 
 ## Bench server (for working on the bot)
 

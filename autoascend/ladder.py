@@ -1,4 +1,4 @@
-"""The ascension ladder: 17 rungs from the Gnomish Mines to an ascension (docs/ROADMAP.md).
+"""The ascension ladder: 17 rungs from the Gnomish Mines to an ascension.
 
 Standard library only, so the bench server can import the rung list. The bot hands over
 plain Facts once per step; no glyph or agent code lives here. Level numbers are NetHack's
