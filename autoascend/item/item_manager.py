@@ -456,8 +456,8 @@ class ItemManager:
         if naming:
             if naming in ['Hachi', 'Idefix', 'Slasher', 'Sirius']:  # pet names
                 pass
-            elif name == 'corpse':
-                pass
+            elif name in ('corpse', 'statue', 'figurine'):
+                pass  # the name belongs to the monster: "statue of a knight named Perseus" (Medusa's stairs)
             elif name == 'spellbook of novel':
                 pass
             else:
