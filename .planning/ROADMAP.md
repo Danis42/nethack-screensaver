@@ -23,6 +23,22 @@ Notes on the shape:
 - Granularity: no `.planning/config.json` exists yet, so the default applies; eight phases are used
   because the project's own roadmap defines eight sub-projects, each with its own spec, plan and build.
 
+## Working Order (owner decision 2026-11-09, supersedes the numeric order)
+
+Three tracks run side by side; the phase details below stay the definition of each stage.
+1. **Main track: end game in staged starts** (`scripts/staged_run.py <stage>`, wizard-mode starts from
+   `nethack_screensaver/staging.py`). Order: Medusa crossing reliable (Phase 4) -> Castle and wishes (Phase 5) ->
+   Valley -> Gehennom by "dig for victory" (code only the Valley, Vlad's, Wizard's Tower, vibrating square,
+   invocation, way up; Phase 7) -> Planes (Phase 8). Each skill is measured by its staged success rate on fixed seeds
+   (results in `.planning/staged/`). Deep-game progress: infinite-lives runs (`scripts/rewind.py`) as a routine job.
+2. **Background track: strength on the natural bench** (Phase 3 Gearing Up, armour/AC gap first). Independent fixes
+   share batched no-harm gates; experiments queue and run unattended.
+3. **Teaching track: Claude-steered games** (`scripts/handplay.py`). The bot plays, Claude decides at hard points;
+   each decision is logged with the situation and recurring ones become bot rules. Measure: interventions per game
+   -> 0. Not benchable; rules derived from it go through the bench.
+Subagents: only after Medusa is solved, 2 per wave, owner asked before each wave.
+The Quest (Phase 6) slots in before Gehennom (Bell needed for the invocation).
+
 ## Delivered Before This Roadmap
 
 Existing capabilities, recorded in PROJECT.md "Validated"; none of these are phases to build:
@@ -222,7 +238,7 @@ Parts:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 (decimal insertions run between their neighbours)
+See "Working Order" above (owner 2026-11-09): staged end game (4 -> 5 -> 6 -> 7 -> 8) is the main track, Phase 3 runs in the background.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
