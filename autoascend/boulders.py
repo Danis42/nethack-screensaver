@@ -41,3 +41,20 @@ def push_candidates(boulders, walkable, blocked, doors, seen, dis, tried):
             out.append((not opens, int(dis[sy, sx]), (int(sy), int(sx)), (int(by), int(bx)), (int(ty), int(tx))))
     out.sort()
     return [c[2:] for c in out]
+
+
+def break_candidate(boulders, dis, seen):
+    """(stand, boulder) for breaking a boulder with a pick-axe: stand where the path search reaches, next to the
+    boulder; boulders next to unseen squares first, then the nearest. None if no boulder is next to a reached
+    square."""
+    h, w = boulders.shape
+    best = None
+    for by, bx in zip(*np.nonzero(boulders)):
+        opens = any(0 <= by + dy < h and 0 <= bx + dx < w and not seen[by + dy, bx + dx] for dy, dx in DIRECTIONS)
+        for dy, dx in DIRECTIONS:
+            sy, sx = by + dy, bx + dx
+            if 0 <= sy < h and 0 <= sx < w and dis[sy, sx] >= 0:
+                key = (not opens, int(dis[sy, sx]))
+                if best is None or key < best[0]:
+                    best = (key, ((int(sy), int(sx)), (int(by), int(bx))))
+    return None if best is None else best[1]

@@ -188,6 +188,7 @@ class Agent:
 
         # when (number of turn) there was last decision about allowing these actions (e.g. agent is somewhat stuck)
         self._allow_walking_through_traps_turn = -float('inf')
+        self.trap_walk_levels = set()  # level keys where known traps count as walkable (Castle mazes)
         self._allow_attack_all_turn = -float('inf')
         self._monster_since = {}  # (level, y, x, glyph) -> first turn fight2 saw that monster there
         self._stair_escape_fail_turn = -float('inf')
@@ -979,6 +980,20 @@ class Agent:
                 break
         return outcome
 
+    def dig_toward(self, tool, y, x):
+        """Apply a pick-axe at an adjacent square (a boulder breaks: dig.c dig "you hit the rock with all your
+        might"). The game keeps digging over the next turns until done or interrupted."""
+        if not self.character.can_apply():
+            return False
+        with self.atom_operation():
+            self.step(A.Command.APPLY)
+            self.type_text(self.inventory.items.get_letter(tool))
+            if 'In what direction do you want to dig?' not in self.message:
+                self.stats_logger.log_event('dig_no_prompt')
+                return False
+            self.direction(self.calc_direction(self.blstats.y, self.blstats.x, y, x))
+        return True
+
     def usable_offensive_wand(self, item):
         return item.is_offensive_usable_wand() and str(item) not in self.empty_wands
 
@@ -1181,7 +1196,7 @@ class Agent:
                    ~self.monster_tracker.peaceful_monster_mask & \
                    ~level.forbidden
 
-        if self._last_turn - self._allow_walking_through_traps_turn > 50:
+        if self._last_turn - self._allow_walking_through_traps_turn > 50 and level.key() not in self.trap_walk_levels:
             walkable &= ~utils.isin(level.objects, G.TRAPS)
 
         walkable &= ~storeroom_chests(self.glyphs)
