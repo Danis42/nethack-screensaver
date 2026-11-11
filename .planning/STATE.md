@@ -7,7 +7,7 @@ status: executing
 stopped_at: Phase 02.1 inserted (port to NetHack 5.0), ready to discuss
 last_updated: "2026-10-29T00:00:00.000Z"
 last_activity: 2026-11-11
-last_activity_desc: job 89 wield-artifacts KEPT and merged; baseline 72ca0b6; session ended
+last_activity_desc: exp/float-past dropped (castle staged 7/20 vs 8/20)
 state_head: 38dabbf62e8ded80cfb276eb4a74c11820197984
 progress:
   total_phases: 9
@@ -586,6 +586,15 @@ Resume steps:
    NEXT (Castle): stop floating into fights: keep moving past sea monsters/slow ones while levitating (or float only
    when no hostile is in view); Medusa re-measure with the prayer fix (not done yet); job 92 = no-harm gate for
    d77ff25 (grip rule runs at every depth) vs 9054ea1.
+   2026-11-11 (4th part, resume): DROPPED exp/float-past (1220445, branch kept unmerged): while castle-floating, skip
+   fight2 unless a monster is on the next path square or holds the hero (castle.float_past, agent.float_next).
+   castle-past9: 7/20 vs grip7 8/20 (noise; bar was >= 11). The rule fired 279x, castle_interrupted 52 -> 17, but the
+   deaths moved: sharks keep biting along the moat path (seeds 9, 18 now die to sharks), eel drowning (6), minotaur
+   (15), xorn (20); gained 14, 17. 5 seeds (3, 8, 11, 12, 16) die with 0-1 floats: before or right at the float start
+   (unaffected by any float rule). Conclusion: running vs fighting over the moat is a wash; the moat float itself
+   is the risk (sea monsters follow along the water). NEXT (Castle) candidates: shorten/avoid the moat float
+   (front entry with the passtune: drawbridge open, cross on the bridge), or kill/scare sea monsters before
+   floating; and look at the 5 early deaths (no float involved).
 2. Next natural experiments, one at a time (baseline = main's stored SHA unless natural-play code changed):
    explorer idle turn; no prayer after a failed prayer; Mines branch-stair glyph; pry chests; unicorns; mimics;
    hallucination/unicorn horn; gas spores near peacefuls; Sokoban food.
