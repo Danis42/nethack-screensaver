@@ -106,7 +106,7 @@ Status verified by code reading on `main` (fb5faa2).
 2. **Starvation.** FEATURES, ARCHITECTURE and PROJECT give 14.5% (334/2304). PITFALLS says 25% (Pitfall 2, N1); FEATURES says 25% was pre-exp-37. **Use 14.5%.**
 3. **LLM role.** STACK recommends an in-game LLM pilot (Tier 2). FEATURES, ARCHITECTURE and PITFALLS say offline analyst only; FEATURES lists in-game LLM as an anti-feature. **Recommendation:** offline analyst now; Tier 2 pilot as a late gated phase, only after a staged late contract exists and a budget is approved; out of the regression path; never reported as natural rates. Owner decision.
 4. **Character.** game.py:40 is `val-hum-fem-neu`; ASCENSION-PLAN-NH5 and Astra used dwarvish lawful. FEATURES says code is truth; STACK recommends a one-flag A/B. **Recommendation:** A/B in Phase 3, then one `CHARACTER` constant.
-5. **Pudding farming.** STACK: removed in 3.6.0 (HIGH). PITFALLS: 5.0 status unverified. Both agree it is out of the plan; check the 5.0 source before writing it off.
+5. **Pudding farming.** STACK: removed in 3.6.0 (HIGH). PITFALLS: 5.0 status was unverified; the 5.0 source now shows puddings still split on an iron or metal hit [fact:pudding-splits-on-iron-hit] but clones drop no death items [fact:cloned-monsters-drop-no-items]. Both agree it is out of the plan.
 6. **Medusa sample.** PROJECT: 25 of 2304. PITFALLS: 13 of about 1152. Same 1.1%. **Use 25/2304.**
 7. **Dlvl 15+.** STACK and FEATURES: about 8%. ARCHITECTURE: 7.7%. **Use 7.7%.**
 8. **Sokoban solver.** FEATURES: HAVE, 25% reach. ARCHITECTURE: 0/2304 solved, possible detector bug. **Unresolved; verify the detector.**
@@ -146,7 +146,7 @@ Status verified by code reading on `main` (fb5faa2).
 **Rationale:** The late wall is the ability gap; order by measured gap and dependency.
 1. **Medusa:** dig-down with attacker clearing and dry-square choice; levitation fallback; `rise_one_level` wired; ravens and crowds with telepathy and blindfold.
 2. **Castle:** decide back-entry (exists, forfeits wand) vs front entry with interior (VH, only MR source); wire passtune; wand zap, wrest, recharge; wish order blessed gain level, cursed gain level, MR.
-3. **Gehennom:** no prayer, Elbereth or sacrifice (G1 from Phase 2); dig-down loop; Valley walk; new hellfill styles unverified.
+3. **Gehennom:** no prayer, Elbereth or sacrifice (G1 from Phase 2); dig-down loop; Valley walk; new hellfill styles: 7 in 5.0, not 6 [fact:hellfill-has-seven-styles].
 4. **Quest:** XL 14 plan, leader, filler levels (fire resistance, lava), Surtur, Bell.
 5. **Vlad and Wizard:** Candelabrum with seven candles; Book.
 6. **Invocation,** Sanctum, Amulet (wish on pickup), climb past Wizard harassment, Planes (per-plane movement), Astral offer.

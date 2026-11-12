@@ -454,3 +454,49 @@ evidence = ["reference/nethack-5.0.0/dat/dungeon.lua:76-79"]
 quote = "name = \"medusa\", base = -5, range = 4, nlevels = 4,"
 web = []
 notes = "The bot's 'Medusa 21-24' follows from the main dungeon's depth range; the absolute numbers are not in dungeon.lua."
+
+[pudding-splits-on-iron-hit]
+claim = "In 5.0 a black or brown pudding hit in melee with an iron (or, since 3.6.1, metal) weapon splits into a clone when it has more than 1 HP and is not cancelled"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/uhitm.c:1608-1625"]
+quote = "/* pudding is alive and healthy enough to split */ && mon->mhp > 1 && !mon->mcan && !hmd->offmap"
+web = []
+notes = "Pudding farming relies on this. The split still exists in 5.0; what changed since 3.6.0 is what clones leave behind (see cloned-monsters-drop-no-items)."
+
+[cloned-monsters-drop-no-items]
+claim = "Cloned monsters (mcloned, e.g. split puddings) never drop a random death item, and big cloned monsters lose the guaranteed corpse"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/mon.c:3588-3594", "reference/nethack-5.0.0/src/mon.c:3244-3245"]
+quote = "/* no items from cloned monsters */ && !mtmp->mcloned) {"
+web = []
+notes = "So pudding farming for items does not work in 5.0. Corpses of clones are still possible by the ordinary random corpse chance (mon.c:3247-3248), so sacrifice farming is not ruled out by this code alone."
+
+[hellfill-has-seven-styles]
+claim = "Ordinary Gehennom filler levels pick one of 7 styles at random: mines with lava, classic maze, thin-wall maze, maze with iron-bar or lava walls, thick-wall maze with lava, cold maze with ice and water, open cavern"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/hellfill.lua:320-414", "reference/nethack-5.0.0/dat/hellfill.lua:431-432"]
+quote = "local hellno = math.random(1, #hells);"
+web = []
+notes = "The research notes say 6 styles; the 5.0 source has 7 (style comments at lines 320, 331, 346, 353, 374, 391, 414). The 5.0 source wins (D-14)."
+
+[force-lock-blade-may-break]
+claim = "Forcing a lock with a blade can break the wielded weapon on a failed attempt (about 0.8% per attempt for +0, so ~67% survival over 50 attempts); a cursed weapon never breaks"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/lock.c:228-236"]
+quote = "if (rn2(1000 - (int) uwep->spe) > (992 - greatest_erosion(uwep) * 10) && !uwep->cursed && !obj_resists(uwep, 0, 99)) {"
+web = []
+
+[quest-portal-entered-message]
+claim = "Entering the magic portal prints 'You activated a magic portal!'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/teleport.c:1463"]
+quote = "You(\"activated a magic portal!\");"
+web = []
+
+[quest-portal-level-call]
+claim = "On the quest portal level the leader's call reads 'You receive a faint telepathic message from <leader>: ... Look for a ...ic transporter.'; later visits print 'You again sense <leader> pleading for help.' or '... demanding your attendance.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/quest.lua:184-193"]
+quote = "text = [[You receive a faint telepathic message from %l:"
+web = []
+notes = "The module docstring verified these on 3.6 NLD-NAO games; dat/quest.lua shows the same text in 5.0."
