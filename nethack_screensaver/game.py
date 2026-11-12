@@ -63,6 +63,7 @@ class GameResult:
     stuck_diving: int = 0  # 2500-turn spells of diving in the main dungeon without finding a way down
     unsticks: int = 0  # turns the bot let pass because NetHack kept refusing an action
     seed: int | None = None  # NetHack core/display seed of a seeded (bench) game
+    lgen: int | None = None  # NLE level-generation seed of a bench lgen game; None = off
     ladder: dict = field(default_factory=dict)  # ascension-ladder rung key -> first turn (autoascend/ladder.py)
     rung: int = 0  # highest ladder rung reached
     ladder_error: int = 0  # 1 when the ladder broke mid-game (values incomplete)
@@ -294,7 +295,12 @@ def run_game(
     strategy: str | None = None,
     seed: int | None = None,
     stage: str | None = None,
+    lgen: int | None = None,
 ) -> GameResult:
+    if lgen is not None and seed is None:
+        raise ValueError("lgen needs a seed")
+    if lgen == 0:
+        raise ValueError("lgen 0 means off in the NLE fork (screens-nh5 cb9d6572f); pass a nonzero value")
     if seed is not None and role is not None:
         # the wrapper resets until the role matches; with a fixed seed every reset is the same game
         raise ValueError("a seeded game cannot pin the role")
@@ -314,7 +320,7 @@ def run_game(
                     character=CHARACTER if role is None else "@")
     if seed is not None:
         # NetHackChallenge blocks the instance method; the class's own one still works
-        type(env.nethack).set_initial_seeds(env.nethack, seed, seed, False)
+        type(env.nethack).set_initial_seeds(env.nethack, seed, seed, False, lgen)
     max_depth = 1
     turns = 0
     xp_level = 0
@@ -374,7 +380,7 @@ def run_game(
                       elbereth=_stat(wrapper, "elbereth_write"), xp_level=xp_level,
                       panics=_stat(wrapper, "agent_panic"), stuck_diving=_stat(wrapper, "stuck_diving"),
                       unsticks=_stat(wrapper, "unstick"), ladder=ladder, rung=rung,
-                      ladder_error=_stat(wrapper, "ladder_error"), seed=seed,
+                      ladder_error=_stat(wrapper, "ladder_error"), seed=seed, lgen=lgen,
                       last_messages=list(ctx.last_messages), prayers=ctx.prayers, zaps_seen=ctx.zaps_seen,
                       hp_at_end=ctx.hp_at_end, max_hp_at_end=ctx.max_hp_at_end,
                       hunger_at_end=ctx.hunger_at_end, depth_at_end=ctx.depth_at_end,
