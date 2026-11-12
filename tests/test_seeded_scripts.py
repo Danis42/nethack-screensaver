@@ -761,3 +761,64 @@ def test_stuck_buckets_judge_the_up_staircase_when_the_bot_wanted_to_go_up(store
     assert rows["stairs-unreachable"].split("|")[2].strip() == "1"
     assert rows["stairs-reachable"].split("|")[2].strip() == "1"
     assert rows["stairs-reachable"].split("|")[7].strip() == "1"  # going up
+
+
+# replay_check as the A/A comparison (plan 01-15): replicate 1 against replicate 0 of one commit
+
+
+def _aa(store, seeds, rep1=None, lgen=None):
+    """Rows of CAND on rep 0 and rep 1; rep1 maps a seed to the rep-1 game when it differs."""
+    rep1 = rep1 or {}
+    for s in seeds:
+        g = _g(s, **({} if lgen is None else {"lgen": s + lgen}))
+        store.add_game(CAND, None, g, rep=0)
+        store.add_game(CAND, None, rep1.get(s, g), rep=1)
+
+
+def _json_tail(out):
+    return json.loads(out.strip().splitlines()[-1])
+
+
+def test_aa_compares_replicate_1_with_replicate_0(store, tmp_path, capsys):
+    _aa(store, range(1000, 1004))
+    code, out = replay(capsys, tmp_path, CAND, CAND, "--rep-b", "1", "--json")
+    r = _json_tail(out)
+    assert code == 0 and r["compared"] == 4 and r["identical"] == 4 and r["mismatched"] == 0 and r["common"] == 4
+
+
+def test_aa_without_new_flags_reads_replicate_0_only(store, tmp_path, capsys):
+    _aa(store, range(3), rep1={1: _g(1, turns=7)})
+    code, out = replay(capsys, tmp_path, CAND, CAND)
+    assert code == 0 and "3 seeds compared, 0 mismatched" in out  # rep 0 against itself
+
+
+def test_aa_window_and_lgen_mode(store, tmp_path, capsys):
+    _aa(store, range(1000, 1006), rep1={1005: _g(1005, turns=1)})
+    store.add_game(CAND, None, _g(1001, turns=3, lgen=10_001_001), rep=1)  # lgen-on row: another mode
+    code, out = replay(capsys, tmp_path, CAND, CAND, "--rep-b", "1", "--lo", "1000", "--hi", "1005",
+                       "--lgen", "off", "--json")
+    r = _json_tail(out)
+    assert code == 0 and r["compared"] == 5 and r["common"] == 5
+
+
+def test_aa_watchdog_on_both_replicates_is_skipped(store, tmp_path, capsys):
+    _aa(store, range(1000, 1004), rep1={})
+    store.add_game(CAND, None, _g(1004, end_reason="watchdog"), rep=0)
+    store.add_game(CAND, None, _g(1004, end_reason="watchdog"), rep=1)
+    code, out = replay(capsys, tmp_path, CAND, CAND, "--rep-b", "1", "--skip-both", "watchdog", "--json")
+    r = _json_tail(out)
+    assert code == 0 and r["skipped"] == {"watchdog": [1004]} and r["compared"] == 4 and r["common"] == 5
+
+
+def test_aa_watchdog_on_one_replicate_is_a_mismatch(store, tmp_path, capsys):
+    _aa(store, range(1000, 1004), rep1={1002: _g(1002, end_reason="watchdog")})
+    code, out = replay(capsys, tmp_path, CAND, CAND, "--rep-b", "1", "--skip-both", "watchdog", "--json")
+    r = _json_tail(out)
+    assert code == 1 and r["mismatched_seeds"] == [1002] and r["skipped"] == {"watchdog": []}
+    assert r["compared"] == 4 and r["identical"] == 3
+
+
+def test_aa_too_few_common_seeds_exit_2(store, tmp_path, capsys):
+    _aa(store, range(1000, 1010))
+    code, out = replay(capsys, tmp_path, CAND, CAND, "--rep-b", "1", "--min", "2000", "--json")
+    assert code == 2
