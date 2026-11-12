@@ -134,3 +134,134 @@ def test_end_to_end_through_stdin_and_stdout(db, tmp_path):
     unproven = call("Baseline job 2 started.")
     assert unproven.returncode == 0
     assert json.loads(unproven.stdout)["decision"] == "block"
+
+
+# Task 2: commit and query proofs, crash safety, edges, corpus
+
+@pytest.fixture
+def repo(tmp_path):
+    path = tmp_path / "repo"
+    path.mkdir()
+    git = ["git", "-C", str(path), "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"]
+    subprocess.run(git + ["init", "-q"], check=True)
+    subprocess.run(git + ["commit", "-q", "--allow-empty", "-m", "one"], check=True)
+    sha = subprocess.run(git + ["rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
+    return path, sha
+
+
+def test_full_commit_hash_in_the_repo_verifies(repo):
+    path, sha = repo
+    assert cc.verify_commit(path, sha) is None
+    assert "not in this repo" in cc.verify_commit(path, "0" * 40)
+
+
+def test_only_exactly_forty_hex_characters_count_as_a_commit(repo):
+    _, sha = repo
+    assert cc.find_proofs(f"commit {sha}").commits == [sha]
+    assert cc.find_proofs(f"commit {sha[:39]}").commits == []
+    assert cc.find_proofs(f"commit {sha}a").commits == []
+    assert cc.verify_commit(repo[0], "--help" + "0" * 34) is not None
+
+
+def test_result_claim_with_a_valid_commit_passes(db, repo, tmp_path):
+    path, sha = repo
+    payload = {"last_assistant_message": f"The fix reduced Mines deaths to 12%, commit {sha}.",
+               "stop_hook_active": False}
+    decision, _ = cc.run(payload, db, path, tmp_path / "a.jsonl")
+    assert decision is None
+
+
+def test_query_proof_must_return_the_cited_value(db):
+    assert cc.verify_query(db, "SELECT COUNT(*) FROM games WHERE job_id = 1", "1") is None
+    assert cc.verify_query(db, "SELECT COUNT(*) FROM games WHERE job_id = 1", "1.0") is None
+    assert "returned 1" in cc.verify_query(db, "SELECT COUNT(*) FROM games WHERE job_id = 1", "2")
+
+
+def test_query_proof_is_found_in_the_message(db, tmp_path):
+    text = "Job 1 finished with 1 games [query: SELECT COUNT(*) FROM games WHERE job_id = 1 => 1]."
+    decision, _ = cc.run({"last_assistant_message": text}, db, ROOT, tmp_path / "a.jsonl")
+    assert decision is None
+
+
+@pytest.mark.parametrize("sql", [
+    "DELETE FROM games",
+    "INSERT INTO jobs (kind, spec, state, created_at) VALUES ('x', '{}', 'q', 0)",
+    "UPDATE jobs SET state = 'x'",
+    "DROP TABLE games",
+    "ATTACH DATABASE '/tmp/x.db' AS x",
+    "PRAGMA journal_mode = DELETE",
+    "SELECT 1; DELETE FROM games",
+    "CREATE TABLE t (x)",
+])
+def test_writing_queries_are_refused_and_the_file_is_unchanged(db, sql):
+    before = (db.stat().st_mtime_ns, db.stat().st_size, db.read_bytes())
+    assert cc.verify_query(db, sql, "1") is not None
+    assert (db.stat().st_mtime_ns, db.stat().st_size, db.read_bytes()) == before
+
+
+def test_slow_query_is_aborted(db, monkeypatch):
+    import sqlite3
+    with sqlite3.connect(db) as con:
+        con.executemany("INSERT INTO games (sha, job_id, finished_at, json) VALUES ('b', 1, 0, '{}')",
+                        [()] * 3000)
+    monkeypatch.setattr(cc, "QUERY_SECONDS", 0.01)
+    reason = cc.verify_query(db, "SELECT COUNT(*) FROM games a, games b, games c", "1")
+    assert reason is not None and "interrupt" in reason.lower()
+
+
+def _call(stdin, tmp_path, extra_env=None):
+    audit = tmp_path / "crash.jsonl"
+    env = {**os.environ, "SCREENS_BENCH_DATA": str(tmp_path), "CLAIM_CHECK_AUDIT": str(audit), **(extra_env or {})}
+    proc = subprocess.run([sys.executable, str(SCRIPT)], input=stdin, env=env, text=True, capture_output=True)
+    return proc, [json.loads(line) for line in audit.read_text().splitlines()]
+
+
+def test_invalid_json_on_stdin_passes_but_is_logged_as_crash(tmp_path):
+    proc, records = _call("{not json", tmp_path)
+    assert proc.returncode == 0 and proc.stdout == ""
+    assert proc.stderr.startswith("check_claims crashed")
+    assert records[-1]["decision"] == "crash" and records[-1]["error"]
+
+
+def test_exception_inside_run_passes_but_is_logged_as_crash(tmp_path, monkeypatch):
+    def boom(*args):
+        raise RuntimeError("boom")
+    monkeypatch.setattr(cc, "run", boom)
+    monkeypatch.setenv("CLAIM_CHECK_AUDIT", str(tmp_path / "c.jsonl"))
+    monkeypatch.setattr(sys, "stdin", __import__("io").StringIO('{"last_assistant_message": "x"}'))
+    assert cc.main() == 0
+    record = json.loads((tmp_path / "c.jsonl").read_text().splitlines()[-1])
+    assert record["decision"] == "crash" and "boom" in record["error"] and "traceback" in record
+
+
+@pytest.mark.parametrize("payload", [{}, {"last_assistant_message": ""}, {"last_assistant_message": None}])
+def test_empty_or_missing_message_passes_and_is_logged(db, tmp_path, payload):
+    decision, record = cc.run(payload, db, ROOT, tmp_path / "a.jsonl")
+    assert decision is None and record["decision"] == "pass"
+
+
+def test_several_failures_are_listed_in_message_order(db, tmp_path):
+    text = "Job 3 finished: Mines rate 61%.\n\nThe baseline is running now.\n\nBaseline job 2 started."
+    decision, _ = cc.run({"last_assistant_message": text}, db, ROOT, tmp_path / "a.jsonl")
+    reason = decision["reason"]
+    positions = [reason.index(s) for s in ("Job 3 finished", "The baseline is running", "Baseline job 2 started")]
+    assert positions == sorted(positions)
+
+
+def _corpus(name):
+    return [line for line in (ROOT / "tests" / "data" / name).read_text().splitlines() if line.strip()]
+
+
+def test_corpus_has_enough_sentences():
+    assert len(_corpus("claims_positive.txt")) >= 20 and len(_corpus("claims_negative.txt")) >= 20
+
+
+@pytest.mark.parametrize("line", _corpus("claims_positive.txt"))
+def test_every_labelled_claim_is_detected_with_its_kind(line):
+    kind, sentence = line.split("\t", 1)
+    assert [c.kind for c in cc.find_claims(sentence)] == [kind]
+
+
+@pytest.mark.parametrize("sentence", _corpus("claims_negative.txt"))
+def test_no_labelled_non_claim_is_detected(sentence):
+    assert cc.find_claims(sentence) == []

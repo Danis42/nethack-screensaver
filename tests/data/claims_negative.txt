@@ -1,0 +1,24 @@
+Job 5 queued, not started.
+Next I will start the baseline on seeds 0-1999.
+Should I launch the A/A run now?
+If the pilot passes, the experiment would start tomorrow.
+All 38 tests passed.
+584 passed, 6 skipped, 16 deselected.
+Plan 01-02 completed: 3/3 tasks.
+I read the scheduler and will change _targets next.
+The sequential test stops as soon as the mixture boundary is crossed.
+McNemar compares only the seeds where the two commits disagree.
+The Wilson interval is wider for small samples.
+The funnel counts natural games per stage key.
+Once the baseline finishes, I will write the Sokoban cause.
+The baseline has not started yet; job 9 is still queued.
+Let me check whether the bench server is up.
+The dashboard shows the Mines stage first.
+A start claim needs a cited job with a game row.
+The detector fires when no trap glyph is left on Sokoban 1.
+Seeds 0..N-1 become explicit seed windows in plan 01-08.
+Could the drop in Mines deaths be noise?
+The worker reads play lines from stdin and prints one JSON result per line.
+I fixed a typo in the docstring.
+The fresh-clone check finished in 7 seconds.
+The 2/16 plans count comes from the ROADMAP.

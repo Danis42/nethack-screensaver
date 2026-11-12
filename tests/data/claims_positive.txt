@@ -1,0 +1,24 @@
+start	Baseline job 12 started.
+start	The baseline is running now.
+start	I launched the A/A run on seeds 0-1999.
+start	The experiment started an hour ago.
+start	The lgen pilot is running on all ten slots.
+start	Job 40 kicked off at 14:02.
+start	Both baseline jobs are running.
+start	The bench run started cleanly after the restart.
+start	The Sokoban experiment is now running against main.
+start	I started the A/A job for the new commit.
+start	The pilot launched with 400 seeds per arm.
+result	Job 7 finished: Mines rate 61%.
+result	The baseline completed with 2304 games.
+result	The Mines rate improved from 48% to 55%.
+result	The experiment passed the sequential check.
+result	Deaths before Dlvl 5 dropped to 12%.
+result	The A/A run finished with no significant difference.
+result	The funnel reached Sokoban in 570 games.
+result	The fix reduced Gnomish Mines deaths by a third across 2000 seeds.
+result	McNemar on the paired seeds came out significant.
+result	The Wilson interval for the castle stage reached 3.1% to 4.4%.
+result	Reaching Minetown rose to 812/2304 after the change.
+result	The new prayer rule raised the Dlvl 6 rate to 41%.
+result	The baseline run fixed the 0/2304 Sokoban count.
