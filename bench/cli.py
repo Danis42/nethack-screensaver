@@ -11,7 +11,7 @@ from urllib.request import urlopen
 from . import gitrefs, provenance
 from .runner import ProcessWorker
 from .scheduler import Scheduler
-from .server import App, serve
+from .server import App, funnel_for, serve
 from .store import END_STATES, Store
 
 REPO = Path(__file__).resolve().parent.parent
@@ -98,6 +98,17 @@ def _import(args):
     return 0
 
 
+def _funnel(args):
+    store = Store(Path(args.data) / "results.db")
+    try:
+        out = funnel_for(store, Path(args.repo), args.ref, args.lo, args.hi, args.lgen, args.env, args.job)
+    except (LookupError, ValueError) as e:  # unknown ref or job, bad window or lgen: say why, exit 2
+        print(json.dumps({"error": str(e)}))
+        return 2
+    print(json.dumps(out))
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="screens-bench")
     ap.add_argument("--data", default=str(DATA), help="directory of results.db and logs")
@@ -126,6 +137,16 @@ def main(argv=None):
     p.add_argument("--ref", default="main", help="results: commit the games were played on")
     p.add_argument("--limit", type=int, default=500, help="dumplogs: at most this many downloads")
     p.set_defaults(fn=_import)
+
+    p = sub.add_parser("funnel", help="per-stage reach of a commit's natural games, as JSON")
+    p.add_argument("ref", nargs="?", default="main")
+    p.add_argument("--lo", type=int, help="first seed of the window (default: baseline window)")
+    p.add_argument("--hi", type=int, help="end of the window, exclusive")
+    p.add_argument("--lgen", choices=["off", "seed"], help="lgen mode (default: the bench's current mode)")
+    p.add_argument("--env", help="env_id (default: every env)")
+    p.add_argument("--job", type=int, help="read a baseline job's commit, window, lgen and env")
+    p.add_argument("--repo", default=str(REPO), help="git repo the ref is resolved in")
+    p.set_defaults(fn=_funnel)
 
     args = ap.parse_args(argv)
     if args.command == "import" and args.what in ("results", "xlog") and not args.source:

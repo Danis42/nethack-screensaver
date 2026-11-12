@@ -7,7 +7,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from . import gitrefs, provenance, report, seeds
+from . import funnel as funnel_mod, gitrefs, provenance, report, seeds
 from .filters import parse_where
 from .metrics import METRICS, evaluate
 from .stats import CHECKPOINTS
@@ -15,6 +15,37 @@ from .stats import CHECKPOINTS
 STATIC = Path(__file__).with_name("static")
 LOCAL_HOSTS = ("127.0.0.1", "localhost")
 KINDS_OVER_HTTP = ("baseline", "experiment")  # clean_attempt jobs (final seeds) are never created here
+
+
+def funnel_for(store, repo, ref="main", lo=None, hi=None, lgen=None, env_id=None, job=None):
+    """Funnel of one commit's natural games (rep 0) in a seed window, lgen mode and env (MEAS-02).
+
+    With `job`, the commit, window, lgen mode and env come from that baseline job's spec. Otherwise the window
+    defaults to the baseline window and lgen to seeds.USE_LGEN; env_id None reads every env. Windows that touch
+    the tool block 0-999 are refused: tool seeds are never judged (D-17)."""
+    if job is not None:
+        spec_job = store.job(int(job))
+        if spec_job is None:
+            raise LookupError(f"no job {job}")
+        if spec_job["kind"] != "baseline" or "seeds" not in spec_job["spec"]:
+            raise ValueError(f"job {spec_job['id']} is a {spec_job['kind']} job; the funnel reads baseline jobs "
+                             "with a seed window, or a commit and window")
+        spec = spec_job["spec"]
+        sha, lo, hi, lgen, env_id = spec["sha"], spec["seeds"]["lo"], spec["seeds"]["hi"], spec.get("lgen"), \
+            spec.get("env_id")
+    else:
+        sha, _ = gitrefs.resolve(repo, ref)
+    lo = seeds.BASELINE_WINDOW[0] if lo is None else lo
+    hi = seeds.BASELINE_WINDOW[1] if hi is None else hi
+    lo, hi = seeds.window(lo, hi)
+    if lo < seeds.TOOL[1]:
+        raise ValueError(f"seed window [{lo}, {hi}) touches the tool block {seeds.TOOL[0]}-{seeds.TOOL[1] - 1}; "
+                         "tool seeds are never judged (D-17)")
+    lgen = seeds.USE_LGEN if lgen is None else lgen
+    if lgen not in seeds.LGEN_MODES:
+        raise ValueError(f"lgen must be one of {seeds.LGEN_MODES}, got {lgen!r}")
+    games = store.games(sha, rep=0, lo=lo, hi=hi, lgen_mode=lgen, env_id=env_id)
+    return {"sha": sha, "window": [lo, hi], "lgen": lgen, "env_id": env_id, **funnel_mod.funnel(games)}
 
 
 class App:
@@ -152,6 +183,10 @@ class App:
             return {"sha": sha, "metric": metric, **evaluate(METRICS[metric], games)}
         return {"sha": sha, "subject": subject, **report.summary(games, self.yardstick())}
 
+    def funnel(self, ref="main", lo=None, hi=None, lgen=None, env_id=None, job=None):
+        """Per-stage reach of natural games with Wilson intervals; env defaults to this server's env."""
+        return funnel_for(self.store, self.repo, ref, lo, hi, lgen, self.env_id if env_id is None else env_id, job)
+
     def games(self, ref="main", where=None, limit=50):
         sha, _ = self._sha(ref)
         match = parse_where(where)
@@ -222,6 +257,11 @@ class App:
             stop_event.wait(interval)
 
 
+def _int(value):
+    """Query parameter as int, None when absent; ValueError (a 400) for anything else."""
+    return None if value is None else int(value)
+
+
 def make_handler(app):
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
@@ -273,6 +313,8 @@ def make_handler(app):
                 "/api/status": app.status,
                 "/api/results": lambda: app.results(q.get("ref", "main"), q.get("metric")),
                 "/api/games": lambda: app.games(q.get("ref", "main"), q.get("where"), q.get("limit", 50)),
+                "/api/funnel": lambda: app.funnel(q.get("ref", "main"), _int(q.get("lo")), _int(q.get("hi")),
+                                                  q.get("lgen"), q.get("env_id"), _int(q.get("job"))),
                 "/api/experiments": app.experiments,
                 "/api/dashboard": lambda: app.dashboard(q.get("ref", "main")),
                 "/api/metrics": lambda: {n: {"description": m.description, "kind": m.kind}

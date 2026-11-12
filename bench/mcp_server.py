@@ -93,6 +93,18 @@ def bench_results(ref: str = "main", metric: str | None = None) -> dict:
 
 
 @mcp.tool()
+def bench_funnel(ref: str = "main", lo: int | None = None, hi: int | None = None, lgen: str | None = None,
+                 job_id: int | None = None) -> dict:
+    """Natural-game funnel of a commit: per ladder stage (mines .. ascended), how many games in the seed window
+    [lo, hi) reached it. Marginal reach: a stage counts when its key is in the game's ladder, whatever came before.
+    Each row has hits/n, the rate and its 95% Wilson interval (lo, hi), plus the rate conditional on the previous
+    stage. Games without a ladder are excluded and counted; ladder errors, watchdog and exception endings stay in n
+    and are counted. Defaults: the baseline window 1000-10999 and the bench's lgen mode; job_id reads a baseline
+    job's own commit and window. Windows touching the tool seeds 0-999 are refused."""
+    return _call("GET", "/api/funnel", query={"ref": ref, "lo": lo, "hi": hi, "lgen": lgen, "job": job_id})
+
+
+@mcp.tool()
 def bench_games(ref: str = "main", where: str | None = None, limit: int = 50) -> dict:
     """Stored games of a commit matching a filter like 'max_depth>9,end_reason~soldier ant'."""
     return _call("GET", "/api/games", query={"ref": ref, "where": where, "limit": limit})
