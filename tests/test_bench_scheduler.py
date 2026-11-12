@@ -22,10 +22,15 @@ def _run(scheduler, ticks=2000):
     raise AssertionError("job did not finish")
 
 
+DECLARED = {"test": "msprt-beta1", "mde": 0.1, "psi": 0.3, "alpha": 0.05, "power": 0.8, "block": 96,
+            "n_planned": 384, "mcnemar_mde_at_n": 0.08}
+
+
 def _experiment(scheduler, metric="dlvl6"):
     return scheduler.submit("experiment", {"candidate": "cand", "candidate_ref": "branch",
                                            "baseline": "base", "baseline_ref": "main", "metric": metric,
-                                           "seeds": {"range": "dev", "lo": 1000, "hi": 3304}})
+                                           "seeds": {"range": "dev", "lo": 1000, "hi": 1384}, "block": 96,
+                                           "declared": DECLARED})
 
 
 def _bspec(sha, games, ref="main", lo=1000, **extra):
@@ -44,32 +49,72 @@ def test_baseline_tops_up_stored_games(tmp_path):
     assert store.job(job)["state"] == "done" and store.job(job)["result"] == {"games": 8}
 
 
-def test_clear_win_is_decided_at_the_first_checkpoint(tmp_path):
+def test_clear_win_is_decided_at_the_first_look(tmp_path):
     s, store, played, _ = _scheduler(tmp_path, lambda sha, i: _game(10 if sha == "cand" else 1))
     job = _experiment(s)
     _run(s)
     result = store.job(job)["result"]
-    assert result["verdict"]["state"] == "better" and result["verdict"]["checkpoint"] == 192
-    assert store.count("cand") == 192 and store.count("base") == 192
+    assert result["verdict"]["state"] == "better" and result["verdict"]["n"] == 96
+    assert result["looks"] == [{"n": 96, "b": 96, "c": 0, "log_lr": result["verdict"]["log_lr"]}]
+    assert store.count("cand") == 96 and store.count("base") == 96
 
 
 def test_stored_baseline_games_are_reused(tmp_path):
     s, store, played, _ = _scheduler(tmp_path, lambda sha, i: _game(10 if sha == "cand" else 1))
-    for seed in range(1000, 1192):
+    for seed in range(1000, 1096):
         store.add_game("base", None, {**_game(1), "seed": seed})
     _experiment(s)
     _run(s)
-    assert set(played) == {"cand"} and len(played) == 192
+    assert set(played) == {"cand"} and len(played) == 96
 
 
-def test_no_difference_runs_to_the_last_checkpoint(tmp_path):
-    s, store, played, _ = _scheduler(tmp_path, lambda sha, i: _game(10 if i % 2 else 1), slots=8)
+def test_identical_outcomes_run_to_the_planned_size(tmp_path):
+    s, store, played, _ = _scheduler(tmp_path, lambda sha, i: _game(3), slots=8)
     job = _experiment(s)
     _run(s, ticks=10000)
     result = store.job(job)["result"]
-    assert [c["checkpoint"] for c in result["checkpoints"]] == [192, 384, 576, 1152, 2304]
-    assert result["verdict"]["state"] == "no measurable difference"
-    assert store.count("cand") == 2304 and store.count("base") == 2304
+    assert [look["n"] for look in result["looks"]] == [96, 192, 288, 384]
+    assert result["verdict"]["state"] == "no detectable effect >= MDE"
+    assert result["verdict"]["n_planned"] == 384 and result["verdict"]["mde"] == 0.1
+    assert store.count("cand") == 384 and store.count("base") == 384
+
+
+def test_a_gap_in_the_prefix_blocks_judging(tmp_path):
+    # every seed of two blocks is stored on both sides except candidate seed lo + 5, which never comes back
+    s, store, played, workers = _scheduler(tmp_path, lambda sha, i: _game(3), slots=2)
+    for seed in range(1000, 1192):
+        store.add_game("base", None, {**_game(1), "seed": seed})
+        if seed != 1005:
+            store.add_game("cand", None, {**_game(10), "seed": seed})
+    job = _experiment(s)
+    for _ in range(50):
+        s.tick()
+        for w in workers:
+            w.pending.clear()  # the worker withholds every result
+    assert store.job(job)["state"] == "running"
+    assert store.job(job)["result"].get("looks", []) == [] and "verdict" not in store.job(job)["result"]
+    assert 1005 in [seed for w in workers if w.sha == "cand" for seed in w.seeds]
+
+
+def test_a_lower_is_better_metric_flips_the_verdict(tmp_path):
+    def make(sha, i):
+        if sha == "cand":
+            return {**_game(3), "end_reason": "ESCAPED: escaped the dungeon"}
+        return _game(3)
+    s, store, played, _ = _scheduler(tmp_path, make)
+    job = _experiment(s, metric="died")
+    _run(s)
+    v = store.job(job)["result"]["verdict"]
+    assert v["c"] == 96 and v["b"] == 0 and v["state"] == "better"  # fewer deaths is better
+
+
+def test_an_experiment_without_a_declared_mde_fails(tmp_path):
+    s, store, played, _ = _scheduler(tmp_path, lambda sha, i: _game(3))
+    job = s.submit("experiment", {"candidate": "cand", "baseline": "base", "metric": "dlvl6",
+                                  "seeds": {"range": "dev", "lo": 1000, "hi": 3304}})
+    _run(s)
+    assert store.job(job)["state"] == "failed" and "declared" in store.job(job)["result"]["error"]
+    assert played == []
 
 
 def test_dead_worker_is_replaced_and_the_game_replayed(tmp_path):
@@ -120,13 +165,21 @@ def test_status_reports_progress(tmp_path):
     assert 0 < st["job"]["progress"]["games"] <= 10
 
 
+def test_status_reports_the_look_of_an_experiment(tmp_path):
+    s, store, played, _ = _scheduler(tmp_path, lambda sha, i: _game(3), slots=2)
+    _experiment(s)
+    s.tick()
+    p = s.status()["job"]["progress"]
+    assert (p["look"], p["prefix"], p["n_planned"]) == (0, 96, 384) and p["baseline"] + p["candidate"] <= 192
+
+
 def test_both_sides_play_the_same_seeds_once(tmp_path):
     s, store, played, workers = _scheduler(tmp_path, lambda sha, i: _game(10 if sha == "cand" else 1))
     _experiment(s)
     _run(s)
     for sha in ("base", "cand"):
         seeds = [seed for w in workers if w.sha == sha for seed in w.seeds]
-        assert sorted(seeds) == list(range(1000, 1192))
+        assert sorted(seeds) == list(range(1000, 1096))
 
 
 def test_a_dead_workers_seed_is_played_again(tmp_path):
@@ -158,7 +211,7 @@ def test_verdict_pairs_games_by_seed(tmp_path):
     job = _experiment(s)
     _run(s, ticks=20000)
     v = store.job(job)["result"]["verdict"]
-    assert v["pairs"] == v["checkpoint"]
+    assert v["pairs"] == v["n"] and v["n"] % 96 == 0
 
 
 def test_stop_all_stops_the_active_job_and_the_queue(tmp_path):

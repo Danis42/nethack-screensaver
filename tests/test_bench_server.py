@@ -37,7 +37,7 @@ def test_bad_requests_are_explained(bench_app):
     with pytest.raises(ValueError):
         bench_app.start_baseline("no-such-ref")
     with pytest.raises(ValueError, match="same commit"):
-        bench_app.start_experiment("main", "main")
+        bench_app.start_experiment("main", "main", mde=0.3, discordance=0.5)
     with pytest.raises(ValueError, match="metric"):
         bench_app.start_experiment("feature", "main", metric="depth")
     with pytest.raises(LookupError):
@@ -46,21 +46,50 @@ def test_bad_requests_are_explained(bench_app):
 
 def test_api_runs_an_experiment_end_to_end(bench_app, bench_url):
     http = bench_url
+    status, body = _req(http + "/api/jobs", "POST", {"kind": "baseline", "ref": "main", "lo": 1000, "hi": 1096})
+    assert status == 200
+    run_until_idle(bench_app)
     status, body = _req(http + "/api/jobs", "POST",
-                        {"kind": "experiment", "candidate": "feature", "baseline": "main"})
+                        {"kind": "experiment", "candidate": "feature", "baseline": "main", "mde": 0.3,
+                         "discordance": 0.5})
     assert status == 200
     job_id = body["job_id"]
     run_until_idle(bench_app)
     status, job = _req(f"{http}/api/jobs/{job_id}")
     assert status == 200 and job["state"] == "done"
-    assert job["result"]["verdict"]["state"] == "no measurable difference"
+    assert job["result"]["verdict"]["state"] == "no detectable effect >= MDE"
+    assert [look["n"] for look in job["result"]["looks"]] == [96]
     assert {r["metric"] for r in job["table"]} >= {"dlvl6", "depth"}
     assert _req(http + "/api/experiments")[1][0]["id"] == job_id
     status, dash = _req(http + "/api/dashboard")
-    assert dash["games"] == 2304
+    assert dash["games"] == 96
     status, games = _req(http + "/api/games?ref=feature&where=max_depth>3&limit=2")
-    assert games["matches"] == 2304 and len(games["games"]) == 2
+    assert games["matches"] == 96 and len(games["games"]) == 2
     assert _req(http + "/api/results?ref=main&metric=dlvl6")[1]["hits"] == 0
+
+
+def test_an_experiment_must_declare_its_mde(bench_app, monkeypatch):
+    from bench import power
+    with pytest.raises(ValueError, match="declare the minimum detectable effect"):
+        bench_app.start_experiment("feature", "main", discordance=0.5)
+    for bad in (0, 1, -0.1):
+        with pytest.raises(ValueError):
+            bench_app.start_experiment("feature", "main", mde=bad, discordance=0.5)
+    monkeypatch.setattr(power, "DEFAULT_DISCORDANCE", None)
+    with pytest.raises(ValueError, match="pass discordance"):
+        bench_app.start_experiment("feature", "main", mde=0.3)
+
+
+def test_a_started_experiment_stores_its_declared_plan(bench_app):
+    from bench import power
+    sha = bench_app._sha("main")[0]
+    for seed in range(1000, 1096):
+        bench_app.store.add_game(sha, None, {"max_depth": 1, "end_reason": "x", "seed": seed})
+    job_id = bench_app.start_experiment("feature", "main", mde=0.3, discordance=0.5)["job_id"]
+    spec = bench_app.job(job_id)["spec"]
+    plan = power.plan(0.3, 0.5)
+    assert spec["declared"] == plan and spec["block"] == 96
+    assert (spec["seeds"]["lo"], spec["seeds"]["hi"]) == (1000, 1000 + plan["n_planned"])
 
 
 def test_api_errors(bench_url):

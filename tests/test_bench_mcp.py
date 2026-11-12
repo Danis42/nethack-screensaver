@@ -19,7 +19,7 @@ def test_tools_drive_the_server(url, bench_app):
     assert mcp_server.bench_results("main", metric="dlvl6")["n"] == 3
     assert mcp_server.bench_games("main", where="max_depth>3")["matches"] == 3
     sha = bench_app._sha("main")[0]
-    assert mcp_server.bench_experiment("main", "main")["error"].endswith("same commit " + sha[:10])
+    assert mcp_server.bench_experiment("main", 0.3, "main", discordance=0.5)["error"].endswith("same commit " + sha[:10])
     assert mcp_server.bench_stop() == {"stopped": False}
     assert mcp_server.bench_experiments() == []
     assert mcp_server.bench_reference()["summary"] == {"ascensions": 0}
@@ -50,3 +50,11 @@ def test_bench_job_reports_started_and_first_game_at(url, bench_app):
     run_until_idle(bench_app)
     job = mcp_server.bench_job(job_id)
     assert job["started"] is True and job["first_game_at"] is not None
+
+
+def test_bench_experiment_forwards_the_mde(url, bench_app):
+    sha = bench_app._sha("main")[0]
+    for seed in range(1000, 1096):
+        bench_app.store.add_game(sha, None, {"max_depth": 1, "end_reason": "x", "seed": seed})
+    job_id = mcp_server.bench_experiment("feature", 0.3, "main", discordance=0.5)["job_id"]
+    assert bench_app.job(job_id)["spec"]["declared"]["mde"] == 0.3
