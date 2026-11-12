@@ -81,7 +81,7 @@ DETECTORS = {
     "oracle": lambda f, m: f.oracle_seen,
     "sokoban": lambda f, m: f.dungeon == SOKOBAN,
     "sokoban_solved": lambda f, m: (f.dungeon, f.level) == (SOKOBAN, 1) and f.sokoban_seen >= SOKOBAN_DRAWN
-                                   and m.sokoban_traps_seen and not f.sokoban_traps,
+                                   and m.sokoban_traps_seen and not f.sokoban_traps,  # fact:sokoban-entry-is-bottom-level
     "mines_end": _mines_end,
     "dlvl15": lambda f, m: f.dungeon == DOOM and f.level >= 15,
     "quest": lambda f, m: f.dungeon == QUEST,

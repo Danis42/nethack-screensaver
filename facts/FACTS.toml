@@ -1,0 +1,35 @@
+# NetHack fact ledger (MEAS-10, D-13..D-16).
+#
+# One TOML table per fact. The table name is the fact id: lowercase words and digits
+# joined by hyphens (e.g. [prayer-timeout-too-soon]).
+#
+# Keys:
+#   claim     what the fact says (required)
+#   tag       one of:
+#               "5.0-source"  checked against the NetHack 5.0 source or the NLE fork.
+#                             Needs evidence (list of "path:line" or "path:start-end" under
+#                             reference/nethack-5.0.0/ or reference/nle-src/) and quote
+#                             (verbatim text from the cited lines; whitespace may differ).
+#               "measured"    shown by a bench run. Needs job (integer job id) and/or
+#                             query (SQL text against results.db).
+#               "unverified"  not yet confirmed. Needs web (list of sources consulted);
+#                             an empty list only with notes saying nothing was found.
+#   evidence, quote, job, query, web, notes   as above; notes is optional free text.
+#
+# Code cites a fact with a comment "# fact:<id>" (several: "# fact:a, b").
+# Research notes cite it as "[fact:<id>]".
+# The 5.0 source wins over web pages, 3.6 material and memory on conflict (D-14): a fact
+# from those stays "unverified" until the 5.0 source confirms it.
+#
+# Check with: .venv/bin/python scripts/facts.py check [--source] | report | coverage
+
+[sokoban-entry-is-bottom-level]
+claim = "Sokoban's entry level is its bottom level (dunlev 4); dunlev 1 is its top level"
+tag = "5.0-source"
+evidence = [
+    "reference/nethack-5.0.0/src/dungeon.c:945-947",
+    "reference/nethack-5.0.0/dat/dungeon.lua:219-233",
+]
+quote = "if (dgn_entry < 0) { svd.dungeons[dngidx].entry_lev = svd.dungeons[dngidx].num_dunlevs + dgn_entry + 1;"
+web = []
+notes = "dat/dungeon.lua gives Sokoban base = 4 and entry = -1, so entry_lev = 4 + (-1) + 1 = 4: the bottom level. Level 1 (soko1) is the top, where the bot's sokoban_solved detector looks."
