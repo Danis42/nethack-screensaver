@@ -3,11 +3,11 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: Completed 01-06 (Sokoban solved T882) and 01-14; pilot jobs 3-6 in progress; next 01-15 when job 6 is done
-last_updated: "2026-11-12T23:36:45.313Z"
+stopped_at: "Paused for the night 2026-11-13: 01-06 and 01-14 done; 01-15 Tasks 2 (replay_check A/A, 9c9ada2) and the lgen_pilot.py script (0ad1c14) committed; pilot jobs 3-6 left to finish unattended on the live server. Resume: 01-15 Task 1 (run scripts/lgen_pilot.py --jobs 3 4 5 6 --metric dlvl10, apply rule-strict), then Task 3 (baseline + A/A), then 01-16."
+last_updated: "2026-11-12T23:39:48.631Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
-state_head: 47ab725e6690768369d4ea814719431bbf24ff2a
+state_head: 0ad1c149a871bfbbd2cf1cc8b332cfa667162bb4
 progress:
   total_phases: 7
   completed_phases: 0
@@ -121,6 +121,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-12T23:36:45.250Z
-Stopped at: Completed 01-06 (Sokoban solved T882) and 01-14; pilot jobs 3-6 in progress; next 01-15 when job 6 is done
+Last session: 2026-11-12T23:39:48.563Z
+Stopped at: Paused for the night 2026-11-13: 01-06 and 01-14 done; 01-15 Tasks 2 (replay_check A/A, 9c9ada2) and the lgen_pilot.py script (0ad1c14) committed; pilot jobs 3-6 left to finish unattended on the live server. Resume: 01-15 Task 1 (run scripts/lgen_pilot.py --jobs 3 4 5 6 --metric dlvl10, apply rule-strict), then Task 3 (baseline + A/A), then 01-16.
 Resume file: None
