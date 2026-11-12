@@ -86,3 +86,42 @@ def test_seeded_games_are_found_by_seed(tmp_path):
     assert store.seeds("aaa") == {0, 5} and store.seeds("ccc") == set()
     found = store.games_by_seed("aaa", range(6))
     assert {k: g["max_depth"] for k, g in found.items()} == {0: 2, 5: 3}
+
+
+SCHEMA_1 = """
+CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+CREATE TABLE games (id INTEGER PRIMARY KEY, sha TEXT NOT NULL, job_id INTEGER,
+    finished_at REAL NOT NULL, json TEXT NOT NULL);
+CREATE INDEX games_by_sha ON games (sha, id);
+INSERT INTO meta VALUES ('schema', '1');
+INSERT INTO games (sha, job_id, finished_at, json) VALUES ('aaa', NULL, 1.0, '{"seed": 1005, "max_depth": 3}');
+INSERT INTO games (sha, job_id, finished_at, json) VALUES ('aaa', NULL, 2.0, '{"max_depth": 4}');
+"""
+
+
+def test_a_schema_1_database_is_migrated_with_the_seed_backfilled(tmp_path):
+    with sqlite3.connect(tmp_path / "r.db") as con:
+        con.executescript(SCHEMA_1)
+    store = Store(tmp_path / "r.db")
+    assert store._one("SELECT value FROM meta WHERE key = 'schema'")["value"] == "2"
+    assert store.seeds("aaa") == {1005} and store.count("aaa") == 2
+    assert store.played("aaa", 1000, 1010) == 1
+    assert store._one("SELECT name FROM sqlite_master WHERE name = 'games_by_key'") is not None
+    assert Store(tmp_path / "r.db").count("aaa") == 2  # reopening a migrated file works
+
+
+def test_keyed_reads_use_the_window_env_and_replicate(tmp_path):
+    store = Store(tmp_path / "r.db")
+    store.add_game("a", None, {"seed": 1001}, env_id="e1")
+    store.add_game("a", None, {"seed": 1002}, env_id="e2")
+    store.add_game("a", None, {"seed": 1003}, env_id="e1", rep=1)
+    assert store.seeds("a", 1000, 1010, env_id="e1") == {1001}
+    assert store.played("a", 1000, 1002) == 1 and store.count("a") == 2 and store.count("a", rep=1) == 1
+
+
+def test_environments_are_stored_by_id(tmp_path):
+    from bench.provenance import env_id
+    store = Store(tmp_path / "r.db")
+    env = {"nle_commit": "c" * 40, "lock_sha256": "l", "python": "3.13", "numpy": "2", "numba": "0.6"}
+    assert store.add_env(env) == env_id(env) and store.add_env(env) == env_id(env)
+    assert store.env(env_id(env)) == env and store.env("nope") is None

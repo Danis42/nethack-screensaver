@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from . import gitrefs
+from . import gitrefs, provenance
 from .runner import ProcessWorker
 from .scheduler import Scheduler
 from .server import App, serve
@@ -31,7 +31,9 @@ def build_app(workers=10, data_dir=DATA, cache_dir=CACHE):
         worktree = gitrefs.ensure_worktree(REPO, sha, cache_dir / "worktrees")
         return ProcessWorker(WORKER_PYTHON, worktree, data_dir / "worker.log")
 
-    return App(store, Scheduler(store, spawn, slots=workers), REPO, cache_dir)
+    env = provenance.env_fingerprint(WORKER_PYTHON, REPO)  # once: the interpreter plays every game
+    print(f"bench env {provenance.env_id(env)} nle {str(env.get('nle_commit'))[:10]}", flush=True)
+    return App(store, Scheduler(store, spawn, slots=workers), REPO, cache_dir, env=env)
 
 
 def _serve(args):

@@ -24,7 +24,13 @@ def _run(scheduler, ticks=2000):
 
 def _experiment(scheduler, metric="dlvl6"):
     return scheduler.submit("experiment", {"candidate": "cand", "candidate_ref": "branch",
-                                           "baseline": "base", "baseline_ref": "main", "metric": metric})
+                                           "baseline": "base", "baseline_ref": "main", "metric": metric,
+                                           "seeds": {"range": "dev", "lo": 0, "hi": 2304}})
+
+
+def _bspec(sha, games, ref="main", lo=0, **extra):
+    """A baseline spec on the seed window [lo, lo + games)."""
+    return {"ref": ref, "sha": sha, "games": games, "seeds": {"range": "dev", "lo": lo, "hi": lo + games}, **extra}
 
 
 def test_baseline_tops_up_stored_games(tmp_path):
@@ -32,7 +38,7 @@ def test_baseline_tops_up_stored_games(tmp_path):
     for seed in range(5):
         store.add_game("base", None, {**_game(3), "seed": seed})
     store.add_game("base", None, _game(3))  # unseeded, from before seeding: does not count
-    job = s.submit("baseline", {"ref": "main", "sha": "base", "games": 8})
+    job = s.submit("baseline", _bspec("base", 8, ref="main"))
     _run(s)
     assert len(played) == 3 and store.seeds("base") == set(range(8))
     assert store.job(job)["state"] == "done" and store.job(job)["result"] == {"games": 8}
@@ -68,7 +74,7 @@ def test_no_difference_runs_to_the_last_checkpoint(tmp_path):
 
 def test_dead_worker_is_replaced_and_the_game_replayed(tmp_path):
     s, store, played, workers = _scheduler(tmp_path, lambda sha, i: _game(3), slots=1)
-    s.submit("baseline", {"ref": "main", "sha": "base", "games": 3})
+    s.submit("baseline", _bspec("base", 3, ref="main"))
     s.tick()  # starts the job and the first game
     workers[0].pending.clear()
     workers[0].dead = True  # dies mid-game
@@ -78,7 +84,7 @@ def test_dead_worker_is_replaced_and_the_game_replayed(tmp_path):
 
 def test_three_deaths_in_a_row_fail_the_job(tmp_path):
     s, store, played, workers = _scheduler(tmp_path, lambda sha, i: _game(3), slots=1)
-    job = s.submit("baseline", {"ref": "main", "sha": "base", "games": 3})
+    job = s.submit("baseline", _bspec("base", 3, ref="main"))
     for _ in range(10):
         s.tick()
         if workers:
@@ -91,8 +97,8 @@ def test_three_deaths_in_a_row_fail_the_job(tmp_path):
 
 def test_stop_keeps_stored_games_and_queued_jobs_run_next(tmp_path):
     s, store, played, workers = _scheduler(tmp_path, lambda sha, i: _game(3), slots=2)
-    first = s.submit("baseline", {"ref": "main", "sha": "base", "games": 100})
-    second = s.submit("baseline", {"ref": "x", "sha": "other", "games": 2})
+    first = s.submit("baseline", _bspec("base", 100, ref="main"))
+    second = s.submit("baseline", _bspec("other", 2, ref="x"))
     for _ in range(3):
         s.tick()
     stored = store.count("base")
@@ -106,7 +112,7 @@ def test_stop_keeps_stored_games_and_queued_jobs_run_next(tmp_path):
 def test_status_reports_progress(tmp_path):
     s, store, played, _ = _scheduler(tmp_path, lambda sha, i: _game(3), slots=2)
     assert s.status()["job"] is None
-    s.submit("baseline", {"ref": "main", "sha": "base", "games": 10})
+    s.submit("baseline", _bspec("base", 10, ref="main"))
     for _ in range(3):
         s.tick()
     st = s.status()
@@ -125,7 +131,7 @@ def test_both_sides_play_the_same_seeds_once(tmp_path):
 
 def test_a_dead_workers_seed_is_played_again(tmp_path):
     s, store, played, workers = _scheduler(tmp_path, lambda sha, i: _game(3), slots=1)
-    s.submit("baseline", {"ref": "main", "sha": "base", "games": 3})
+    s.submit("baseline", _bspec("base", 3, ref="main"))
     s.tick()
     lost = workers[0].seeds[-1]
     workers[0].pending.clear()
@@ -137,7 +143,7 @@ def test_a_dead_workers_seed_is_played_again(tmp_path):
 def test_a_commit_that_cannot_seed_fails_the_job(tmp_path):
     store = Store(tmp_path / "r.db")
     s = Scheduler(store, lambda sha: FakeWorker(sha, lambda _, i: _game(3), [], seeded=False), slots=2)
-    job = s.submit("baseline", {"ref": "old", "sha": "old", "games": 4})
+    job = s.submit("baseline", _bspec("old", 4, ref="old"))
     _run(s)
     assert store.job(job)["state"] == "failed"
     assert "cannot play seeded games" in store.job(job)["result"]["error"]
@@ -157,8 +163,8 @@ def test_verdict_pairs_games_by_seed(tmp_path):
 
 def test_stop_all_stops_the_active_job_and_the_queue(tmp_path):
     s, store, played, workers = _scheduler(tmp_path, lambda sha, i: _game(3), slots=2)
-    first = s.submit("baseline", {"ref": "main", "sha": "base", "games": 100})
-    second = s.submit("baseline", {"ref": "x", "sha": "other", "games": 2})
+    first = s.submit("baseline", _bspec("base", 100, ref="main"))
+    second = s.submit("baseline", _bspec("other", 2, ref="x"))
     for _ in range(3):
         s.tick()
     stored = store.count("base")
@@ -168,3 +174,20 @@ def test_stop_all_stops_the_active_job_and_the_queue(tmp_path):
     _run(s)
     assert store.count("base") == stored and store.count("other") == 0
     assert s.stop_all() == []
+
+
+def test_a_baseline_window_plays_exactly_its_seeds_in_ascending_order(tmp_path):
+    s, store, played, workers = _scheduler(tmp_path, lambda sha, i: _game(3), slots=1)
+    s.submit("baseline", _bspec("base", 8, lo=1000, env_id="env1"))
+    _run(s)
+    assert [seed for w in workers for seed in w.seeds] == list(range(1000, 1008))
+    rows = store._all("SELECT seed, env_id, rep FROM games WHERE sha = 'base' ORDER BY id")
+    assert [(r["seed"], r["env_id"], r["rep"]) for r in rows] == [(seed, "env1", 0) for seed in range(1000, 1008)]
+
+
+def test_a_job_spec_without_a_seed_window_fails(tmp_path):
+    s, store, played, _ = _scheduler(tmp_path, lambda sha, i: _game(3))
+    job = s.submit("baseline", {"ref": "main", "sha": "base", "games": 4})
+    _run(s)
+    assert store.job(job)["state"] == "failed"
+    assert "no seed window" in store.job(job)["result"]["error"] and played == []

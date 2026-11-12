@@ -1,10 +1,14 @@
 """Hands out one game at a time to worker slots for the active job and judges experiments.
 
-Games are seeded: a job needs seeds 0 .. N-1 of each commit, so both sides of an experiment
-play the same characters and dungeons and are compared seed by seed."""
+Games are seeded: a job names a half-open seed window [lo, hi) in its spec ("seeds"), and the
+scheduler plays the window's seeds in ascending order, skipping seeds already stored or in
+flight. Both sides of an experiment play the same window, so they are compared seed by seed.
+Stored games are reused only under the same game key: commit, seed, lgen mode, environment
+(env_id) and replicate (rep)."""
 import time
 from collections import defaultdict, deque
 
+from . import seeds as seedlib
 from .metrics import METRICS, orient
 from .stats import CHECKPOINTS, judge_paired
 
@@ -18,6 +22,9 @@ class _Slot:
         self.busy = False
         self.job_id = None
         self.seed = None
+        self.env_id = None
+        self.rep = 0
+        self.lgen = None  # lgen value asked of the worker for the game in flight
 
 
 class Scheduler:
@@ -65,6 +72,13 @@ class Scheduler:
                 return
             job["result"] = {"checkpoints": []} if job["kind"] == "experiment" else {}
             job["checkpoint"] = 0
+            if "seeds" not in job["spec"]:
+                self.error = "job spec has no seed window (created by an older bench); start a new job"
+                self.store.set_job(job["id"], "failed", {**job["result"], "error": self.error})
+                return
+            spec = job["spec"]
+            job["key"] = {"lgen_mode": spec.get("lgen", "off"), "env_id": spec.get("env_id"),
+                          "rep": int(spec.get("replicate", 0))}
             self.store.set_job(job["id"], "running", job["result"])
             self.job, self.error, self._deaths_in_row = job, None, 0
         if self._judge():
@@ -92,7 +106,12 @@ class Scheduler:
                         self.error = f"commit {slot.sha[:7]} cannot play seeded games (its run_game has no seed)"
                         self._end("failed", {**self.job["result"], "error": self.error})
                     return
-                self.store.add_game(slot.sha, slot.job_id, result)
+                if slot.lgen is not None and result.get("lgen") != slot.lgen:
+                    if self.job is not None:
+                        self.error = f"commit {slot.sha[:7]} cannot play lgen games (its run_game has no lgen)"
+                        self._end("failed", {**self.job["result"], "error": self.error})
+                    return
+                self.store.add_game(slot.sha, slot.job_id, result, env_id=slot.env_id, rep=slot.rep)
                 self._finished.append(time.time())
                 self._deaths_in_row = 0
             if dead:
@@ -117,30 +136,37 @@ class Scheduler:
                 self._inflight[slot.sha].discard(slot.seed)  # a game in progress is dropped
         self.shutdown()
 
+    def _window(self):
+        seeds = self.job["spec"]["seeds"]
+        return int(seeds["lo"]), int(seeds["hi"])
+
     def _targets(self):
-        spec = self.job["spec"]
+        """[(sha, lo, hi)]: the seed windows still to fill, baseline side first."""
+        spec, (lo, hi) = self.job["spec"], self._window()
         if self.job["kind"] == "baseline":
-            return [(spec["sha"], spec["games"])]
+            return [(spec["sha"], lo, hi)]
         need = CHECKPOINTS[self.job["checkpoint"]]
-        return [(spec["baseline"], need), (spec["candidate"], need)]  # baseline first
+        return [(spec["baseline"], lo, lo + need), (spec["candidate"], lo, lo + need)]  # baseline first
 
     def _judge(self):
         """True when the active job just ended."""
-        spec = self.job["spec"]
+        spec, key = self.job["spec"], self.job["key"]
+        lo, hi = self._window()
         if self.job["kind"] == "baseline":
-            stored = self._played(spec["sha"], spec["games"])
-            if stored >= spec["games"]:
+            stored = self._played(spec["sha"], lo, hi)
+            if stored >= hi - lo:
                 self._end("done", {"games": stored})
                 return True
             return False
         need = CHECKPOINTS[self.job["checkpoint"]]
-        if self._played(spec["candidate"], need) < need or self._played(spec["baseline"], need) < need:
+        if self._played(spec["candidate"], lo, lo + need) < need or self._played(spec["baseline"], lo, lo + need) < need:
             return False
         fn = METRICS[spec["metric"]].fn
-        cand = self.store.games_by_seed(spec["candidate"], range(need))
-        base = self.store.games_by_seed(spec["baseline"], range(need))
+        window = range(lo, lo + need)
+        cand = self.store.games_by_seed(spec["candidate"], window, **key)
+        base = self.store.games_by_seed(spec["baseline"], window, **key)
         pairs = []
-        for seed in range(need):
+        for seed in window:
             try:
                 pairs.append((bool(fn(cand[seed])), bool(fn(base[seed]))))
             except KeyError:  # a game without the metric's field
@@ -162,15 +188,15 @@ class Scheduler:
         self.job["checkpoint"] += 1
         return False
 
-    def _played(self, sha, target):
-        """How many of the seeds 0 .. target-1 this commit has played."""
-        return len(self.store.seeds(sha) & set(range(target)))
+    def _played(self, sha, lo, hi):
+        """How many seeds of [lo, hi) this commit has played under the job's game key."""
+        return self.store.played(sha, lo, hi, **self.job["key"])
 
     def _wanted(self):
-        """(sha, seed) of the next game to play, or None."""
-        for sha, target in self._targets():
-            taken = self.store.seeds(sha) | self._inflight[sha]
-            for seed in range(target):
+        """(sha, seed) of the next game to play, lowest seed first, or None."""
+        for sha, lo, hi in self._targets():
+            taken = self.store.seeds(sha, lo, hi, **self.job["key"]) | self._inflight[sha]
+            for seed in range(lo, hi):
                 if seed not in taken:
                     return sha, seed
         return None
@@ -190,11 +216,16 @@ class Scheduler:
                     slot.worker, slot.sha = None, None
                     slot.worker = self.spawn(sha)
                     slot.sha = sha
-                slot.worker.play(seed)
+                lgen = seedlib.lgen_for(seed, self.job["key"]["lgen_mode"])
+                if lgen is None:
+                    slot.worker.play(seed)
+                else:
+                    slot.worker.play(seed, lgen=lgen)
             except (OSError, ValueError) as e:
                 self._worker_died(slot, f"cannot start a game: {e!r}")
                 return
             slot.busy, slot.job_id, slot.seed = True, self.job["id"], seed
+            slot.env_id, slot.rep, slot.lgen = self.job["key"]["env_id"], self.job["key"]["rep"], lgen
             self._inflight[sha].add(seed)
 
     def status(self):
@@ -204,14 +235,15 @@ class Scheduler:
         job = None
         if self.job is not None:
             spec = self.job["spec"]
+            lo, hi = self._window()
             if self.job["kind"] == "baseline":
-                done = self._played(spec["sha"], spec["games"])
-                progress = {"games": done, "target": spec["games"]}
-                left = max(spec["games"] - done, 0)
+                done = self._played(spec["sha"], lo, hi)
+                progress = {"games": done, "target": hi - lo}
+                left = max(hi - lo - done, 0)
             else:
                 need = CHECKPOINTS[self.job["checkpoint"]]
-                b = self._played(spec["baseline"], need)
-                c = self._played(spec["candidate"], need)
+                b = self._played(spec["baseline"], lo, lo + need)
+                c = self._played(spec["candidate"], lo, lo + need)
                 progress = {"baseline": b, "candidate": c, "checkpoint": need}
                 left = 2 * need - b - c
             job = {**{k: self.job[k] for k in ("id", "kind", "spec", "result")}, "progress": progress,

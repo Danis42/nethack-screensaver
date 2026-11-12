@@ -157,3 +157,30 @@ def test_stop_all_and_shutdown_over_http(bench_app):
 def test_shutdown_needs_a_serving_server(bench_app):
     with pytest.raises(ValueError, match="cannot shut itself down"):
         bench_app.shutdown()
+
+
+def test_a_baseline_on_a_window_records_seeds_env_and_lock_blob(tmp_path, bench_repo):
+    from bench.provenance import env_id
+    from bench.scheduler import Scheduler
+    from bench.server import App
+    from bench.store import Store
+    from bench_fakes import FakeWorker, game
+    env = {"nle_commit": "c" * 40, "lock_sha256": "l", "python": "3.13", "numpy": "2", "numba": "0.6"}
+    store = Store(tmp_path / "w.db")
+    app = App(store, Scheduler(store, lambda sha: FakeWorker(sha, lambda s, i: game(4), []), slots=2),
+              bench_repo, tmp_path / "cache", env=env)
+    spec = app.job(app.start_baseline("main", lo=1000, hi=1010)["job_id"])["spec"]
+    assert spec["seeds"] == {"range": "dev", "lo": 1000, "hi": 1010} and spec["games"] == 10
+    assert spec["env_id"] == env_id(env) == app.env_id and spec["env"] == env
+    assert "lock_blob" in spec and store.env(app.env_id) == env
+
+
+def test_a_default_baseline_starts_at_the_baseline_window(bench_app):
+    spec = bench_app.job(bench_app.start_baseline("main", games=3)["job_id"])["spec"]
+    assert spec["seeds"]["lo"] == 1000 and spec["seeds"]["hi"] == 1003
+
+
+@pytest.mark.parametrize("lo, hi", [(5, 5), (9, 3), ("x", 4), (-1, 3)])
+def test_empty_or_bad_windows_are_refused(bench_app, lo, hi):
+    with pytest.raises(ValueError):
+        bench_app.start_baseline("main", lo=lo, hi=hi)

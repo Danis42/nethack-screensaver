@@ -6,17 +6,22 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from . import gitrefs, report
+from . import gitrefs, provenance, report, seeds
 from .filters import parse_where
 from .metrics import METRICS, evaluate
+from .stats import CHECKPOINTS
 
 STATIC = Path(__file__).with_name("static")
 LOCAL_HOSTS = ("127.0.0.1", "localhost")
 
 
 class App:
-    def __init__(self, store, scheduler, repo, cache_dir):
+    def __init__(self, store, scheduler, repo, cache_dir, env=None):
         self.store, self.scheduler = store, scheduler
+        self.env = env  # fingerprint of the worker interpreter (bench/provenance.py), recorded in every job
+        self.env_id = None if env is None else provenance.env_id(env)
+        if env is not None:
+            store.add_env(env)
         self._yardstick = (None, {})
         self.repo, self.cache_dir = Path(repo), Path(cache_dir)
         self.lock = threading.RLock()
@@ -30,26 +35,53 @@ class App:
         with self.lock:
             return {**self.scheduler.status(), "import": dict(self.imports)}
 
-    def start_baseline(self, ref="main", games=576):
-        games = int(games)
-        if games < 1:
-            raise ValueError("games must be at least 1")
-        sha, subject = self._sha(ref)
-        with self.lock:
-            return {"job_id": self.scheduler.submit(
-                "baseline", {"ref": ref, "sha": sha, "subject": subject, "games": games})}
+    def _env_fields(self):
+        return {"env_id": self.env_id, "env": self.env}
 
-    def start_experiment(self, candidate, baseline="main", metric="dlvl6"):
+    @staticmethod
+    def _lgen_mode(lgen):
+        mode = seeds.USE_LGEN if lgen is None else lgen
+        if mode not in seeds.LGEN_MODES:
+            raise ValueError(f"lgen must be one of {seeds.LGEN_MODES}, got {lgen!r}")
+        return mode
+
+    def start_baseline(self, ref="main", games=576, lo=None, hi=None, lgen=None, replicate=0):
+        """Play `ref` on the seed window [lo, hi); lo defaults to the baseline window start, hi to lo + games."""
+        lo = seeds.BASELINE_WINDOW[0] if lo is None else lo
+        if hi is None:
+            games = int(games)
+            if games < 1:
+                raise ValueError("games must be at least 1")
+            hi = int(lo) + games
+        lo, hi = seeds.window(lo, hi)
+        mode = self._lgen_mode(lgen)
+        if replicate not in (0, 1, "0", "1"):
+            raise ValueError(f"replicate must be 0 or 1, got {replicate!r}")
+        sha, subject = self._sha(ref)
+        spec = {"ref": ref, "sha": sha, "subject": subject, "games": hi - lo,
+                "seeds": {"range": seeds.range_of(lo), "lo": lo, "hi": hi}, "lgen": mode,
+                "replicate": int(replicate), "gate": None, **self._env_fields(),
+                "lock_blob": provenance.lock_blob(self.repo, sha)}
+        with self.lock:
+            return {"job_id": self.scheduler.submit("baseline", spec)}
+
+    def start_experiment(self, candidate, baseline="main", metric="dlvl6", lo=None, lgen=None):
         rates = [n for n, m in METRICS.items() if m.kind == "rate"]
         if metric not in rates:
             raise ValueError(f"metric must be one of {rates}")
+        lo = seeds.BASELINE_WINDOW[0] if lo is None else lo
+        lo, hi = seeds.window(lo, int(lo) + CHECKPOINTS[-1])
+        mode = self._lgen_mode(lgen)
         cand, cand_subject = self._sha(candidate)
         base, base_subject = self._sha(baseline)
         if cand == base:
             raise ValueError(f"{candidate} and {baseline} are the same commit {cand[:10]}")
         spec = {"candidate": cand, "candidate_ref": candidate, "candidate_subject": cand_subject,
                 "baseline": base, "baseline_ref": baseline, "baseline_subject": base_subject,
-                "metric": metric}
+                "metric": metric, "seeds": {"range": seeds.range_of(lo), "lo": lo, "hi": hi},
+                "lgen": mode, "gate": None, **self._env_fields(),
+                "lock_blob_candidate": provenance.lock_blob(self.repo, cand),
+                "lock_blob_baseline": provenance.lock_blob(self.repo, base)}
         with self.lock:
             return {"job_id": self.scheduler.submit("experiment", spec)}
 
@@ -77,10 +109,13 @@ class App:
             raise LookupError(f"no job {job_id}")
         if job["kind"] == "experiment":
             spec = job["spec"]
-            seeds = sorted(self.store.seeds(spec["candidate"]) & self.store.seeds(spec["baseline"]))
-            job["table"] = report.compare(list(self.store.games_by_seed(spec["candidate"], seeds).values()),
-                                          list(self.store.games_by_seed(spec["baseline"], seeds).values()))
-            job["games_per_side"] = len(seeds)
+            window = spec.get("seeds") or {}
+            key = {"lgen_mode": spec.get("lgen"), "env_id": spec.get("env_id"), "rep": 0}
+            both = sorted(self.store.seeds(spec["candidate"], window.get("lo"), window.get("hi"), **key)
+                          & self.store.seeds(spec["baseline"], window.get("lo"), window.get("hi"), **key))
+            job["table"] = report.compare(list(self.store.games_by_seed(spec["candidate"], both, **key).values()),
+                                          list(self.store.games_by_seed(spec["baseline"], both, **key).values()))
+            job["games_per_side"] = len(both)
         return job
 
     def results(self, ref="main", metric=None):
