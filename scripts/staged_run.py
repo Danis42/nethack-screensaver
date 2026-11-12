@@ -58,9 +58,27 @@ def main():
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--out")
     ap.add_argument("--items", action="store_true", help="print worn gear and item-skill events (kit-* stages)")
+    ap.add_argument("--record", action="store_true", help="record the run as a bench job (tool_games, seeds 0-999)")
+    ap.add_argument("--data", help="bench data directory of results.db (default: the bench server's)")
     args = ap.parse_args()
-    with ThreadPoolExecutor(args.jobs) as pool:
-        results = list(pool.map(lambda s: play(args.stage, s), seeds(args.seeds)))
+    job = None
+    if args.record:
+        from bench import toolruns
+        store = toolruns.open_store(args.data)
+        sha = toolruns.clean_sha(Path(__file__).resolve().parent.parent)
+        job = toolruns.record_run(store, "staged", sha, {"args": sys.argv[1:], "seeds": seeds(args.seeds)})
+        print(json.dumps({"job_id": job}), flush=True)
+    try:
+        with ThreadPoolExecutor(args.jobs) as pool:
+            results = list(pool.map(lambda s: play(args.stage, s), seeds(args.seeds)))
+    except Exception as e:  # the recorded job must not stay "running"
+        if job is not None:
+            toolruns.finish(store, job, "failed", {"error": repr(e)})
+        raise
+    if job is not None:
+        for r in results:
+            toolruns.add_result(store, job, "staged", sha, r)
+        toolruns.finish(store, job, result={"games": len(results)})
     if args.out:
         Path(args.out).write_text("".join(json.dumps(r) + "\n" for r in results))
     for r in results:

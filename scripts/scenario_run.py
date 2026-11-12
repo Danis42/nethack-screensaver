@@ -119,10 +119,13 @@ def play(tree, name, seed):
     return rec
 
 
-def run(name, tree, seed_text, jobs, verbose, show=False):
+def run(name, tree, seed_text, jobs, verbose, show=False, on_record=None):
     sc = SCENARIOS[name]
     with ThreadPoolExecutor(jobs) as pool:
         records = list(pool.map(lambda s: play(tree, name, s), seeds(seed_text or sc.seeds)))
+    if on_record is not None:
+        for rec in records:
+            on_record({**rec, "scenario": name})
     passed = {check: 0 for check in sc.checks}
     ok_all = True
     for rec in records:
@@ -164,9 +167,28 @@ def main():
     ap.add_argument("--jobs", type=int, default=2)
     ap.add_argument("-v", "--verbose", action="store_true")
     ap.add_argument("--show", action="store_true", help="print each game's end inventory and first messages")
+    ap.add_argument("--record", action="store_true", help="record the run as a bench job (tool_games, seeds 0-999)")
+    ap.add_argument("--data", help="bench data directory of results.db (default: the bench server's)")
     args = ap.parse_args()
     names = list(SCENARIOS) if args.scenario == "all" else [args.scenario]
-    ok = all([run(n, Path(args.tree).resolve(), args.seeds, args.jobs, args.verbose, args.show) for n in names])
+    tree = Path(args.tree).resolve()
+    on_record = job = None
+    if args.record:
+        from bench import toolruns
+        store = toolruns.open_store(args.data)
+        sha = toolruns.clean_sha(tree)  # the bot under test comes from --tree
+        all_seeds = sorted({s for n in names for s in seeds(args.seeds or SCENARIOS[n].seeds)})
+        job = toolruns.record_run(store, "scenario", sha, {"args": sys.argv[1:], "seeds": all_seeds})
+        print(json.dumps({"job_id": job}), flush=True)
+        on_record = lambda rec: toolruns.add_result(store, job, "scenario", sha, rec)
+    try:
+        ok = all([run(n, tree, args.seeds, args.jobs, args.verbose, args.show, on_record) for n in names])
+    except Exception as e:  # the recorded job must not stay "running"
+        if job is not None:
+            toolruns.finish(store, job, "failed", {"error": repr(e)})
+        raise
+    if job is not None:
+        toolruns.finish(store, job, result={"passed": ok})
     sys.exit(0 if ok else 1)
 
 

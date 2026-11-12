@@ -124,9 +124,19 @@ def main():
     ap.add_argument("--seeds", required=True)
     ap.add_argument("--procs", type=int, default=10)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--record", action="store_true", help="record the run as a bench job (tool_games, seeds 0-999)")
+    ap.add_argument("--data", help="bench data directory of results.db (default: the bench server's)")
     args = ap.parse_args()
     todo, lock = seeds_arg(args.seeds), threading.Lock()
     out = open(args.out, "a")
+    job = None
+    if args.record:
+        from bench import toolruns
+        store = toolruns.open_store(args.data)
+        sha = toolruns.clean_sha(Path(__file__).resolve().parent.parent)
+        job = toolruns.record_run(store, "rewind", sha, {"args": sys.argv[1:], "seeds": list(todo)})
+        print(json.dumps({"job_id": job}), flush=True)
+    failures = []
 
     def worker():
         while True:
@@ -134,10 +144,17 @@ def main():
                 if not todo:
                     return
                 seed = todo.pop(0)
-            story = run_seed(seed)
+            try:
+                story = run_seed(seed)
+            except Exception as e:  # recorded runs end failed rather than staying "running"
+                with lock:
+                    failures.append(f"seed {seed}: {e!r}")
+                continue
             with lock:
                 out.write(json.dumps(story) + "\n")
                 out.flush()
+                if job is not None:
+                    toolruns.add_result(store, job, "rewind", sha, {**story, "seed": seed})
                 f = story["final"]
                 print(f"seed {seed}: lives {story['lives']}, Dlvl {story['first_life']['max_depth']} -> {f['max_depth']},"
                       f" rung {story['first_life']['rung']} -> {f['rung']}, {f['end_reason'][:50]}", flush=True)
@@ -147,6 +164,13 @@ def main():
         t.start()
     for t in threads:
         t.join()
+    for failure in failures:
+        print(f"FAILED {failure}", flush=True)
+    if job is not None:
+        if failures:
+            toolruns.finish(store, job, "failed", {"error": "; ".join(failures)})
+        else:
+            toolruns.finish(store, job)
 
 
 if __name__ == "__main__":
