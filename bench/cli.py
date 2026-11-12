@@ -109,6 +109,21 @@ def _funnel(args):
     return 0
 
 
+def _power(args):
+    from . import power  # scipy and numpy: loaded only for this subcommand
+    psi = power.DEFAULT_DISCORDANCE if args.discordance is None else args.discordance
+    if psi is None:
+        print(json.dumps({"error": "pass --discordance: no pilot value is recorded yet"}))
+        return 2
+    if args.mde is not None:
+        out = power.plan(args.mde, psi, args.alpha, args.power, args.block)
+    else:
+        out = {"n": args.n, "psi": psi, "mcnemar_mde": power.mcnemar_mde(args.n, psi, args.alpha, args.power),
+               "sequential_mde": power.sequential_mde(args.n, psi, args.alpha, args.power, args.block)}
+    print(json.dumps(out))
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="screens-bench")
     ap.add_argument("--data", default=str(DATA), help="directory of results.db and logs")
@@ -147,6 +162,16 @@ def main(argv=None):
     p.add_argument("--job", type=int, help="read a baseline job's commit, window, lgen and env")
     p.add_argument("--repo", default=str(REPO), help="git repo the ref is resolved in")
     p.set_defaults(fn=_funnel)
+
+    p = sub.add_parser("power", help="what an experiment must declare: planned size for an MDE, or the MDE at n")
+    what = p.add_mutually_exclusive_group(required=True)
+    what.add_argument("--mde", type=float, help="smallest effect worth detecting, e.g. 0.03")
+    what.add_argument("--n", type=int, help="seeds per side: report the detectable MDE")
+    p.add_argument("--discordance", type=float, help="share of seeds where the two commits differ")
+    p.add_argument("--alpha", type=float, default=0.05)
+    p.add_argument("--power", type=float, default=0.8)
+    p.add_argument("--block", type=int, default=96)
+    p.set_defaults(fn=_power)
 
     args = ap.parse_args(argv)
     if args.command == "import" and args.what in ("results", "xlog") and not args.source:

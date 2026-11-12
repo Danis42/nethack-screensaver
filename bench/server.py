@@ -102,7 +102,7 @@ class App:
             return {"job_id": self.scheduler.submit("baseline", spec)}
 
     def start_experiment(self, candidate, baseline="main", metric="dlvl6", mde=None, discordance=None, alpha=0.05,
-                         power=0.8, block=96, lo=None, lgen=None, gate=None):
+                         power=0.8, block=96, lo=None, lgen=None, gate=None, allow_new_baseline=False):
         """Paired A/B on one rate metric. The MDE is declared before the run; bench.power.plan fixes the planned
         size, and the window is [lo, lo + n_planned). The scheduler judges contiguous seed prefixes with the
         always-valid sequential test (MEAS-06)."""
@@ -126,6 +126,9 @@ class App:
         base, base_subject = self._sha(baseline)
         if cand == base:
             raise ValueError(f"{candidate} and {baseline} are the same commit {cand[:10]}")
+        if not allow_new_baseline and not self.store.played(base, lo, hi, lgen_mode=mode, env_id=self.env_id):
+            raise ValueError(f"baseline {base[:10]} has no stored games in [{lo}, {hi}); name the commit that holds "
+                             "the baseline (Pitfall 6) or pass allow_new_baseline=true")
         spec = {"candidate": cand, "candidate_ref": candidate, "candidate_subject": cand_subject,
                 "baseline": base, "baseline_ref": baseline, "baseline_subject": base_subject,
                 "metric": metric, "declared": declared, "block": int(block),
@@ -135,6 +138,21 @@ class App:
                 "lock_blob_baseline": provenance.lock_blob(self.repo, base)}
         with self.lock:
             return {"job_id": self.scheduler.submit("experiment", spec)}
+
+    def power(self, mde=None, discordance=None, n=None, alpha=0.05, power=0.8, block=96):
+        """What an experiment must declare: with mde, the planned size (bench.power.plan); with n, the MDE that n
+        seeds can detect with exact McNemar and with the sequential test."""
+        psi = powerlib.DEFAULT_DISCORDANCE if discordance is None else float(discordance)
+        if psi is None:
+            raise ValueError("pass discordance: no pilot value is recorded yet")
+        alpha, power, block = float(alpha), float(power), int(block)
+        if mde is not None:
+            return powerlib.plan(float(mde), psi, alpha, power, block)
+        if n is not None:
+            n = int(n)
+            return {"n": n, "psi": psi, "mcnemar_mde": powerlib.mcnemar_mde(n, psi, alpha, power),
+                    "sequential_mde": powerlib.sequential_mde(n, psi, alpha, power, block)}
+        raise ValueError("pass mde (to plan a run) or n (to see what n seeds can detect)")
 
     def resume(self, job_id):
         """Queue an interrupted job again; it keeps its id and plays only the seeds not yet stored."""
@@ -275,6 +293,11 @@ def _int(value):
     return None if value is None else int(value)
 
 
+def _num(value, default=None):
+    """Query parameter as float, default when absent; ValueError (a 400) for anything else."""
+    return default if value is None else float(value)
+
+
 def make_handler(app):
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
@@ -329,6 +352,9 @@ def make_handler(app):
                 "/api/funnel": lambda: app.funnel(q.get("ref", "main"), _int(q.get("lo")), _int(q.get("hi")),
                                                   q.get("lgen"), q.get("env_id"), _int(q.get("job"))),
                 "/api/experiments": app.experiments,
+                "/api/power": lambda: app.power(_num(q.get("mde")), _num(q.get("discordance")), _int(q.get("n")),
+                                                _num(q.get("alpha"), 0.05), _num(q.get("power"), 0.8),
+                                                _int(q.get("block")) or 96),
                 "/api/dashboard": lambda: app.dashboard(q.get("ref", "main")),
                 "/api/metrics": lambda: {n: {"description": m.description, "kind": m.kind}
                                          for n, m in METRICS.items()},

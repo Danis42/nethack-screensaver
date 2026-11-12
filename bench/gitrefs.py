@@ -13,7 +13,10 @@ def _git(repo, *args):
 
 
 def resolve(repo, ref):
-    """(full sha, subject line) of a branch, tag or sha."""
+    """(full sha, subject line) of a branch, tag or sha. Refs starting with "-" are refused before git sees them
+    (they would be read as options)."""
+    if str(ref).startswith("-"):
+        raise ValueError("refs may not start with '-'")
     sha = _git(repo, "rev-parse", "--verify", f"{ref}^{{commit}}")
     return sha, _git(repo, "log", "-1", "--format=%s", sha)
 
