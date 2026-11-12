@@ -30,7 +30,7 @@ def test_tools_are_registered():
     names = {t.name for t in asyncio.run(mcp_server.mcp.list_tools())}
     assert names == {"bench_status", "bench_baseline", "bench_experiment", "bench_results", "bench_games",
                      "bench_experiments", "bench_stop", "bench_import", "bench_reference", "bench_resume",
-                     "bench_shutdown", "bench_job", "bench_funnel"}
+                     "bench_shutdown", "bench_job", "bench_funnel", "bench_power"}
 
 
 def test_bench_baseline_forwards_window_lgen_and_replicate(url, bench_app):
@@ -57,4 +57,14 @@ def test_bench_experiment_forwards_the_mde(url, bench_app):
     for seed in range(1000, 1096):
         bench_app.store.add_game(sha, None, {"max_depth": 1, "end_reason": "x", "seed": seed})
     job_id = mcp_server.bench_experiment("feature", 0.3, "main", discordance=0.5)["job_id"]
+    assert bench_app.job(job_id)["spec"]["declared"]["mde"] == 0.3
+
+
+def test_bench_power_matches_the_api(url):
+    from bench import power
+    assert mcp_server.bench_power(mde=0.03, discordance=0.2) == power.plan(0.03, 0.2)
+
+
+def test_bench_experiment_can_start_a_new_baseline(url, bench_app):
+    job_id = mcp_server.bench_experiment("feature", 0.3, "main", discordance=0.5, allow_new_baseline=True)["job_id"]
     assert bench_app.job(job_id)["spec"]["declared"]["mde"] == 0.3

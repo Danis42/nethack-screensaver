@@ -52,3 +52,12 @@ def test_prune_removes_only_old_worktrees(repo, tmp_path):
     assert gitrefs.prune(repo, tmp_path / "wt", now=time.time()) == []
     assert sorted(gitrefs.prune(repo, tmp_path / "wt", now=time.time() + 15 * 86400)) == sorted([a, b])
     assert not (tmp_path / "wt" / a).exists()
+
+
+def test_refs_starting_with_a_dash_are_refused_before_git(repo, monkeypatch):
+    def no_git(*args, **kwargs):
+        raise AssertionError("git ran")
+    monkeypatch.setattr(gitrefs, "_git", no_git)
+    for ref in ("--output=/tmp/x", "-n1"):
+        with pytest.raises(ValueError, match="may not start with '-'"):
+            gitrefs.resolve(repo, ref)
