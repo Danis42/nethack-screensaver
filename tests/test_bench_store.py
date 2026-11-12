@@ -125,3 +125,21 @@ def test_environments_are_stored_by_id(tmp_path):
     env = {"nle_commit": "c" * 40, "lock_sha256": "l", "python": "3.13", "numpy": "2", "numba": "0.6"}
     assert store.add_env(env) == env_id(env) and store.add_env(env) == env_id(env)
     assert store.env(env_id(env)) == env and store.env("nope") is None
+
+
+def test_final_range_games_are_refused_unless_the_job_is_a_clean_attempt(tmp_path):
+    import pytest
+    store = Store(tmp_path / "r.db")
+    with pytest.raises(ValueError, match="final"):
+        store.add_game("a", None, {"seed": 1_000_000})
+    base = store.add_job("baseline", {})
+    with pytest.raises(ValueError, match="final"):
+        store.add_game("a", base, {"seed": 1_000_000})
+    clean = store.add_job("clean_attempt", {})
+    store.add_game("a", clean, {"seed": 1_000_000})
+    assert store.count("a") == 1
+
+
+def test_job_kind(tmp_path):
+    store = Store(tmp_path / "r.db")
+    assert store.job_kind(store.add_job("baseline", {})) == "baseline" and store.job_kind(99) is None
