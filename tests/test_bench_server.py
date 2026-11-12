@@ -196,3 +196,20 @@ def test_baseline_spec_records_lgen_mode_and_replicate(bench_app):
     spec = bench_app.job(bench_app.start_baseline("main", games=3, lgen="seed", replicate=1)["job_id"])["spec"]
     assert spec["lgen"] == "seed" and spec["replicate"] == 1
     assert bench_app.job(bench_app.start_baseline("main", games=3)["job_id"])["spec"]["lgen"] == "off"
+
+
+def test_final_range_baselines_are_refused(bench_app):
+    with pytest.raises(ValueError, match="final"):
+        bench_app.start_baseline("main", lo=1_000_000, hi=1_000_010)
+
+
+def test_confirm_baselines_need_a_gate(bench_app):
+    with pytest.raises(ValueError, match="gate"):
+        bench_app.start_baseline("main", lo=100_000, hi=100_010)
+    spec = bench_app.job(bench_app.start_baseline("main", lo=100_000, hi=100_010, gate="phase-2-gate")["job_id"])["spec"]
+    assert spec["seeds"]["range"] == "confirm" and spec["gate"] == "phase-2-gate"
+
+
+def test_clean_attempt_jobs_cannot_be_created_over_http(bench_url):
+    status, body = _req(bench_url + "/api/jobs", "POST", {"kind": "clean_attempt", "ref": "main"})
+    assert status == 400 and "not creatable over HTTP or MCP" in body["error"]

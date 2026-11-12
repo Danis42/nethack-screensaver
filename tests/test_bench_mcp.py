@@ -37,3 +37,8 @@ def test_bench_baseline_forwards_window_lgen_and_replicate(url, bench_app):
     spec = bench_app.job(job_id)["spec"]
     assert spec["seeds"]["lo"] == 2000 and spec["seeds"]["hi"] == 2004
     assert spec["lgen"] == "seed" and spec["replicate"] == 1
+
+
+def test_bench_baseline_forwards_the_gate_for_confirm_windows(url, bench_app):
+    job_id = mcp_server.bench_baseline("main", lo=100_000, hi=100_004, gate="phase-2-gate")["job_id"]
+    assert bench_app.job(job_id)["spec"]["gate"] == "phase-2-gate"
