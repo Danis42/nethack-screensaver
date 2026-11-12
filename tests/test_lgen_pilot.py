@@ -29,7 +29,7 @@ def test_pair_by_seed_ignores_order_and_counts_unpaired_seeds():
 def test_no_discordance():
     pairs, _ = lgen_pilot.pair_by_seed([_g(s) for s in range(50)], [_g(s) for s in range(50)])
     r = lgen_pilot.mode_summary(pairs, DLVL10)
-    assert r["psi"] == 0.0 and r["psi_lo"] == 0.0 and r["psi_hi"] > 0 and r["mcnemar_p"] == 1.0
+    assert r["psi"] == 0.0 and abs(r["psi_lo"]) < 1e-12 and r["psi_hi"] > 0 and r["mcnemar_p"] == 1.0
     assert r["mixture_state"] not in ("better", "worse") and r["identical_share"] == 1.0
 
 
