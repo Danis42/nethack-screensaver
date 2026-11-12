@@ -77,13 +77,20 @@ def bench_baseline(ref: str = "main", games: int = 576, lo: int | None = None, h
 
 
 @mcp.tool()
-def bench_experiment(candidate: str, baseline: str = "main", metric: str = "dlvl6") -> dict:
-    """A/B experiment: candidate vs baseline commit, judged on one rate metric at 192/384/576/1152/2304
-    games per side. Commit first; refs resolve to a SHA now. A job counts as started only when `started` is true
-    (its first game row exists); report a start only then. Returns job_id; run
-    `uv run screens-bench wait <job_id>` as a background shell command to be notified."""
-    return _call("POST", "/api/jobs", {"kind": "experiment", "candidate": candidate,
-                                       "baseline": baseline, "metric": metric})
+def bench_experiment(candidate: str, mde: float, baseline: str = "main", metric: str = "dlvl6",
+                     discordance: float | None = None, lo: int | None = None, block: int = 96,
+                     lgen: str | None = None) -> dict:
+    """A/B experiment: candidate vs baseline commit on one rate metric (see bench_power first).
+
+    Declare the MDE (smallest effect worth detecting, e.g. 0.03) before the run; the planned size follows from it
+    and the discordance (share of seeds where the two commits differ). The verdict comes from an always-valid
+    sequential test on contiguous seed prefixes, so it stays valid however often it is checked. Commit first; refs
+    resolve to a SHA now. A job counts as started only when `started` is true (its first game row exists); report
+    a start only then, citing the job ID. Returns job_id; run `uv run screens-bench wait <job_id>` as a background
+    shell command to be notified."""
+    return _call("POST", "/api/jobs", {"kind": "experiment", "candidate": candidate, "baseline": baseline,
+                                       "metric": metric, "mde": mde, "discordance": discordance, "lo": lo,
+                                       "block": block, "lgen": lgen})
 
 
 @mcp.tool()

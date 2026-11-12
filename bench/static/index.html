@@ -68,8 +68,12 @@ function table(head, rows) {
 function verdictHtml(v) {
   if (!v) return '<span class="muted">open</span>';
   const cls = v.state === 'better' ? 'better' : v.state === 'worse' ? 'worse' : '';
-  return `<span class="${cls}">${esc(v.state)}</span> at ${v.checkpoint} games per side: `
-    + `${pct(v.diff)} [${pct(v.lo)}, ${pct(v.hi)}], smallest visible difference ${pct(v.detectable)}`;
+  if (v.n_planned == null) {  // a verdict from before the sequential test (checkpoint design)
+    return `<span class="${cls}">${esc(v.state)}</span> at ${esc(v.checkpoint)} games per side (old checkpoint design)`;
+  }
+  return `<span class="${cls}">${esc(v.state)}</span> at ${esc(v.n)}/${esc(v.n_planned)} seeds per side: `
+    + `estimate ${pct(v.estimate)} (${esc(v.b)} candidate-only, ${esc(v.c)} baseline-only), `
+    + `always-valid p ${esc(Number(v.anytime_p).toPrecision(2))}, declared MDE ${pct(v.mde)}`;
 }
 
 function renderJob(s) {
@@ -84,7 +88,7 @@ function renderJob(s) {
       : `experiment <b>${esc(sp.candidate_ref)}</b> vs <b>${esc(sp.baseline_ref)}</b> on ${esc(sp.metric)}`;
     const prog = j.kind === 'baseline'
       ? `${p.games}/${p.target} games`
-      : `checkpoint ${p.checkpoint}: baseline ${p.baseline}, candidate ${p.candidate}`;
+      : `look ${esc(p.look + 1)} (first ${esc(p.prefix)} of ${esc(p.n_planned)} seeds): baseline ${esc(p.baseline)}, candidate ${esc(p.candidate)}`;
     const eta = j.eta_seconds ? `, about ${Math.max(1, Math.round(j.eta_seconds / 60))} min left` : '';
     html = `#${j.id} ${what}<br>${prog} · ${s.games_per_minute.toFixed(1)} games/min · ${s.busy_workers}/${s.slots} workers${eta}`;
     if (j.kind === 'experiment') html += '<br>verdict so far: ' + verdictHtml(j.result && j.result.verdict);

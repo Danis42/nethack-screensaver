@@ -4,13 +4,18 @@ Games are seeded: a job names a half-open seed window [lo, hi) in its spec ("see
 scheduler plays the window's seeds in ascending order, skipping seeds already stored or in
 flight. Both sides of an experiment play the same window, so they are compared seed by seed.
 Stored games are reused only under the same game key: commit, seed, lgen mode, environment
-(env_id) and replicate (rep)."""
+(env_id) and replicate (rep).
+
+Experiments declare their MDE and planned size before the run (spec "declared", from bench.power.plan).
+Look k covers the contiguous seed prefix [lo, lo + min((k + 1) * block, n_planned)) and is taken only when
+every seed of it is stored on both sides; the verdict comes from the always-valid sequential test (MEAS-06)."""
+import dataclasses
 import time
 from collections import defaultdict, deque
 
 from . import seeds as seedlib
 from .metrics import METRICS, orient
-from .stats import CHECKPOINTS, judge_paired
+from .sequential import NO_EFFECT, discordant, judge_sequential
 
 MAX_DEATHS_IN_ROW = 3
 
@@ -70,10 +75,14 @@ class Scheduler:
             job = self.store.next_queued()
             if job is None:
                 return
-            job["result"] = {"checkpoints": []} if job["kind"] == "experiment" else {}
-            job["checkpoint"] = 0
+            job["result"] = {"looks": []} if job["kind"] == "experiment" else {}
+            job["look"] = 0
             if "seeds" not in job["spec"]:
                 self.error = "job spec has no seed window (created by an older bench); start a new job"
+                self.store.set_job(job["id"], "failed", {**job["result"], "error": self.error})
+                return
+            if job["kind"] == "experiment" and "declared" not in job["spec"]:
+                self.error = "experiment has no declared MDE and planned size (created by an older bench); start a new job"
                 self.store.set_job(job["id"], "failed", {**job["result"], "error": self.error})
                 return
             spec = job["spec"]
@@ -140,12 +149,18 @@ class Scheduler:
         seeds = self.job["spec"]["seeds"]
         return int(seeds["lo"]), int(seeds["hi"])
 
+    def _prefix(self, look=None):
+        """Length of the seed prefix of a look (default: the current one)."""
+        spec = self.job["spec"]
+        look = self.job["look"] if look is None else look
+        return min((look + 1) * int(spec["block"]), int(spec["declared"]["n_planned"]))
+
     def _targets(self):
         """[(sha, lo, hi)]: the seed windows still to fill, baseline side first."""
         spec, (lo, hi) = self.job["spec"], self._window()
         if self.job["kind"] == "baseline":
             return [(spec["sha"], lo, hi)]
-        need = CHECKPOINTS[self.job["checkpoint"]]
+        need = self._prefix()
         return [(spec["baseline"], lo, lo + need), (spec["candidate"], lo, lo + need)]  # baseline first
 
     def _judge(self):
@@ -158,34 +173,42 @@ class Scheduler:
                 self._end("done", {"games": stored})
                 return True
             return False
-        need = CHECKPOINTS[self.job["checkpoint"]]
+        need = self._prefix()
         if self._played(spec["candidate"], lo, lo + need) < need or self._played(spec["baseline"], lo, lo + need) < need:
-            return False
-        fn = METRICS[spec["metric"]].fn
+            return False  # a gap anywhere in the prefix: never judge on completion order
+        metric, declared = METRICS[spec["metric"]], spec["declared"]
         window = range(lo, lo + need)
         cand = self.store.games_by_seed(spec["candidate"], window, **key)
         base = self.store.games_by_seed(spec["baseline"], window, **key)
-        pairs = []
+        pairs = []  # (seed, candidate outcome, baseline outcome), in seed order
         for seed in window:
             try:
-                pairs.append((bool(fn(cand[seed])), bool(fn(base[seed]))))
+                pairs.append((seed, bool(metric.fn(cand[seed])), bool(metric.fn(base[seed]))))
             except KeyError:  # a game without the metric's field
                 pass
         if not pairs:
             self.error = f"no game has the fields metric {spec['metric']} needs"
             self._end("failed", {**self.job["result"], "error": self.error})
             return True
-        verdict = judge_paired(pairs, need).as_dict()
-        verdict["state"] = orient(verdict["state"], METRICS[spec["metric"]])
+        looks = []
+        for k in range(self.job["look"] + 1):
+            end = lo + self._prefix(k)
+            upto = [(c, b) for seed, c, b in pairs if seed < end]
+            looks.append((len(upto), *discordant(upto)))
+        v = judge_sequential(looks, declared["alpha"], declared["n_planned"], declared["mde"])
+        if v.state == "open" and need >= declared["n_planned"]:  # skipped games: the plan is used up anyway
+            v = dataclasses.replace(v, state=NO_EFFECT)
+        verdict = v.as_dict()
+        verdict["state"] = orient(verdict["state"], metric)
         verdict["pairs"] = len(pairs)
         result = self.job["result"]
-        result["checkpoints"].append(verdict)
+        result["looks"].append({"n": v.n, "b": v.b, "c": v.c, "log_lr": v.log_lr})
         result["verdict"] = verdict
         if verdict["state"] != "open":
             self._end("done", result)
             return True
         self.store.set_job(self.job["id"], "running", result)
-        self.job["checkpoint"] += 1
+        self.job["look"] += 1
         return False
 
     def _played(self, sha, lo, hi):
@@ -247,10 +270,11 @@ class Scheduler:
                 progress = {"games": done, "target": hi - lo}
                 left = max(hi - lo - done, 0)
             else:
-                need = CHECKPOINTS[self.job["checkpoint"]]
+                need = self._prefix()
                 b = self._played(spec["baseline"], lo, lo + need)
                 c = self._played(spec["candidate"], lo, lo + need)
-                progress = {"baseline": b, "candidate": c, "checkpoint": need}
+                progress = {"look": self.job["look"], "prefix": need, "n_planned": spec["declared"]["n_planned"],
+                            "baseline": b, "candidate": c}
                 left = 2 * need - b - c
             job = {**{k: self.job[k] for k in ("id", "kind", "spec", "result")}, "progress": progress,
                    "eta_seconds": left / per_minute * 60 if per_minute else None}

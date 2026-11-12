@@ -7,10 +7,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from . import funnel as funnel_mod, gitrefs, provenance, report, seeds
+from . import funnel as funnel_mod, gitrefs, power as powerlib, provenance, report, seeds
 from .filters import parse_where
 from .metrics import METRICS, evaluate
-from .stats import CHECKPOINTS
 
 STATIC = Path(__file__).with_name("static")
 LOCAL_HOSTS = ("127.0.0.1", "localhost")
@@ -102,12 +101,25 @@ class App:
         with self.lock:
             return {"job_id": self.scheduler.submit("baseline", spec)}
 
-    def start_experiment(self, candidate, baseline="main", metric="dlvl6", lo=None, lgen=None, gate=None):
+    def start_experiment(self, candidate, baseline="main", metric="dlvl6", mde=None, discordance=None, alpha=0.05,
+                         power=0.8, block=96, lo=None, lgen=None, gate=None):
+        """Paired A/B on one rate metric. The MDE is declared before the run; bench.power.plan fixes the planned
+        size, and the window is [lo, lo + n_planned). The scheduler judges contiguous seed prefixes with the
+        always-valid sequential test (MEAS-06)."""
         rates = [n for n, m in METRICS.items() if m.kind == "rate"]
         if metric not in rates:
             raise ValueError(f"metric must be one of {rates}")
+        if mde is None:
+            raise ValueError("declare the minimum detectable effect (mde) before the run")
+        mde = float(mde)
+        if not 0 < mde < 1:
+            raise ValueError(f"mde must be between 0 and 1, got {mde}")
+        psi = powerlib.DEFAULT_DISCORDANCE if discordance is None else float(discordance)
+        if psi is None:
+            raise ValueError("pass discordance: no pilot value is recorded yet")
+        declared = powerlib.plan(mde, psi, float(alpha), float(power), int(block))
         lo = seeds.BASELINE_WINDOW[0] if lo is None else lo
-        lo, hi = seeds.window(lo, int(lo) + CHECKPOINTS[-1])
+        lo, hi = seeds.window(lo, int(lo) + declared["n_planned"])
         span = seeds.check_window(lo, hi, "experiment", gate)
         mode = self._lgen_mode(lgen)
         cand, cand_subject = self._sha(candidate)
@@ -116,7 +128,8 @@ class App:
             raise ValueError(f"{candidate} and {baseline} are the same commit {cand[:10]}")
         spec = {"candidate": cand, "candidate_ref": candidate, "candidate_subject": cand_subject,
                 "baseline": base, "baseline_ref": baseline, "baseline_subject": base_subject,
-                "metric": metric, "seeds": {"range": span, "lo": lo, "hi": hi},
+                "metric": metric, "declared": declared, "block": int(block),
+                "seeds": {"range": span, "lo": lo, "hi": hi},
                 "lgen": mode, "gate": gate, **self._env_fields(),
                 "lock_blob_candidate": provenance.lock_blob(self.repo, cand),
                 "lock_blob_baseline": provenance.lock_blob(self.repo, base)}
