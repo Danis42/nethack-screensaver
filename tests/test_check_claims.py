@@ -82,7 +82,8 @@ def test_message_without_claims_passes(db, tmp_path):
 
 def test_database_without_tool_games_table_still_verifies_start_claims(db, tmp_path):
     import sqlite3
-    with sqlite3.connect(db) as con:
+    with sqlite3.connect(db) as con:  # an older database: bench schema without the tool_games table
+        con.execute("DROP TABLE IF EXISTS tool_games")
         assert con.execute("SELECT name FROM sqlite_master WHERE name = 'tool_games'").fetchone() is None
     assert cc.verify_job(db, 1, need_started=True) is None
     assert "no game row" in cc.verify_job(db, 2, need_started=True)
@@ -91,8 +92,7 @@ def test_database_without_tool_games_table_still_verifies_start_claims(db, tmp_p
 def test_tool_games_row_counts_as_started(db, tmp_path):
     import sqlite3
     with sqlite3.connect(db) as con:
-        con.execute("CREATE TABLE tool_games (id INTEGER PRIMARY KEY, job_id INTEGER)")
-        con.execute("INSERT INTO tool_games (job_id) VALUES (2)")
+        con.execute("INSERT INTO tool_games (job_id, tool, sha, finished_at, json) VALUES (2, 'staged', 'x', 1.0, '{}')")
     assert cc.verify_job(db, 2, need_started=True) is None
 
 

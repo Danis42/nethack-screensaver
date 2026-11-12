@@ -35,7 +35,10 @@ class App:
 
     def status(self):
         with self.lock:
-            return {**self.scheduler.status(), "import": dict(self.imports)}
+            status = self.scheduler.status()
+            if status["job"] is not None:
+                status["job"]["started"] = self.store.started(status["job"]["id"])
+            return {**status, "import": dict(self.imports)}
 
     def _env_fields(self):
         return {"env_id": self.env_id, "env": self.env}
@@ -121,6 +124,14 @@ class App:
         job = self.store.job(int(job_id))
         if job is None:
             raise LookupError(f"no job {job_id}")
+        job["started"] = self.store.started(job["id"])  # started only once its first game row exists
+        job["first_game_at"] = self.store.first_game_at(job["id"])
+        job["games_played"] = self.store.job_game_count(job["id"])
+        spec = job["spec"]
+        if job["kind"] == "baseline" and "seeds" in spec:
+            key = {"lgen_mode": spec.get("lgen"), "env_id": spec.get("env_id"), "rep": int(spec.get("replicate", 0))}
+            stored = self.store.played(spec["sha"], spec["seeds"]["lo"], spec["seeds"]["hi"], **key)
+            job["games_reused"] = max(stored - job["games_played"], 0)
         if job["kind"] == "experiment":
             spec = job["spec"]
             window = spec.get("seeds") or {}

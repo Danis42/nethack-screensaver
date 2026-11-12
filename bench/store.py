@@ -28,6 +28,10 @@ CREATE TABLE IF NOT EXISTS reference_games (
     starttime INTEGER NOT NULL, role TEXT, turns INTEGER, json TEXT NOT NULL, dumplog TEXT,
     UNIQUE (source, name, starttime));
 CREATE TABLE IF NOT EXISTS envs (id TEXT PRIMARY KEY, json TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS tool_games (
+    id INTEGER PRIMARY KEY, job_id INTEGER NOT NULL, tool TEXT NOT NULL, sha TEXT NOT NULL, seed INTEGER,
+    finished_at REAL NOT NULL, json TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS tool_games_by_job ON tool_games (job_id);
 """
 _KEY_INDEX = "CREATE INDEX IF NOT EXISTS games_by_key ON games (sha, seed, rep)"
 _V2_COLUMNS = (("seed", "INTEGER"), ("lgen", "INTEGER"), ("env_id", "TEXT"), ("rep", "INTEGER NOT NULL DEFAULT 0"))
@@ -117,6 +121,8 @@ class Store:
 
     def add_game(self, sha, job_id, result, finished_at=None, env_id=None, rep=0):
         seed, lgen = result.get("seed"), result.get("lgen")
+        if result.get("stage"):
+            raise ValueError("staged game: store it with add_tool_game, never in games (MEAS-08)")
         if seed is not None and int(seed) >= FINAL_LO and self.job_kind(job_id) != "clean_attempt":
             raise ValueError(f"seed {seed} is in the final range (>= {FINAL_LO:,}); only clean_attempt jobs store it (D-07)")
         return self._write(
@@ -158,6 +164,32 @@ class Store:
         rows = self._all("SELECT sha, COUNT(*) AS n, MAX(finished_at) AS last FROM games WHERE rep = 0 "
                          "GROUP BY sha ORDER BY last DESC")
         return [{"sha": r["sha"], "games": r["n"], "last": r["last"]} for r in rows]
+
+    # started: a job counts as started only once its first game row exists (MEAS-09)
+
+    def started(self, job_id):
+        return bool(self._one("SELECT EXISTS (SELECT 1 FROM games WHERE job_id = ?) "
+                              "OR EXISTS (SELECT 1 FROM tool_games WHERE job_id = ?) AS s", (job_id, job_id))["s"])
+
+    def first_game_at(self, job_id):
+        return self._one("SELECT MIN(t) AS t FROM (SELECT finished_at AS t FROM games WHERE job_id = ? "
+                         "UNION ALL SELECT finished_at FROM tool_games WHERE job_id = ?)", (job_id, job_id))["t"]
+
+    def job_game_count(self, job_id):
+        return self._one("SELECT (SELECT COUNT(*) FROM games WHERE job_id = ?) + "
+                         "(SELECT COUNT(*) FROM tool_games WHERE job_id = ?) AS n", (job_id, job_id))["n"]
+
+    # tool runs (staged, scenario, rewind): never in games
+
+    def add_tool_game(self, job_id, tool, sha, result, finished_at=None):
+        seed = result.get("seed")
+        return self._write("INSERT INTO tool_games (job_id, tool, sha, seed, finished_at, json) VALUES (?, ?, ?, ?, ?, ?)",
+                           (int(job_id), tool, sha, None if seed is None else int(seed), finished_at or time.time(),
+                            json.dumps(result))).lastrowid
+
+    def tool_games(self, job_id):
+        return [json.loads(r["json"]) for r in self._all("SELECT json FROM tool_games WHERE job_id = ? ORDER BY id",
+                                                         (int(job_id),))]
 
     # environments
 

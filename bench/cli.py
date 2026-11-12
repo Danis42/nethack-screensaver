@@ -65,7 +65,8 @@ def _wait(args):
             print(f"bench server not reachable at {args.url}: {e}")
             return 2
         if job["state"] in END_STATES:
-            print(json.dumps({k: job.get(k) for k in ("id", "kind", "state", "spec", "result")}, indent=1))
+            print(json.dumps({k: job.get(k) for k in ("id", "kind", "state", "started", "first_game_at", "spec", "result")},
+                             indent=1))
             return 1 if job["state"] == "failed" else 0
         time.sleep(args.every)
 

@@ -70,7 +70,7 @@ def bench_baseline(ref: str = "main", games: int = 576, lo: int | None = None, h
     "seed" (NLE level-generation seed = seed + 10,000,000). replicate=1 reruns the window into separate
     A/A rows that summaries never read. Seed ranges: dev 1,000-99,999; confirm-range windows (100,000-199,999)
     need `gate`, the phase-gate name; final seeds are refused. Returns job_id; a job counts as started only once its first game
-    row exists. Run `uv run screens-bench wait <job_id>` as a background shell command to be notified."""
+    row exists: `started` true in bench_job / bench_status; report a start only then. Run `uv run screens-bench wait <job_id>` as a background shell command to be notified."""
     body = {"kind": "baseline", "ref": ref, "games": games, "replicate": replicate}
     body.update({k: v for k, v in (("lo", lo), ("hi", hi), ("lgen", lgen), ("gate", gate)) if v is not None})
     return _call("POST", "/api/jobs", body)
@@ -79,7 +79,8 @@ def bench_baseline(ref: str = "main", games: int = 576, lo: int | None = None, h
 @mcp.tool()
 def bench_experiment(candidate: str, baseline: str = "main", metric: str = "dlvl6") -> dict:
     """A/B experiment: candidate vs baseline commit, judged on one rate metric at 192/384/576/1152/2304
-    games per side. Commit first; refs resolve to a SHA now. Returns job_id; run
+    games per side. Commit first; refs resolve to a SHA now. A job counts as started only when `started` is true
+    (its first game row exists); report a start only then. Returns job_id; run
     `uv run screens-bench wait <job_id>` as a background shell command to be notified."""
     return _call("POST", "/api/jobs", {"kind": "experiment", "candidate": candidate,
                                        "baseline": baseline, "metric": metric})
@@ -107,6 +108,13 @@ def bench_experiments() -> list:
 def bench_stop(job_id: int | None = None) -> dict:
     """Stop the active job (or a queued job by id). Stored games stay."""
     return _call("DELETE", "/api/jobs" if job_id is None else f"/api/jobs/{quote(str(job_id))}")
+
+
+@mcp.tool()
+def bench_job(job_id: int) -> dict:
+    """One job: state, spec, result, and `started` / `first_game_at`. A job counts as started only when
+    `started` is true (its first game row exists); report a start only then."""
+    return _call("GET", f"/api/jobs/{int(job_id)}")
 
 
 @mcp.tool()
