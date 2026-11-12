@@ -18,7 +18,7 @@ Requirements for the first clean ascension. Each maps to roadmap phases.
 - [ ] **MEAS-07**: Seed ranges are split into dev, confirm and final ranges; confirm seeds are only used at phase gates, final seeds only for clean attempts
 - [ ] **MEAS-08**: Staged, scenario and rewind runs are stored with job IDs in their own table, separate from natural games, and never shown as natural results
 - [ ] **MEAS-09**: Every progress claim is backed by a job ID, full commit hash or reproducible query; a check script rejects claims without one; a job counts as "started" only once its first game row exists
-- [ ] **MEAS-10**: NetHack facts used by the bot or plans are tagged as verified against the 5.0 source, measured, or unverified (fact ledger), so 3.6 or LLM-invented knowledge can't slip in unnoticed
+- [x] **MEAS-10**: NetHack facts used by the bot or plans are tagged as verified against the 5.0 source, measured, or unverified (fact ledger), so 3.6 or LLM-invented knowledge can't slip in unnoticed
 
 ### Code Health (CODE)
 
@@ -115,7 +115,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MEAS-07 | Phase 1 | Pending |
 | MEAS-08 | Phase 1 | Pending |
 | MEAS-09 | Phase 1 | Pending |
-| MEAS-10 | Phase 1 | Pending |
+| MEAS-10 | Phase 1 | Complete |
 | CODE-01 | Phase 2 | Pending |
 | CODE-02 | Phase 2 | Pending |
 | CODE-03 | Phase 4 | Pending |
