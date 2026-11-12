@@ -70,3 +70,10 @@ Owner decision 2026-11-12: fix the detector (holes and pits only), then play. De
 2. Travel will not cross the rolling boulder trap, so the hero can be boxed in behind it.
 3. Board reading misses squares under monsters and items (a boulder under the arrival square, a hole under an
    item), so the live solver works on a wrong board.
+
+## Server stopped (2026-11-12, owner reboot)
+
+The handplay server was stopped before a reboot, so attempt 3's game (T42) is gone. Resuming 01-06 Task 2 means a
+fresh game: `.venv/bin/python scripts/handplay.py serve --seed 7 --stage soko-top --dir .planning/hand-games/soko-top`.
+The start fixture tests/data/soko_top_hand_start.json (T1) stays valid; note the boulder hidden under the arrival
+square (47,16).
