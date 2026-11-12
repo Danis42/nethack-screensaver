@@ -97,6 +97,7 @@ class StatsLogger:
             "grip_land": 0,
             "grip_elbereth": 0,
             "rise_one_level": 0,
+            "elbereth_not_respected": 0,
             **{f"cast_{n}": 0 for n in character.ALL_SPELL_NAMES},
             **{f"cast_fail_{n}": 0 for n in character.ALL_SPELL_NAMES},
         }

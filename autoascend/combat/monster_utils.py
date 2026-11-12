@@ -1,9 +1,16 @@
+from ..glyph import MON
+
 # heuristic monster types lists
 ONLY_RANGED_SLOW_MONSTERS = ['floating eye', 'blue jelly', 'brown mold', 'gas spore', 'acid blob']
 EXPLODING_MONSTERS = ['yellow light', 'gas spore', 'flaming sphere', 'freezing sphere', 'shocking sphere']
 INSECTS = ['giant ant', 'killer bee', 'soldier ant', 'fire ant', 'giant beetle', 'queen bee']
 WEAK_MONSTERS = ['lichen', 'newt', 'shrieker', 'grid bug']
 WEIRD_MONSTERS = ['leprechaun', 'nymph']
+
+
+def ignores_elbereth(mon):
+    """Every @ (humans and elves, shopkeepers, guards) and minotaurs walk over Elbereth (monmove.c onscary)"""
+    return ord(mon.mlet) == MON.S_HUMAN or mon.mname == 'minotaur'
 
 
 def is_monster_faster(agent, monster):

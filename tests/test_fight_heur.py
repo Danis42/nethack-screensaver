@@ -87,3 +87,28 @@ def test_drops_bare_handed_melee_on_cockatrices_only():
     actions = [(50, ("melee", 0, 1)), (16, ("melee", -1, 0)), (3, ("move", 1, 0))]
     assert drop_bare_handed_cockatrice_melee(actions, [cockatrice, jackal], (5, 5), True) == actions[1:]
     assert drop_bare_handed_cockatrice_melee(actions, [cockatrice, jackal], (5, 5), False) == actions
+
+
+def _real_mon(name, y, x):
+    from autoascend.glyph import MON
+    return (1, y, x, MON.permonst(MON.from_name(name)), 0)
+
+
+def _elbereth_agent(engraving=''):
+    return SimpleNamespace(blstats=SimpleNamespace(hitpoints=10, max_hitpoints=60, y=5, x=5),
+                           inventory=SimpleNamespace(engraving_below_me=engraving),
+                           can_engrave=lambda: True, stats_logger=SimpleNamespace(log_event=lambda name: None))
+
+
+def test_no_elbereth_against_elves():
+    from autoascend.combat.fight_heur import elbereth_action
+    assert elbereth_action(_elbereth_agent(), [_real_mon('Woodland-elf', 5, 6)]) == []
+    assert elbereth_action(_elbereth_agent(), [_real_mon('minotaur', 5, 6)]) == []
+    assert elbereth_action(_elbereth_agent(), [_real_mon('soldier ant', 5, 6)]) != []
+
+
+def test_no_waiting_on_elbereth_next_to_a_human():
+    from autoascend.combat.fight_heur import wait_action
+    agent = _elbereth_agent('Elbereth')
+    assert wait_action(agent, [_real_mon('sergeant', 4, 5)]) == []
+    assert wait_action(agent, [_real_mon('soldier ant', 4, 5)]) != []

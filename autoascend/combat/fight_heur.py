@@ -7,7 +7,7 @@ from scipy import signal
 from ..glyph import G, MON
 from ..utils import adjacent
 from .monster_utils import is_monster_faster, is_dangerous_monster, \
-    ONLY_RANGED_SLOW_MONSTERS, EXPLODING_MONSTERS, WEAK_MONSTERS, consider_melee_only_ranged_if_hp_full
+    ONLY_RANGED_SLOW_MONSTERS, EXPLODING_MONSTERS, WEAK_MONSTERS, consider_melee_only_ranged_if_hp_full, ignores_elbereth
 from .movement_priority import draw_monster_priority_positive, draw_monster_priority_negative
 from .utils import wielding_ranged_weapon, line_dis_from, inside
 
@@ -227,9 +227,13 @@ def elbereth_action(agent, monsters):
     adj_monsters_count = 0
     for monster in monsters:
         _, my, mx, mon, _ = monster
-        if mon.mname in ONLY_RANGED_SLOW_MONSTERS:
-            continue
         if not adjacent((my, mx), (agent.blstats.y, agent.blstats.x)):
+            continue
+        if ignores_elbereth(mon):
+            if agent.blstats.hitpoints < 30:
+                agent.stats_logger.log_event('elbereth_not_respected')
+            continue
+        if mon.mname in ONLY_RANGED_SLOW_MONSTERS:
             continue
         multiplier = np.clip(20 / agent.blstats.hitpoints, 1.0, 1.5)
         if is_monster_faster(agent, monster):
@@ -248,6 +252,9 @@ def elbereth_action(agent, monsters):
 
 
 def wait_action(agent, monsters):
+    if any(ignores_elbereth(mon) and adjacent((my, mx), (agent.blstats.y, agent.blstats.x))
+           for _, my, mx, mon, _ in monsters):
+        return []
     if agent.inventory.engraving_below_me.lower() == 'elbereth':
         player_hp_ratio = agent.blstats.hitpoints / agent.blstats.max_hitpoints
         priority = 30 - player_hp_ratio * 40
