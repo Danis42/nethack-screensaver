@@ -7,3 +7,6 @@ __pycache__/
 reference/
 .worktrees/
 archive/
+
+# Stop-hook claim checker audit log (scripts/check_claims.py)
+.claude/claim-checks.jsonl
