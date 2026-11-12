@@ -106,12 +106,51 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| MEAS-01 | Phase 1 | Pending |
+| MEAS-02 | Phase 1 | Pending |
+| MEAS-03 | Phase 1 | Pending |
+| MEAS-04 | Phase 1 | Pending |
+| MEAS-05 | Phase 1 | Pending |
+| MEAS-06 | Phase 1 | Pending |
+| MEAS-07 | Phase 1 | Pending |
+| MEAS-08 | Phase 1 | Pending |
+| MEAS-09 | Phase 1 | Pending |
+| MEAS-10 | Phase 1 | Pending |
+| CODE-01 | Phase 2 | Pending |
+| CODE-02 | Phase 2 | Pending |
+| CODE-03 | Phase 4 | Pending |
+| CODE-04 | Phase 2 | Pending |
+| SURV-01 | Phase 2 | Pending |
+| SURV-02 | Phase 4 | Pending |
+| SURV-03 | Phase 4 | Pending |
+| SURV-04 | Phase 2 | Pending |
+| SURV-05 | Phase 4 | Pending |
+| SURV-06 | Phase 2 | Pending |
+| SURV-07 | Phase 4 | Pending |
+| KIT-01 | Phase 5 | Pending |
+| KIT-02 | Phase 5 | Pending |
+| KIT-03 | Phase 5 | Pending |
+| KIT-04 | Phase 4 | Pending |
+| KIT-05 | Phase 5 | Pending |
+| LATE-01 | Phase 5 | Pending |
+| LATE-02 | Phase 5 | Pending |
+| LATE-03 | Phase 5 | Pending |
+| LATE-04 | Phase 6 | Pending |
+| LATE-05 | Phase 6 | Pending |
+| LATE-06 | Phase 6 | Pending |
+| LATE-07 | Phase 6 | Pending |
+| LATE-08 | Phase 6 | Pending |
+| PILOT-01 | Phase 3 | Pending |
+| PILOT-02 | Phase 3 | Pending |
+| PILOT-03 | Phase 3 | Pending |
+| PILOT-04 | Phase 3 | Pending |
+| PILOT-05 | Phase 5 | Pending |
+| PILOT-06 | Phase 3 | Pending |
+| ASC-01 | Phase 7 | Pending |
+| ASC-02 | Phase 7 | Pending |
+| ASC-03 | Phase 7 | Pending |
 
 **Coverage:**
 - v1 requirements: 43 total
-- Mapped to phases: 0
-- Unmapped: 43 ⚠️
-
----
-*Requirements defined: 2026-11-12*
-*Last updated: 2026-11-12 after initial definition*
+- Mapped to phases: 43
+- Unmapped: 0 ✓
