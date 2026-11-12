@@ -15,6 +15,12 @@ def test_stats_logger_knows_every_logged_event():
         logger.log_event(name)  # KeyError for an unknown name crashes the game
 
 
+def test_sokoban_drop_level_events_are_known_for_every_sokoban_level():
+    logger = StatsLogger()
+    for level in range(1, 5):  # global_logic logs f'sokoban_drop_level_{level_number}'; the regex above misses it
+        logger.log_event(f"sokoban_drop_level_{level}")
+
+
 def test_counters_and_add():
     import pytest
     logger = StatsLogger()

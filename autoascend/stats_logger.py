@@ -38,6 +38,13 @@ class StatsLogger:
             "allow_attack_all": 0,
             "sokoban_dropped": 0,
             "sokoban_live_solved": 0,
+            "sokoban_map_not_found": 0,  # no stored map matched the walls (the assert branch)
+            "sokoban_unsolvable": 0,  # stored and live solvers both failed
+            # Sokoban dunlev (1 = top, 4 = entry) where Sokoban was dropped; logged by f-string
+            "sokoban_drop_level_1": 0,
+            "sokoban_drop_level_2": 0,
+            "sokoban_drop_level_3": 0,
+            "sokoban_drop_level_4": 0,
             "drop_to_lighten_load": 0,
             "unstick": 0,
             "stuck_dive": 0,

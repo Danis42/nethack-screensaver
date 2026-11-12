@@ -801,6 +801,8 @@ class GlobalLogic:
                 if (mask & (sokomap.sokomap == soko_solver.WALL) == mask).all():
                     break
             else:
+                self.agent.stats_logger.log_event('sokoban_map_not_found')
+                self.agent.stats_logger.log_event(f'sokoban_drop_level_{self.agent.current_level().level_number}')
                 assert 0, 'sokomap not found'
 
             possible_mimics = set()
@@ -884,6 +886,8 @@ class GlobalLogic:
                     self.agent.stats_logger.log_event('sokoban_live_solved')
                     return
 
+            self.agent.stats_logger.log_event('sokoban_unsolvable')
+            self.agent.stats_logger.log_event(f'sokoban_drop_level_{self.agent.current_level().level_number}')
             self.agent.stats_logger.log_event('sokoban_dropped')
             self.plan.drop_sokoban()
             raise AgentPanic('sokomap unsolvable')
