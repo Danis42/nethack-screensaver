@@ -213,3 +213,38 @@ def test_confirm_baselines_need_a_gate(bench_app):
 def test_clean_attempt_jobs_cannot_be_created_over_http(bench_url):
     status, body = _req(bench_url + "/api/jobs", "POST", {"kind": "clean_attempt", "ref": "main"})
     assert status == 400 and "not creatable over HTTP or MCP" in body["error"]
+
+
+def test_an_interrupted_job_resumes_under_its_id_and_plays_each_seed_once(tmp_path, bench_repo):
+    from bench.scheduler import Scheduler
+    from bench.server import App
+    from bench.store import Store
+    from bench_fakes import FakeWorker, game
+    played = []
+    store = Store(tmp_path / "res.db")
+    app = App(store, Scheduler(store, lambda sha: FakeWorker(sha, lambda s, i: game(4), played), slots=2),
+              bench_repo, tmp_path / "cache")
+    job_id = app.start_baseline("main", lo=1000, hi=1010)["job_id"]
+    for _ in range(3):
+        app.scheduler.tick()
+    app.scheduler.shutdown()
+    assert 0 < store.count(app.job(job_id)["spec"]["sha"]) < 10
+    store2 = Store(tmp_path / "res.db")  # the server restarted
+    store2.interrupt_unfinished()
+    app2 = App(store2, Scheduler(store2, lambda sha: FakeWorker(sha, lambda s, i: game(4), played), slots=2),
+               bench_repo, tmp_path / "cache")
+    assert app2.resume(job_id) == {"job_id": job_id, "resumed": True}
+    run_until_idle(app2)
+    job = app2.job(job_id)
+    assert job["id"] == job_id and job["state"] == "done"
+    rows = store2._all("SELECT seed, COUNT(*) AS n FROM games GROUP BY seed ORDER BY seed")
+    assert [(r["seed"], r["n"]) for r in rows] == [(s, 1) for s in range(1000, 1010)]
+
+
+def test_only_interrupted_jobs_resume_over_http(bench_app, bench_url):
+    job_id = bench_app.start_baseline("main", games=2)["job_id"]
+    run_until_idle(bench_app)
+    status, body = _req(f"{bench_url}/api/jobs/{job_id}/resume", "POST", {})
+    assert status == 400 and "only interrupted jobs" in body["error"]
+    status, body = _req(f"{bench_url}/api/jobs/999/resume", "POST", {})
+    assert status == 404

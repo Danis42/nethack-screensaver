@@ -29,7 +29,8 @@ def test_tools_drive_the_server(url, bench_app):
 def test_tools_are_registered():
     names = {t.name for t in asyncio.run(mcp_server.mcp.list_tools())}
     assert names == {"bench_status", "bench_baseline", "bench_experiment", "bench_results", "bench_games",
-                     "bench_experiments", "bench_stop", "bench_import", "bench_reference"}
+                     "bench_experiments", "bench_stop", "bench_import", "bench_reference", "bench_resume",
+                     "bench_shutdown"}
 
 
 def test_bench_baseline_forwards_window_lgen_and_replicate(url, bench_app):

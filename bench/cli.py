@@ -38,6 +38,10 @@ def build_app(workers=10, data_dir=DATA, cache_dir=CACHE):
 
 def _serve(args):
     app = build_app(args.workers, args.data, args.cache)
+    if args.resume:
+        for job_id in app.store.interrupted():
+            app.store.resume(job_id)
+            print(f"resumed job {job_id}", flush=True)
     httpd, stop = serve(app, port=args.port)
     print(f"bench server on http://127.0.0.1:{args.port} ({args.workers} workers)", flush=True)
     try:
@@ -102,6 +106,7 @@ def main(argv=None):
     p = sub.add_parser("serve", help="run the bench server")
     p.add_argument("--port", type=int, default=8765)
     p.add_argument("--workers", type=int, default=10)
+    p.add_argument("--resume", action="store_true", help="queue every interrupted job again under its own id (D-08)")
     p.set_defaults(fn=_serve)
 
     p = sub.add_parser("wait", help="block until a job ends, then print it")

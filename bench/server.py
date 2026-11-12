@@ -1,6 +1,7 @@
 """Bench server: application logic, JSON API, status page and the scheduler loop."""
 import errno
 import json
+import re
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -87,6 +88,16 @@ class App:
                 "lock_blob_baseline": provenance.lock_blob(self.repo, base)}
         with self.lock:
             return {"job_id": self.scheduler.submit("experiment", spec)}
+
+    def resume(self, job_id):
+        """Queue an interrupted job again; it keeps its id and plays only the seeds not yet stored."""
+        job = self.store.job(int(job_id))
+        if job is None:
+            raise LookupError(f"no job {job_id}")
+        with self.lock:
+            if not self.store.resume(job["id"]):
+                raise ValueError(f"job {job['id']} is {job['state']}, only interrupted jobs can be resumed")
+        return {"job_id": job["id"], "resumed": True}
 
     def stop(self, job_id=None):
         with self.lock:
@@ -279,6 +290,9 @@ def make_handler(app):
                         return app.start_baseline(**body)
                     return app.start_experiment(**body)
                 return self._handle(start)
+            m = re.fullmatch(r"/api/jobs/(\d+)/resume", path)
+            if m:
+                return self._handle(lambda: app.resume(int(m.group(1))))
             if path == "/api/stop-all":
                 return self._handle(app.stop_all)
             if path == "/api/shutdown":

@@ -110,6 +110,20 @@ def bench_stop(job_id: int | None = None) -> dict:
 
 
 @mcp.tool()
+def bench_resume(job_id: int) -> dict:
+    """Resume an interrupted job (server restart, reboot) under the same job ID; it plays only the seeds not
+    yet stored. Only interrupted jobs can be resumed."""
+    return _call("POST", f"/api/jobs/{int(job_id)}/resume", {})
+
+
+@mcp.tool()
+def bench_shutdown() -> dict:
+    """Stop every job and end the bench server process. The next MCP call starts the server of the main checkout
+    again, so during a server swap call no other bench tool until the replacement server answers."""
+    return _call("POST", "/api/shutdown", {})
+
+
+@mcp.tool()
 def bench_import(kind: str, url: str | None = None, limit: int = 500) -> dict:
     """Import real ascensions: kind='xlog' with an xlogfile url (e.g.
     https://www.hardfought.org/xlogfiles/nethack50/xlogfile), or kind='dumplogs' to download

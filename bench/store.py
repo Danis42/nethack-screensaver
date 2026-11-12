@@ -198,6 +198,15 @@ class Store:
         row = self._one("SELECT * FROM jobs WHERE state = 'queued' ORDER BY id LIMIT 1")
         return None if row is None else _job(row)
 
+    def resume(self, job_id):
+        """Queue an interrupted job again under the same id (D-08); True when one row changed."""
+        return self._write("UPDATE jobs SET state = 'queued', ended_at = NULL WHERE id = ? AND state = 'interrupted'",
+                           (int(job_id),)).rowcount == 1
+
+    def interrupted(self):
+        """Ids of interrupted jobs, oldest first."""
+        return [r["id"] for r in self._all("SELECT id FROM jobs WHERE state = 'interrupted' ORDER BY id")]
+
     def interrupt_unfinished(self):
         """Jobs a stopped server left queued or running; returns how many were marked."""
         return self._write("UPDATE jobs SET state = 'interrupted', ended_at = ? "
