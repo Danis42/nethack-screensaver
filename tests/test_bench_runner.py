@@ -1,6 +1,8 @@
 import sys
 import time
 
+import pytest
+
 from bench.runner import ProcessWorker
 
 FAKE_GAME = '''
@@ -105,8 +107,56 @@ def test_an_old_commit_plays_unseeded_and_says_so_by_leaving_out_the_seed(tmp_pa
 
 def test_play_lines_are_parsed():
     from bench.worker import parse
-    assert parse("play\n") == (True, None) and parse("play 7\n") == (True, 7)
-    assert parse("stop\n") == (False, None) and parse("\n") == (False, None)
+    assert parse("play\n") == (True, None, None) and parse("play 7\n") == (True, 7, None)
+    assert parse("play 7 10000007\n") == (True, 7, 10000007)
+    assert parse("play 7 8 9\n") == (False, None, None)
+    assert parse("stop\n") == (False, None, None) and parse("\n") == (False, None, None)
+
+
+LGEN_GAME = '''
+from dataclasses import dataclass
+
+@dataclass
+class GameResult:
+    max_depth: int
+    seed: object = None
+    lgen: object = None
+
+def run_game(watchdog_seconds=None, seed=None, lgen=None):
+    return GameResult(3, seed, lgen)
+'''
+
+
+def _play_one(tmp_path, game_source, **kwargs):
+    wt = _fake_worktree(tmp_path)
+    (wt / "nethack_screensaver" / "game.py").write_text(game_source)
+    w = ProcessWorker(sys.executable, wt, tmp_path / "worker.log", nice=0)
+    try:
+        w.play(**kwargs)
+        got = []
+        _wait_for(lambda: got.extend(w.results()) or got)
+        return got
+    finally:
+        w.close()
+
+
+def test_worker_passes_lgen_when_the_commit_can_take_it(tmp_path):
+    assert _play_one(tmp_path, LGEN_GAME, seed=17, lgen=10000017) == [{"max_depth": 3, "seed": 17, "lgen": 10000017}]
+
+
+def test_a_commit_without_lgen_plays_seeded_and_leaves_lgen_out(tmp_path):
+    seeded_with_lgen_field = SEEDED_GAME.replace("seed: object = None", "seed: object = None\n    lgen: object = None")
+    got = _play_one(tmp_path, seeded_with_lgen_field, seed=17, lgen=10000017)
+    assert got == [{"max_depth": 3, "seed": 17}]
+
+
+def test_lgen_without_a_seed_is_refused(tmp_path):
+    w = ProcessWorker(sys.executable, _fake_worktree(tmp_path), tmp_path / "worker.log", nice=0)
+    try:
+        with pytest.raises(ValueError):
+            w.play(lgen=5)
+    finally:
+        w.close()
 
 
 HASH_SEED_GAME = '''

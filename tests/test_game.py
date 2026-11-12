@@ -213,6 +213,15 @@ def test_a_seed_with_a_pinned_role_is_refused():
         game.run_game(seed=3, role="val", max_steps=5)
 
 
+@pytest.mark.parametrize("kwargs", [{"seed": 1000, "lgen": 0}, {"lgen": 5}])
+def test_lgen_zero_or_without_a_seed_is_refused_before_any_environment(kwargs, monkeypatch):
+    def no_env(*args, **kw):
+        raise AssertionError("an environment was created")
+    monkeypatch.setattr(game.fixed_clock, "pin", no_env)
+    with pytest.raises(ValueError):
+        game.run_game(max_steps=5, **kwargs)
+
+
 # --- seed decides the moon; death-context observer ---------------------------------------------
 
 def _fake_env_and_wrapper(monkeypatch):
