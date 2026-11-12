@@ -326,7 +326,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "nle", directory = "reference/nle-src" },
+    { name = "nle", git = "file://$HOME/git/nle-screens.git?rev=cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72" },
     { name = "numba", specifier = ">=0.61" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "opencv-python-headless", specifier = ">=4.10" },
@@ -343,34 +343,13 @@ dev = [
 
 [[package]]
 name = "nle"
-source = { directory = "reference/nle-src" }
+version = "1.3.1.dev21+gcb9d6572f"
+source = { git = "file://$HOME/git/nle-screens.git?rev=cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72#cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72" }
 dependencies = [
     { name = "gymnasium" },
     { name = "numpy" },
     { name = "pybind11" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "cmake-format", marker = "extra == 'dev'", specifier = ">=0.6.10" },
-    { name = "gymnasium", specifier = "==1.2.0" },
-    { name = "memory-profiler", marker = "extra == 'dev'", specifier = ">=0.60.0" },
-    { name = "nle", extras = ["agent", "dev"], marker = "extra == 'all'" },
-    { name = "numpy", specifier = ">=1.16" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=2.0.1" },
-    { name = "pybind11", specifier = ">=2.2" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=6.2.5" },
-    { name = "pytest-benchmark", marker = "extra == 'dev'", specifier = ">=3.4.1" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = "==0.4.3" },
-    { name = "setuptools", marker = "extra == 'dev'", specifier = ">=69.5.1" },
-    { name = "sphinx", marker = "extra == 'dev'", specifier = ">=2.4.4" },
-    { name = "sphinx-rtd-theme", marker = "extra == 'dev'", specifier = ">=0.4.3" },
-    { name = "torch", marker = "extra == 'agent'", specifier = ">=1.3.1" },
-]
-provides-extras = ["agent", "dev", "all"]
-
-[package.metadata.requires-dev]
-dev = [{ name = "nle", extras = ["dev"] }]
 
 [[package]]
 name = "numba"

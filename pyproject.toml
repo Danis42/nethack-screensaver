@@ -20,8 +20,10 @@ dev = ["pytest>=8", {include-group = "bench"}]
 bench = ["mcp>=2.3"]
 
 [tool.uv.sources]
-# NetHack 5.0: NLE has no release for it; local build of reference/nle-src, branch screens-nh5
-nle = { path = "reference/nle-src" }
+# NetHack 5.0: NLE has no release for it. The NLE fork (branch screens-nh5) lives in a local bare repo
+# under ~/git (no remote, D-01) and is pinned by commit; uv.lock records the commit and every bench job
+# records it (D-02).
+nle = { git = "file://$HOME/git/nle-screens.git", rev = "cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72" }
 
 [build-system]
 requires = ["hatchling"]
