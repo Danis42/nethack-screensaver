@@ -38,6 +38,7 @@ class StatsLogger:
             "allow_attack_all": 0,
             "sokoban_dropped": 0,
             "sokoban_live_solved": 0,
+            "quest_portal_found": 0,  # first step the magic portal is seen or entered in the Dungeons
             "sokoban_map_not_found": 0,  # no stored map matched the walls (the assert branch)
             "sokoban_unsolvable": 0,  # stored and live solvers both failed
             # Sokoban dunlev (1 = top, 4 = entry) where Sokoban was dropped; logged by f-string

@@ -1,4 +1,7 @@
-"""The ascension ladder: 17 rungs from the Gnomish Mines to an ascension.
+"""The ascension ladder: 18 rungs from the Gnomish Mines to an ascension.
+
+"Quest portal" (MEAS-02, D-21) is its own stage: reached when the magic portal is found
+(its trap glyph is on the level map) or entered. "Quest" is Home 1.
 
 Standard library only, so the bench server can import the rung list. The bot hands over
 plain Facts once per step; no glyph or agent code lives here. Level numbers are NetHack's
@@ -27,6 +30,7 @@ RUNGS = tuple(Rung(i + 1, *r) for i, r in enumerate([
     ("sokoban_solved", "Sokoban solved", "completed 4th Sokoban level"),
     ("mines_end", "Mines' End", "acquired the Mines' End luckstone"),
     ("dlvl15", "Dlvl 15+", None),
+    ("quest_portal", "Quest portal", None),
     ("quest", "Quest", "entered Home 1, the Quest"),
     ("medusa", "Medusa", "killed Medusa"),
     ("castle", "Castle", None),
@@ -57,6 +61,7 @@ class Facts:
     inventory: tuple[str, ...] = ()
     message: str = ""
     mines_end_level: int | None = None  # the game's real last Mines level, when the measuring side knows it
+    quest_portal_found: bool = False  # magic portal glyph on this level, or the activation message
 
 
 @dataclass
@@ -84,6 +89,7 @@ DETECTORS = {
                                    and m.sokoban_traps_seen and not f.sokoban_traps,  # fact:sokoban-entry-is-bottom-level
     "mines_end": _mines_end,
     "dlvl15": lambda f, m: f.dungeon == DOOM and f.level >= 15,
+    "quest_portal": lambda f, m: f.quest_portal_found or f.dungeon == QUEST,  # in the Quest: it was entered
     "quest": lambda f, m: f.dungeon == QUEST,
     "medusa": lambda f, m: f.dungeon == DOOM and f.level >= 21 and (f.medusa_seen or f.water_share > 1 / 3),
     "castle": lambda f, m: f.dungeon == DOOM and f.drawbridge_seen,

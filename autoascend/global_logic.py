@@ -257,6 +257,7 @@ class GlobalLogic:
         self._portal_hunt_since = None  # turn the portal hunt began (inf: given up)
         self._quest_arrival = None  # square the portal put the hero on in the Quest
         self._quest_left = False
+        self._quest_portal_found_logged = False
         self.ladder = Ladder()
         self._ladder_broken = False
 
@@ -604,8 +605,17 @@ class GlobalLogic:
         self._update_portal()
         self._update_ladder()
 
+    def _quest_portal_found_here(self, level):
+        """The magic portal's trap glyph is on this level's map, or the hero just activated a portal."""
+        return bool(utils.isin(level.objects, [SS.S_magic_portal]).any()) or \
+            quest_portal.ENTERED_MESSAGE in self.agent.message
+
     def _update_portal(self):
         level = self.agent.current_level()
+        if not self._quest_portal_found_logged and level.dungeon_number == Level.DUNGEONS_OF_DOOM and \
+                self._quest_portal_found_here(level):
+            self._quest_portal_found_logged = True
+            self.agent.stats_logger.log_event('quest_portal_found')
         if self.portal_level is None and level.dungeon_number == Level.DUNGEONS_OF_DOOM and \
                 quest_portal.is_portal_level_message(self.agent.message):
             self.portal_level = level.key()
@@ -740,7 +750,8 @@ class GlobalLogic:
             drawbridge_seen=not hallu and bool(utils.isin(level.objects, DRAWBRIDGE).any()),
             down_stairs_seen=bool(utils.isin(level.objects, G.STAIR_DOWN).any()),
             inventory=tuple(item.text for item in flatten_items(self.agent.inventory.items)),
-            message=self.agent.message, mines_end_level=self.truth_mines_end_level)
+            message=self.agent.message, mines_end_level=self.truth_mines_end_level,
+            quest_portal_found=self._quest_portal_found_here(level))
 
     @utils.debug_log('solving sokoban')
     @Strategy.wrap
