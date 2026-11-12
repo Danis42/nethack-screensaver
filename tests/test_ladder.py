@@ -134,23 +134,7 @@ def test_finish_adds_ascended_only_for_an_ascension():
 
 import numpy as np
 
-
-def _fake_logic(hallu=False, objects=None, seen=None, glyphs=None, key=(0, 22)):
-    from types import SimpleNamespace
-
-    from autoascend.global_logic import GlobalLogic
-    from autoascend.glyph import C
-    logic = GlobalLogic.__new__(GlobalLogic)
-    level = SimpleNamespace(dungeon_number=np.int64(key[0]), level_number=np.int64(key[1]), key=lambda: key,
-                            objects=objects if objects is not None else np.full((C.SIZE_Y, C.SIZE_X), -1, np.int16),
-                            seen=seen if seen is not None else np.ones((C.SIZE_Y, C.SIZE_X), bool))
-    logic.agent = SimpleNamespace(
-        current_level=lambda: level, blstats=SimpleNamespace(time=np.int64(123)),
-        character=SimpleNamespace(prop=SimpleNamespace(hallu=hallu)),
-        glyphs=glyphs if glyphs is not None else np.zeros((C.SIZE_Y, C.SIZE_X), np.int16),
-        inventory=SimpleNamespace(items=[]), message="")
-    logic.oracle_level = logic.minetown_level = None
-    return logic
+from fake_logic import fake_logic
 
 
 def test_facts_see_water_and_medusa_but_not_while_hallucinating():
@@ -158,16 +142,16 @@ def test_facts_see_water_and_medusa_but_not_while_hallucinating():
     objects = np.full((C.SIZE_Y, C.SIZE_X), SS.S_pool, np.int16)
     glyphs = np.zeros((C.SIZE_Y, C.SIZE_X), np.int16)
     glyphs[3, 3] = MON.fn('Medusa')
-    facts = _fake_logic(objects=objects, glyphs=glyphs).ladder_facts()
+    facts = fake_logic(objects=objects, glyphs=glyphs).ladder_facts()
     assert facts.turn == 123 and (facts.dungeon, facts.level) == (0, 22)
     assert all(type(v) is int for v in (facts.turn, facts.dungeon, facts.level))
     assert facts.water_share == 1.0 and facts.medusa_seen
-    tripping = _fake_logic(hallu=True, objects=objects, glyphs=glyphs).ladder_facts()
+    tripping = fake_logic(hallu=True, objects=objects, glyphs=glyphs).ladder_facts()
     assert tripping.water_share == 0.0 and not tripping.medusa_seen and not tripping.drawbridge_seen
 
 
 def test_facts_carry_the_layout_only_when_measuring_code_set_it():
-    logic = _fake_logic(key=(2, 8))
+    logic = fake_logic(key=(2, 8))
     assert logic.ladder_facts().mines_end_level is None
     logic.truth_mines_end_level = 8
     assert logic.ladder_facts().mines_end_level == 8
@@ -175,14 +159,14 @@ def test_facts_carry_the_layout_only_when_measuring_code_set_it():
 
 def test_facts_on_an_undrawn_sokoban_top_level_are_not_solved():
     from autoascend.glyph import C
-    facts = _fake_logic(key=(4, 1), seen=np.zeros((C.SIZE_Y, C.SIZE_X), bool)).ladder_facts()
+    facts = fake_logic(key=(4, 1), seen=np.zeros((C.SIZE_Y, C.SIZE_X), bool)).ladder_facts()
     assert facts.sokoban_seen == 0
     assert "sokoban_solved" not in reached(facts).reached
 
 
 def test_a_failing_ladder_is_reported_once_and_never_ends_the_game():
     from types import SimpleNamespace
-    logic = _fake_logic()
+    logic = fake_logic()
     events = []
     logic.ladder = Ladder()
     logic._ladder_broken = False
@@ -201,10 +185,10 @@ def test_ladder_facts_see_the_magic_portal_glyph_or_the_activation_message():
     from autoascend import quest_portal
     from autoascend.glyph import C, SS
     objects = np.full((C.SIZE_Y, C.SIZE_X), -1, np.int16)
-    assert not _fake_logic(objects=objects).ladder_facts().quest_portal_found
+    assert not fake_logic(objects=objects).ladder_facts().quest_portal_found
     objects[5, 7] = SS.S_magic_portal
-    assert _fake_logic(objects=objects).ladder_facts().quest_portal_found
-    logic = _fake_logic()
+    assert fake_logic(objects=objects).ladder_facts().quest_portal_found
+    logic = fake_logic()
     logic.agent.message = "Wheee! " + quest_portal.ENTERED_MESSAGE
     assert logic.ladder_facts().quest_portal_found
 
@@ -213,6 +197,6 @@ def test_a_rolling_boulder_trap_is_not_a_sokoban_trap_left():
     from autoascend.glyph import C, SS
     objects = np.full((C.SIZE_Y, C.SIZE_X), -1, np.int16)
     objects[4, 4] = SS.S_rolling_boulder_trap
-    assert not _fake_logic(objects=objects).ladder_facts().sokoban_traps
+    assert not fake_logic(objects=objects).ladder_facts().sokoban_traps
     objects[4, 5] = SS.S_pit
-    assert _fake_logic(objects=objects).ladder_facts().sokoban_traps
+    assert fake_logic(objects=objects).ladder_facts().sokoban_traps
