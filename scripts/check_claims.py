@@ -42,9 +42,11 @@ Environment: SCREENS_BENCH_DATA (database directory), CLAUDE_PROJECT_DIR (reposi
 CLAIM_CHECK_AUDIT (audit log path, used by tests).
 """
 import json
+import math
 import os
 import re
 import sqlite3
+import subprocess
 import sys
 import time
 import traceback
@@ -142,11 +144,49 @@ def verify_job(db_path, job_id, need_started):
 
 
 def verify_commit(repo, sha):
-    return f"commit {sha[:10]}: not checked yet"
+    """None when sha is a full 40-hex hash of a commit in repo; else the reason."""
+    if not re.fullmatch(r"[0-9a-f]{40}", sha or ""):
+        return f"{sha!r} is not a full 40-hex commit hash"
+    try:
+        proc = subprocess.run(["git", "-C", str(repo), "cat-file", "-e", f"{sha}^{{commit}}"],
+                              capture_output=True, timeout=10)
+    except (OSError, subprocess.TimeoutExpired) as e:  # git missing or hung: the proof cannot be checked
+        return f"commit {sha[:10]}: git failed ({e})"
+    return None if proc.returncode == 0 else f"commit {sha[:10]} not in this repo"
+
+
+_ALLOWED = {sqlite3.SQLITE_SELECT, sqlite3.SQLITE_READ, sqlite3.SQLITE_FUNCTION}
+
+
+def _same(cell, expected):
+    try:
+        return math.isclose(float(cell), float(expected), rel_tol=1e-9)
+    except (TypeError, ValueError):  # not numbers: compare as text
+        return str(cell).strip() == expected.strip()
 
 
 def verify_query(db_path, sql, expected):
-    return "query proofs: not checked yet"
+    """Re-run one read-only SELECT; None when its first cell equals expected, else the reason."""
+    body = sql.strip().rstrip(";").strip()
+    if ";" in body:
+        return "only one statement is allowed"
+    try:
+        con = _connect_ro(db_path)
+    except sqlite3.Error as e:  # missing or unreadable database: the proof cannot be checked
+        return f"cannot open {db_path} read-only ({e})"
+    try:
+        con.execute("PRAGMA query_only = ON")
+        con.set_authorizer(lambda action, *args: sqlite3.SQLITE_OK if action in _ALLOWED else sqlite3.SQLITE_DENY)
+        deadline = time.monotonic() + QUERY_SECONDS
+        con.set_progress_handler(lambda: 1 if time.monotonic() > deadline else 0, 1000)
+        row = con.execute(body).fetchone()
+    except sqlite3.Error as e:  # refused, failing or interrupted query: a failed proof, not a crash
+        return f"query refused or failed ({e})"
+    finally:
+        con.close()
+    if row is None:
+        return "query returned no rows"
+    return None if _same(row[0], expected) else f"query returned {row[0]!r}, not {expected.strip()!r}"
 
 
 def _check_paragraph(paragraph, claims, db_path, repo):
@@ -218,8 +258,15 @@ def _append(audit_path, record):
 
 def main():
     db_path, repo, audit_path = _paths()
-    payload = json.loads(sys.stdin.read() or "{}")
-    decision, record = run(payload, db_path, repo, audit_path)
+    try:
+        payload = json.loads(sys.stdin.read() or "{}")
+        decision, record = run(payload, db_path, repo, audit_path)
+    except Exception as e:  # D-18: a crash of the checker is not a failed claim
+        print(f"check_claims crashed: {e!r}; this reply was NOT checked; see {audit_path}", file=sys.stderr)
+        _append(audit_path, {"ts": time.time(), "session_id": None, "decision": "crash",
+                             "stop_hook_active": None, "claims": [], "failures": [],
+                             "error": repr(e), "traceback": traceback.format_exc()})
+        return 0
     _append(audit_path, record)
     if decision:
         print(json.dumps(decision))
