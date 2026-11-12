@@ -72,9 +72,7 @@ METRICS = {m.name: m for m in [
     Metric("depth", "max depth", "median", lambda g: g["max_depth"]),
     Metric("turns", "turns played", "median", lambda g: g["turns"]),
     Metric("score", "score", "median", lambda g: g["score"]),
-    Metric("rung", "highest ascension-ladder rung", "median", lambda g: g["rung"]),
-] + [Metric(f"rung{r.number}", f"reached rung {r.number}+ ({r.title})", "rate",
-            lambda g, n=r.number: g["rung"] >= n) for r in RUNGS]}
+] + [Metric(f"stage_{r.key}", f"reached {r.title}", "rate", lambda g, k=r.key: k in g["ladder"]) for r in RUNGS]}
 
 
 def orient(state, metric):

@@ -242,7 +242,7 @@ def _ladder(args):
     print("|---|------|---------|-----------------|------------------------|")
     for row in ladder_rows(games, _yardstick(store)):
         share = f"{round(100 * row['hits'] / row['n'])}%" if row["n"] else "-"
-        print(f"| {row['rung']} | {row['title']} | {row['hits']} ({share}) "
+        print(f"| {row['order']} | {row['title']} | {row['hits']} ({share}) "
               f"| {_num(row['median_turn'])} | {_num(row['yardstick_turn'])} |")
     return 0
 

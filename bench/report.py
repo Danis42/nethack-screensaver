@@ -4,19 +4,22 @@ from collections import Counter, defaultdict
 
 from autoascend.ladder import RUNGS
 
+from . import funnel
 from .metrics import METRICS, evaluate, killer
-from .stats import Z95, newcombe
+from .stats import Z95, newcombe, wilson
 
 
 def ladder_rows(games, yardstick=None):
-    """Per rung: games reaching it or higher, our median first turn, the real ascenders' median turn."""
+    """Per stage: games whose ladder has it (marginal reach) with a 95% Wilson interval, our median first turn,
+    the real ascenders' median turn."""
     yardstick = yardstick or {}
     laddered = [g for g in games if "ladder" in g]  # older commits did not record it
-    rows = []
+    n, rows = len(laddered), []
     for r in RUNGS:
         turns = [g["ladder"][r.key] for g in laddered if r.key in g["ladder"]]
-        rows.append({"rung": r.number, "key": r.key, "title": r.title,
-                     "hits": sum(g["rung"] >= r.number for g in laddered), "n": len(laddered),
+        lo, hi = wilson(len(turns), n, Z95) if n else (None, None)
+        rows.append({"order": r.number, "key": r.key, "title": r.title, "hits": len(turns), "n": n,
+                     "rate": len(turns) / n if n else None, "lo": lo, "hi": hi,
                      "median_turn": statistics.median(turns) if turns else None,
                      "yardstick_turn": yardstick.get(r.yardstick_event)})
     return rows
@@ -31,6 +34,7 @@ def summary(games, yardstick=None):
         "games": len(games),
         "metrics": {name: evaluate(m, games) for name, m in METRICS.items()},
         "ladder": ladder_rows(games, yardstick),
+        "funnel": funnel.funnel(games),
         "killers": Counter(k for k in map(killer, games) if k).most_common(15),
         "depths": dict(sorted(Counter(g["max_depth"] for g in games).items())),
         "outcomes": {s: dict(c) for s, c in sorted(outcomes.items())},
