@@ -1,0 +1,161 @@
+{
+  "seed": 20261112,
+  "reps": 20000,
+  "alpha": 0.05,
+  "null": [
+    {
+      "design": "mixture-96seed-blocks",
+      "psi": 0.05,
+      "reps": 20000,
+      "rejections": 441,
+      "rate": 0.02205,
+      "se": 0.001038359222523689,
+      "bound": 0.05311507766757107,
+      "ok": true
+    },
+    {
+      "design": "mixture-every-pair",
+      "psi": 0.05,
+      "reps": 20000,
+      "rejections": 732,
+      "rate": 0.0366,
+      "se": 0.0013277883867544558,
+      "bound": 0.05398336516026337,
+      "ok": true
+    },
+    {
+      "design": "legacy-wald-checkpoints",
+      "psi": 0.05,
+      "reps": 20000,
+      "rejections": 1405,
+      "rate": 0.07025,
+      "se": 0.0018071377576156168
+    },
+    {
+      "design": "mcnemar-peek-20pairs",
+      "psi": 0.05,
+      "reps": 20000,
+      "rejections": 6580,
+      "rate": 0.329,
+      "se": 0.003322341042096672
+    },
+    {
+      "design": "mixture-96seed-blocks",
+      "psi": 0.2,
+      "reps": 20000,
+      "rejections": 297,
+      "rate": 0.01485,
+      "se": 0.0008552624597163142,
+      "bound": 0.052565787379148944,
+      "ok": true
+    },
+    {
+      "design": "mixture-every-pair",
+      "psi": 0.2,
+      "reps": 20000,
+      "rejections": 708,
+      "rate": 0.0354,
+      "se": 0.0013066529761187552,
+      "bound": 0.05391995892835627,
+      "ok": true
+    },
+    {
+      "design": "legacy-wald-checkpoints",
+      "psi": 0.2,
+      "reps": 20000,
+      "rejections": 1545,
+      "rate": 0.07725,
+      "se": 0.0018878882051117326
+    },
+    {
+      "design": "mcnemar-peek-20pairs",
+      "psi": 0.2,
+      "reps": 20000,
+      "rejections": 6739,
+      "rate": 0.33695,
+      "se": 0.0033422649318987263
+    },
+    {
+      "design": "mixture-96seed-blocks",
+      "psi": 0.4,
+      "reps": 20000,
+      "rejections": 212,
+      "rate": 0.0106,
+      "se": 0.00072414225121864,
+      "bound": 0.05217242675365592,
+      "ok": true
+    },
+    {
+      "design": "mixture-every-pair",
+      "psi": 0.4,
+      "reps": 20000,
+      "rejections": 722,
+      "rate": 0.0361,
+      "se": 0.0013190297570562994,
+      "bound": 0.0539570892711689,
+      "ok": true
+    },
+    {
+      "design": "legacy-wald-checkpoints",
+      "psi": 0.4,
+      "reps": 20000,
+      "rejections": 1461,
+      "rate": 0.07305,
+      "se": 0.0018400230637141482
+    },
+    {
+      "design": "mcnemar-peek-20pairs",
+      "psi": 0.4,
+      "reps": 20000,
+      "rejections": 6654,
+      "rate": 0.3327,
+      "se": 0.0033317466140149374
+    }
+  ],
+  "power": [
+    {
+      "psi": 0.2,
+      "delta": 0.03,
+      "n_max": 4000,
+      "block": 96,
+      "reps": 20000,
+      "power": 0.8312,
+      "mean_stop": 2309.376,
+      "median_stop": 2304.0,
+      "median_stop_when_won": 1920.0
+    },
+    {
+      "psi": 0.2,
+      "delta": 0.04,
+      "n_max": 3000,
+      "block": 96,
+      "reps": 20000,
+      "power": 0.9502,
+      "mean_stop": 1362.2208,
+      "median_stop": 1248.0,
+      "median_stop_when_won": 1152.0
+    },
+    {
+      "psi": 0.1,
+      "delta": 0.02,
+      "n_max": 6000,
+      "block": 96,
+      "reps": 20000,
+      "power": 0.9516,
+      "mean_stop": 2581.4928,
+      "median_stop": 2304.0,
+      "median_stop_when_won": 2208.0
+    },
+    {
+      "psi": 0.3,
+      "delta": 0.05,
+      "n_max": 3000,
+      "block": 96,
+      "reps": 20000,
+      "power": 0.9516,
+      "mean_stop": 1370.7072,
+      "median_stop": 1248.0,
+      "median_stop_when_won": 1248.0
+    }
+  ]
+}
