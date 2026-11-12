@@ -33,3 +33,185 @@ evidence = [
 quote = "if (dgn_entry < 0) { svd.dungeons[dngidx].entry_lev = svd.dungeons[dngidx].num_dunlevs + dgn_entry + 1;"
 web = []
 notes = "dat/dungeon.lua gives Sokoban base = 4 and entry = -1, so entry_lev = 4 + (-1) + 1 = 4: the bottom level. Level 1 (soko1) is the top, where the bot's sokoban_solved detector looks."
+
+[prayer-start-message]
+claim = "Praying prints 'You begin praying to <god>.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:2140"]
+quote = "You(\"begin praying to %s.\", align_gname(gp.p_aligntyp));"
+web = []
+
+[prayer-safe-prayer-shimmering-light]
+claim = "A prayer that will succeed (p_type 3, not in Gehennom) makes the hero invulnerable for the prayer and, unless blind, prints 'You are surrounded by a shimmering light.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:2265-2269"]
+quote = "if (gp.p_type == 3 && !Inhell) { /* if you've been true to your god you can't die while you pray */ if (!Blind) You(\"are surrounded by a shimmering light.\"); u.uinvulnerable = TRUE;"
+web = []
+notes = "Blind heroes get invulnerability without the message."
+
+[prayer-invulnerable-attack-pulls-back]
+claim = "While the praying hero is invulnerable, an adjacent monster's attack prints '<Monster> starts to attack you, but pulls back.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/mhitu.c:744-750"]
+quote = "pline(\"%s starts to attack you, but pulls back.\", Monnam(mtmp));"
+web = []
+notes = "Only shown when the hero sees or senses the monster; an engulfer instead 'loosens its grip slightly'."
+
+[prayer-god-mood-message]
+claim = "A pleased god's reply is 'You feel that <god> is well-pleased / pleased / satisfied.' by alignment record (hallucination: pleased as punch / ticklish / full)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:1077-1082"]
+quote = "You_feel(\"that %s is %s.\", align_gname(g_align), (u.ualign.record >= DEVOUT) ? Hallucination ? \"pleased as punch\" : \"well-pleased\" : (u.ualign.record >= STRIDENT) ? Hallucination ? \"ticklish\" : \"pleased\" : Hallucination ? \"full\" : \"satisfied\");"
+web = []
+
+[prayer-fix-hunger-message]
+claim = "Prayer fixing hunger prints 'Your stomach feels content.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:409"]
+quote = "Your(\"%s feels content.\", body_part(STOMACH));"
+web = []
+notes = "body_part(STOMACH) can name another body part for some polymorph forms."
+
+[prayer-fix-low-hp-message]
+claim = "Prayer fixing low hit points prints 'You feel much better.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:425"]
+quote = "You_feel(\"much better.\");"
+web = []
+
+[prayer-fix-low-hp-feel-better]
+claim = "A successful prayer can print 'You feel better.'"
+tag = "unverified"
+web = ["https://nethackwiki.com/wiki/Prayer"]
+notes = "Not printed by pray.c in 5.0 (grep: only 'You feel much better.' at pray.c:425); in 5.0 'You feel better.' comes from artifact.c:1788 (artifact invoke healing), not prayer. The wiki Prayer page (3.6.6) gives no HP-fix message. The marker is harmless (a substring of no failure line) but may misread a non-prayer message as success."
+
+[prayer-fix-lycanthropy-message]
+claim = "Curing lycanthropy (a prayer fix) prints 'You feel purified.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/were.c:218"]
+quote = "You_feel(\"purified.\");"
+web = []
+
+[prayer-fix-illness-message]
+claim = "Prayer fixing sickness prints 'You feel in good health again.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:546"]
+quote = "You_feel(\"in good health again.\");"
+web = []
+
+[prayer-fix-deafness-message]
+claim = "Prayer fixing deafness prints '... can hear again' ('You can hear again' when it is the only cured sense)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:566-572"]
+quote = "Sprintf(eos(msgbuf), \"%s can hear again\", !*msgbuf ? \"You\" : \" and you\");"
+web = []
+
+[prayer-boon-golden-glow]
+claim = "A pleased god's boon can print 'You are surrounded by a golden glow.' (restores HP, raises max HP)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:1248"]
+quote = "You(\"are surrounded by %s glow.\", an(hcolor(NH_GOLDEN)));"
+web = []
+notes = "Under hallucination hcolor() gives a random colour, so the exact marker can miss."
+
+[prayer-boon-light-blue-aura]
+claim = "A pleased god's boon can print 'You are surrounded by a light blue aura.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:1290"]
+quote = "You(\"are surrounded by %s aura.\", an(hcolor(NH_LIGHT_BLUE)));"
+web = []
+notes = "Under hallucination hcolor() gives a random colour."
+
+[prayer-boon-spellbook-at-feet]
+claim = "A pleased god can give a spellbook, printed as '<A spellbook> appears at your feet!' via at_your_feet()"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:1063", "reference/nethack-5.0.0/src/pray.c:788-800"]
+quote = "at_your_feet(upstart(ansimpleoname(otmp)));"
+web = []
+notes = "The text names the book's appearance (e.g. 'A dusty spellbook'), so 'A spellbook appears at your feet!' matches only some books; levitating heroes get 'beneath', blind heroes 'Something lands'."
+
+[prayer-fix-cursed-item-amber-glow]
+claim = "Prayer uncursing an item prints '<Your item> softly glows amber.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:594"]
+quote = "pline(\"%s %s.\", Yobjnam2(otmp, \"softly glow\"), hcolor(NH_AMBER));"
+web = []
+notes = "Also pray.c:360-364 for the left/right ring variants. Hallucination changes the colour."
+
+[prayer-altar-water-light-blue]
+claim = "Praying on a coaligned altar with water potions on it prints '... potions on the altar glow light blue for a moment.' (blessed)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:1405-1409"]
+quote = "pline(\"%s potion%s on the altar glow%s %s for a moment.\","
+web = []
+
+[prayer-angry-displeased]
+claim = "An angry god's answer can be 'You feel that <god> is displeased.' (hallucination: bummed)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:728-729"]
+quote = "You_feel(\"that %s is %s.\", align_gname(resp_god), Hallucination ? \"bummed\" : \"displeased\");"
+web = []
+
+[prayer-angry-arrogant-relearn]
+claim = "An angry god can say 'Thou art arrogant, mortal.' (or 'Thou hast strayed from the path') then 'Thou must relearn thy lessons!', costing a level and 1 Wis"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:734-742"]
+quote = "verbalize(\"Thou must relearn thy lessons!\");"
+web = []
+
+[prayer-angry-wis-loss-foolish]
+claim = "Losing Wisdom prints 'You feel foolish!' (minusattr for A_WIS)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/attrib.c:13-15", "reference/nethack-5.0.0/src/pray.c:741"]
+quote = "\"foolish\", \"clumsy\","
+web = []
+
+[prayer-angry-punished]
+claim = "An angry god can punish with a ball and chain: 'You are being punished for your misbehavior!'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:747", "reference/nethack-5.0.0/src/read.c:3030"]
+quote = "You(\"are being punished for your misbehavior!\");"
+web = []
+
+[prayer-angry-black-glow]
+claim = "An angry god can curse items: 'A black glow surrounds you.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:756"]
+quote = "pline(\"%s glow surrounds you.\", An(hcolor(NH_BLACK)));"
+web = []
+notes = "Not shown when blind or magic-resistant; hallucination changes the colour."
+
+[prayer-angry-durst-then-die]
+claim = "An angry god can say 'Thou durst call upon me?' then 'Then die, mortal!' and zap the hero"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:764-770"]
+quote = "verbalize(\"Thou durst %s me?\","
+web = []
+
+[prayer-angry-lightning]
+claim = "A god zapping the hero prints 'Suddenly, a bolt of lightning strikes you!'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:627"]
+quote = "pline(\"Suddenly, a bolt of lightning strikes you!\");"
+web = []
+
+[prayer-angry-fry]
+claim = "Without reflection the god's lightning kills: 'You fry to a crisp!'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:696-697"]
+quote = "You(\"%s!\", !via_disintegration ? \"fry to a crisp\""
+web = []
+
+[prayer-angry-hast-angered-me]
+claim = "An angry god's voice says 'Thou hast angered me.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/pray.c:1431"]
+quote = "godvoice(g_align, \"Thou hast angered me.\");"
+web = []
+
+[death-you-die-message]
+claim = "Death prints 'You die...'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/hack.c:4287"]
+quote = "urgent_pline(\"You die...\");"
+web = []
