@@ -20,7 +20,7 @@ def _verdict(state, checkpoint=1152, diff=0.0, lo=-0.04, hi=0.04):
             "detectable": (hi - lo) / 2}
 
 
-def add_experiment(store, candidate=CAND, baseline=BASE, metric="rung2", state="done",
+def add_experiment(store, candidate=CAND, baseline=BASE, metric="stage_minetown", state="done",
                    verdict_state="no measurable difference", pairs=None, **verdict_kw):
     job = store.add_job("experiment", {"candidate": candidate, "baseline": baseline, "metric": metric})
     result = {"verdict": _verdict(verdict_state, **verdict_kw)}
@@ -53,15 +53,15 @@ def test_verdict_prints_one_json_line_per_matching_job(store, tmp_path, capsys):
     assert set(lines[0]) == {"job", "candidate", "baseline", "metric", "state", "checkpoint", "diff",
                              "lo", "hi", "detectable", "pairs"}
     assert lines[0]["state"] == "better" and lines[0]["pairs"] == 1152
-    assert lines[0]["candidate"] == CAND and lines[0]["baseline"] == BASE and lines[0]["metric"] == "rung2"
+    assert lines[0]["candidate"] == CAND and lines[0]["baseline"] == BASE and lines[0]["metric"] == "stage_minetown"
     assert lines[1]["pairs"] is None  # older jobs stored no pair count
 
 
 def test_verdict_filters_by_baseline_and_metric(store, tmp_path, capsys):
-    wanted = add_experiment(store, baseline=BASE, metric="rung2")
-    add_experiment(store, baseline=OTHER, metric="rung2")
+    wanted = add_experiment(store, baseline=BASE, metric="stage_minetown")
+    add_experiment(store, baseline=OTHER, metric="stage_minetown")
     add_experiment(store, baseline=BASE, metric="dlvl6")
-    code, out = run(capsys, tmp_path, "verdict", CAND, "--baseline", BASE, "--metric", "rung2")
+    code, out = run(capsys, tmp_path, "verdict", CAND, "--baseline", BASE, "--metric", "stage_minetown")
     assert code == 0
     assert [json.loads(line)["job"] for line in out.strip().splitlines()] == [wanted]
 
@@ -345,7 +345,7 @@ def test_ladder_needs_all_requested_seeds(store, tmp_path, capsys):
 def test_ladder_all_games_uses_unseeded_games_too(store, tmp_path, capsys):
     fill(store, CAND, [_lg(0, 1), _lg(1, 2)])
     for rung in (1, 1, 3):
-        store.add_game(CAND, None, {"rung": rung, "ladder": {"mines": 5}, "end_reason": "x"})
+        store.add_game(CAND, None, {"rung": rung, "ladder": {r.key: 5 for r in RUNGS[:rung]}, "end_reason": "x"})
     code, out = run(capsys, tmp_path, "ladder", CAND, "--all-games")
     assert code == 0 and "n = 5 games (all stored games)" in out
     assert _table(out)["1"][2] == "5 (100%)" and _table(out)["3"][2] == "1 (20%)"
@@ -528,9 +528,9 @@ def test_seeds_with_strategy_or_n_is_refused(capsys):
 def test_pairs_judges_a_numeric_metric(store, tmp_path, capsys):
     from bench.stats import judge_paired_numeric
     for seed, (c, b) in enumerate([(3, 1), (2, 2), (5, 1), (1, 2)]):
-        store.add_game(CAND, None, _g(seed, rung=c))
-        store.add_game(BASE, None, _g(seed, rung=b))
-    code, out = run(capsys, tmp_path, "pairs", CAND, BASE, "--metric", "rung", "--seeds", "4")
+        store.add_game(CAND, None, _g(seed, max_depth=c))
+        store.add_game(BASE, None, _g(seed, max_depth=b))
+    code, out = run(capsys, tmp_path, "pairs", CAND, BASE, "--metric", "depth", "--seeds", "4")
     v = judge_paired_numeric([(3, 1), (2, 2), (5, 1), (1, 2)], 4)
     assert code == 0
     assert "(numeric)" in out and f"diff={v.diff:+.3f}" in out and f"half-width={v.detectable:.3f}" in out

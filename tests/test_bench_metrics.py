@@ -71,53 +71,37 @@ def test_summary_and_compare():
 
 
 from bench.report import ladder_rows
+from bench.stats import Z95, wilson
 
 
-def test_rung_metrics_skip_games_without_a_ladder():
-    games = [_g(rung=2, ladder={"mines": 900, "minetown": 3000}), _g(rung=0, ladder={}), _g()]
-    assert evaluate(METRICS["rung1"], games) == {"n": 2, "skipped": 1, "hits": 1, "rate": 0.5}
-    assert evaluate(METRICS["rung3"], games)["hits"] == 0
-    assert evaluate(METRICS["rung"], games)["median"] == 1
-    assert METRICS["rung2"].description == "reached rung 2+ (Minetown)"
-    assert "rung17" in METRICS
+def test_stage_metrics_skip_games_without_a_ladder():
+    games = [_g(ladder={"mines": 900, "minetown": 3000}), _g(ladder={}), _g(), _g(ladder={"minetown": 50})]
+    assert evaluate(METRICS["stage_minetown"], games) == {"n": 3, "skipped": 1, "hits": 2, "rate": 2 / 3}
+    assert evaluate(METRICS["stage_mines"], games)["hits"] == 1  # marginal reach: minetown alone is not mines
+    assert evaluate(METRICS["stage_oracle"], games)["hits"] == 0
+    assert METRICS["stage_minetown"].description == "reached Minetown"
+    assert METRICS["stage_minetown"].kind == "rate"
+    stages = [n for n in METRICS if n.startswith("stage_")]
+    assert len(stages) == 18 and "stage_quest_portal" in stages and "stage_ascended" in stages
+    assert not [n for n in METRICS if n.startswith("rung")]
 
 
 def test_ladder_rows_compare_with_the_yardstick():
-    games = [_g(rung=4, ladder={"mines": 1000, "sokoban": 8000}), _g(rung=1, ladder={"mines": 2000}), _g()]
+    games = [_g(ladder={"mines": 1000, "sokoban": 8000}), _g(ladder={"mines": 2000}), _g()]
     rows = {r["key"]: r for r in ladder_rows(games, {"entered the Gnomish Mines": 1173})}
     assert len(rows) == 18
-    assert rows["mines"] == {"rung": 1, "key": "mines", "title": "Gnomish Mines", "hits": 2, "n": 2,
-                             "median_turn": 1500, "yardstick_turn": 1173}
-    assert rows["oracle"]["hits"] == 1 and rows["oracle"]["median_turn"] is None  # rung 4 counts as 3+
+    lo, hi = wilson(2, 2, Z95)
+    assert rows["mines"] == {"order": 1, "key": "mines", "title": "Gnomish Mines", "hits": 2, "n": 2, "rate": 1.0,
+                             "lo": lo, "hi": hi, "median_turn": 1500, "yardstick_turn": 1173}
+    assert rows["oracle"]["hits"] == 0 and rows["oracle"]["median_turn"] is None  # marginal: sokoban is not oracle
+    assert rows["sokoban"]["hits"] == 1 and rows["sokoban"]["median_turn"] == 8000
     assert rows["ascended"]["hits"] == 0 and rows["ascended"]["yardstick_turn"] is None
     assert summary(games)["ladder"][0]["n"] == 2
-    assert summary([])["ladder"][0]["n"] == 0
+    assert summary([])["ladder"][0]["n"] == 0 and summary([])["ladder"][0]["rate"] is None
 
 
-def _stuck_game(depth=7, reason="DEATH: killed by a troll", unsticks=0, reports=(), at=(0, 7)):
-    return _g(depth=depth, reason=reason, depth_at_end=depth, unsticks=unsticks, stuck_reports=list(reports),
-              dungeon_at_end=at[0], level_at_end=at[1])
-
-
-def test_free5_counts_games_that_did_not_end_stuck_deep():
-    free5 = METRICS["free5"].fn
-    here = {"dungeon": 0, "level": 7}
-    assert free5(_stuck_game())
-    assert not free5(_stuck_game(reason="watchdog"))
-    assert not free5(_stuck_game(unsticks=2))
-    assert not free5(_stuck_game(reports=[{"dungeon": 2, "level": 3}, here]))
-    assert free5(_stuck_game(reports=[here, {"dungeon": 0, "level": 6}]))  # got off that level
-    assert free5(_stuck_game(depth=4, reason="watchdog", reports=[here], at=(0, 4)))  # shallow: not counted
-
-
-def test_free5_skips_games_without_the_stuck_fields():
-    with pytest.raises(KeyError):
-        METRICS["free5"].fn(_g(depth_at_end=7, unsticks=0))
-
-
-def test_orient_flips_lower_is_better_rates():
-    from bench.metrics import METRICS, orient
-    assert orient("worse", METRICS["starved"]) == "better"  # fewer starvations
-    assert orient("better", METRICS["died"]) == "worse"
-    assert orient("worse", METRICS["dlvl10"]) == "worse"
-    assert orient("no measurable difference", METRICS["starved"]) == "no measurable difference"
+def test_summary_carries_the_funnel():
+    games = [_g(ladder={"mines": 1, "quest_portal": 9}), _g()]
+    f = summary(games)["funnel"]
+    assert len(f["rows"]) == 18 and f["n"] == 1 and f["excluded"] == {"no_ladder": 1}
+    assert {r["key"]: r["hits"] for r in f["rows"]}["quest_portal"] == 1

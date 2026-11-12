@@ -12,6 +12,7 @@ from conftest import git, run_until_idle
 from bench import cli
 from bench.server import serve
 from bench.store import Store
+from autoascend.ladder import RUNGS
 
 
 def _req(url, method="GET", body=None):
@@ -133,7 +134,8 @@ def test_imports_only_fetch_http_urls(bench_app):
 def test_results_carry_the_ladder_even_without_reference_ascensions(bench_app):
     assert bench_app.yardstick() == {}
     rows = bench_app.results("main")["ladder"]
-    assert [r["rung"] for r in rows] == list(range(1, 19))
+    assert [r["key"] for r in rows] == [r.key for r in RUNGS] and [r["order"] for r in rows] == list(range(1, 19))
+    assert len(rows) == 18 and rows[7]["key"] == "quest_portal" and rows[8]["key"] == "quest"
 
 
 def test_stop_all_and_shutdown_over_http(bench_app):
