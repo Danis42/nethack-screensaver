@@ -325,7 +325,7 @@ def test_ladder_table_for_exact_seeds(store, tmp_path, capsys):
     assert f"Commit `{CAND}`, n = 4 games (seeds 0..3)" in out
     assert "| # | Rung | Reached | Our median turn | Ascenders' median turn |" in out
     rows = _table(out)
-    assert len([k for k in rows if k.isdigit()]) == 17
+    assert len([k for k in rows if k.isdigit()]) == 18
     assert rows["1"][1:] == ["Gnomish Mines", "3 (75%)", "102", "-"]  # first turns 101, 102, 103
     assert rows["2"][2] == "2 (50%)" and rows["3"][2] == "0 (0%)" and rows["3"][3] == "-"
 

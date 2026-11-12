@@ -65,7 +65,10 @@ class _Hero:
 
     def current_level(self):
         from types import SimpleNamespace
-        return SimpleNamespace(dungeon_number=self.dungeon, key=lambda: (self.dungeon, self.depth))
+        import numpy as np
+        from autoascend.glyph import C
+        return SimpleNamespace(dungeon_number=self.dungeon, key=lambda: (self.dungeon, self.depth),
+                               objects=np.full((C.SIZE_Y, C.SIZE_X), -1, np.int16))
 
 
 def _portal_logic():
@@ -73,6 +76,7 @@ def _portal_logic():
     logic = GlobalLogic.__new__(GlobalLogic)
     logic.agent = _Hero()
     logic.portal_level, logic._portal_hunt_since, logic._quest_arrival, logic._quest_left = None, None, None, False
+    logic._quest_portal_found_logged = False
     return logic
 
 

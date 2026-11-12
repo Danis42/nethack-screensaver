@@ -85,7 +85,7 @@ def test_rung_metrics_skip_games_without_a_ladder():
 def test_ladder_rows_compare_with_the_yardstick():
     games = [_g(rung=4, ladder={"mines": 1000, "sokoban": 8000}), _g(rung=1, ladder={"mines": 2000}), _g()]
     rows = {r["key"]: r for r in ladder_rows(games, {"entered the Gnomish Mines": 1173})}
-    assert len(rows) == 17
+    assert len(rows) == 18
     assert rows["mines"] == {"rung": 1, "key": "mines", "title": "Gnomish Mines", "hits": 2, "n": 2,
                              "median_turn": 1500, "yardstick_turn": 1173}
     assert rows["oracle"]["hits"] == 1 and rows["oracle"]["median_turn"] is None  # rung 4 counts as 3+

@@ -191,7 +191,7 @@ def test_ladder_is_reported_and_survives_a_missing_agent():
     ladder.observe(Facts(turn=40, dungeon=2, level=1))
     wrapper = SimpleNamespace(agent=SimpleNamespace(global_logic=SimpleNamespace(ladder=ladder)))
     assert game._ladder(wrapper, "DEATH: killed by a newt", 900) == ({"mines": 40}, 1)
-    assert game._ladder(wrapper, "DEATH: ascended to demigod-hood", 999) == ({"mines": 40, "ascended": 999}, 17)
+    assert game._ladder(wrapper, "DEATH: ascended to demigod-hood", 999) == ({"mines": 40, "ascended": 999}, 18)
     assert game._ladder(SimpleNamespace(agent=None), "exception: x", 3) == ({}, 0)
 
 
