@@ -7,9 +7,10 @@ class FakeWorker:
     def __init__(self, sha, make, log, seeded=True):
         self.sha, self.make, self.log, self.seeded = sha, make, log, seeded
         self.pending, self.dead, self.closed = [], False, False
-        self.seeds = []
+        self.seeds, self.lgens = [], []
+        self.lgen_capable = True  # False: a commit whose run_game has no lgen (leaves it out of results)
 
-    def play(self, seed=None):
+    def play(self, seed=None, lgen=None):
         if self.dead:
             raise BrokenPipeError
         self.log.append(self.sha)
@@ -17,6 +18,10 @@ class FakeWorker:
         result = dict(self.make(self.sha, len(self.log)))
         if self.seeded and seed is not None:  # a commit from before seeding leaves it out
             result["seed"] = seed
+        if lgen is not None:
+            self.lgens.append(lgen)
+            if self.lgen_capable:
+                result["lgen"] = lgen
         self.pending.append(result)
 
     def results(self):
