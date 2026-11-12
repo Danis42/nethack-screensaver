@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: Completed 01-10-PLAN.md
-last_updated: "2026-11-12T21:44:27.221Z"
+stopped_at: Completed 01-11-PLAN.md; next 01-12 (01-06 paused at its checkpoint)
+last_updated: "2026-11-12T21:53:39.847Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
-state_head: a30f581ca7a2395b060adb833c3a831d596286f3
+state_head: 4088e207b8ef13d325b3ee650d70a57db99fc7b2
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 16
-  completed_plans: 9
+  completed_plans: 10
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-12)
 ## Current Position
 
 Phase: 01 (Measurement and Proof Foundation) — EXECUTING
-Plan: 10 of 16
+Plan: 11 of 16
 Status: Ready to execute
 Last activity: 2026-11-12 — Phase 01 execution started
 
@@ -65,6 +65,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P08 | 6 min | 2 tasks | 11 files |
 | Phase 01 P09 | 2 min | 2 tasks | 7 files |
 | Phase 01 P10 | 4 min | 2 tasks | 10 files |
+| Phase 01 P11 | 8 min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,7 @@ Recent decisions affecting current work:
 - [Phase 01]: Bench store schema 2: games keyed by (sha, seed, lgen mode, env_id, rep); jobs play explicit half-open seed windows and record env + lock blob — MEAS-07/MEAS-01/MEAS-04
 - [Phase 01]: Fact tranche 1 complete: 66 ledger entries (63 5.0-source, 3 unverified); tranche 2 starts with the table files (soko maps, objects data, monflag, screen symbols) — MEAS-10, D-20 coverage ranking
 - [Phase 01]: Seed ranges enforced at API, scheduler and store; final seeds only for clean_attempt jobs, which HTTP/MCP cannot create; confirm windows need a gate — D-07, D-17, D-22, MEAS-07
+- [Phase 01]: Bench jobs resume under their own id (serve --resume); 'started' means a game row exists on every surface; tool runs record into tool_games — D-08, MEAS-08, MEAS-09
 
 ### Pending Todos
 
@@ -114,6 +116,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-12T21:44:27.187Z
-Stopped at: Completed 01-10-PLAN.md
+Last session: 2026-11-12T21:53:39.816Z
+Stopped at: Completed 01-11-PLAN.md; next 01-12 (01-06 paused at its checkpoint)
 Resume file: None
