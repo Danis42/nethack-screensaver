@@ -64,14 +64,15 @@ def bench_status() -> dict:
 
 @mcp.tool()
 def bench_baseline(ref: str = "main", games: int = 576, lo: int | None = None, hi: int | None = None,
-                   lgen: str | None = None, replicate: int = 0) -> dict:
+                   lgen: str | None = None, replicate: int = 0, gate: str | None = None) -> dict:
     """Play `ref` on the half-open seed window [lo, hi) (default lo 1000, hi lo + games); stored games of
     the same commit, seed, lgen mode, environment and replicate are reused. lgen: "off" (default) or
     "seed" (NLE level-generation seed = seed + 10,000,000). replicate=1 reruns the window into separate
-    A/A rows that summaries never read. Returns job_id; a job counts as started only once its first game
+    A/A rows that summaries never read. Seed ranges: dev 1,000-99,999; confirm-range windows (100,000-199,999)
+    need `gate`, the phase-gate name; final seeds are refused. Returns job_id; a job counts as started only once its first game
     row exists. Run `uv run screens-bench wait <job_id>` as a background shell command to be notified."""
     body = {"kind": "baseline", "ref": ref, "games": games, "replicate": replicate}
-    body.update({k: v for k, v in (("lo", lo), ("hi", hi), ("lgen", lgen)) if v is not None})
+    body.update({k: v for k, v in (("lo", lo), ("hi", hi), ("lgen", lgen), ("gate", gate)) if v is not None})
     return _call("POST", "/api/jobs", body)
 
 

@@ -7,8 +7,9 @@ the A/A rerun its first 2,000 seeds. A window is half-open: [lo, hi).
 
 lgen is NLE's level-generation seed. A bench lgen game uses seed + LGEN_OFFSET, never 0,
 because the NLE fork treats lgen 0 as off. The refusal policy built on these ranges is in
-plan 01-10; this module only names them.
+check_window and check_seed below (D-07, D-17, D-22). They guard against accidental misuse, not an adversary.
 """
+import re
 
 DEV = (0, 100_000)
 CONFIRM = (100_000, 200_000)
@@ -21,6 +22,8 @@ USE_LGEN = "off"  # lgen mode of new jobs; plan 01-15 sets it from the lgen pilo
 LGEN_MODES = ("off", "seed")
 NATURAL_KINDS = ("baseline", "experiment")
 TOOL_KINDS = ("staged", "scenario", "rewind")
+CLEAN_KIND = "clean_attempt"  # Phase 7; never creatable over HTTP or MCP
+GATE_RE = re.compile(r"^[a-z0-9][a-z0-9.-]{0,63}$")
 
 
 def range_of(seed):
@@ -57,3 +60,42 @@ def lgen_for(seed, mode):
     if mode == "seed":
         return int(seed) + LGEN_OFFSET
     raise ValueError(f"lgen mode must be one of {LGEN_MODES}, got {mode!r}")
+
+
+def check_window(lo, hi, kind, gate=None):
+    """Range name of the window [lo, hi) for a job of this kind, or ValueError naming the rule it breaks.
+
+    Natural jobs play dev seeds (1,000-99,999), or confirm seeds with a gate naming the phase gate (D-22: the gate
+    field is the whole authorisation); they never touch the tool block 0-999 (D-17), the unassigned range or the
+    final range (D-07). Tool runs stay inside the tool block. Only clean attempts play final seeds."""
+    try:
+        lo, hi = window(lo, hi)
+    except ValueError as e:  # non-integer or empty: say "empty" for the empty case
+        raise ValueError(f"{e}; the seed window is empty or malformed") from e
+    first, last = range_of(lo), range_of(hi - 1)
+    if kind == CLEAN_KIND:
+        if first == last == "final":
+            return "final"
+        raise ValueError(f"clean attempts play final-range seeds (>= {FINAL_LO:,}) only; [{lo}, {hi}) is not final")
+    if kind in TOOL_KINDS:
+        if hi <= TOOL[1]:
+            return "tool"
+        raise ValueError(f"tool runs ({kind}) must stay inside the tool block 0-999 (D-17); [{lo}, {hi}) leaves it")
+    if kind not in NATURAL_KINDS:
+        raise ValueError(f"unknown job kind {kind!r}")
+    if lo < TOOL[1]:
+        raise ValueError(f"[{lo}, {hi}) touches the reserved tool block 0-999 (D-17); natural jobs start at 1000")
+    if first != last:
+        raise ValueError(f"[{lo}, {hi}) spans two ranges ({first} and {last}); keep a window inside one range")
+    if first == "unassigned":
+        raise ValueError(f"[{lo}, {hi}) is in the unassigned range 200,000-999,999 (D-07)")
+    if first == "final":
+        raise ValueError(f"[{lo}, {hi}) is in the final range (>= {FINAL_LO:,}), kept for the clean attempt (D-07)")
+    if first == "confirm" and (gate is None or not GATE_RE.match(str(gate))):
+        raise ValueError(f"confirm-range windows need a gate naming the phase gate (D-22), matching {GATE_RE.pattern}")
+    return first
+
+
+def check_seed(seed, kind, gate=None):
+    """check_window for the single seed [seed, seed + 1)."""
+    return check_window(seed, int(seed) + 1, kind, gate)

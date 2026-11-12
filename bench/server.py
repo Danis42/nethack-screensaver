@@ -13,6 +13,7 @@ from .stats import CHECKPOINTS
 
 STATIC = Path(__file__).with_name("static")
 LOCAL_HOSTS = ("127.0.0.1", "localhost")
+KINDS_OVER_HTTP = ("baseline", "experiment")  # clean_attempt jobs (final seeds) are never created here
 
 
 class App:
@@ -45,7 +46,7 @@ class App:
             raise ValueError(f"lgen must be one of {seeds.LGEN_MODES}, got {lgen!r}")
         return mode
 
-    def start_baseline(self, ref="main", games=576, lo=None, hi=None, lgen=None, replicate=0):
+    def start_baseline(self, ref="main", games=576, lo=None, hi=None, lgen=None, replicate=0, gate=None):
         """Play `ref` on the seed window [lo, hi); lo defaults to the baseline window start, hi to lo + games."""
         lo = seeds.BASELINE_WINDOW[0] if lo is None else lo
         if hi is None:
@@ -54,23 +55,25 @@ class App:
                 raise ValueError("games must be at least 1")
             hi = int(lo) + games
         lo, hi = seeds.window(lo, hi)
+        span = seeds.check_window(lo, hi, "baseline", gate)
         mode = self._lgen_mode(lgen)
         if replicate not in (0, 1, "0", "1"):
             raise ValueError(f"replicate must be 0 or 1, got {replicate!r}")
         sha, subject = self._sha(ref)
         spec = {"ref": ref, "sha": sha, "subject": subject, "games": hi - lo,
-                "seeds": {"range": seeds.range_of(lo), "lo": lo, "hi": hi}, "lgen": mode,
-                "replicate": int(replicate), "gate": None, **self._env_fields(),
+                "seeds": {"range": span, "lo": lo, "hi": hi}, "lgen": mode,
+                "replicate": int(replicate), "gate": gate, **self._env_fields(),
                 "lock_blob": provenance.lock_blob(self.repo, sha)}
         with self.lock:
             return {"job_id": self.scheduler.submit("baseline", spec)}
 
-    def start_experiment(self, candidate, baseline="main", metric="dlvl6", lo=None, lgen=None):
+    def start_experiment(self, candidate, baseline="main", metric="dlvl6", lo=None, lgen=None, gate=None):
         rates = [n for n, m in METRICS.items() if m.kind == "rate"]
         if metric not in rates:
             raise ValueError(f"metric must be one of {rates}")
         lo = seeds.BASELINE_WINDOW[0] if lo is None else lo
         lo, hi = seeds.window(lo, int(lo) + CHECKPOINTS[-1])
+        span = seeds.check_window(lo, hi, "experiment", gate)
         mode = self._lgen_mode(lgen)
         cand, cand_subject = self._sha(candidate)
         base, base_subject = self._sha(baseline)
@@ -78,8 +81,8 @@ class App:
             raise ValueError(f"{candidate} and {baseline} are the same commit {cand[:10]}")
         spec = {"candidate": cand, "candidate_ref": candidate, "candidate_subject": cand_subject,
                 "baseline": base, "baseline_ref": baseline, "baseline_subject": base_subject,
-                "metric": metric, "seeds": {"range": seeds.range_of(lo), "lo": lo, "hi": hi},
-                "lgen": mode, "gate": None, **self._env_fields(),
+                "metric": metric, "seeds": {"range": span, "lo": lo, "hi": hi},
+                "lgen": mode, "gate": gate, **self._env_fields(),
                 "lock_blob_candidate": provenance.lock_blob(self.repo, cand),
                 "lock_blob_baseline": provenance.lock_blob(self.repo, base)}
         with self.lock:
@@ -269,11 +272,12 @@ def make_handler(app):
                 def start():
                     body = self._body()
                     kind = body.pop("kind", None)
+                    if kind not in KINDS_OVER_HTTP:
+                        raise ValueError("kind must be baseline or experiment; clean_attempt jobs are not creatable "
+                                         "over HTTP or MCP")
                     if kind == "baseline":
                         return app.start_baseline(**body)
-                    if kind == "experiment":
-                        return app.start_experiment(**body)
-                    raise ValueError("kind must be baseline or experiment")
+                    return app.start_experiment(**body)
                 return self._handle(start)
             if path == "/api/stop-all":
                 return self._handle(app.stop_all)
