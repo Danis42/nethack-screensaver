@@ -89,6 +89,9 @@ ITEM_TESTS = {
         "uncursed +0 levitation boots", "uncursed +0 iron shoes")),
 }
 STAGES.update(ITEM_TESTS)
+# Sokoban's top level (dunlev 1, ^V name soko1) for a hand game that checks the sokoban_solved detector
+# (plan 01-06); soko1 is the top, so there are no up stairs to stand on.
+STAGES["soko-top"] = Stage("soko1", xl=8, wield=None, max_steps=8000, on_upstairs=False)
 # primitive self-tests at a real level (scripts/item_selftest.py)
 STAGES["kit-rise"] = Stage("medusa", xl=14, max_steps=60, wishes=MIDGAME_KIT + ("2 cursed potions of gain level",))
 
@@ -301,3 +304,42 @@ def apply_stage(env, stage: Stage) -> dict:
     if stage.on_upstairs:
         to_upstairs(env)
     return env._get_observation(env.last_observation)
+
+
+# --- observations read without the bot (hand games, detector checks) ------------------------------------------
+
+
+
+def unexplored_glyph():
+    """Glyph NLE shows for a never-seen map square: the S_stone cmap glyph (seen on staged soko1, seed 7)."""
+    from autoascend.glyph import SS
+    return SS.S_stone
+
+
+def observation_facts(obs):
+    """Ladder Facts from a raw observation, the way the bot's ladder_facts builds them, without an agent:
+    dungeon, level and turn from blstats; squares seen = map glyphs other than the unexplored glyph; traps =
+    any trap glyph on the map. Other Facts fields keep their defaults."""
+    import numpy as np
+    from autoascend.glyph import G
+    from autoascend.ladder import Facts
+    glyphs, bl = obs["glyphs"], obs["blstats"]
+    return Facts(turn=int(bl[nethack.NLE_BL_TIME]), dungeon=int(bl[nethack.NLE_BL_DNUM]),
+                 level=int(bl[nethack.NLE_BL_DLEVEL]), sokoban_seen=int((glyphs != unexplored_glyph()).sum()),
+                 sokoban_traps=bool(np.isin(glyphs, list(G.TRAPS)).any()))
+
+
+def board_from_observation(obs):
+    """{'floor', 'boulders', 'traps', 'player'} of a Sokoban level from one observation, in the format of
+    tests/data/soko_real_*.json, classified like global_logic.sokoban_board (seen-bare squares only)."""
+    import numpy as np
+    from autoascend.glyph import G
+    glyphs, bl = obs["glyphs"], obs["blstats"]
+    boulders = np.isin(glyphs, list(G.BOULDER))
+    traps = np.isin(glyphs, list(G.TRAPS))
+    player = (int(bl[nethack.NLE_BL_Y]), int(bl[nethack.NLE_BL_X]))
+    floor = (np.isin(glyphs, list(G.FLOOR | G.STAIR_UP | G.STAIR_DOWN)) & ~np.isin(glyphs, list(G.DOORS | G.WALL)))
+    floor |= traps | boulders
+    floor[player] = True
+    cells = lambda mask: sorted([int(y), int(x)] for y, x in zip(*mask.nonzero()))
+    return {"floor": cells(floor), "boulders": cells(boulders), "traps": cells(traps), "player": list(player)}

@@ -48,3 +48,25 @@ def test_reads_skills_in_wizard_mode():
     c = _enhance(['Current skills:  (13 slots available)', 'Weapon Skills',
                   'long sword         Basic            12(  20)', 'attack spells      Unskilled        0(  20)'])
     assert c.skill_levels[Character.name_to_skill_type['long sword']] == Character.name_to_skill_level['Basic']
+
+
+def test_soko_top_stage_goes_to_sokobans_top_level_without_stairs():
+    from nethack_screensaver import staging
+    stage = staging.STAGES["soko-top"]
+    assert stage.level == "soko1" and stage.on_upstairs is False and stage.wield is None
+
+
+def test_observation_facts_read_dungeon_level_seen_and_traps():
+    import numpy as np
+    import nle.nethack as nh
+    from autoascend.glyph import G, SS
+    from nethack_screensaver import staging
+    glyphs = np.full((21, 79), SS.S_stone, np.int16)
+    glyphs[5, 5:10] = SS.S_room
+    glyphs[5, 7] = sorted(G.TRAPS)[0]
+    blstats = np.zeros(30, np.int64)
+    blstats[nh.NLE_BL_DNUM], blstats[nh.NLE_BL_DLEVEL], blstats[nh.NLE_BL_TIME] = 4, 1, 77
+    f = staging.observation_facts({"glyphs": glyphs, "blstats": blstats})
+    assert (f.dungeon, f.level, f.turn, f.sokoban_seen, f.sokoban_traps) == (4, 1, 77, 5, True)
+    glyphs[5, 7] = SS.S_room
+    assert not staging.observation_facts({"glyphs": glyphs, "blstats": blstats}).sokoban_traps

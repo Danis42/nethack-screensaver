@@ -76,6 +76,10 @@ class Game:
             staging.apply_stage(self.env, staging.STAGES[stage])
         self.done = False
         self.msgs: list[str] = []
+        from autoascend.ladder import Ladder
+        self.ladder = Ladder()  # the real detectors, fed after every command (plan 01-06)
+        self.ladder_log: list[str] = []
+        self.observe_ladder()
 
     # --- raw access -------------------------------------------------------------------------------------------
     def obs(self, name):
@@ -255,6 +259,31 @@ class Game:
     def c_look(self) -> str:
         return "ok"
 
+    def obs_dict(self) -> dict:
+        return {"glyphs": self.obs("glyphs"), "blstats": self.obs("blstats")}
+
+    def observe_ladder(self):
+        from nethack_screensaver import staging
+        before = set(self.ladder.reached)
+        self.ladder.observe(staging.observation_facts(self.obs_dict()))
+        for key in sorted(set(self.ladder.reached) - before):
+            self.ladder_log.append(f"T{self.turn()} reached {key}")
+
+    def c_ladder(self) -> str:
+        from nethack_screensaver import staging
+        f = staging.observation_facts(self.obs_dict())
+        return (f"facts dungeon={f.dungeon} level={f.level} turn={f.turn} sokoban_seen={f.sokoban_seen} "
+                f"sokoban_traps={f.sokoban_traps}; reached {dict(self.ladder.reached)}; log {self.ladder_log}")
+
+    def c_record(self, path: str, *note) -> str:
+        """Write this observation as a fixture: board keys, glyph map, dungeon, level, turn and a note."""
+        from nethack_screensaver import staging
+        f = staging.observation_facts(self.obs_dict())
+        data = {**staging.board_from_observation(self.obs_dict()), "glyphs": self.obs("glyphs").tolist(),
+                "dungeon": f.dungeon, "level": f.level, "turn": f.turn, "note": " ".join(note)}
+        Path(path).write_text(json.dumps(data) + "\n")
+        return f"ok wrote {path}"
+
     # --- view -------------------------------------------------------------------------------------------------
     def view(self, show_map: bool = True) -> str:
         ls = self.lines()
@@ -323,6 +352,7 @@ class Game:
             except (TypeError, ValueError, KeyError) as e:
                 r = f"FAIL {e}"
             results.append(f"{c}: {r}")
+            self.observe_ladder()
             if r.startswith(("FAIL", "STOPPED")) or "STOP:" in r or self.done:
                 break
         return "\n".join(results) + "\n" + self.view(show_map)
