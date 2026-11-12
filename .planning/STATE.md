@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-11-12T17:32:58.785Z"
+stopped_at: Completed 01-03-PLAN.md
+last_updated: "2026-11-12T17:39:30.115Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
-state_head: f37d305f25a95424aaa25482cbb5c8ca7ec8ef4f
+state_head: dc3983d3e861b20d840d985cc724929e0fd4d17a
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 16
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-12)
 ## Current Position
 
 Phase: 01 (Measurement and Proof Foundation) — EXECUTING
-Plan: 3 of 16
+Plan: 4 of 16
 Status: Ready to execute
 Last activity: 2026-11-12 — Phase 01 execution started
 
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 |------|----------|-------|-------|
 | Phase 01 P01 | 10 min | 3 tasks | 7 files |
 | Phase 01 P02 | 5 min | 3 tasks | 8 files |
+| Phase 01 P03 | 5 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,7 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-01: env_id hashes nle_commit, lock_sha256, python, numpy, numba and ignores the interpreter path
 - [Phase 01]: Beta(1,1) mixture always-valid test (log LR >= log(1/alpha)) is the bench decision rule; exact McNemar reported alongside; simulation shows 1.1-3.7% false positives vs 7.0-7.7% legacy (job-free proof: 01-SIM-SEQUENTIAL.json seed 20261112)
 - [Phase 01]: Sequential looks are contiguous seed prefixes only; sequential power simulated per 96-seed block with common random numbers; DEFAULT_DISCORDANCE stays None until plan 01-15
+- [Phase 01]: Claim checker runs as a Stop hook; negated progress words are not claims; proofs inside inline code count — MEAS-09 / D-09..D-11: unproven progress claims must be blocked mechanically
 
 ### Pending Todos
 
@@ -99,6 +101,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-12T17:32:58.752Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-11-12T17:39:30.087Z
+Stopped at: Completed 01-03-PLAN.md
 Resume file: None
