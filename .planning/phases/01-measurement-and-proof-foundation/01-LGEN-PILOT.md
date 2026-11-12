@@ -2,6 +2,8 @@ commit_a: e5b5a7f525bc51b8008f665173600aba80de466d
 commit_b: c65c27011a737e33fc218350e1680460ed19f859
 primary_metric: dlvl10
 rule: rule-strict
+rule_commit: 09b79fbb306764b9fae898b2c00a2e22158e4587
+pilot_jobs: a_off=3 a_seed=4 b_off=5 b_seed=6
 
 # lgen pilot: pre-registration (MEAS-04)
 
@@ -40,3 +42,7 @@ Adopt lgen if psi_on < psi_off on the primary metric with the 95% paired interva
 
 - Bench lgen pairing is not the "dungeon screening" the owner approved for the final attempt (ASC-02). Screening chooses seeds by dungeon features; this pilot selects no seeds.
 - Pitfall 11: psi depends on the candidate change. A later experiment is sized from the upper bound of psi, and this pilot's psi describes a mid-game fight change.
+
+## Jobs
+
+The rule above was committed in 09b79fbb306764b9fae898b2c00a2e22158e4587 before the four jobs were created. Job 3 (A, off) started: its first game row was stored at 2026-11-13 00:05:17. Jobs 4 (A, seed), 5 (B, off) and 6 (B, seed) are queued. At about 30 games per minute the four jobs need roughly 55 minutes; plan 01-15 starts when all four are done.
