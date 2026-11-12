@@ -35,7 +35,45 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The `lgen` pilot (two commits, about 400 seeds each) reports paired discordance with and without `lgen`, and the decision is recorded; the `sokoban_solved` detector is run against a known hand game and the 0/2304 result has a written cause (proof: pilot job IDs, detector test)
   4. The stats tool runs exact McNemar and an always-valid sequential test, a simulation shows its false-positive rate holds under repeated checking, and the power calculator gives the MDE and sample size an experiment must declare before running; dev, confirm and final seed ranges are fixed, and the bench refuses final-range seeds outside clean attempts (proof: simulation report, refusal test)
   5. Staged, scenario and rewind runs land in a separate `tool_games` table with job IDs and never reach the funnel; `check_claims.py` rejects a claim without a job ID, full commit hash or reproducible query; a job counts as started only once its first game row exists; NetHack facts carry a fact-ledger tag (5.0 source, measured or unverified) (proof: tests for each rule)
-**Plans**: TBD
+**Plans**: 16 plans
+
+Plans:
+**Wave 1**
+- [ ] 01-01-PLAN.md — NLE from the local bare repo by pinned commit; env fingerprint; fresh-clone and rebuilt-NLE checks (wave 1)
+- [ ] 01-02-PLAN.md — exact McNemar, always-valid sequential test, power calculator, simulation report (wave 1)
+- [ ] 01-03-PLAN.md — check_claims.py Stop hook with read-only proof verification and hand-written labelled corpus (wave 1)
+- [ ] 01-04-PLAN.md — fact ledger tooling: FACTS.toml, citation test, source check, report, coverage (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 01-05-PLAN.md — lgen through game/worker/runner; Sokoban drop-cause telemetry; quest_portal stage (D-21) (wave 2)
+- [ ] 01-07-PLAN.md — fact ledger tranche 1a: the seven rule modules (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 01-06-PLAN.md — sokoban_solved detector run against a played hand game of the Sokoban top level, bot-path Facts (wave 3)
+- [ ] 01-08-PLAN.md — explicit seed windows, store schema 2 game key, lgen/replicate, env recording (wave 3)
+- [ ] 01-09-PLAN.md — fact ledger tranche 1b: UNVERIFIED research claims, quest-portal facts, coverage report (wave 3)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 01-10-PLAN.md — seed-range refusal at API, scheduler and store; confirm gate field (D-22) (wave 4)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 01-11-PLAN.md — resume interrupted jobs, "started" from game rows, tool_games with job IDs, MCP shutdown (wave 5)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 01-12-PLAN.md — natural-game funnel (18 stages) with Wilson intervals; rung out of decisions (wave 6)
+
+**Wave 7** *(blocked on Wave 6 completion)*
+- [ ] 01-13-PLAN.md — experiments declare MDE, judged by the sequential test on seed prefixes; power surfaces (wave 7)
+
+**Wave 8** *(blocked on Wave 7 completion)*
+- [ ] 01-14-PLAN.md — walking-skeleton proof from a fresh clone; owner picks pilot commit B and rule; pilot queued via MCP (wave 8)
+
+**Wave 9** *(blocked on Wave 8 completion)*
+- [ ] 01-15-PLAN.md — lgen decision; A/A command; baseline and A/A pre-registered (D-23); baseline started, A/A queued (wave 9)
+
+**Wave 10** *(blocked on Wave 9 completion)*
+- [ ] 01-16-PLAN.md — A/A verdict by the pre-registered command, baseline funnel, Sokoban cause, proof index (wave 10)
+
 **Research**: `lgen` discordance and the sequential test are unmeasured; both need pilot runs and simulation before use
 
 ### Phase 2: Proven Change Loop
@@ -129,7 +167,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7. Phases 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Measurement and Proof Foundation | 0/TBD | Not started | - |
+| 1. Measurement and Proof Foundation | 0/16 | Planned | - |
 | 2. Proven Change Loop | 0/TBD | Not started | - |
 | 3. LLM Analyst and Pilot | 0/TBD | Not started | - |
 | 4. Early Wall by System | 0/TBD | Not started | - |

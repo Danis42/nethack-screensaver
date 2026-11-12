@@ -498,7 +498,9 @@ def resume(self, job_id):
 | A7 | The baseline can be run with `lgen` either way and the pilot decides; baseline throughput stays about 25 games/min | Summary | Compute estimates shift |
 | A8 | `[CITED]` mSPRT validity statements come from the search digest of the Johari paper; the paper's text for the Bernoulli/Beta case was not read | Pattern 7 | Mitigated by the simulation (3.7% false positives) |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+All resolved on 2026-11-12: Q1 → D-17, Q2 → D-22, Q3 → owner checkpoint in plan 01-12 (commit B and adoption rule committed before any pilot job), Q4 → D-23 (orchestrator default: keep commit-sha keying, deferral recorded; not an owner answer), Q5 → D-19, Q6 → D-18, Q7 → D-20. See 01-CONTEXT.md.
 
 1. **Which dev seeds does the 10,000-game baseline use?**
    - What we know: D-05/D-07 give "dev seeds 0–99,999" and 10,000 games; rewind, staged, scenario and hand games use seeds 0-19 (inside dev).

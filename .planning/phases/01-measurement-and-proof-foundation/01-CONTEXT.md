@@ -40,11 +40,20 @@ simulation; `lgen` pilot of two commits x ~400 seeds, decision driven by measure
 - **D-11:** On failure the hook **blocks** the reply; Claude must add proof or drop the claim.
 
 ### Fact ledger (MEAS-10)
-- **D-12:** Scope: **everything now** — all existing NetHack facts in `.planning/research/*.md` and in code (`autoascend/`, constants, thresholds, rules) are tagged during Phase 1, plus every new fact from then on.
+- **D-12:** Scope: all existing NetHack facts in `.planning/research/*.md` and in code (`autoascend/`, constants, thresholds, rules) get tagged, plus every new fact from then on. **Revised 2026-11-12 by D-20:** Phase 1 delivers the tooling and a first time-boxed tranche; the rest continues tranche by tranche.
 - **D-13:** Tags: `5.0-source` (with file:line in `reference/nethack-5.0.0/` or the NLE fork), `measured` (with job ID/query), or `unverified`.
 - **D-14:** **Web research step**: facts **not confirmed in the 5.0 source** get a web search (NetHackWiki, forums, bot write-ups) for extra context or better information; sources found are recorded in the entry. Facts already confirmed in 5.0 source skip it. Web material often describes 3.6 — note differences; **the 5.0 source wins on conflict**.
 - **D-15:** Format: **one ledger file** (e.g. `.planning/FACTS.md` or a structured TOML/YAML file) with one entry per fact (id, claim, tag, evidence, web sources); code cites facts by ID (e.g. `# fact:prayer-timeout`); a test checks every cited ID exists in the ledger.
 - **D-16:** Bot code **may use unverified facts**, but a report lists every unverified fact the bot depends on.
+
+### Owner decisions at plan-phase (2026-11-12, from RESEARCH.md open questions)
+- **D-17:** Seeds **0–999 are a reserved tool-seed block** (rewind, staged, scenario, hand games) and are never judged. The natural baseline runs on dev seeds **1,000–10,999**; the A/A subset is drawn from those. This refines D-05/D-07; the D-07 range boundaries are unchanged.
+- **D-18:** If `check_claims.py` **itself crashes**, the Stop hook **exits 0 (passes) and writes the crash loudly to an audit log**. A claim that fails its check is still blocked (D-11 unchanged for real failures).
+- **D-19:** The success-criterion-1 fresh-clone proof run: **stop the live server briefly, run the fresh clone's server against the live `--data` dir on a spare commit, then restart the live server**, so the job ID resolves in the live `results.db`.
+- **D-20:** Fact ledger in Phase 1 = **tooling + tranches**: ledger format, ID-citation test, unverified-dependency report and a coverage report, plus a **first time-boxed tranche** (the planning research notes and the most-used bot modules). Remaining facts are tagged in later tranches, with coverage tracked by the report.
+- **D-21:** *(owner answer to plan-phase question, 2026-11-12)* The funnel gets a separate **`quest_portal` stage** with its own detector (magic portal found or entered), placed before the existing `quest` stage (entered Home 1). MEAS-02's "Quest portal" maps to `quest_portal`, not `quest`.
+- **D-22:** *(owner answer to plan-phase question, 2026-11-12)* Confirm-seed authorisation = a required **`gate` field** naming the phase gate; a confirm-range job without it is refused. No owner token (owner judged the gate field enough).
+- **D-23:** *(orchestrator default, not asked; owner may override — it only keeps current behaviour)* Games stay keyed by **commit sha**; the baseline names its sha explicitly (RESEARCH Pitfall 6). Keying by bot-tree hash is deferred (see Deferred Ideas).
 
 ### Claude's Discretion
 - Depth of the per-fact web research (left to Claude's judgement by the owner).
@@ -117,6 +126,7 @@ simulation; `lgen` pilot of two commits x ~400 seeds, decision driven by measure
 
 - Off-disk backup of the NLE fork and screens repo (bundle to another drive or private mirror) — declined for now; risk accepted.
 - Checking commit messages and planning docs with the claim checker — not chosen; could be added later.
+- Keying bench games by bot-tree hash instead of commit sha (avoids re-baselining after docs/bench-only commits) — not required by MEAS; revisit before Phase 2 (D-23).
 
 </deferred>
 
