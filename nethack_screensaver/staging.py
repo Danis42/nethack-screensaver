@@ -316,6 +316,13 @@ def unexplored_glyph():
     return SS.S_stone
 
 
+def canonical_glyphs(obs):
+    """The observation's glyph map as the bot sees it: NetHack 5 branch walls, gendered monsters and
+    branch stairs mapped to their plain glyphs (autoascend/glyph/nh5.py, the same call Agent.update makes)."""
+    from autoascend.glyph import nh5
+    return nh5.canonical(obs["glyphs"])
+
+
 def observation_facts(obs):
     """Ladder Facts from a raw observation, the way the bot's ladder_facts builds them, without an agent:
     dungeon, level and turn from blstats; squares seen = map glyphs other than the unexplored glyph; traps =
@@ -323,7 +330,7 @@ def observation_facts(obs):
     import numpy as np
     from autoascend.global_logic import SOKOBAN_TRAPS
     from autoascend.ladder import Facts
-    glyphs, bl = obs["glyphs"], obs["blstats"]
+    glyphs, bl = canonical_glyphs(obs), obs["blstats"]
     return Facts(turn=int(bl[nethack.NLE_BL_TIME]), dungeon=int(bl[nethack.NLE_BL_DNUM]),
                  level=int(bl[nethack.NLE_BL_DLEVEL]), sokoban_seen=int((glyphs != unexplored_glyph()).sum()),
                  sokoban_traps=bool(np.isin(glyphs, list(SOKOBAN_TRAPS)).any()))
@@ -334,7 +341,7 @@ def board_from_observation(obs):
     tests/data/soko_real_*.json, classified like global_logic.sokoban_board (seen-bare squares only)."""
     import numpy as np
     from autoascend.glyph import G
-    glyphs, bl = obs["glyphs"], obs["blstats"]
+    glyphs, bl = canonical_glyphs(obs), obs["blstats"]
     boulders = np.isin(glyphs, list(G.BOULDER))
     traps = np.isin(glyphs, list(G.TRAPS))
     player = (int(bl[nethack.NLE_BL_Y]), int(bl[nethack.NLE_BL_X]))

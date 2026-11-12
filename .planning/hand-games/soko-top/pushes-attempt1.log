@@ -1,0 +1,27 @@
+push 0 boulder (44,6) dir h: move h: ok at (44, 6)
+push 1 boulder (43,6) dir h: move h: ok at (43, 6)
+push 2 boulder (42,6) dir h: move h: ok at (42, 6)
+push 3 boulder (41,6) dir j: move j: ok at (41, 6)
+push 4 boulder (41,7) dir j: move j: ok at (41, 7)
+push 5 boulder (41,8) dir j: move j: ok at (41, 8)
+push 6 boulder (41,9) dir j: move j: ok at (41, 9)
+push 7 boulder (40,10) dir j: move j: ok at (40, 10)
+push 8 boulder (39,11) dir j: move j: ok at (39, 11)
+push 9 boulder (39,12) dir j: move j: ok at (39, 12)
+push 10 boulder (40,13) dir j: move j: STOPPED at (40, 13): monster adjacent: SE rust monster
+push 11 boulder (41,13) dir l: move l: ok at (41, 13)
+push 12 boulder (42,13) dir l: move l: ok at (42, 13)
+push 13 boulder (43,13) dir l: move l: ok at (43, 13)
+push 14 boulder (46,12) dir l: move l: ok at (46, 12)
+push 15 boulder (47,12) dir l: move l: ok at (47, 12)
+push 16 boulder (47,13) dir j: move j: ok at (47, 13)
+push 17 boulder (49,14) dir j: move j: ok at (49, 14)
+push 18 boulder (49,15) dir k: move k: ok at (49, 15)
+push 19 boulder (47,16) dir j: move j: ok at (47, 16)
+push 20 boulder (47,17) dir j: move j: STOPPED at (47, 17): monster adjacent: SE dwarf
+push 21 boulder (47,18) dir j: move j: STOPPED at (47, 18): monster adjacent: E dwarf
+  fight E: fight l 5: [You hit the dwarf.] HP77; [] HP77; [You hit the dwarf!] HP77; [You hit the dwarf.  The dwarf thrusts his dagger.  The dwarf hits! The kitten misses 
+push 22 boulder (47,19) dir h: move h: ok at (47, 19)
+push 23 boulder (46,19) dir h: move h: ok at (46, 19)
+push 24 boulder (45,19) dir h: move h: ok at (45, 19)
+push 25 boulder (44,19) dir h: move h: ok at (47, 17)

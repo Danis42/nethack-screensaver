@@ -279,7 +279,7 @@ class Game:
         """Write this observation as a fixture: board keys, glyph map, dungeon, level, turn and a note."""
         from nethack_screensaver import staging
         f = staging.observation_facts(self.obs_dict())
-        data = {**staging.board_from_observation(self.obs_dict()), "glyphs": self.obs("glyphs").tolist(),
+        data = {**staging.board_from_observation(self.obs_dict()), "glyphs": staging.canonical_glyphs(self.obs_dict()).tolist(),
                 "dungeon": f.dungeon, "level": f.level, "turn": f.turn, "note": " ".join(note)}
         Path(path).write_text(json.dumps(data) + "\n")
         return f"ok wrote {path}"
