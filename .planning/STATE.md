@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-11-12T17:26:34.942Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-11-12T17:32:58.785Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
-state_head: eaf86e553ca90eba599c80936fc017115fb70a90
+state_head: f37d305f25a95424aaa25482cbb5c8ca7ec8ef4f
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 16
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-12)
 ## Current Position
 
 Phase: 01 (Measurement and Proof Foundation) — EXECUTING
-Plan: 2 of 16
+Plan: 3 of 16
 Status: Ready to execute
 Last activity: 2026-11-12 — Phase 01 execution started
 
@@ -57,6 +57,7 @@ Progress: [░░░░░░░░░░] 0%
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 01 P01 | 10 min | 3 tasks | 7 files |
+| Phase 01 P02 | 5 min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,8 @@ Recent decisions affecting current work:
 - [Roadmap]: Farming and exploits are owner gates (Phases 5, 6, 7); `lgen` screening already approved, rule committed first
 - [Phase 01]: 01-01: nle is a git source (file://$HOME/git/nle-screens.git) pinned by full commit cb9d6572; bare repo has no remote, no backup tooling (D-01..D-04)
 - [Phase 01]: 01-01: env_id hashes nle_commit, lock_sha256, python, numpy, numba and ignores the interpreter path
+- [Phase 01]: Beta(1,1) mixture always-valid test (log LR >= log(1/alpha)) is the bench decision rule; exact McNemar reported alongside; simulation shows 1.1-3.7% false positives vs 7.0-7.7% legacy (job-free proof: 01-SIM-SEQUENTIAL.json seed 20261112)
+- [Phase 01]: Sequential looks are contiguous seed prefixes only; sequential power simulated per 96-seed block with common random numbers; DEFAULT_DISCORDANCE stays None until plan 01-15
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-12T17:26:34.914Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-11-12T17:32:58.752Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
