@@ -81,3 +81,83 @@ def test_unverified_fact_needs_web_list_and_notes_when_empty():
     assert facts.check({"u": {**base, "web": ["https://example.org"]}}, {}) == []
     assert facts.check({"u": {**base, "web": []}}, {}) != []
     assert facts.check({"u": {**base, "web": [], "notes": "nothing found on the wiki"}}, {}) == []
+
+
+# Task 2: source quotes, unverified report, coverage
+
+SRC = "line one\n    if (x < 0) {\n        y =\n            z + 1;\n    }\nlast line\n"
+
+
+@pytest.fixture
+def src_repo(tmp_path):
+    _write(tmp_path / "reference" / "nethack-5.0.0" / "src" / "f.c", SRC)
+    return tmp_path
+
+
+def _src_fact(evidence, quote="if (x < 0) { y = z + 1;"):
+    return {"f": {"claim": "c", "tag": "5.0-source", "evidence": evidence, "quote": quote}}
+
+
+def test_quote_inside_the_cited_range_passes(src_repo):
+    assert facts.check_sources(_src_fact(["reference/nethack-5.0.0/src/f.c:2-4"]), src_repo) == []
+
+
+def test_quote_outside_the_cited_range_is_an_error(src_repo):
+    errors = facts.check_sources(_src_fact(["reference/nethack-5.0.0/src/f.c:5-6"]), src_repo)
+    assert errors and "quote" in errors[0]
+
+
+def test_range_past_the_end_of_file_is_an_error(src_repo):
+    errors = facts.check_sources(_src_fact(["reference/nethack-5.0.0/src/f.c:2-40"]), src_repo)
+    assert errors and "past the end" in errors[0]
+
+
+def test_missing_file_is_an_error(src_repo):
+    errors = facts.check_sources(_src_fact(["reference/nethack-5.0.0/src/nope.c:1"]), src_repo)
+    assert errors and "missing" in errors[0]
+
+
+def test_quote_found_in_one_of_several_ranges_passes_but_every_range_must_exist(src_repo):
+    ok = _src_fact(["reference/nethack-5.0.0/src/f.c:1", "reference/nethack-5.0.0/src/f.c:2-4"])
+    assert facts.check_sources(ok, src_repo) == []
+    bad = _src_fact(["reference/nethack-5.0.0/src/f.c:2-4", "reference/nethack-5.0.0/src/f.c:99"])
+    assert facts.check_sources(bad, src_repo) != []
+
+
+@pytest.mark.parametrize("evidence", [
+    "/etc/passwd:1",
+    "reference/nethack-5.0.0/../../etc/passwd:1",
+    "autoascend/agent.py:1",
+])
+def test_paths_outside_the_allowed_roots_are_refused(src_repo, evidence):
+    errors = facts.check_sources(_src_fact([evidence]), src_repo)
+    assert errors and "refused" in errors[0]
+
+
+def test_report_lists_only_cited_unverified_facts_with_their_sites():
+    ledger = {
+        "u-cited": {"claim": "c", "tag": "unverified", "web": ["https://x"]},
+        "u-uncited": {"claim": "c", "tag": "unverified", "web": ["https://x"]},
+        "s-cited": {"claim": "c", "tag": "5.0-source", "evidence": ["e:1"], "quote": "q"},
+    }
+    cites = {"u-cited": [("autoascend/a.py", 3)], "s-cited": [("autoascend/b.py", 4)]}
+    assert facts.report(ledger, cites) == [
+        {"id": "u-cited", "claim": "c", "sites": ["autoascend/a.py:3"]}]
+
+
+def test_coverage_counts_literals_citations_and_unverified_marks(tmp_path):
+    _write(tmp_path / "autoascend" / "a.py", "A = 200\nB = 1\nC = -1  # fact:x\nD = 0.5\nE = 2\n")
+    _write(tmp_path / "autoascend" / "b.py", "X = 7\nY = 9\n")
+    _write(tmp_path / ".planning" / "research" / "N.md", "UNVERIFIED claim. [fact:x] unverified again.\n")
+    result = facts.coverage(tmp_path)
+    by_path = {f["path"]: f for f in result["files"]}
+    assert by_path["autoascend/a.py"]["literals"] == 2 and by_path["autoascend/a.py"]["citations"] == 1
+    assert by_path["autoascend/b.py"] == {"path": "autoascend/b.py", "literals": 2, "citations": 0}
+    assert result["files"][0]["path"] == "autoascend/b.py"
+    assert result["notes"][0] == {"path": ".planning/research/N.md", "citations": 1, "unverified": 2}
+    assert result["totals"] == {"files": 2, "literals": 4, "citations": 1}
+
+
+@pytest.mark.skipif(not (ROOT / "reference" / "nethack-5.0.0").exists(), reason="reference/ not present")
+def test_repository_ledger_quotes_are_found_in_the_5_0_source():
+    assert facts.check_sources(facts.load(ROOT / "facts" / "FACTS.toml"), ROOT) == []

@@ -99,6 +99,18 @@ def check(ledger, cites):
     return errors
 
 
+def check_sources(ledger, repo=REPO, roots=ALLOWED_ROOTS):
+    return []
+
+
+def report(ledger, cites):
+    return []
+
+
+def coverage(repo=REPO):
+    return {"files": [], "notes": [], "totals": {}}
+
+
 def main(argv=None):
     args = list(sys.argv[1:] if argv is None else argv)
     command = args.pop(0) if args else "check"
