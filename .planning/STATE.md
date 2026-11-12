@@ -3,11 +3,11 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: Completed 01-13-PLAN.md; next 01-14 (owner checkpoint); 01-06 paused at its checkpoint
-last_updated: "2026-11-12T22:25:20.195Z"
+stopped_at: 01-14 Task 1 blocked on /mcp reconnect; Task 2 answered (elbereth-respect, rule-strict, dlvl10); 01-06 paused at its checkpoint
+last_updated: "2026-11-12T22:58:13.910Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
-state_head: 67c5fbdd970f8a9eda128f7304d387e57350df8d
+state_head: 3ec44f7e31620f98f97f6af5a91f0619910b3324
 progress:
   total_phases: 7
   completed_phases: 0
@@ -93,6 +93,7 @@ Recent decisions affecting current work:
 - [Phase 01]: Fact tranche 1 complete: 66 ledger entries (63 5.0-source, 3 unverified); tranche 2 starts with the table files (soko maps, objects data, monflag, screen symbols) — MEAS-10, D-20 coverage ranking
 - [Phase 01]: Seed ranges enforced at API, scheduler and store; final seeds only for clean_attempt jobs, which HTTP/MCP cannot create; confirm windows need a gate — D-07, D-17, D-22, MEAS-07
 - [Phase 01]: Bench jobs resume under their own id (serve --resume); 'started' means a game row exists on every surface; tool runs record into tool_games — D-08, MEAS-08, MEAS-09
+- [Phase 01]: 01-14 lgen pilot (owner, 2026-11-12): commit B = exp/elbereth-respect ported onto commit A; rule-strict; primary metric dlvl10 (owner delegated the metric: change fires mostly at Dlvl 5-8 via S_HUMAN elves/watch, so dlvl6 is settled before it acts; dlvl10 base ~32% in 81 screensaver games). Pre-registered in 01-LGEN-PILOT.md at Task 3.
 
 ### Pending Todos
 
@@ -118,6 +119,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-12T22:25:20.160Z
-Stopped at: Completed 01-13-PLAN.md; next 01-14 (owner checkpoint); 01-06 paused at its checkpoint
+Last session: 2026-11-12T22:58:13.876Z
+Stopped at: 01-14 Task 1 blocked on /mcp reconnect; Task 2 answered (elbereth-respect, rule-strict, dlvl10); 01-06 paused at its checkpoint
 Resume file: None
