@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-11-12T17:43:21.253Z"
+stopped_at: Completed 01-05-PLAN.md
+last_updated: "2026-11-12T18:00:56.988Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
-state_head: 398e54d325688e1a00ab9eab0aae8524eadc7660
+state_head: 241a9b0f93ca58e8ad05d915e88186bd2787e02a
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 16
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-12)
 ## Current Position
 
 Phase: 01 (Measurement and Proof Foundation) — EXECUTING
-Plan: 5 of 16
+Plan: 6 of 16
 Status: Ready to execute
 Last activity: 2026-11-12 — Phase 01 execution started
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P02 | 5 min | 3 tasks | 8 files |
 | Phase 01 P03 | 5 min | 3 tasks | 6 files |
 | Phase 01 P04 | 3 min | 2 tasks | 4 files |
+| Phase 01 P05 | 16 min | 3 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,7 @@ Recent decisions affecting current work:
 - [Phase 01]: Sequential looks are contiguous seed prefixes only; sequential power simulated per 96-seed block with common random numbers; DEFAULT_DISCORDANCE stays None until plan 01-15
 - [Phase 01]: Claim checker runs as a Stop hook; negated progress words are not claims; proofs inside inline code count — MEAS-09 / D-09..D-11: unproven progress claims must be blocked mechanically
 - [Phase 01]: Fact ledger facts/FACTS.toml with three tags; code cites '# fact:<id>', notes '[fact:<id>]'; pytest fails on dangling citations — MEAS-10 / D-13..D-16
+- [Phase 01]: Ladder has 18 rungs with quest_portal before quest; new stats counters must be registered in StatsLogger (KeyError otherwise); pilot and baseline need a commit at or after 4d7a342 — D-21, MEAS-03/04; play_compare 20/20 identical
 
 ### Pending Todos
 
@@ -103,6 +105,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-12T17:43:21.222Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-11-12T18:00:56.959Z
+Stopped at: Completed 01-05-PLAN.md
 Resume file: None
