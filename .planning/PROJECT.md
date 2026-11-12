@@ -63,6 +63,8 @@ and no reseeding. Every claim of progress toward it can be checked.**
 - **Determinism:** the bench must stay deterministic per seed (no randomness that breaks A/A comparison); any non-deterministic component (e.g. an LLM) needs a plan for measurement
 - **Proof:** no progress claim without a job ID, commit or query result the owner can check — trust was broken last time
 - **Clean goal:** the final ascension must be one straight game with no human input, rewind or reseed
+- **No additional cost:** LLM work uses local models (Ollama on an RTX 4070 Ti, 12 GB VRAM, 32 GB RAM) and the existing Claude subscription via Claude Code; no paid API tokens or cloud services
+- **Exploits need approval:** farming or exploits are allowed in principle, but each one is proposed to the owner first so they can judge the behaviour
 
 ## Key Decisions
 
@@ -73,7 +75,12 @@ and no reseeding. Every claim of progress toward it can be checked.**
 | Evaluate approaches with evidence before choosing one | Owner is open to anything given proof or convincing arguments; the per-monster method stalled | — Pending |
 | Natural-game funnel is the main metric | Staged results (castle 8/20) hid that no natural game got past Medusa | — Pending |
 | Every progress claim needs checkable proof | The last session claimed it started work while idle | — Pending |
-| LLM role (offline analyst vs in-game planner) decided by the research, not up front | Strong offline; in-game costs money and breaks determinism | — Pending |
+| LLM pilot built early, alongside the scripted work; LLM also used as offline analyst | Owner's choice after research; LLM looks strongest where the bot has no abilities (Medusa and later) | — Pending |
+| LLM backends: local Ollama first, Claude Code (subscription) where local isn't good enough | No additional cost allowed | — Pending |
+| Pilot runs stay outside the deterministic bench, every call recorded | Keeps paired bench comparisons valid | — Pending |
+| Castle route (back entry vs interior with wand) decided by staged test | Interior is the only reliable magic-resistance source but never tried | — Pending |
+| Best first-ascension character chosen by research plus bench A/B | Code plays human neutral Valkyrie; old plans assumed dwarvish lawful | — Pending |
+| Dungeon (lgen) screening allowed for the final attempt, rule committed first | Owner approved; the headline stays the unscreened funnel | — Pending |
 
 ## Evolution
 
