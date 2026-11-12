@@ -210,6 +210,12 @@ class Scheduler:
                 return
             sha, seed = wanted
             try:
+                seedlib.check_seed(seed, self.job["kind"], self.job["spec"].get("gate"))
+            except ValueError as e:  # a job that bypassed the API: refuse before any worker plays
+                self.error = str(e)
+                self._end("failed", {**self.job["result"], "error": self.error})
+                return
+            try:
                 if slot.sha != sha:
                     if slot.worker is not None:
                         slot.worker.close()

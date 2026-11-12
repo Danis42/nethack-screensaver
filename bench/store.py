@@ -5,6 +5,8 @@ import threading
 import time
 from pathlib import Path
 
+from .seeds import FINAL_LO
+
 SCHEMA_VERSION = 2
 END_STATES = ("done", "stopped", "failed", "interrupted")
 
@@ -109,8 +111,14 @@ class Store:
 
     # games
 
+    def job_kind(self, job_id):
+        row = None if job_id is None else self._one("SELECT kind FROM jobs WHERE id = ?", (job_id,))
+        return None if row is None else row["kind"]
+
     def add_game(self, sha, job_id, result, finished_at=None, env_id=None, rep=0):
         seed, lgen = result.get("seed"), result.get("lgen")
+        if seed is not None and int(seed) >= FINAL_LO and self.job_kind(job_id) != "clean_attempt":
+            raise ValueError(f"seed {seed} is in the final range (>= {FINAL_LO:,}); only clean_attempt jobs store it (D-07)")
         return self._write(
             "INSERT INTO games (sha, job_id, finished_at, json, seed, lgen, env_id, rep) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             (sha, job_id, finished_at or time.time(), json.dumps(result),
