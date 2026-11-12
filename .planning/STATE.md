@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: Completed 01-07-PLAN.md
-last_updated: "2026-11-12T18:08:06.382Z"
+stopped_at: Completed 01-08-PLAN.md
+last_updated: "2026-11-12T18:15:49.124Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
-state_head: bad3c7ec8d5ac2606a2d1ccc0ab10be24bcafae8
+state_head: 6a47ce5da9f50b86fe87b5f41e0a26365022e3f0
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 16
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-12)
 ## Current Position
 
 Phase: 01 (Measurement and Proof Foundation) — EXECUTING
-Plan: 7 of 16
+Plan: 8 of 16
 Status: Ready to execute
 Last activity: 2026-11-12 — Phase 01 execution started
 
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P04 | 3 min | 2 tasks | 4 files |
 | Phase 01 P05 | 16 min | 3 tasks | 14 files |
 | Phase 01 P07 | 6 min | 2 tasks | 8 files |
+| Phase 01 P08 | 6 min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,7 @@ Recent decisions affecting current work:
 - [Phase 01]: Fact ledger facts/FACTS.toml with three tags; code cites '# fact:<id>', notes '[fact:<id>]'; pytest fails on dangling citations — MEAS-10 / D-13..D-16
 - [Phase 01]: Ladder has 18 rungs with quest_portal before quest; new stats counters must be registered in StatsLogger (KeyError otherwise); pilot and baseline need a commit at or after 4d7a342 — D-21, MEAS-03/04; play_compare 20/20 identical
 - [Phase 01]: Fact tranche 1 (bot modules): 56 of 59 facts verified in the 5.0 source; prayer marker 'You feel better.' is not a 5.0 prayer message — MEAS-10, D-13/D-14/D-16
+- [Phase 01]: Bench store schema 2: games keyed by (sha, seed, lgen mode, env_id, rep); jobs play explicit half-open seed windows and record env + lock blob — MEAS-07/MEAS-01/MEAS-04
 
 ### Pending Todos
 
@@ -107,6 +109,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-12T18:08:06.353Z
-Stopped at: Completed 01-07-PLAN.md
+Last session: 2026-11-12T18:15:49.094Z
+Stopped at: Completed 01-08-PLAN.md
 Resume file: None
