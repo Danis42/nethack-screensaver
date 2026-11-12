@@ -143,3 +143,12 @@ def test_final_range_games_are_refused_unless_the_job_is_a_clean_attempt(tmp_pat
 def test_job_kind(tmp_path):
     store = Store(tmp_path / "r.db")
     assert store.job_kind(store.add_job("baseline", {})) == "baseline" and store.job_kind(99) is None
+
+
+def test_started_means_a_game_row_exists(tmp_path):
+    store = Store(tmp_path / "r.db")
+    job = store.add_job("baseline", {})
+    store.set_job(job, "running")
+    assert store.job(job)["state"] == "running" and store.started(job) is False and store.first_game_at(job) is None
+    store.add_game("a", job, {"seed": 1001}, finished_at=33.0)
+    assert store.started(job) is True and store.first_game_at(job) == 33.0 and store.job_game_count(job) == 1

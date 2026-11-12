@@ -30,7 +30,7 @@ def test_tools_are_registered():
     names = {t.name for t in asyncio.run(mcp_server.mcp.list_tools())}
     assert names == {"bench_status", "bench_baseline", "bench_experiment", "bench_results", "bench_games",
                      "bench_experiments", "bench_stop", "bench_import", "bench_reference", "bench_resume",
-                     "bench_shutdown"}
+                     "bench_shutdown", "bench_job"}
 
 
 def test_bench_baseline_forwards_window_lgen_and_replicate(url, bench_app):
@@ -43,3 +43,10 @@ def test_bench_baseline_forwards_window_lgen_and_replicate(url, bench_app):
 def test_bench_baseline_forwards_the_gate_for_confirm_windows(url, bench_app):
     job_id = mcp_server.bench_baseline("main", lo=100_000, hi=100_004, gate="phase-2-gate")["job_id"]
     assert bench_app.job(job_id)["spec"]["gate"] == "phase-2-gate"
+
+
+def test_bench_job_reports_started_and_first_game_at(url, bench_app):
+    job_id = mcp_server.bench_baseline("main", games=2)["job_id"]
+    run_until_idle(bench_app)
+    job = mcp_server.bench_job(job_id)
+    assert job["started"] is True and job["first_game_at"] is not None

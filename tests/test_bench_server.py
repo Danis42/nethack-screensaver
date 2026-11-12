@@ -248,3 +248,22 @@ def test_only_interrupted_jobs_resume_over_http(bench_app, bench_url):
     assert status == 400 and "only interrupted jobs" in body["error"]
     status, body = _req(f"{bench_url}/api/jobs/999/resume", "POST", {})
     assert status == 404
+
+
+def test_a_running_job_is_not_started_until_its_first_game_row(bench_app):
+    job_id = bench_app.start_baseline("main", games=3)["job_id"]
+    with bench_app.lock:
+        bench_app.scheduler.tick()  # picks the job up: running
+    job = bench_app.job(job_id)  # results are collected on the next tick: no game row yet
+    assert job["state"] == "running" and job["started"] is False and job["first_game_at"] is None
+
+
+def test_a_fully_reused_baseline_is_done_but_never_started(bench_app):
+    first = bench_app.start_baseline("main", games=3)["job_id"]
+    run_until_idle(bench_app)
+    again = bench_app.start_baseline("main", games=3)["job_id"]
+    run_until_idle(bench_app)
+    job = bench_app.job(again)
+    assert job["state"] == "done" and job["started"] is False
+    assert job["games_played"] == 0 and job["games_reused"] == 3
+    assert bench_app.job(first)["started"] is True and bench_app.job(first)["games_played"] == 3
