@@ -30,3 +30,10 @@ def test_tools_are_registered():
     names = {t.name for t in asyncio.run(mcp_server.mcp.list_tools())}
     assert names == {"bench_status", "bench_baseline", "bench_experiment", "bench_results", "bench_games",
                      "bench_experiments", "bench_stop", "bench_import", "bench_reference"}
+
+
+def test_bench_baseline_forwards_window_lgen_and_replicate(url, bench_app):
+    job_id = mcp_server.bench_baseline("main", games=3, lo=2000, hi=2004, lgen="seed", replicate=1)["job_id"]
+    spec = bench_app.job(job_id)["spec"]
+    assert spec["seeds"]["lo"] == 2000 and spec["seeds"]["hi"] == 2004
+    assert spec["lgen"] == "seed" and spec["replicate"] == 1

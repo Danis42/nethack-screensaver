@@ -191,3 +191,57 @@ def test_a_job_spec_without_a_seed_window_fails(tmp_path):
     _run(s)
     assert store.job(job)["state"] == "failed"
     assert "no seed window" in store.job(job)["result"]["error"] and played == []
+
+
+# Task 2: game key (lgen mode, replicate)
+
+def _lgen_scheduler(tmp_path, capable=True):
+    store = Store(tmp_path / "r.db")
+    workers = []
+
+    def spawn(sha):
+        w = FakeWorker(sha, lambda s, i: _game(3), [])
+        w.lgen_capable = capable
+        workers.append(w)
+        return w
+
+    return Scheduler(store, spawn, slots=2), store, workers
+
+
+def test_lgen_on_and_off_games_of_the_same_seeds_are_separate_rows(tmp_path):
+    s, store, workers = _lgen_scheduler(tmp_path)
+    s.submit("baseline", _bspec("base", 4, lo=1000, lgen="off"))
+    _run(s)
+    s.submit("baseline", _bspec("base", 4, lo=1000, lgen="seed"))
+    _run(s)
+    rows = store._all("SELECT seed, lgen FROM games WHERE sha = 'base' ORDER BY id")
+    assert len(rows) == 8
+    assert [r["lgen"] for r in rows[:4]] == [None] * 4
+    assert sorted((r["seed"], r["lgen"]) for r in rows[4:]) == [(s_, s_ + 10_000_000) for s_ in range(1000, 1004)]
+
+
+def test_the_lgen_passed_to_the_worker_is_seed_plus_offset_never_zero(tmp_path):
+    s, store, workers = _lgen_scheduler(tmp_path)
+    s.submit("baseline", _bspec("base", 3, lo=0, lgen="seed"))
+    _run(s)
+    lgens = sorted(l for w in workers for l in w.lgens)
+    assert lgens == [10_000_000, 10_000_001, 10_000_002] and 0 not in lgens
+
+
+def test_replicate_rows_play_again_and_stay_out_of_reads(tmp_path):
+    s, store, workers = _lgen_scheduler(tmp_path)
+    s.submit("baseline", _bspec("base", 4, lo=1000))
+    _run(s)
+    before = (store.games("base"), store.count("base"))
+    s.submit("baseline", _bspec("base", 4, lo=1000, replicate=1))
+    _run(s)
+    assert store.count("base", rep=1) == 4 and (store.games("base"), store.count("base")) == before
+
+
+def test_a_worker_that_cannot_play_lgen_fails_the_job(tmp_path):
+    s, store, workers = _lgen_scheduler(tmp_path, capable=False)
+    job = s.submit("baseline", _bspec("old", 4, lo=1000, lgen="seed"))
+    _run(s)
+    assert store.job(job)["state"] == "failed"
+    assert "cannot play lgen games" in store.job(job)["result"]["error"] and "old" in store.job(job)["result"]["error"]
+    assert store.count("old") == 0

@@ -184,3 +184,15 @@ def test_a_default_baseline_starts_at_the_baseline_window(bench_app):
 def test_empty_or_bad_windows_are_refused(bench_app, lo, hi):
     with pytest.raises(ValueError):
         bench_app.start_baseline("main", lo=lo, hi=hi)
+
+
+@pytest.mark.parametrize("kwargs", [{"lgen": "on"}, {"lgen": 7}, {"replicate": 2}, {"replicate": -1}])
+def test_bad_lgen_or_replicate_values_are_refused(bench_app, kwargs):
+    with pytest.raises(ValueError):
+        bench_app.start_baseline("main", games=3, **kwargs)
+
+
+def test_baseline_spec_records_lgen_mode_and_replicate(bench_app):
+    spec = bench_app.job(bench_app.start_baseline("main", games=3, lgen="seed", replicate=1)["job_id"])["spec"]
+    assert spec["lgen"] == "seed" and spec["replicate"] == 1
+    assert bench_app.job(bench_app.start_baseline("main", games=3)["job_id"])["spec"]["lgen"] == "off"
