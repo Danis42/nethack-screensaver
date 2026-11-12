@@ -21,7 +21,7 @@ and no reseeding. Every claim of progress toward it can be checked.**
 
 - ✓ Screensaver starts on zsh idle, renders the bot's game with pacing, exits on any key — existing
 - ✓ Bot plays complete NetHack 5.0 games through NLE (perception, glyph handling, actions, strategies, milestone plans) — existing
-- ✓ Bot reaches mid-game regularly: in baseline `72ca0b6` (2304 natural games), 76% reach the Mines, 25% Sokoban or Mines' End, 8% Dlvl 15+ or the Quest portal, 1.1% Medusa's level — existing
+- ✓ Bot reaches mid-game regularly: in baseline `72ca0b6` (2304 natural games, counted by `ladder` keys), 58% reach the Mines (1343), 25% Sokoban (570), 11% Mines' End (255), 1.1% Medusa's level (25); Sokoban is never recorded as solved (0/2304, possibly a detector bug) — existing
 - ✓ Bench runs many games per commit in parallel worktrees, stores results in SQLite, reports per-rung ladder metrics, and exposes MCP tools — existing
 - ✓ Games are deterministic per seed (A/A run identical), so the same seed can be replayed and compared across commits — existing
 - ✓ Test tools exist: rewind (`scripts/rewind.py`), staged starts near late levels (`scripts/staged_run.py`), scenarios (`scripts/scenario_run.py`), hand-play (`scripts/handplay.py`), human-game study on NLD (`scripts/nld_study.py`) — existing
@@ -50,7 +50,7 @@ and no reseeding. Every claim of progress toward it can be checked.**
 - **Fresh start:** commit `af6684a` removed the old plans, state, phases, roadmaps and specs after the last session got stuck. Research notes and hand-game notes were kept. A full backup lives in `archive/` (`screens-v0-final.tar.gz`, `screens-all-branches.bundle`), including the old bench database (146,743 games over 87 commits).
 - **Live bench database is empty:** `~/.local/share/screens-bench/results.db` has 0 games. History is only in the archive. A fresh baseline of `main` is needed before any comparison.
 - **What went wrong last time:** whack-a-mole fixes, the code got messy, and the assistant claimed it had started workloads while it actually sat idle.
-- **Where games end (baseline `72ca0b6`, 2304 games):** 24% never reach the Gnomish Mines; starvation 334 games; no natural game ever got past Medusa in any of the 146k stored games. "Castle 8/20" figures came from staged starts next to the Castle, not from natural games.
+- **Where games end (baseline `72ca0b6`, 2304 games):** 42% never reach the Gnomish Mines (the old `rung` metric is "highest rung reached", not a funnel, and overstated this); starvation 334 games; no natural game ever got past Medusa in any of the 146k stored games. "Castle 8/20" figures came from staged starts next to the Castle, not from natural games.
 - **Two walls:** the rewind study (`.planning/research/REWIND-20.md`) gave 20 seeds infinite lives. Two thirds of deaths were close calls one reroll avoided, but even with infinite lives no seed got past Medusa. Early on it's survival; late it's missing abilities.
 - **Known state from the codebase map** (`.planning/codebase/CONCERNS.md`): NLE is installed from `reference/nle-src`, which `.gitignore` excludes, so a fresh clone can't `uv sync`. There is an open Elbereth-ignorer bug at the Castle, 60+ TODOs, bare `except` blocks, and no CI. Several docstrings point to the deleted `.planning/STATE.md`.
 - **Codebase map:** `.planning/codebase/` (STACK, ARCHITECTURE, STRUCTURE, CONVENTIONS, TESTING, INTEGRATIONS, CONCERNS), mapped 2026-11-12.
