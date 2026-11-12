@@ -67,6 +67,11 @@ def _prize_objects():
     return _PRIZES
 
 
+# The traps a Sokoban level is solved by filling: holes and pits. NetHack 5.0 also puts a rolling boulder trap on
+# every Sokoban level, which no boulder fills, so the ladder must not wait for it to go.
+SOKOBAN_TRAPS = frozenset({SS.S_hole, SS.S_pit})  # fact:sokoban-levels-have-rolling-boulder-traps
+
+
 def sokoban_board(objects, walkable, glyphs):
     """Floor, boulder and trap cells of the current Sokoban level, for the live solver.
 
@@ -744,7 +749,7 @@ class GlobalLogic:
         return Facts(
             turn=int(self.agent.blstats.time), dungeon=int(level.dungeon_number), level=int(level.level_number),
             oracle_seen=self.oracle_level is not None, minetown_seen=self.minetown_level is not None,
-            sokoban_seen=seen, sokoban_traps=bool(utils.isin(level.objects, G.TRAPS).any()),
+            sokoban_seen=seen, sokoban_traps=bool(utils.isin(level.objects, SOKOBAN_TRAPS).any()),
             medusa_seen=not hallu and bool(utils.isin(self.agent.glyphs, MEDUSA).any()),
             water_share=0.0 if hallu or not seen else water / seen,
             drawbridge_seen=not hallu and bool(utils.isin(level.objects, DRAWBRIDGE).any()),

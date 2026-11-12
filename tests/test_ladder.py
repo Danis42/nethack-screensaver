@@ -207,3 +207,12 @@ def test_ladder_facts_see_the_magic_portal_glyph_or_the_activation_message():
     logic = _fake_logic()
     logic.agent.message = "Wheee! " + quest_portal.ENTERED_MESSAGE
     assert logic.ladder_facts().quest_portal_found
+
+
+def test_a_rolling_boulder_trap_is_not_a_sokoban_trap_left():
+    from autoascend.glyph import C, SS
+    objects = np.full((C.SIZE_Y, C.SIZE_X), -1, np.int16)
+    objects[4, 4] = SS.S_rolling_boulder_trap
+    assert not _fake_logic(objects=objects).ladder_facts().sokoban_traps
+    objects[4, 5] = SS.S_pit
+    assert _fake_logic(objects=objects).ladder_facts().sokoban_traps

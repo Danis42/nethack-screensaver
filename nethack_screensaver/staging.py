@@ -319,14 +319,14 @@ def unexplored_glyph():
 def observation_facts(obs):
     """Ladder Facts from a raw observation, the way the bot's ladder_facts builds them, without an agent:
     dungeon, level and turn from blstats; squares seen = map glyphs other than the unexplored glyph; traps =
-    any trap glyph on the map. Other Facts fields keep their defaults."""
+    any hole or pit glyph on the map (global_logic.SOKOBAN_TRAPS). Other Facts fields keep their defaults."""
     import numpy as np
-    from autoascend.glyph import G
+    from autoascend.global_logic import SOKOBAN_TRAPS
     from autoascend.ladder import Facts
     glyphs, bl = obs["glyphs"], obs["blstats"]
     return Facts(turn=int(bl[nethack.NLE_BL_TIME]), dungeon=int(bl[nethack.NLE_BL_DNUM]),
                  level=int(bl[nethack.NLE_BL_DLEVEL]), sokoban_seen=int((glyphs != unexplored_glyph()).sum()),
-                 sokoban_traps=bool(np.isin(glyphs, list(G.TRAPS)).any()))
+                 sokoban_traps=bool(np.isin(glyphs, list(SOKOBAN_TRAPS)).any()))
 
 
 def board_from_observation(obs):

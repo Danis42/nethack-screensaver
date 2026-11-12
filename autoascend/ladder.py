@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 DOOM, GEHENNOM, MINES, QUEST, SOKOBAN, LUDIOS, VLAD, PLANES = range(8)  # dungeon.def order
 MINES_END_WAIT = 1000  # proxy, when the layout is unknown: turns on Mines level 8 without a down staircase
-SOKOBAN_DRAWN = 100  # squares seen before "no trap left" means anything (Sokoban levels are lit)
+SOKOBAN_DRAWN = 100  # squares seen before "no hole or pit left" means anything (Sokoban levels are lit)
 VIBRATION = "You feel a strange vibration"
 
 

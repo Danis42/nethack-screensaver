@@ -500,3 +500,11 @@ evidence = ["reference/nethack-5.0.0/dat/quest.lua:184-193"]
 quote = "text = [[You receive a faint telepathic message from %l:"
 web = []
 notes = "The module docstring verified these on 3.6 NLD-NAO games; dat/quest.lua shows the same text in 5.0."
+
+[sokoban-levels-have-rolling-boulder-traps]
+claim = "Every NetHack 5.0 Sokoban level places a rolling boulder trap among its holes or pits (3.6.6 has none); no boulder fills it, so 'no trap left' never holds on a solved 5.0 level"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/soko1-1.lua:65-67", "reference/nethack-5.0.0/dat/soko1-2.lua:66", "reference/nethack-5.0.0/dat/soko4-1.lua:84"]
+quote = "des.trap(\"rolling boulder\", 08, 01);"
+web = []
+notes = "Also soko2-1.lua:52, soko2-2.lua:53, soko3-1.lua:58, soko3-2.lua:53, soko4-1.lua:91, soko4-2.lua:53 and :60. reference/nethack-3.6.6/dat/sokoban.des: grep -c rolling = 0. Seen in play: staged soko1 seed 7 shows 'rolling boulder trap' at screen (46,19) next to 18 holes."

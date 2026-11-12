@@ -63,10 +63,10 @@ def test_observation_facts_read_dungeon_level_seen_and_traps():
     from nethack_screensaver import staging
     glyphs = np.full((21, 79), SS.S_stone, np.int16)
     glyphs[5, 5:10] = SS.S_room
-    glyphs[5, 7] = sorted(G.TRAPS)[0]
+    glyphs[5, 7] = SS.S_hole
     blstats = np.zeros(30, np.int64)
     blstats[nh.NLE_BL_DNUM], blstats[nh.NLE_BL_DLEVEL], blstats[nh.NLE_BL_TIME] = 4, 1, 77
     f = staging.observation_facts({"glyphs": glyphs, "blstats": blstats})
     assert (f.dungeon, f.level, f.turn, f.sokoban_seen, f.sokoban_traps) == (4, 1, 77, 5, True)
-    glyphs[5, 7] = SS.S_room
+    glyphs[5, 7] = SS.S_rolling_boulder_trap  # 5.0 puts one on every Sokoban level; no boulder fills it
     assert not staging.observation_facts({"glyphs": glyphs, "blstats": blstats}).sokoban_traps
