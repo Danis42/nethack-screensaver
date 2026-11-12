@@ -89,6 +89,7 @@ DETECTORS = {
                                    and m.sokoban_traps_seen and not f.sokoban_traps,  # fact:sokoban-entry-is-bottom-level
     "mines_end": _mines_end,
     "dlvl15": lambda f, m: f.dungeon == DOOM and f.level >= 15,
+    # fact:quest-portal-entered-message, quest-portal-level-call
     "quest_portal": lambda f, m: f.quest_portal_found or f.dungeon == QUEST,  # in the Quest: it was entered
     "quest": lambda f, m: f.dungeon == QUEST,
     "medusa": lambda f, m: f.dungeon == DOOM and f.level >= 21 and (f.medusa_seen or f.water_share > 1 / 3),

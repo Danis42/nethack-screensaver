@@ -20,8 +20,8 @@ from collections import deque
 
 import numpy as np
 
-PORTAL_MESSAGES = ("faint telepathic message from", "ic transporter", "You again sense ")
-ENTERED_MESSAGE = "You activated a magic portal!"
+PORTAL_MESSAGES = ("faint telepathic message from", "ic transporter", "You again sense ")  # fact:quest-portal-level-call
+ENTERED_MESSAGE = "You activated a magic portal!"  # fact:quest-portal-entered-message
 DEAD_END_SEARCHES = 10  # searches per dead end before the hunt gives up on it
 
 

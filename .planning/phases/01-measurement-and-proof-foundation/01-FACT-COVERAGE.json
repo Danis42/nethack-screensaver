@@ -1,0 +1,582 @@
+{
+ "files": [
+  {
+   "path": "autoascend/soko_solver/maps.py",
+   "literals": 6116,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/objects/data.py",
+   "literals": 1442,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/glyph/monflag.py",
+   "literals": 194,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/glyph/screen_symbol_consts.py",
+   "literals": 106,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/agent.py",
+   "literals": 74,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/global_logic.py",
+   "literals": 66,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/character.py",
+   "literals": 64,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/item_manager.py",
+   "literals": 59,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/combat/fight_heur.py",
+   "literals": 40,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/inventory.py",
+   "literals": 32,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/exploration_logic.py",
+   "literals": 31,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/combat/movement_priority.py",
+   "literals": 27,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/glyph/__init__.py",
+   "literals": 14,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/plans.py",
+   "literals": 12,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/castle.py",
+   "literals": 20,
+   "citations": 9
+  },
+  {
+   "path": "autoascend/item/accessories.py",
+   "literals": 10,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/shop_sell.py",
+   "literals": 8,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/utils.py",
+   "literals": 8,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/passtune.py",
+   "literals": 10,
+   "citations": 3
+  },
+  {
+   "path": "autoascend/soko_solver/search.py",
+   "literals": 7,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/scrolls.py",
+   "literals": 5,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/ladder.py",
+   "literals": 8,
+   "citations": 3
+  },
+  {
+   "path": "autoascend/level.py",
+   "literals": 5,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/wishes.py",
+   "literals": 4,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/combat/monster_utils.py",
+   "literals": 3,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/item.py",
+   "literals": 3,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/objects/utils.py",
+   "literals": 3,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/combat/rl_scoring.py",
+   "literals": 2,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/combat/stair_escape.py",
+   "literals": 6,
+   "citations": 4
+  },
+  {
+   "path": "autoascend/soko_solver/__init__.py",
+   "literals": 2,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/combat/utils.py",
+   "literals": 1,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/glyph/monster.py",
+   "literals": 1,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/inventory_items.py",
+   "literals": 1,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/stats_logger.py",
+   "literals": 1,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/stuck.py",
+   "literals": 1,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/__init__.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/boulders.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/combat/__init__.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/env_wrapper.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/exceptions.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/glyph/nh5.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/glyph/screen_symbols.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/__init__.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/item_priority_base.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/item/utils.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/monster_tracker/__init__.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/monster_tracker/kernels.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/monster_tracker/monster_tracker.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/objects/__init__.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/strategy.py",
+   "literals": 0,
+   "citations": 0
+  },
+  {
+   "path": "autoascend/quest_portal.py",
+   "literals": 1,
+   "citations": 2
+  },
+  {
+   "path": "autoascend/telepathy.py",
+   "literals": 3,
+   "citations": 6
+  },
+  {
+   "path": "autoascend/medusa.py",
+   "literals": 0,
+   "citations": 6
+  },
+  {
+   "path": "autoascend/digging.py",
+   "literals": 0,
+   "citations": 9
+  },
+  {
+   "path": "autoascend/prayer.py",
+   "literals": 0,
+   "citations": 29
+  }
+ ],
+ "notes": [
+  {
+   "path": ".planning/research/AC-GAP-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/ARCHITECTURE.md",
+   "citations": 0,
+   "unverified": 3
+  },
+  {
+   "path": ".planning/research/ASCENSION-GUIDE.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/ASCENSION-KIT-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/ASCENSION-PLAN-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/ASCENSION-PLAYBOOK-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/ASCENSION-ROUTE-AUDIT.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/FEATURES.md",
+   "citations": 2,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/FOOD-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/GUIDE-MAG-R342.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/ITEMS-EFFECTS-AUDIT.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/LADDER-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/MEDUSA-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/MEDUSA-RETURN-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/MINES-ENTRY-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/ONLINE-2026-10-29.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/PITFALLS.md",
+   "citations": 2,
+   "unverified": 4
+  },
+  {
+   "path": ".planning/research/PRAYER-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/REWIND-20.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/SCROLL-ID-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/STACK.md",
+   "citations": 0,
+   "unverified": 1
+  },
+  {
+   "path": ".planning/research/STRENGTH-PER-DEPTH.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/SUMMARY.md",
+   "citations": 3,
+   "unverified": 5
+  },
+  {
+   "path": ".planning/research/SURVIVAL-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/TELEPATHY-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/WIKI-TIER1.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/WISHES-NH5.md",
+   "citations": 0,
+   "unverified": 0
+  },
+  {
+   "path": ".planning/research/XL14-NH5.md",
+   "citations": 0,
+   "unverified": 1
+  }
+ ],
+ "totals": {
+  "files": 55,
+  "literals": 8390,
+  "citations": 71
+ },
+ "tranche_1_marks": [
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 109,
+   "outcome": "fact",
+   "ids": "pudding-splits-on-iron-hit, cloned-monsters-drop-no-items"
+  },
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 149,
+   "outcome": "fact",
+   "ids": "hellfill-has-seven-styles"
+  },
+  {
+   "file": ".planning/research/PITFALLS.md",
+   "line": 70,
+   "outcome": "fact",
+   "ids": "pudding-splits-on-iron-hit, cloned-monsters-drop-no-items"
+  },
+  {
+   "file": ".planning/research/FEATURES.md",
+   "line": 45,
+   "outcome": "fact",
+   "ids": "force-lock-blade-may-break"
+  },
+  {
+   "file": ".planning/research/FEATURES.md",
+   "line": 171,
+   "outcome": "fact",
+   "ids": "hellfill-has-seven-styles"
+  },
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 18,
+   "outcome": "not a NetHack fact",
+   "reason": "about the previous session claiming unverified work (process), not a game fact"
+  },
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 96,
+   "outcome": "not a NetHack fact",
+   "reason": "describes the fact-ledger method itself"
+  },
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 153,
+   "outcome": "not a NetHack fact",
+   "reason": "NLE fork-at-arrival spike (tooling: whether the embedded game survives os.fork)"
+  },
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 214,
+   "outcome": "not a NetHack fact",
+   "reason": "NLE fork survival (tooling)"
+  },
+  {
+   "file": ".planning/research/XL14-NH5.md",
+   "line": 43,
+   "outcome": "not a NetHack fact",
+   "reason": "whether the Bell stays reachable in practice is a play outcome, measurable only by games; the rule facts on that line (Norn stats) are not the unverified part"
+  },
+  {
+   "file": ".planning/research/ARCHITECTURE.md",
+   "line": 245,
+   "outcome": "not a NetHack fact",
+   "reason": "NLE fork-at-arrival spike (tooling)"
+  },
+  {
+   "file": ".planning/research/ARCHITECTURE.md",
+   "line": 539,
+   "outcome": "not a NetHack fact",
+   "reason": "NLE fork survival fallback (tooling)"
+  },
+  {
+   "file": ".planning/research/STACK.md",
+   "line": 8,
+   "outcome": "not a NetHack fact",
+   "reason": "research method: defines the LOW confidence tag"
+  },
+  {
+   "file": ".planning/research/PITFALLS.md",
+   "line": 206,
+   "outcome": "not a NetHack fact",
+   "reason": "LLM latency and cost of NetPlay/astra (tooling), not a game fact"
+  },
+  {
+   "file": ".planning/research/PITFALLS.md",
+   "line": 249,
+   "outcome": "not a NetHack fact",
+   "reason": "describes the fact-ledger method itself"
+  },
+  {
+   "file": ".planning/research/PITFALLS.md",
+   "line": 388,
+   "outcome": "not a NetHack fact",
+   "reason": "process rule against committing unverified LLM tables"
+  }
+ ],
+ "non_nethack_marks": [
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 18,
+   "reason": "about the previous session claiming unverified work (process), not a game fact"
+  },
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 96,
+   "reason": "describes the fact-ledger method itself"
+  },
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 153,
+   "reason": "NLE fork-at-arrival spike (tooling: whether the embedded game survives os.fork)"
+  },
+  {
+   "file": ".planning/research/SUMMARY.md",
+   "line": 214,
+   "reason": "NLE fork survival (tooling)"
+  },
+  {
+   "file": ".planning/research/XL14-NH5.md",
+   "line": 43,
+   "reason": "whether the Bell stays reachable in practice is a play outcome, measurable only by games; the rule facts on that line (Norn stats) are not the unverified part"
+  },
+  {
+   "file": ".planning/research/ARCHITECTURE.md",
+   "line": 245,
+   "reason": "NLE fork-at-arrival spike (tooling)"
+  },
+  {
+   "file": ".planning/research/ARCHITECTURE.md",
+   "line": 539,
+   "reason": "NLE fork survival fallback (tooling)"
+  },
+  {
+   "file": ".planning/research/STACK.md",
+   "line": 8,
+   "reason": "research method: defines the LOW confidence tag"
+  },
+  {
+   "file": ".planning/research/PITFALLS.md",
+   "line": 206,
+   "reason": "LLM latency and cost of NetPlay/astra (tooling), not a game fact"
+  },
+  {
+   "file": ".planning/research/PITFALLS.md",
+   "line": 249,
+   "reason": "describes the fact-ledger method itself"
+  },
+  {
+   "file": ".planning/research/PITFALLS.md",
+   "line": 388,
+   "reason": "process rule against committing unverified LLM tables"
+  }
+ ],
+ "limits": "Counts numeric literals and citations; it cannot tell which literals are NetHack facts or detect untagged facts."
+}
