@@ -77,3 +77,37 @@ The handplay server was stopped before a reboot, so attempt 3's game (T42) is go
 fresh game: `.venv/bin/python scripts/handplay.py serve --seed 7 --stage soko-top --dir .planning/hand-games/soko-top`.
 The start fixture tests/data/soko_top_hand_start.json (T1) stays valid; note the boulder hidden under the arrival
 square (47,16).
+
+## Attempt 4 (seed 7, 2026-11-13): solved at T882
+
+- The level is **soko1-2**, not soko1-1 (attempt 1's label was wrong): 20 boulders, 18 holes and a rolling boulder
+  trap, flipped in both axes (screen = lua placed at offset (2, 26)). `tools/sokoplan.py` places
+  `reference/nethack-5.0.0/dat/soko1-2.lua` onto the T1 observation: all 19 traps and 19 visible boulders match, the
+  20th boulder is the one hidden under the hero at (47,16).
+- 3.6 and 5.0 soko1-2 have the same map and the same 20 boulders; 3.6 had holes at lua x 05-22, 5.0 has the rolling
+  boulder trap at 05 and holes at 06-23. The live solver finds no plan even on this exact board (3,000,000 states,
+  745 s).
+- Plan: the stored 3.6 solution (autoascend/soko_solver/maps.py) placed on the true board and simulated push by
+  push (`tools/sokosim.py`): runs cut where a boulder drops early, extended along the row where the stored target
+  is already filled; solved after 415 pushes in simulation. Played with `tools/sokodrive.py`, which walks orthogonal
+  paths and compares the live board with the model after every push. Log: `pushes-attempt4.log`.
+- T2: wizard ^T to the down stairs (getpos '>'), blessed genocide of class o. Later wizard help, none touching a
+  boulder or trap: blessed full healing and a blessed +3 long sword at T387 (an ape had the bare-handed hero at
+  HP 20/77), a blessed unicorn horn and a prayer with "force pleased" at T835 (a black light's hallucination and
+  Fainting). Fought: leprechaun, ape, newt, wererat, giant rat, xan, dust vortex (engulfed, blinded).
+- **A boulder that appeared at screen (41,15) was a giant mimic** (makemon.c set_mimic_sym: outside rooms a mimic
+  appears as a boulder). Killed at T553 when push 239 needed its square.
+- **The rolling boulder trap never released a boulder** when the hero or a monster stepped on it ("No boulder was
+  released"). But **a boulder pushed onto it is launched**: at push 396 (T882) "The boulder suddenly rolls away from
+  you! You hear a boulder fall." It rolled along the row into the last open hole (screen (28,19)). The driver's model
+  missed this, so its pushes 397-414 were walks over the filled row (see the correction line in the log).
+- Ladder: `T1 reached sokoban`, `T882 reached sokoban_solved` — exactly once, on the turn the last hole was filled.
+- Fixtures: tests/data/soko_top_hand_start.json (T1) and tests/data/soko_top_hand_solved.json (T897, the solved
+  board; its only trap glyph is the rolling boulder trap). Test: tests/test_sokoban_detector.py.
+
+## What attempt 4 adds for the 0/2304 cause (plan 01-16)
+
+4. The stored 3.6 solution, mapped onto the 5.0 board, does solve soko1-2 when runs end where the boulder drops;
+   the bot's own run lengths assume 3.6 hole positions.
+5. Giant mimics pose as boulders in Sokoban; the bot's board reading takes them for boulders.
+6. A boulder pushed onto the 5.0 rolling boulder trap rolls on by itself; a plan that counts pushes loses track.

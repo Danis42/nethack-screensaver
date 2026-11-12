@@ -1,1 +1,1 @@
-{"seed": 7, "stage": "soko-top", "attempts": 3, "outcome": "unsolved; attempt 3 paused at T42, server stopped 2026-11-12 for a reboot (game state lost)"}
+{"seed": 7, "stage": "soko-top", "level": "soko1-2 (flipped)", "attempts": 4, "outcome": "solved in attempt 4: last hole filled at T882; sokoban_solved fired once at T882", "turns": 897, "pushes": 397, "date": "2026-11-13"}

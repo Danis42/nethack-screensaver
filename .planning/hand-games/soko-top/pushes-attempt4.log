@@ -1,0 +1,478 @@
+attempt 4: T1 fresh game (seed 7, soko-top); T2 wizard ^T to the down stairs (45,5) via getpos '>'; wished and read a blessed scroll of genocide, class o, before any push. Plan: stored 3.6 solution translated to the true 5.0 board (sokosim), 415 pushes
+push 0 T3 boulder (5, 44) h to (5, 43); open holes 18 | msgs: With great effort you move the boulder.
+push 1 T4 boulder (5, 43) h to (5, 42); open holes 18
+push 2 T5 boulder (5, 42) h to (5, 41); open holes 18
+push 3 T7 boulder (5, 41) j to (6, 41); open holes 18
+push 4 T7 boulder (6, 41) j to (7, 41); open holes 18
+push 5 T8 boulder (7, 41) j to (8, 41); open holes 18
+push 6 T9 boulder (8, 41) j to (9, 41); open holes 18
+push 7 T10 boulder (9, 40) j to (10, 40); open holes 18 | msgs: With great effort you move the boulder.
+push 8 T11 boulder (10, 39) j to (11, 39); open holes 18 | msgs: With great effort you move the boulder.
+push 9 T11 boulder (11, 39) j to (12, 39); open holes 18
+push 10 T13 boulder (12, 40) j to (13, 40); open holes 18 | msgs: With great effort you move the boulder.
+STOP push 11: boulders not in the model at [(14, 41)] (T13)
+note push 11: unexplained boulders (mimics?) at [(14, 41)] (T13)
+push 11 T13 boulder (12, 41) l to (12, 42); open holes 18 | msgs: With great effort you move the boulder.
+push 12 T14 boulder (12, 42) l to (12, 43); open holes 18
+push 13 T15 boulder (12, 43) l to (12, 44); open holes 18
+push 14 T19 boulder (11, 46) l to (11, 47); open holes 18 | msgs: With great effort you move the boulder.
+push 15 T20 boulder (11, 47) l to (11, 48); open holes 18
+push 16 T21 boulder (12, 47) j to (13, 47); open holes 18 | msgs: With great effort you move the boulder.
+push 17 T23 boulder (13, 49) j to (14, 49); open holes 18 | msgs: With great effort you move the boulder.
+push 18 T26 boulder (14, 49) k to (13, 49); open holes 18 | msgs: You see here a granite ring. | With great effort you move the boulder.
+push 19 T29 boulder (15, 47) j to (16, 47); open holes 18 | msgs: With great effort you move the boulder.
+push 20 T30 boulder (16, 47) j to (17, 47); open holes 18
+push 21 T30 boulder (17, 47) j to (18, 47); open holes 18
+push 22 T33 boulder (18, 47) h to (18, 46); open holes 18 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 23: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 23 T34 boulder (18, 46) h dropped into hole (18, 45); open holes 17 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 24 T40 boulder (12, 46) k to (11, 46); open holes 17 | msgs: You hear a door open.  You hear a door open. | With great effort you move the boulder.
+push 25 T41 boulder (13, 47) j to (14, 47); open holes 17 | msgs: With great effort you move the boulder.
+push 26 T42 boulder (14, 47) j to (15, 47); open holes 17
+push 27 T43 boulder (15, 47) j to (16, 47); open holes 17
+push 28 T44 boulder (16, 47) j to (17, 47); open holes 17
+push 29 T45 boulder (17, 47) j to (18, 47); open holes 17
+push 30 T47 boulder (18, 47) h to (18, 46); open holes 17 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 31: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 31 T47 boulder (18, 46) h to (18, 45); open holes 17 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 32 T48 boulder (18, 45) h dropped into hole (18, 44); open holes 16
+note push 33: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | With great effort you move the boulder.
+push 33 T56 boulder (13, 49) j to (14, 49); open holes 16 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | With great effort you move the boulder.
+push 34 T59 boulder (14, 49) h to (14, 48); open holes 16 | msgs: With great effort you move the boulder.
+push 35 T60 boulder (14, 48) h to (14, 47); open holes 16
+push 36 T66 boulder (14, 47) j to (15, 47); open holes 16 | msgs: You swap places with your kitten. | With great effort you move the boulder.
+push 37 T67 boulder (15, 47) j to (16, 47); open holes 16
+push 38 T67 boulder (16, 47) j to (17, 47); open holes 16
+push 39 T68 boulder (17, 47) j to (18, 47); open holes 16
+push 40 T69 boulder (18, 47) h to (18, 46); open holes 16 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 41: msgs: You escape a rolling boulder trap.
+push 41 T70 boulder (18, 46) h to (18, 45); open holes 16 | msgs: You escape a rolling boulder trap.
+push 42 T71 boulder (18, 45) h to (18, 44); open holes 16
+push 43 T72 boulder (18, 44) h dropped into hole (18, 43); open holes 15
+note push 44: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | With great effort you move the boulder.
+push 44 T82 boulder (13, 48) h to (13, 47); open holes 15 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | With great effort you move the boulder.
+push 45 T84 boulder (13, 47) j to (14, 47); open holes 15
+push 46 T85 boulder (14, 47) j to (15, 47); open holes 15
+push 47 T86 boulder (15, 47) j to (16, 47); open holes 15
+push 48 T86 boulder (16, 47) j to (17, 47); open holes 15
+push 49 T87 boulder (17, 47) j to (18, 47); open holes 15
+push 50 T90 boulder (18, 47) h to (18, 46); open holes 15 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 51: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 51 T91 boulder (18, 46) h to (18, 45); open holes 15 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 52 T92 boulder (18, 45) h to (18, 44); open holes 15
+push 53 T93 boulder (18, 44) h to (18, 43); open holes 15
+push 54 T94 boulder (18, 43) h dropped into hole (18, 42); open holes 14
+note push 55: msgs: You escape a rolling boulder trap. | The kitten picks up a granite ring. | With great effort you move the boulder.
+push 55 T102 boulder (10, 47) k to (9, 47); open holes 14 | msgs: You escape a rolling boulder trap. | The kitten picks up a granite ring. | With great effort you move the boulder.
+push 56 T103 boulder (11, 46) j to (12, 46); open holes 14 | msgs: With great effort you move the boulder.
+push 57 T108 boulder (12, 44) k to (11, 44); open holes 14 | msgs: The kitten drops a granite ring. | With great effort you move the boulder.
+push 58 T111 boulder (11, 44) l to (11, 45); open holes 14 | msgs: You swap places with your kitten. | With great effort you move the boulder.
+push 59 T111 boulder (11, 45) l to (11, 46); open holes 14
+push 60 T112 boulder (11, 46) l to (11, 47); open holes 14 | msgs: You see here a granite ring.
+push 61 T114 boulder (11, 47) j to (12, 47); open holes 14
+push 62 T114 boulder (12, 47) j to (13, 47); open holes 14
+push 63 T115 boulder (13, 47) j to (14, 47); open holes 14
+push 64 T116 boulder (14, 47) j to (15, 47); open holes 14
+push 65 T116 boulder (15, 47) j to (16, 47); open holes 14
+push 66 T117 boulder (16, 47) j to (17, 47); open holes 14
+push 67 T117 boulder (17, 47) j to (18, 47); open holes 14
+push 68 T119 boulder (18, 47) h to (18, 46); open holes 14 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 69: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 69 T120 boulder (18, 46) h to (18, 45); open holes 14 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 70 T121 boulder (18, 45) h to (18, 44); open holes 14
+push 71 T122 boulder (18, 44) h to (18, 43); open holes 14
+push 72 T123 boulder (18, 43) h to (18, 42); open holes 14
+push 73 T123 boulder (18, 42) h dropped into hole (18, 41); open holes 13
+note push 74: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | You hear a sound reminiscent of an elephant stepping on a peanut. | You see here a granite ring. | With great effort you move the boulder.
+push 74 T157 boulder (9, 47) j to (10, 47); open holes 13 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | You hear a sound reminiscent of an elephant stepping on a peanut. | You see here a granite ring. | With great effort you move the boulder.
+push 75 T157 boulder (10, 47) j to (11, 47); open holes 13
+push 76 T158 boulder (11, 47) j to (12, 47); open holes 13
+push 77 T159 boulder (12, 47) j to (13, 47); open holes 13
+push 78 T160 boulder (13, 47) j to (14, 47); open holes 13
+push 79 T161 boulder (14, 47) j to (15, 47); open holes 13
+STOP push 80: move j: STOPPED at (47, 16): monster adjacent: S leprechaun, asleep | msgs: You hear a monster behind the boulder. | Perhaps that's why you cannot move it. | However, you can squeeze yourself into a small opening. | You see here a boulder.
+push 80 interrupted: a sleeping leprechaun behind the boulder at (16,47); the hero squeezed onto the boulder square; killed it with fight j
+note push 80: unexplained boulders (mimics?) at [(14, 41)] (T163)
+push 80 T164 boulder (15, 47) j to (16, 47); open holes 13 | msgs: With great effort you move the boulder.
+push 81 T165 boulder (16, 47) j to (17, 47); open holes 13
+note push 82: msgs: You hear a monster behind the boulder. | Perhaps that's why you cannot move it. | However, you can squeeze yourself into a small opening. | You see here a boulder. | Click!  The leprechaun triggers a rolling boulder trap.
+STOP push 82: move j: STOPPED at (47, 18): monster adjacent: SW leprechaun | msgs: You hear a monster behind the boulder. | Perhaps that's why you cannot move it. | However, you can squeeze yourself into a small opening. | You see here a boulder. | Click!  The leprechaun triggers a rolling boulder trap.
+push 82 interrupted: the leprechaun came back, triggered the rolling boulder trap (46,19) (no boulder message) and stood SW; fight b
+note push 82: unexplained boulders (mimics?) at [(14, 41)] (T166)
+push 82 T167 boulder (17, 47) j to (18, 47); open holes 13 | msgs: With great effort you move the boulder.
+push 83 T170 boulder (18, 47) h to (18, 46); open holes 13 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 84: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 84 T171 boulder (18, 46) h to (18, 45); open holes 13 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 85 T171 boulder (18, 45) h to (18, 44); open holes 13
+push 86 T172 boulder (18, 44) h to (18, 43); open holes 13
+push 87 T173 boulder (18, 43) h to (18, 42); open holes 13 | msgs: The leprechaun jumps into a hole!
+push 88 T174 boulder (18, 42) h to (18, 41); open holes 13
+push 89 T174 boulder (18, 41) h dropped into hole (18, 40); open holes 12
+note push 90: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | You swap places with your kitten. | With great effort you move the boulder.
+push 90 T188 boulder (9, 48) h to (9, 47); open holes 12 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | You swap places with your kitten. | With great effort you move the boulder.
+push 91 T190 boulder (9, 47) j to (10, 47); open holes 12
+push 92 T190 boulder (10, 47) j to (11, 47); open holes 12
+push 93 T191 boulder (11, 47) j to (12, 47); open holes 12
+push 94 T192 boulder (12, 47) j to (13, 47); open holes 12
+push 95 T193 boulder (13, 47) j to (14, 47); open holes 12
+push 96 T193 boulder (14, 47) j to (15, 47); open holes 12
+push 97 T194 boulder (15, 47) j to (16, 47); open holes 12
+push 98 T195 boulder (16, 47) j to (17, 47); open holes 12
+push 99 T195 boulder (17, 47) j to (18, 47); open holes 12
+push 100 T198 boulder (18, 47) h to (18, 46); open holes 12 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 101: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 101 T199 boulder (18, 46) h to (18, 45); open holes 12 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 102 T199 boulder (18, 45) h to (18, 44); open holes 12
+push 103 T200 boulder (18, 44) h to (18, 43); open holes 12
+push 104 T201 boulder (18, 43) h to (18, 42); open holes 12
+push 105 T201 boulder (18, 42) h to (18, 41); open holes 12
+push 106 T202 boulder (18, 41) h to (18, 40); open holes 12
+push 107 T203 boulder (18, 40) h dropped into hole (18, 39); open holes 11
+note push 108: msgs: You escape a rolling boulder trap. | With great effort you move the boulder.
+push 108 T217 boulder (10, 48) h to (10, 47); open holes 11 | msgs: You escape a rolling boulder trap. | With great effort you move the boulder.
+push 109 T220 boulder (10, 47) j to (11, 47); open holes 11 | msgs: With great effort you move the boulder.
+push 110 T221 boulder (11, 47) j to (12, 47); open holes 11
+push 111 T222 boulder (12, 47) j to (13, 47); open holes 11
+push 112 T222 boulder (13, 47) j to (14, 47); open holes 11
+push 113 T223 boulder (14, 47) j to (15, 47); open holes 11
+push 114 T223 boulder (15, 47) j to (16, 47); open holes 11
+push 115 T224 boulder (16, 47) j to (17, 47); open holes 11
+push 116 T224 boulder (17, 47) j to (18, 47); open holes 11
+push 117 T226 boulder (18, 47) h to (18, 46); open holes 11 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 118: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 118 T227 boulder (18, 46) h to (18, 45); open holes 11 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 119 T228 boulder (18, 45) h to (18, 44); open holes 11
+push 120 T229 boulder (18, 44) h to (18, 43); open holes 11
+push 121 T230 boulder (18, 43) h to (18, 42); open holes 11
+push 122 T230 boulder (18, 42) h to (18, 41); open holes 11
+push 123 T231 boulder (18, 41) h to (18, 40); open holes 11
+push 124 T232 boulder (18, 40) h to (18, 39); open holes 11 | msgs: You hear a sound reminiscent of a seal barking.
+push 125 T233 boulder (18, 39) h dropped into hole (18, 38); open holes 10
+note push 126: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | With great effort you move the boulder.
+push 126 T244 boulder (11, 48) k to (10, 48); open holes 10 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | With great effort you move the boulder.
+push 127 T250 boulder (10, 48) h to (10, 47); open holes 10 | msgs: With great effort you move the boulder.
+push 128 T252 boulder (10, 47) j to (11, 47); open holes 10
+push 129 T253 boulder (11, 47) j to (12, 47); open holes 10
+push 130 T254 boulder (12, 47) j to (13, 47); open holes 10
+push 131 T255 boulder (13, 47) j to (14, 47); open holes 10
+push 132 T256 boulder (14, 47) j to (15, 47); open holes 10
+push 133 T256 boulder (15, 47) j to (16, 47); open holes 10
+push 134 T257 boulder (16, 47) j to (17, 47); open holes 10
+push 135 T257 boulder (17, 47) j to (18, 47); open holes 10
+push 136 T260 boulder (18, 47) h to (18, 46); open holes 10 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 137: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 137 T261 boulder (18, 46) h to (18, 45); open holes 10 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 138 T261 boulder (18, 45) h to (18, 44); open holes 10
+push 139 T262 boulder (18, 44) h to (18, 43); open holes 10
+push 140 T263 boulder (18, 43) h to (18, 42); open holes 10
+push 141 T263 boulder (18, 42) h to (18, 41); open holes 10
+push 142 T264 boulder (18, 41) h to (18, 40); open holes 10
+push 143 T265 boulder (18, 40) h to (18, 39); open holes 10
+push 144 T265 boulder (18, 39) h to (18, 38); open holes 10
+push 145 T266 boulder (18, 38) h dropped into hole (18, 37); open holes 9
+note push 146: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | With great effort you move the boulder.
+push 146 T282 boulder (11, 49) j to (12, 49); open holes 9 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | With great effort you move the boulder.
+push 147 T282 boulder (12, 49) j to (13, 49); open holes 9
+push 148 T283 boulder (13, 49) j to (14, 49); open holes 9
+push 149 T285 boulder (14, 49) h to (14, 48); open holes 9 | msgs: With great effort you move the boulder.
+push 150 T286 boulder (14, 48) h to (14, 47); open holes 9
+push 151 T289 boulder (14, 47) j to (15, 47); open holes 9 | msgs: With great effort you move the boulder.
+push 152 T289 boulder (15, 47) j to (16, 47); open holes 9
+push 153 T290 boulder (16, 47) j to (17, 47); open holes 9
+push 154 T291 boulder (17, 47) j to (18, 47); open holes 9
+push 155 T293 boulder (18, 47) h to (18, 46); open holes 9 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 156: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 156 T294 boulder (18, 46) h to (18, 45); open holes 9 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 157 T294 boulder (18, 45) h to (18, 44); open holes 9
+push 158 T295 boulder (18, 44) h to (18, 43); open holes 9
+push 159 T296 boulder (18, 43) h to (18, 42); open holes 9
+note push 160: msgs: Click!  The kitten triggers a rolling boulder trap.
+push 160 T297 boulder (18, 42) h to (18, 41); open holes 9 | msgs: Click!  The kitten triggers a rolling boulder trap.
+push 161 T297 boulder (18, 41) h to (18, 40); open holes 9
+push 162 T298 boulder (18, 40) h to (18, 39); open holes 9
+push 163 T298 boulder (18, 39) h to (18, 38); open holes 9
+push 164 T299 boulder (18, 38) h to (18, 37); open holes 9
+push 165 T300 boulder (18, 37) h dropped into hole (18, 36); open holes 8
+note push 166: msgs: You swap places with your kitten. | Click!  You trigger a rolling boulder trap!  No boulder was released. | The dust vortex engulfs you! | You can't see in here! | You hit the dust vortex.
+STOP push 166: move llllllllllkkkkkkkkkkhj: FAIL step k blocked at (47, 13): N is interior of the dust vortex | msgs: You swap places with your kitten. | Click!  You trigger a rolling boulder trap!  No boulder was released. | The dust vortex engulfs you! | You can't see in here! | You hit the dust vortex.
+push 166 interrupted: engulfed by a dust vortex (blinded); attacked it with F until expelled
+note push 166: unexplained boulders (mimics?) at [(14, 41)] (T326)
+push 166 T330 boulder (9, 46) j to (10, 46); open holes 8 | msgs: With great effort you move the boulder.
+push 167 T330 boulder (10, 46) j to (11, 46); open holes 8
+push 168 T353 boulder (11, 46) l to (11, 47); open holes 8 | msgs: With great effort you move the boulder.  You see here a granite ring.
+push 169 T355 boulder (11, 47) j to (12, 47); open holes 8
+push 170 T356 boulder (12, 47) j to (13, 47); open holes 8
+push 171 T357 boulder (13, 47) j to (14, 47); open holes 8
+push 172 T358 boulder (14, 47) j to (15, 47); open holes 8 | msgs: You hear a sound reminiscent of a seal barking.
+push 173 T359 boulder (15, 47) j to (16, 47); open holes 8
+push 174 T360 boulder (16, 47) j to (17, 47); open holes 8
+push 175 T361 boulder (17, 47) j to (18, 47); open holes 8
+push 176 T363 boulder (18, 47) h to (18, 46); open holes 8 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 177: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 177 T364 boulder (18, 46) h to (18, 45); open holes 8 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 178 T364 boulder (18, 45) h to (18, 44); open holes 8
+push 179 T365 boulder (18, 44) h to (18, 43); open holes 8
+push 180 T366 boulder (18, 43) h to (18, 42); open holes 8
+push 181 T366 boulder (18, 42) h to (18, 41); open holes 8
+push 182 T367 boulder (18, 41) h to (18, 40); open holes 8
+push 183 T367 boulder (18, 40) h to (18, 39); open holes 8
+push 184 T368 boulder (18, 39) h to (18, 38); open holes 8
+push 185 T369 boulder (18, 38) h to (18, 37); open holes 8
+push 186 T370 boulder (18, 37) h to (18, 36); open holes 8
+push 187 T371 boulder (18, 36) h dropped into hole (18, 35); open holes 7
+note push 188: msgs: You escape a rolling boulder trap. | The ape hits!  The ape hits again!  The ape bites!
+STOP push 188: move lllllllllllkkkkkhk: STOPPED at (47, 18): monster adjacent: N ape | msgs: You escape a rolling boulder trap. | The ape hits!  The ape hits again!  The ape bites!
+push 188 interrupted: an ape attacked from N; fight k
+T387: wizard wish + quaff blessed potion of full healing (HP 20/77), wish + wield blessed +3 long sword; no boulder or trap touched
+note push 188: unexplained boulders (mimics?) at [(14, 41)] (T389)
+push 188 T394 boulder (12, 46) k to (11, 46); open holes 7 | msgs: You see here an ape corpse. | With great effort you move the boulder.
+push 189 T418 boulder (11, 46) l to (11, 47); open holes 7 | msgs: With great effort you move the boulder.  You see here a granite ring.
+push 190 T421 boulder (11, 47) j to (12, 47); open holes 7
+push 191 T422 boulder (12, 47) j to (13, 47); open holes 7
+push 192 T423 boulder (13, 47) j to (14, 47); open holes 7
+push 193 T424 boulder (14, 47) j to (15, 47); open holes 7
+push 194 T425 boulder (15, 47) j to (16, 47); open holes 7
+push 195 T426 boulder (16, 47) j to (17, 47); open holes 7 | msgs: You see here an ape corpse.
+push 196 T427 boulder (17, 47) j to (18, 47); open holes 7
+push 197 T429 boulder (18, 47) h to (18, 46); open holes 7 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 198: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 198 T430 boulder (18, 46) h to (18, 45); open holes 7 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 199 T431 boulder (18, 45) h to (18, 44); open holes 7
+push 200 T431 boulder (18, 44) h to (18, 43); open holes 7
+push 201 T432 boulder (18, 43) h to (18, 42); open holes 7
+push 202 T432 boulder (18, 42) h to (18, 41); open holes 7
+push 203 T433 boulder (18, 41) h to (18, 40); open holes 7
+push 204 T433 boulder (18, 40) h to (18, 39); open holes 7
+push 205 T434 boulder (18, 39) h to (18, 38); open holes 7
+push 206 T434 boulder (18, 38) h to (18, 37); open holes 7
+push 207 T435 boulder (18, 37) h to (18, 36); open holes 7
+push 208 T435 boulder (18, 36) h to (18, 35); open holes 7
+push 209 T436 boulder (18, 35) h dropped into hole (18, 34); open holes 6
+STOP push 210: move kkkkkkhkh: STOPPED at (47, 14): monster adjacent: N newt | 
+push 210 interrupted: newt N; fight k
+note push 210: unexplained boulders (mimics?) at [(14, 41)] (T450)
+push 210 T455 boulder (7, 45) h to (7, 44); open holes 6 | msgs: h - a scroll labeled LOREM IPSUM.  You see here a newt corpse. | With great effort you move the boulder.
+push 211 T477 boulder (7, 44) j to (8, 44); open holes 6 | msgs: You see here a granite ring. | With great effort you move the boulder.
+push 212 T480 boulder (8, 44) l to (8, 45); open holes 6 | msgs: With great effort you move the boulder.
+push 213 T481 boulder (8, 45) l to (8, 46); open holes 6
+push 214 T482 boulder (8, 46) j to (9, 46); open holes 6
+push 215 T483 boulder (9, 46) j to (10, 46); open holes 6
+push 216 T484 boulder (10, 46) j to (11, 46); open holes 6
+push 217 T508 boulder (11, 46) l to (11, 47); open holes 6 | msgs: With great effort you move the boulder.  You see here a granite ring.
+push 218 T510 boulder (11, 47) j to (12, 47); open holes 6
+push 219 T510 boulder (12, 47) j to (13, 47); open holes 6 | msgs: You see here a newt corpse.
+push 220 T511 boulder (13, 47) j to (14, 47); open holes 6
+push 221 T512 boulder (14, 47) j to (15, 47); open holes 6
+push 222 T512 boulder (15, 47) j to (16, 47); open holes 6
+push 223 T513 boulder (16, 47) j to (17, 47); open holes 6 | msgs: You see here an ape corpse.
+push 224 T514 boulder (17, 47) j to (18, 47); open holes 6
+push 225 T517 boulder (18, 47) h to (18, 46); open holes 6 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 226: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 226 T518 boulder (18, 46) h to (18, 45); open holes 6 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 227 T519 boulder (18, 45) h to (18, 44); open holes 6
+push 228 T520 boulder (18, 44) h to (18, 43); open holes 6
+push 229 T520 boulder (18, 43) h to (18, 42); open holes 6
+push 230 T521 boulder (18, 42) h to (18, 41); open holes 6
+push 231 T522 boulder (18, 41) h to (18, 40); open holes 6
+push 232 T523 boulder (18, 40) h to (18, 39); open holes 6
+push 233 T524 boulder (18, 39) h to (18, 38); open holes 6
+push 234 T525 boulder (18, 38) h to (18, 37); open holes 6
+push 235 T525 boulder (18, 37) h to (18, 36); open holes 6
+push 236 T526 boulder (18, 36) h to (18, 35); open holes 6
+push 237 T526 boulder (18, 35) h to (18, 34); open holes 6
+push 238 T527 boulder (18, 34) h dropped into hole (18, 33); open holes 5
+STOP push 239: an unexplained boulder blocks (14, 41)
+push 239 interrupted: the unexplained 'boulder' at fixture (14,41) (screen (41,15)) was a giant mimic (makemon.c set_mimic_sym: boulder disguise outside rooms); killed it from (41,14) with F j at T553
+push 239 T554 boulder (14, 40) h to (14, 39); open holes 5 | msgs: You see here a giant mimic corpse. | With great effort you move the boulder.
+push 240 T555 boulder (13, 40) k to (12, 40); open holes 5 | msgs: With great effort you move the boulder.
+push 241 T558 boulder (13, 39) l to (13, 40); open holes 5 | msgs: With great effort you move the boulder.
+push 242 T559 boulder (13, 40) l to (13, 41); open holes 5
+push 243 T560 boulder (12, 39) k to (11, 39); open holes 5 | msgs: With great effort you move the boulder.
+push 244 T561 boulder (12, 40) l to (12, 41); open holes 5 | msgs: With great effort you move the boulder.
+push 245 T561 boulder (12, 41) l to (12, 42); open holes 5
+push 246 T562 boulder (12, 42) l to (12, 43); open holes 5
+push 247 T563 boulder (12, 43) l to (12, 44); open holes 5
+push 248 T566 boulder (12, 44) k to (11, 44); open holes 5 | msgs: With great effort you move the boulder.
+push 249 T568 boulder (11, 44) l to (11, 45); open holes 5 | msgs: With great effort you move the boulder.
+push 250 T569 boulder (11, 45) l to (11, 46); open holes 5
+push 251 T570 boulder (11, 46) l to (11, 47); open holes 5 | msgs: You see here a granite ring.
+push 252 T573 boulder (11, 47) j to (12, 47); open holes 5 | msgs: With great effort you move the boulder.
+push 253 T574 boulder (12, 47) j to (13, 47); open holes 5 | msgs: You see here a newt corpse.
+push 254 T575 boulder (13, 47) j to (14, 47); open holes 5
+push 255 T576 boulder (14, 47) j to (15, 47); open holes 5
+push 256 T577 boulder (15, 47) j to (16, 47); open holes 5
+push 257 T578 boulder (16, 47) j to (17, 47); open holes 5 | msgs: You see here an ape corpse.
+push 258 T578 boulder (17, 47) j to (18, 47); open holes 5
+push 259 T580 boulder (18, 47) h to (18, 46); open holes 5 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 260: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 260 T580 boulder (18, 46) h to (18, 45); open holes 5 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 261 T581 boulder (18, 45) h to (18, 44); open holes 5
+push 262 T581 boulder (18, 44) h to (18, 43); open holes 5
+push 263 T582 boulder (18, 43) h to (18, 42); open holes 5
+push 264 T582 boulder (18, 42) h to (18, 41); open holes 5
+push 265 T583 boulder (18, 41) h to (18, 40); open holes 5
+push 266 T584 boulder (18, 40) h to (18, 39); open holes 5
+push 267 T585 boulder (18, 39) h to (18, 38); open holes 5
+push 268 T586 boulder (18, 38) h to (18, 37); open holes 5
+push 269 T587 boulder (18, 37) h to (18, 36); open holes 5
+push 270 T587 boulder (18, 36) h to (18, 35); open holes 5
+push 271 T588 boulder (18, 35) h to (18, 34); open holes 5
+push 272 T589 boulder (18, 34) h to (18, 33); open holes 5
+push 273 T590 boulder (18, 33) h dropped into hole (18, 32); open holes 4
+note push 274: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | You see here an ape corpse. | You see here a newt corpse. | You see here a granite ring. | The wererat hits!
+STOP push 274: move llllllllllllllkkkkkkkhhhjhhhhjjlk: STOPPED at (45, 12): monster adjacent: W wererat | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | You see here an ape corpse. | You see here a newt corpse. | You see here a granite ring. | The wererat hits!
+push 274 interrupted: a wererat attacked from W; fight h
+push 274 T613 boulder (13, 41) k to (12, 41); open holes 4 | msgs: You see here a giant mimic corpse. | With great effort you move the boulder.
+push 275 T616 boulder (12, 41) l to (12, 42); open holes 4
+push 276 T617 boulder (12, 42) l to (12, 43); open holes 4
+push 277 T618 boulder (12, 43) l to (12, 44); open holes 4
+push 278 T620 boulder (12, 44) k to (11, 44); open holes 4
+push 279 T622 boulder (11, 44) l to (11, 45); open holes 4
+push 280 T623 boulder (11, 45) l to (11, 46); open holes 4
+push 281 T624 boulder (11, 46) l to (11, 47); open holes 4 | msgs: You see here a granite ring.
+push 282 T627 boulder (11, 47) j to (12, 47); open holes 4 | msgs: With great effort you move the boulder.
+push 283 T628 boulder (12, 47) j to (13, 47); open holes 4 | msgs: You see here a newt corpse.  You are beginning to feel hungry.
+STOP push 284: move j: FAIL step j blocked at (47, 13): S is a boulder | msgs: You hear a monster behind the boulder. | Perhaps that's why you cannot move it.
+push 284 T630 boulder (13, 47) j to (14, 47); open holes 4 | msgs: With great effort you move the boulder.
+push 285 T631 boulder (14, 47) j to (15, 47); open holes 4
+push 286 T632 boulder (15, 47) j to (16, 47); open holes 4
+push 287 T633 boulder (16, 47) j to (17, 47); open holes 4 | msgs: You see here an ape corpse.
+push 288 T633 boulder (17, 47) j to (18, 47); open holes 4
+push 289 T636 boulder (18, 47) h to (18, 46); open holes 4 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 290: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 290 T637 boulder (18, 46) h to (18, 45); open holes 4 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 291 T638 boulder (18, 45) h to (18, 44); open holes 4
+push 292 T638 boulder (18, 44) h to (18, 43); open holes 4
+push 293 T639 boulder (18, 43) h to (18, 42); open holes 4
+push 294 T640 boulder (18, 42) h to (18, 41); open holes 4
+push 295 T640 boulder (18, 41) h to (18, 40); open holes 4
+push 296 T641 boulder (18, 40) h to (18, 39); open holes 4
+push 297 T642 boulder (18, 39) h to (18, 38); open holes 4
+push 298 T642 boulder (18, 38) h to (18, 37); open holes 4
+push 299 T643 boulder (18, 37) h to (18, 36); open holes 4
+push 300 T644 boulder (18, 36) h to (18, 35); open holes 4
+push 301 T644 boulder (18, 35) h to (18, 34); open holes 4
+push 302 T645 boulder (18, 34) h to (18, 33); open holes 4
+push 303 T646 boulder (18, 33) h to (18, 32); open holes 4
+push 304 T647 boulder (18, 32) h dropped into hole (18, 31); open holes 3
+note push 305: msgs: Click!  The giant rat triggers a rolling boulder trap.
+STOP push 305: move lllllllllllllllkkkkkkkhhhjhhhjhhhjl: STOPPED at (43, 19): monster adjacent: E giant rat | msgs: Click!  The giant rat triggers a rolling boulder trap.
+push 284 interrupted: monster behind the boulder, waited 3 turns; push 305 interrupted: giant rat E (it triggered the rolling boulder trap, nothing released); fight l
+push 305 T675 boulder (14, 39) l to (14, 40); open holes 3 | msgs: With great effort you move the boulder.
+push 306 T677 boulder (14, 40) k to (13, 40); open holes 3
+push 307 T678 boulder (13, 40) k to (12, 40); open holes 3
+push 308 T680 boulder (12, 40) l to (12, 41); open holes 3
+push 309 T681 boulder (12, 41) l to (12, 42); open holes 3
+push 310 T682 boulder (12, 42) l to (12, 43); open holes 3
+push 311 T683 boulder (12, 43) l to (12, 44); open holes 3
+push 312 T685 boulder (12, 44) k to (11, 44); open holes 3
+push 313 T688 boulder (11, 44) l to (11, 45); open holes 3 | msgs: With great effort you move the boulder.
+push 314 T689 boulder (11, 45) l to (11, 46); open holes 3
+push 315 T690 boulder (11, 46) l to (11, 47); open holes 3 | msgs: You see here a granite ring.
+push 316 T692 boulder (11, 47) j to (12, 47); open holes 3
+push 317 T693 boulder (12, 47) j to (13, 47); open holes 3 | msgs: You see here a newt corpse. | You hear a sound reminiscent of an elephant stepping on a peanut.
+push 318 T693 boulder (13, 47) j to (14, 47); open holes 3
+push 319 T694 boulder (14, 47) j to (15, 47); open holes 3
+push 320 T694 boulder (15, 47) j to (16, 47); open holes 3
+push 321 T695 boulder (16, 47) j to (17, 47); open holes 3
+push 322 T696 boulder (17, 47) j to (18, 47); open holes 3
+push 323 T699 boulder (18, 47) h to (18, 46); open holes 3 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 324: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 324 T700 boulder (18, 46) h to (18, 45); open holes 3 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 325 T700 boulder (18, 45) h to (18, 44); open holes 3
+push 326 T701 boulder (18, 44) h to (18, 43); open holes 3
+push 327 T702 boulder (18, 43) h to (18, 42); open holes 3
+push 328 T703 boulder (18, 42) h to (18, 41); open holes 3
+push 329 T704 boulder (18, 41) h to (18, 40); open holes 3
+push 330 T704 boulder (18, 40) h to (18, 39); open holes 3
+push 331 T705 boulder (18, 39) h to (18, 38); open holes 3
+push 332 T705 boulder (18, 38) h to (18, 37); open holes 3
+push 333 T706 boulder (18, 37) h to (18, 36); open holes 3
+push 334 T707 boulder (18, 36) h to (18, 35); open holes 3
+push 335 T708 boulder (18, 35) h to (18, 34); open holes 3
+push 336 T709 boulder (18, 34) h to (18, 33); open holes 3
+push 337 T709 boulder (18, 33) h to (18, 32); open holes 3
+push 338 T710 boulder (18, 32) h to (18, 31); open holes 3
+push 339 T711 boulder (18, 31) h dropped into hole (18, 30); open holes 2
+note push 340: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | Valkyrie needs food, badly! | You hear a sound reminiscent of a seal barking. | With great effort you move the boulder.
+push 340 T744 boulder (11, 39) j to (12, 39); open holes 2 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released. | Valkyrie needs food, badly! | You hear a sound reminiscent of a seal barking. | With great effort you move the boulder.
+push 341 T744 boulder (12, 39) j to (13, 39); open holes 2
+push 342 T745 boulder (13, 39) j to (14, 39); open holes 2
+push 343 T746 boulder (14, 39) l to (14, 40); open holes 2
+push 344 T750 boulder (14, 40) k to (13, 40); open holes 2 | msgs: With great effort you move the boulder.
+push 345 T751 boulder (13, 40) k to (12, 40); open holes 2
+push 346 T754 boulder (12, 40) l to (12, 41); open holes 2 | msgs: With great effort you move the boulder.
+push 347 T755 boulder (12, 41) l to (12, 42); open holes 2
+push 348 T756 boulder (12, 42) l to (12, 43); open holes 2
+push 349 T756 boulder (12, 43) l to (12, 44); open holes 2
+push 350 T759 boulder (12, 44) k to (11, 44); open holes 2
+push 351 T761 boulder (11, 44) l to (11, 45); open holes 2
+push 352 T762 boulder (11, 45) l to (11, 46); open holes 2
+push 353 T763 boulder (11, 46) l to (11, 47); open holes 2 | msgs: You see here a granite ring.
+push 354 T765 boulder (11, 47) j to (12, 47); open holes 2
+push 355 T765 boulder (12, 47) j to (13, 47); open holes 2
+push 356 T766 boulder (13, 47) j to (14, 47); open holes 2
+push 357 T767 boulder (14, 47) j to (15, 47); open holes 2
+push 358 T767 boulder (15, 47) j to (16, 47); open holes 2
+push 359 T768 boulder (16, 47) j to (17, 47); open holes 2
+push 360 T768 boulder (17, 47) j to (18, 47); open holes 2
+push 361 T771 boulder (18, 47) h to (18, 46); open holes 2 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 362: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 362 T772 boulder (18, 46) h to (18, 45); open holes 2 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 363 T773 boulder (18, 45) h to (18, 44); open holes 2
+push 364 T773 boulder (18, 44) h to (18, 43); open holes 2
+push 365 T774 boulder (18, 43) h to (18, 42); open holes 2
+push 366 T784 boulder (18, 42) h to (18, 41); open holes 2 | msgs: You faint from lack of food.  You regain consciousness.
+push 367 T785 boulder (18, 41) h to (18, 40); open holes 2 | msgs: You can hear again.
+push 368 T786 boulder (18, 40) h to (18, 39); open holes 2
+push 369 T787 boulder (18, 39) h to (18, 38); open holes 2
+push 370 T787 boulder (18, 38) h to (18, 37); open holes 2
+push 371 T788 boulder (18, 37) h to (18, 36); open holes 2
+push 372 T789 boulder (18, 36) h to (18, 35); open holes 2
+push 373 T790 boulder (18, 35) h to (18, 34); open holes 2
+push 374 T790 boulder (18, 34) h to (18, 33); open holes 2
+push 375 T801 boulder (18, 33) h to (18, 32); open holes 2 | msgs: You faint from lack of food.  You regain consciousness.
+push 376 T802 boulder (18, 32) h to (18, 31); open holes 2 | msgs: You can hear again.
+push 377 T803 boulder (18, 31) h to (18, 30); open holes 2
+push 378 T803 boulder (18, 30) h dropped into hole (18, 29); open holes 1
+STOP push 379: move hjhhhhkhkklj: STOPPED at (44, 12): monster adjacent: S purple worm, NW gray unicorn | msgs: The xan pricks your right leg!  It explodes! | You are caught in a blast of kaleidoscopic light! | You are freaked out.
+push 379 interrupted: a black light exploded (hallucination), hero also Fainting at T835; wizard wish + applied blessed unicorn horn (hallucination cured), prayed (wizard 'force pleased' y) -> hunger fixed; killed a xan S. No boulder or trap touched
+push 379 T863 boulder (10, 40) j to (11, 40); open holes 1 | msgs: With great effort you move the boulder.
+push 380 T863 boulder (11, 40) j to (12, 40); open holes 1
+push 381 T866 boulder (12, 40) l to (12, 41); open holes 1 | msgs: With great effort you move the boulder.
+push 382 T867 boulder (12, 41) l to (12, 42); open holes 1
+push 383 T867 boulder (12, 42) l to (12, 43); open holes 1
+push 384 T868 boulder (12, 43) l to (12, 44); open holes 1
+push 385 T870 boulder (12, 44) k to (11, 44); open holes 1
+push 386 T872 boulder (11, 44) l to (11, 45); open holes 1 | msgs: With great effort you move the boulder.
+push 387 T873 boulder (11, 45) l to (11, 46); open holes 1
+push 388 T873 boulder (11, 46) l to (11, 47); open holes 1 | msgs: You see here a granite ring.
+push 389 T875 boulder (11, 47) j to (12, 47); open holes 1
+push 390 T876 boulder (12, 47) j to (13, 47); open holes 1
+push 391 T877 boulder (13, 47) j to (14, 47); open holes 1
+push 392 T878 boulder (14, 47) j to (15, 47); open holes 1
+push 393 T878 boulder (15, 47) j to (16, 47); open holes 1
+push 394 T879 boulder (16, 47) j to (17, 47); open holes 1
+push 395 T879 boulder (17, 47) j to (18, 47); open holes 1
+push 396 T882 boulder (18, 47) h to (18, 46); open holes 1 | msgs: The boulder suddenly rolls away from you!  You hear a boulder fall.
+note push 397: msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 397 T883 boulder (18, 46) h to (18, 45); open holes 1 | msgs: Click!  You trigger a rolling boulder trap!  No boulder was released.
+push 398 T884 boulder (18, 45) h to (18, 44); open holes 1
+push 399 T884 boulder (18, 44) h to (18, 43); open holes 1
+push 400 T885 boulder (18, 43) h to (18, 42); open holes 1
+push 401 T886 boulder (18, 42) h to (18, 41); open holes 1
+push 402 T887 boulder (18, 41) h to (18, 40); open holes 1
+push 403 T888 boulder (18, 40) h to (18, 39); open holes 1
+push 404 T889 boulder (18, 39) h to (18, 38); open holes 1
+push 405 T890 boulder (18, 38) h to (18, 37); open holes 1
+push 406 T891 boulder (18, 37) h to (18, 36); open holes 1
+push 407 T892 boulder (18, 36) h to (18, 35); open holes 1
+push 408 T892 boulder (18, 35) h to (18, 34); open holes 1
+push 409 T893 boulder (18, 34) h to (18, 33); open holes 1
+push 410 T894 boulder (18, 33) h to (18, 32); open holes 1
+push 411 T894 boulder (18, 32) h to (18, 31); open holes 1
+push 412 T895 boulder (18, 31) h to (18, 30); open holes 1
+push 413 T896 boulder (18, 30) h to (18, 29); open holes 1
+push 414 T897 boulder (18, 29) h dropped into hole (18, 28); open holes 0
+SOLVED after push 414 (T897)
+CORRECTION: at push 396 (T882) the boulder pushed onto the rolling boulder trap (18,46) was launched ('The boulder suddenly rolls away from you! You hear a boulder fall.') and fell into the last open hole (18,28) at T882. The driver's model kept it at (18,46); pushes 397-414 were walks along the filled row, not pushes. The level was solved at T882; the Ladder logged 'T882 reached sokoban_solved' once.
