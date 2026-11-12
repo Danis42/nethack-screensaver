@@ -133,7 +133,7 @@ def test_imports_only_fetch_http_urls(bench_app):
 def test_results_carry_the_ladder_even_without_reference_ascensions(bench_app):
     assert bench_app.yardstick() == {}
     rows = bench_app.results("main")["ladder"]
-    assert [r["rung"] for r in rows] == list(range(1, 18))
+    assert [r["rung"] for r in rows] == list(range(1, 19))
 
 
 def test_stop_all_and_shutdown_over_http(bench_app):

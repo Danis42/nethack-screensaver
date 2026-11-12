@@ -13,8 +13,8 @@ def reached(*steps):
 
 
 def test_rungs_are_numbered_in_order_with_unique_keys():
-    assert [r.number for r in RUNGS] == list(range(1, 18))
-    assert len(BY_KEY) == 17
+    assert [r.number for r in RUNGS] == list(range(1, 19))
+    assert len(BY_KEY) == 18
     assert RUNGS[0].key == "mines" and RUNGS[-1].key == "ascended"
 
 
@@ -24,6 +24,21 @@ def test_rungs_are_numbered_in_order_with_unique_keys():
 ])
 def test_rungs_from_the_dungeon_number(dungeon, level, key):
     assert key in reached(Facts(turn=7, dungeon=dungeon, level=level)).reached
+
+
+def test_quest_portal_stage_comes_right_before_the_quest():
+    keys = [r.key for r in RUNGS]
+    assert keys.index("quest_portal") + 1 == keys.index("quest")
+
+
+def test_found_portal_reaches_the_portal_stage_but_not_the_quest():
+    ladder = reached(Facts(turn=3, dungeon=DOOM, level=13, quest_portal_found=True))
+    assert "quest_portal" in ladder.reached and "quest" not in ladder.reached
+
+
+def test_arriving_in_the_quest_reaches_portal_and_quest_on_the_same_turn():
+    ladder = reached(Facts(turn=8, dungeon=QUEST, level=1))
+    assert ladder.reached["quest_portal"] == 8 and ladder.reached["quest"] == 8
 
 
 def test_astral_is_planes_level_one_and_dlvl15_only_counts_in_the_main_dungeon():
@@ -114,7 +129,7 @@ def test_finish_adds_ascended_only_for_an_ascension():
     ladder.finish("DEATH: killed by a newt", 500)
     assert ladder.reached == {}
     ladder.finish("DEATH: ascended to demigod-hood", 53000)
-    assert ladder.reached == {"ascended": 53000} and ladder.highest() == 17
+    assert ladder.reached == {"ascended": 53000} and ladder.highest() == 18
 
 
 import numpy as np
@@ -180,3 +195,15 @@ def test_a_failing_ladder_is_reported_once_and_never_ends_the_game():
     logic._update_ladder()
     assert events == ["ladder_error"] and logic._ladder_broken
     assert logic.ladder.reached == {}
+
+
+def test_ladder_facts_see_the_magic_portal_glyph_or_the_activation_message():
+    from autoascend import quest_portal
+    from autoascend.glyph import C, SS
+    objects = np.full((C.SIZE_Y, C.SIZE_X), -1, np.int16)
+    assert not _fake_logic(objects=objects).ladder_facts().quest_portal_found
+    objects[5, 7] = SS.S_magic_portal
+    assert _fake_logic(objects=objects).ladder_facts().quest_portal_found
+    logic = _fake_logic()
+    logic.agent.message = "Wheee! " + quest_portal.ENTERED_MESSAGE
+    assert logic.ladder_facts().quest_portal_found
