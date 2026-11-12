@@ -215,3 +215,242 @@ tag = "5.0-source"
 evidence = ["reference/nethack-5.0.0/src/hack.c:4287"]
 quote = "urgent_pline(\"You die...\");"
 web = []
+
+[castle-trap-doors-lead-to-valley]
+claim = "The Castle has trap doors on row 8 (x 40, 44, 48, 52, 55), and falling through them from the Castle (Is_stronghold) goes to the Valley of the Dead"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/castle.lua:156-160", "reference/nethack-5.0.0/src/trap.c:669-670"]
+quote = "des.trap(\"trap door\",55,08)"
+web = []
+notes = "trap.c:669-670 sends a Castle fall to find_hell(): the Valley."
+
+[castle-back-door-locked]
+claim = "The Castle's east back door at map (56,8) is generated locked"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/castle.lua:72"]
+quote = "des.door(\"locked\",56,08)"
+web = []
+
+[castle-back-entry-by-levitation]
+claim = "castle.lua's own header names the back entry, reached with levitation, as a way in"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/castle.lua:11"]
+quote = "-- - enter via the back entry (this suppose a ring of levitation, boots"
+web = []
+
+[castle-map-flips-left-right-only]
+claim = "The Castle map may be mirrored left-right but not top-bottom (level flag noflipy)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/castle.lua:22"]
+quote = "des.level_flags(\"mazelevel\", \"noteleport\", \"noflipy\")"
+web = []
+
+[castle-courtyards-lit]
+claim = "Both Castle courtyards (x 0-5 and x 57-62, rows 5-11) are lit"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/castle.lua:231-232"]
+quote = "des.region(selection.area(00,05,05,11),\"lit\") des.region(selection.area(57,05,62,11),\"lit\")"
+web = []
+
+[castle-raised-drawbridge-glyph]
+claim = "A raised drawbridge (DBWALL) is drawn with the drawbridge-up glyph on its portcullis square"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/display.c:2393-2394"]
+quote = "case DBWALL: idx = (ptr->horizontal) ? S_hcdbridge : S_vcdbridge;"
+web = []
+
+[castle-map-screen-origin]
+claim = "The Castle map is drawn with map (0,0) at screen (y 3, x 8)"
+tag = "unverified"
+web = []
+notes = "Observed in staged seeds 1-6 (no bench job recorded). castle.lua des.map at line 24 sets no explicit position; the fixed placement follows from the map's size but was not traced in sp_lev.c. No web source consulted for a screen offset."
+
+[no-kicking-doors-while-levitating]
+claim = "A levitating hero cannot kick doors open (not enough leverage)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/dokick.c:920-922"]
+quote = "/* not enough leverage to kick open doors while levitating */"
+web = []
+
+[eel-drowns-levitating-hero]
+claim = "A drowning attack by a monster in water works on a levitating hero: only Swimming, Amphibious or Breathless protect"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/uhitm.c:3389-3390"]
+quote = "if (is_pool(magr->mx, magr->my) && !Swimming && !Amphibious && !Breathless) {"
+web = []
+
+[dig-hole-fills-next-to-water]
+claim = "A hole dug next to moat, pool or lava (8 neighbours) fills with that liquid"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/dig.c:606-624"]
+quote = "for (x1 = lo_x; x1 <= hi_x; x1++) for (y1 = lo_y; y1 <= hi_y; y1++) if (is_moat(x1, y1)) moat_cnt++;"
+web = []
+
+[medusa-sits-on-down-stairs]
+claim = "On medusa-3 and medusa-4 the down stairs are placed at Medusa's location (medloc)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/medusa-3.lua:70", "reference/nethack-5.0.0/dat/medusa-4.lua:67"]
+quote = "des.stair(\"down\", medloc)"
+web = []
+notes = "medusa-1 and medusa-2 place the down stairs at fixed coordinates (medusa-1.lua:49, medusa-2.lua:46); whether Medusa is placed on them there was not checked."
+
+[levitation-blocks-down-stairs]
+claim = "'>' while levitating does not descend (it only ends controlled levitation)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/do.c:1152-1154"]
+quote = "if (HLevitation || ELevitation) {"
+web = []
+
+[medusa-gaze-reflected]
+claim = "Reflection turns Medusa's gaze back on her when the hero can see her"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/mhitu.c:1721-1727"]
+quote = "(void) ureflects(\"%s gaze is reflected by your %s.\","
+web = []
+
+[passtune-notes-a-to-g]
+claim = "Instrument notes are the seven letters A-G"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/music.c:735"]
+quote = "static const char notes[7] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };"
+web = []
+
+[passtune-tumblers-gears-rule]
+claim = "A wrong passtune counts gears (right note, right place) and tumblers (a guess note matching the first unmatched tune note whose own place is not right)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/music.c:850-866"]
+quote = "if (!matched[y] && buf[x] == svt.tune[y] && buf[y] != svt.tune[y]) {"
+web = []
+
+[passtune-feedback-message]
+claim = "The passtune answer is 'You hear N tumbler(s) click and M gear(s) turn.', 'You hear N tumbler(s) click.' or 'You hear M gear(s) turn.'; no sound when both are 0"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/music.c:869-881"]
+quote = "You_hear(\"%d tumbler%s click and %d gear%s turn.\","
+web = []
+
+[dig-apply-wields-pick]
+claim = "Applying an unwielded digging tool wields it first"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/dig.c:1102"]
+quote = "if (wield_tool(obj, \"swing\")) {"
+web = []
+
+[dig-down-pit-then-hole]
+claim = "Digging down makes a pit first; continued digging makes a hole"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/dig.c:1014-1018"]
+quote = "digactualhole(dig_x, dig_y, BY_YOU, HOLE);"
+web = []
+
+[dig-pit-and-hole-messages]
+claim = "Digging down prints 'You dig a pit in the <floor>.' or 'You dig a hole through the <floor>...' and falling prints 'You fall through...'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/dig.c:707", "reference/nethack-5.0.0/src/dig.c:785"]
+quote = "You(\"dig %s %s the %s.\", an(tname), in_thru, surface_type);"
+web = []
+
+[dig-hole-here-message]
+claim = "Standing on a hole prints 'There is a hole here.'"
+tag = "unverified"
+web = []
+notes = "Not found verbatim in the 5.0 source; the generic forms are pickup.c:401 'There is %s here.' and dokick.c:173. Not traced to a hole trap. No web source consulted."
+
+[dig-too-hard-messages]
+claim = "Undiggable spots print '... here is too hard to dig in.' or 'The drawbridge seems too hard to dig through.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/dig.c:916", "reference/nethack-5.0.0/src/dig.c:933"]
+quote = "pline_The(\"drawbridge seems too hard to dig through.\");"
+web = []
+
+[dig-down-blocked-levels]
+claim = "Levels that forbid digging down (Can_dig_down false, e.g. Sokoban, branch bottoms) cannot be dug through unless the spot is candig"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/dig.c:233"]
+quote = "} else if (!Can_dig_down(&u.uz) && !levl[x][y].candig) {"
+web = []
+
+[dig-in-shop-shopkeeper]
+claim = "Digging a hole in a shop calls shopdig (the shopkeeper grabs the hero's pack)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/trap.c:667-668"]
+quote = "if (*u.ushops) shopdig(1);"
+web = []
+
+[dig-two-handed-tool]
+claim = "A two-handed digging tool (bimanual, the dwarvish mattock) is handled as two-handed by dig.c"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/dig.c:153", "reference/nethack-5.0.0/src/dig.c:158"]
+quote = "if (bimanual(pick) || Flying)"
+web = []
+
+[telepathy-floating-eye-always]
+claim = "Eating a floating eye corpse grants telepathy whenever the monster level is above 0 (chance 1: mlevel > rn2(1))"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/eat.c:980-988"]
+quote = "case TELEPAT: chance = 1;"
+web = []
+
+[telepathy-gain-messages]
+claim = "Gaining telepathy prints 'You feel a strange mental acuity.' (hallucinating: 'in touch with the cosmos')"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/eat.c:1074-1075"]
+quote = "You_feel(Hallucination ? \"in touch with the cosmos.\" : \"a strange mental acuity.\");"
+web = []
+
+[floating-eye-passive-needs-sight]
+claim = "A floating eye's passive paralysis only acts when the hero can see it"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/uhitm.c:6021-6024"]
+quote = "case AD_PLYS: if (ptr == &mons[PM_FLOATING_EYE]) { if (!canseemon(mon)) { break;"
+web = []
+
+[corpse-rot-age]
+claim = "Corpse rot is (age)/(10 + rn2(20)) and counts as rotten above 5, so a corpse up to 50 turns old is never rotten"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/eat.c:1887", "reference/nethack-5.0.0/src/eat.c:1895"]
+quote = "rotted = (svm.moves - age) / (10L + rn2(20));"
+web = []
+
+[overeating-warning-1500]
+claim = "At nutrition 1500 or more the game warns 'You're having a hard time getting all of it down.'"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/eat.c:3310-3314"]
+quote = "pline(\"You're having a hard time getting all of it down.\");"
+web = []
+
+[choking-at-2000]
+claim = "Eating chokes the hero when the meal may choke (started while Satiated) and nutrition reaches 2000"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/eat.c:3138"]
+quote = "if (svc.context.victual.canchoke && u.uhunger >= 2000) {"
+web = []
+
+[stalkers-follow-on-stairs]
+claim = "Adjacent monsters follow the hero to another level when tame, the Wizard, a following shopkeeper, or M2_STALK and not fleeing"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/mondata.c:1211-1225"]
+quote = "return (boolean) ((mtmp->data->mflags2 & M2_STALK) && (!mtmp->mflee || u.uhave.amulet));"
+web = []
+
+[m2-stalk-flag-value]
+claim = "M2_STALK is 0x01000000"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/include/monflag.h:146"]
+quote = "#define M2_STALK 0x01000000L /* follows you to other levels */"
+web = []
+
+[minotaur-not-a-stalker]
+claim = "The minotaur attacks claw 3d10, claw 3d10, butt 2d8 and has no M2_STALK flag"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/include/monsters.h:1786-1792"]
+quote = "A(ATTK(AT_CLAW, AD_PHYS, 3, 10), ATTK(AT_CLAW, AD_PHYS, 3, 10),"
+web = []
+
+[medusa-level-depth]
+claim = "Medusa's level is placed 5 levels above the Dungeons' bottom, range 4 (dungeon.lua base -5, range 4)"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/dat/dungeon.lua:76-79"]
+quote = "name = \"medusa\", base = -5, range = 4, nlevels = 4,"
+web = []
+notes = "The bot's 'Medusa 21-24' follows from the main dungeon's depth range; the absolute numbers are not in dungeon.lua."

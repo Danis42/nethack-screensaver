@@ -5,11 +5,11 @@ mental acuity."). 95% of 199 human 5.0 ascensions end telepathic. Hitting a SEEN
 for a long time; a blind hero is safe (uhitm.c passive gaze needs the hero to see). So: blindfold or towel on, attack
 the eye, blindfold off, eat the corpse.
 """
-TELEPATHY_MESSAGES = ("strange mental acuity", "in touch with the cosmos")
-EYE = 'floating eye'
+TELEPATHY_MESSAGES = ("strange mental acuity", "in touch with the cosmos")  # fact:telepathy-gain-messages
+EYE = 'floating eye'  # fact:telepathy-floating-eye-always
 
 
-def eye_target(monsters, telepathic, has_blindfold):
+def eye_target(monsters, telepathic, has_blindfold):  # fact:floating-eye-passive-needs-sight
     """(y, x) of the floating eye to kill for telepathy, or None.
 
     monsters: Agent.get_visible_monsters() tuples (distance, y, x, permonst, glyph). Only when nothing else hostile
@@ -23,11 +23,11 @@ def eye_target(monsters, telepathic, has_blindfold):
     return int(y), int(x)
 
 # A corpse up to 50 turns old is never rotten: eat.c rottenfood rotted = age / (10 + rn2(20)), rotten above 5.
-EYE_CORPSE_MAX_AGE = 50
-OVERFULL_MESSAGE = "hard time getting all of it down"  # eat.c:3315, nutrition >= 1500
+EYE_CORPSE_MAX_AGE = 50  # fact:corpse-rot-age
+OVERFULL_MESSAGE = "hard time getting all of it down"  # eat.c:3315, nutrition >= 1500  # fact:overeating-warning-1500
 
 
-def may_eat_eye(hunger_state, overfull):
+def may_eat_eye(hunger_state, overfull):  # fact:choking-at-2000
     """Eat a floating eye corpse now? Yes, even Satiated, unless the hero may be near 2000 nutrition.
 
     Choking needs nutrition >= 2000 and a meal started while Satiated (eat.c:3138/3297). The eye gives 10. The game

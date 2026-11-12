@@ -10,6 +10,7 @@ the hero levitates across. NetHack's travel command paths over water while levit
 import numpy as np
 
 
+# fact:medusa-sits-on-down-stairs, medusa-gaze-reflected
 def crossing_target(glyphs, stairs_down_glyphs, medusa_glyphs):
     """(y, x) to levitate to: the down stairs if seen, else Medusa (she sleeps on them), else None."""
     for wanted in (stairs_down_glyphs, medusa_glyphs):
@@ -19,7 +20,7 @@ def crossing_target(glyphs, stairs_down_glyphs, medusa_glyphs):
     return None
 
 
-def float_reach(walkable, wet, start):
+def float_reach(walkable, wet, start):  # fact:dig-hole-fills-next-to-water
     """Squares a levitating hero can reach from start: floor and water, 8-connected; walls and unknown stop it."""
     passable = walkable | wet
     h, w = passable.shape
@@ -36,7 +37,7 @@ def float_reach(walkable, wet, start):
     return seen
 
 
-def landing_square(walkable, wet, target, start=None):
+def landing_square(walkable, wet, target, start=None):  # fact:levitation-blocks-down-stairs, eel-drowns-levitating-hero
     """The walkable, dry square nearest to target (the target itself first), or None. With start, only squares a
     levitating hero can reach from there count (staged seed 7: the nearest dry square lay behind the walls of
     Medusa's hall and travel stalled in the moat for 1000 turns)."""
@@ -53,7 +54,7 @@ def landing_square(walkable, wet, target, start=None):
     return int(ys[i]), int(xs[i])
 
 
-def stall_landing(walkable, wet, pos):
+def stall_landing(walkable, wet, pos):  # fact:no-kicking-doors-while-levitating
     """Where to land when the crossing stops short (a closed or locked door: no kicking while levitating,
     dokick.c:921): here if dry, else a dry walkable neighbour, else None (keep floating)."""
     y, x = pos

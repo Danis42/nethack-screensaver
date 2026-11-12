@@ -33,8 +33,9 @@ MAP = (
     "}}}}}}}}}.............................................}}}}}}}}}",
 )
 WIDTH = len(MAP[0])
-ORIGIN = (3, 8)  # screen (y, x) of map (0, 0)
-PORTCULLIS = (8, 6)  # map (y, x) where the raised drawbridge glyph shows
+ORIGIN = (3, 8)  # screen (y, x) of map (0, 0)  # fact:castle-map-screen-origin
+PORTCULLIS = (8, 6)  # map (y, x) where the raised drawbridge glyph shows  # fact:castle-raised-drawbridge-glyph
+# fact:castle-trap-doors-lead-to-valley, castle-back-door-locked, castle-back-entry-by-levitation, no-kicking-doors-while-levitating
 STAND, DOOR, TRAP_DOOR = (8, 57), (8, 56), (8, 55)  # map (y, x) of the back entry
 
 
@@ -43,6 +44,7 @@ STAND, DOOR, TRAP_DOOR = (8, 57), (8, 56), (8, 55)  # map (y, x) of the back ent
 # arrives on the west side whether the map is mirrored or not (staged seeds 1 and 6), so the courtyard in view may
 # be the front or the back one: the square mid-way along its castle side tells them apart, moat (the raised
 # drawbridge looks like moat) at the front, floor at the back.
+# fact:castle-courtyards-lit
 COURTYARDS = tuple((y, x) for y in range(5, 12) for x in list(range(6)) + list(range(57, WIDTH)))
 COURTYARD_SEEN = 12  # moat squares seen where the map has them
 KEY_SQUARES = ((8, 5), (8, 57))
@@ -74,7 +76,7 @@ def frame(drawbridge_positions, wet, known):
     return None
 
 
-def to_screen(flipped, pos):
+def to_screen(flipped, pos):  # fact:castle-map-flips-left-right-only
     y, x = pos
     return ORIGIN[0] + y, ORIGIN[1] + (WIDTH - 1 - x if flipped else x)
 
@@ -97,7 +99,7 @@ def outside_mask(flipped, shape):
     return mask
 
 
-def float_path(passable, start, goal):
+def float_path(passable, start, goal):  # fact:eel-drowns-levitating-hero
     """Shortest 8-connected path [start, ..., goal] over passable squares, or None."""
     h, w = passable.shape
     prev = {start: None}

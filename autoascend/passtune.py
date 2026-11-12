@@ -9,13 +9,13 @@ import itertools
 import random
 import re
 
-NOTES = "ABCDEFG"
+NOTES = "ABCDEFG"  # fact:passtune-notes-a-to-g
 ALL_TUNES = tuple("".join(t) for t in itertools.product(NOTES, repeat=5))
 FIRST_GUESS = "AABBC"
 SAMPLE = 400  # candidate guesses scored per turn (all of them when fewer remain)
 
 
-def feedback(guess: str, tune: str) -> tuple[int, int]:
+def feedback(guess: str, tune: str) -> tuple[int, int]:  # fact:passtune-tumblers-gears-rule
     """(tumblers, gears) exactly as music.c computes them."""
     tumblers = gears = 0
     matched = [False] * 5
@@ -32,6 +32,7 @@ def feedback(guess: str, tune: str) -> tuple[int, int]:
     return tumblers, gears
 
 
+# fact:passtune-feedback-message
 _HEARD = re.compile(r"You hear (\d+) tumblers? click(?: and (\d+) gears? turn)?|You hear (\d+) gears? turn")
 
 

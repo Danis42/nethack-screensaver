@@ -9,14 +9,16 @@ Sources (NetHack 5.0.0):
 Staged Medusa runs (2026-11-11, .planning/staged/): the hero went from full HP to dead in 2-3 turns against a summoned
 minotaur + black dragon; the escape fires at half HP so there is still a turn to climb.
 """
-M2_STALK = 0x01000000  # include/monflag.h:146
+M2_STALK = 0x01000000  # include/monflag.h:146  # fact:m2-stalk-flag-value
+# fact:medusa-level-depth
 MIN_DEPTH = 21  # Medusa's level and below (dungeon.lua: Medusa 21-24); natural play above stays unchanged
+# fact:minotaur-not-a-stalker
 HP_FRACTION = 0.5  # climb below half HP: two rounds of a minotaur (3d10, 3d10, 2d8) can take 50-76 HP each
 REST_TO = 0.9  # rest on the level above until this share of max HP
 REST_TURNS = 1500  # never rest longer than this in one go (hunger)
 
 
-def is_stalker(permonst) -> bool:
+def is_stalker(permonst) -> bool:  # fact:stalkers-follow-on-stairs
     return bool(getattr(permonst, 'mflags2', 0) & M2_STALK)
 
 

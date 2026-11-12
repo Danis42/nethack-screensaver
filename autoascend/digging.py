@@ -13,11 +13,12 @@ from .glyph import G, SS
 from .item import flatten_items
 
 DIGGABLE_FLOOR = frozenset(G.FLOOR - {SS.S_ndoor})
-UNDIGGABLE = ('too hard to dig in', 'too hard to dig through')
+UNDIGGABLE = ('too hard to dig in', 'too hard to dig through')  # fact:dig-too-hard-messages, dig-down-blocked-levels
+# fact:dig-pit-and-hole-messages, dig-hole-here-message
 FELL = ('You dig a hole through', 'You fall through', 'There is a hole here')
 
 
-def dig_tool(items, empty_wands=()):
+def dig_tool(items, empty_wands=()):  # fact:dig-apply-wields-pick, dig-two-handed-tool
     """An identified, charged wand of digging (instant), else a non-cursed pick-axe, else None."""
     pick = None
     for item in flatten_items(items):
@@ -41,7 +42,7 @@ def _near(mask):
                                  for dy in (-1, 0, 1) for dx in (-1, 0, 1)])
 
 
-def dig_square(objects, shop, dis, here):
+def dig_square(objects, shop, dis, here):  # fact:dig-hole-fills-next-to-water, dig-in-shop-shopkeeper
     """Nearest reachable plain floor square outside shops (the hero's own square first), or None.
 
     Never next to water or lava: dig.c:606 fillholetyp fills the hole with water (a moat square is enough) and the
@@ -65,6 +66,6 @@ def dig_outcome(message):
         return 'fell'
     if any(text in message for text in UNDIGGABLE):
         return 'undiggable'
-    if 'you dig a pit in the' in message.lower():
+    if 'you dig a pit in the' in message.lower():  # fact:dig-down-pit-then-hole
         return 'pit'
     return 'stopped'
