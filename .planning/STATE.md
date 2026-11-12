@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: Completed 01-09-PLAN.md
-last_updated: "2026-11-12T18:18:59.549Z"
+stopped_at: Completed 01-10-PLAN.md
+last_updated: "2026-11-12T21:44:27.221Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
-state_head: f8148de1edda280d3af73721ba3a05e55e654364
+state_head: a30f581ca7a2395b060adb833c3a831d596286f3
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 16
-  completed_plans: 8
+  completed_plans: 9
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-12)
 ## Current Position
 
 Phase: 01 (Measurement and Proof Foundation) — EXECUTING
-Plan: 9 of 16
+Plan: 10 of 16
 Status: Ready to execute
 Last activity: 2026-11-12 — Phase 01 execution started
 
@@ -64,6 +64,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P07 | 6 min | 2 tasks | 8 files |
 | Phase 01 P08 | 6 min | 2 tasks | 11 files |
 | Phase 01 P09 | 2 min | 2 tasks | 7 files |
+| Phase 01 P10 | 4 min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,7 @@ Recent decisions affecting current work:
 - [Phase 01]: Fact tranche 1 (bot modules): 56 of 59 facts verified in the 5.0 source; prayer marker 'You feel better.' is not a 5.0 prayer message — MEAS-10, D-13/D-14/D-16
 - [Phase 01]: Bench store schema 2: games keyed by (sha, seed, lgen mode, env_id, rep); jobs play explicit half-open seed windows and record env + lock blob — MEAS-07/MEAS-01/MEAS-04
 - [Phase 01]: Fact tranche 1 complete: 66 ledger entries (63 5.0-source, 3 unverified); tranche 2 starts with the table files (soko maps, objects data, monflag, screen symbols) — MEAS-10, D-20 coverage ranking
+- [Phase 01]: Seed ranges enforced at API, scheduler and store; final seeds only for clean_attempt jobs, which HTTP/MCP cannot create; confirm windows need a gate — D-07, D-17, D-22, MEAS-07
 
 ### Pending Todos
 
@@ -100,6 +102,7 @@ None yet.
 - [Phase 5]: Natural Medusa arrivals are rare (25/2304), so the needs-met rate has wide intervals until Phase 4 raises arrivals; AC gap cause still open
 - [Phase 5]: Medusa reach bar is still an open owner decision, to be set from the first measurement
 - [Phase 6]: No code yet for Gehennom, Quest, towers, invocation or Planes
+- 01-06 paused at a blocking checkpoint: Sokoban hand game (seed 7) unsolved at T42; owner chose to run 01-10..01-13 first; 01-14 needs 01-06
 
 ## Deferred Items
 
@@ -111,6 +114,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-12T18:18:59.518Z
-Stopped at: Completed 01-09-PLAN.md
+Last session: 2026-11-12T21:44:27.187Z
+Stopped at: Completed 01-10-PLAN.md
 Resume file: None

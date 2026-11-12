@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The `lgen` pilot (two commits, about 400 seeds each) reports paired discordance with and without `lgen`, and the decision is recorded; the `sokoban_solved` detector is run against a known hand game and the 0/2304 result has a written cause (proof: pilot job IDs, detector test)
   4. The stats tool runs exact McNemar and an always-valid sequential test, a simulation shows its false-positive rate holds under repeated checking, and the power calculator gives the MDE and sample size an experiment must declare before running; dev, confirm and final seed ranges are fixed, and the bench refuses final-range seeds outside clean attempts (proof: simulation report, refusal test)
   5. Staged, scenario and rewind runs land in a separate `tool_games` table with job IDs and never reach the funnel; `check_claims.py` rejects a claim without a job ID, full commit hash or reproducible query; a job counts as started only once its first game row exists; NetHack facts carry a fact-ledger tag (5.0 source, measured or unverified) (proof: tests for each rule)
-**Plans**: 8/16 plans executed
+**Plans**: 9/16 plans executed
 
 Plans:
 **Wave 1**
@@ -54,7 +54,7 @@ Plans:
 - [x] 01-09-PLAN.md — fact ledger tranche 1b: UNVERIFIED research claims, quest-portal facts, coverage report (wave 3)
 
 **Wave 4** *(blocked on Wave 3 completion)*
-- [ ] 01-10-PLAN.md — seed-range refusal at API, scheduler and store; confirm gate field (D-22) (wave 4)
+- [x] 01-10-PLAN.md — seed-range refusal at API, scheduler and store; confirm gate field (D-22) (wave 4)
 
 **Wave 5** *(blocked on Wave 4 completion)*
 - [ ] 01-11-PLAN.md — resume interrupted jobs, "started" from game rows, tool_games with job IDs, MCP shutdown (wave 5)
@@ -167,7 +167,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7. Phases 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Measurement and Proof Foundation | 8/16 | In Progress | - |
+| 1. Measurement and Proof Foundation | 9/16 | In Progress | - |
 | 2. Proven Change Loop | 0/TBD | Not started | - |
 | 3. LLM Analyst and Pilot | 0/TBD | Not started | - |
 | 4. Early Wall by System | 0/TBD | Not started | - |
