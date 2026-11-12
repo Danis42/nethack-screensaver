@@ -1,4 +1,8 @@
-"""Intervals for comparing rates, and the checkpoint verdicts of an experiment."""
+"""Intervals for comparing rates, and the checkpoint verdicts of an experiment.
+
+`judge`, `judge_paired`, `judge_paired_numeric` and `CHECKPOINTS` are kept for descriptive tables
+only. Their z99/z95 checkpoint design was simulated at 7.3-7.7% false verdicts (nominal 5%) under
+repeated checking, so decisions use `bench.sequential` (MEAS-06)."""
 import math
 from dataclasses import asdict, dataclass
 
@@ -8,7 +12,9 @@ Z99 = 2.5758293035489004
 
 
 def wilson(k, n, z):
-    """Wilson score interval for k successes out of n."""
+    """Wilson score interval for k successes out of n; no games gives the whole interval."""
+    if n == 0:
+        return 0.0, 1.0
     p = k / n
     denom = 1 + z * z / n
     centre = (p + z * z / (2 * n)) / denom
