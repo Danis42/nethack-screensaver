@@ -40,7 +40,11 @@ def _serve(args):
     app = build_app(args.workers, args.data, args.cache)
     if args.resume:
         for job_id in app.store.interrupted():
-            app.store.resume(job_id)
+            try:
+                app.resume(job_id)
+            except ValueError as e:  # another environment (review CR-02): leave it interrupted
+                print(f"not resumed: {e}", flush=True)
+                continue
             print(f"resumed job {job_id}", flush=True)
     httpd, stop = serve(app, port=args.port)
     print(f"bench server on http://127.0.0.1:{args.port} ({args.workers} workers)", flush=True)

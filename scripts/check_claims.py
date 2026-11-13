@@ -77,6 +77,8 @@ QUERY_RE = re.compile(r"\[query:\s*(.+?)\s*=>\s*(.+?)\]", re.S)
 _FENCE_RE = re.compile(r"^(```|~~~).*?^\1[^\n]*$", re.S | re.M)
 _INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
 _SENTENCE_RE = re.compile(r"(?<=[.!?])\s+|\n+")
+# A hedge word only exempts its own clause: "Job 7 started; next I'll check" still claims a start (review CR-03).
+_CLAUSE_RE = re.compile(r"[;:,\u2014]|\s-\s|\b(?:but|which|so|then)\b", re.I)
 
 Claim = namedtuple("Claim", "kind text")
 Proofs = namedtuple("Proofs", "jobs commits queries")
@@ -96,13 +98,18 @@ def find_claims(paragraph):
     """Progress claims in one paragraph, in order; inline code is not searched."""
     claims = []
     for sentence in _sentences(_INLINE_CODE_RE.sub("", paragraph)):
-        if sentence.endswith("?") or FUTURE_RE.search(sentence):
+        if sentence.endswith("?"):
             continue
-        plain = NEGATED_RE.sub("", sentence)
-        if START_RE.search(plain) and START_NOUN_RE.search(plain):
-            claims.append(Claim("start", sentence))
-        elif RESULT_VERB_RE.search(plain) and RESULT_NOUN_RE.search(plain):
-            claims.append(Claim("result", sentence))
+        for clause in _CLAUSE_RE.split(sentence):
+            if FUTURE_RE.search(clause):
+                continue
+            plain = NEGATED_RE.sub("", clause)
+            if START_RE.search(plain) and START_NOUN_RE.search(plain):
+                claims.append(Claim("start", sentence))
+                break
+            if RESULT_VERB_RE.search(plain) and RESULT_NOUN_RE.search(plain):
+                claims.append(Claim("result", sentence))
+                break
     return claims
 
 

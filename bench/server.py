@@ -16,6 +16,14 @@ LOCAL_HOSTS = ("127.0.0.1", "localhost")
 KINDS_OVER_HTTP = ("baseline", "experiment")  # clean_attempt jobs (final seeds) are never created here
 
 
+def check_resume_env(job, env_id):
+    """Refuse to resume a job in another environment: its games would be stored under the old env_id (review CR-02)."""
+    want = (job.get("spec") or {}).get("env_id")
+    if want is not None and env_id is not None and want != env_id:
+        raise ValueError(f"job {job['id']} was created in environment {want}, this server runs {env_id}; "
+                         "start a new job instead of resuming")
+
+
 def funnel_for(store, repo, ref="main", lo=None, hi=None, lgen=None, env_id=None, job=None):
     """Funnel of one commit's natural games (rep 0) in a seed window, lgen mode and env (MEAS-02).
 
@@ -159,6 +167,7 @@ class App:
         job = self.store.job(int(job_id))
         if job is None:
             raise LookupError(f"no job {job_id}")
+        check_resume_env(job, self.env_id)
         with self.lock:
             if not self.store.resume(job["id"]):
                 raise ValueError(f"job {job['id']} is {job['state']}, only interrupted jobs can be resumed")
@@ -205,9 +214,13 @@ class App:
             job["games_per_side"] = len(both)
         return job
 
+    def _key(self):
+        """The game key summaries read: the bench's lgen mode and this server's env, replicate 0 (review CR-01)."""
+        return {"lgen_mode": seeds.USE_LGEN, "env_id": self.env_id, "rep": 0}
+
     def results(self, ref="main", metric=None):
         sha, subject = self._sha(ref)
-        games = self.store.games(sha)
+        games = self.store.games(sha, **self._key())
         if metric is not None:
             if metric not in METRICS:
                 raise ValueError(f"unknown metric {metric!r}; known: {sorted(METRICS)}")
@@ -221,7 +234,7 @@ class App:
     def games(self, ref="main", where=None, limit=50):
         sha, _ = self._sha(ref)
         match = parse_where(where)
-        hits = [g for g in self.store.games(sha) if match(g)]
+        hits = [g for g in self.store.games(sha, **self._key()) if match(g)]
         return {"sha": sha, "matches": len(hits), "games": hits[:int(limit)]}
 
     def experiments(self):
@@ -229,8 +242,9 @@ class App:
 
     def dashboard(self, ref="main"):
         for sha in gitrefs.history(self.repo, ref):
-            if self.store.count(sha):
-                return {"sha": sha, "subject": self._sha(sha)[1], **report.summary(self.store.games(sha), self.yardstick())}
+            games = self.store.games(sha, **self._key())
+            if games:
+                return {"sha": sha, "subject": self._sha(sha)[1], **report.summary(games, self.yardstick())}
         return {"sha": None, "games": 0}
 
     def yardstick(self):

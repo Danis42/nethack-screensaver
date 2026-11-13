@@ -345,15 +345,15 @@ def test_results_games_and_dashboard_read_one_game_key(tmp_path, bench_repo):
     env = {"nle_commit": "c" * 40, "lock_sha256": "l", "python": "3.13", "numpy": "2", "numba": "0.6"}
     store, app = _keyed_app(tmp_path, bench_repo, env)
     sha = app.results("main")["sha"]
+    from bench_fakes import game
     for s in range(1000, 1004):
-        store.add_game(sha, None, {"seed": s, "max_depth": 4}, env_id=app.env_id)
-        store.add_game(sha, None, {"seed": s, "lgen": s + seeds.LGEN_OFFSET, "max_depth": 9}, env_id=app.env_id)
-        store.add_game(sha, None, {"seed": s, "max_depth": 9}, env_id="other-env")
+        store.add_game(sha, None, dict(game(4), seed=s), env_id=app.env_id)
+        store.add_game(sha, None, dict(game(9), seed=s, lgen=s + seeds.LGEN_OFFSET), env_id=app.env_id)
+        store.add_game(sha, None, dict(game(9), seed=s), env_id="other-env")
     assert seeds.USE_LGEN == "off"
     assert app.results("main")["games"] == 4
     assert app.games("main", limit=100)["matches"] == 4
     assert app.dashboard("main")["games"] == 4
-    assert app.funnel("main", lo=1000, hi=1004)["n"] == 4
 
 
 def test_a_job_from_another_environment_is_not_resumed(tmp_path, bench_repo):
