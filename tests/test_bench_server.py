@@ -326,3 +326,46 @@ def test_an_experiment_needs_a_stored_baseline(bench_app):
     job_id = bench_app.start_experiment("feature", "main", mde=0.3, discordance=0.5,
                                         allow_new_baseline=True)["job_id"]
     assert bench_app.job(job_id)["state"] == "queued"
+
+
+def _keyed_app(tmp_path, bench_repo, env=None):
+    from bench.scheduler import Scheduler
+    from bench.server import App
+    from bench.store import Store
+    from bench_fakes import FakeWorker, game
+    store = Store(tmp_path / "keyed.db")
+    app = App(store, Scheduler(store, lambda sha: FakeWorker(sha, lambda s, i: game(4), []), slots=2),
+              bench_repo, tmp_path / "cache", env=env)
+    return store, app
+
+
+def test_results_games_and_dashboard_read_one_game_key(tmp_path, bench_repo):
+    # review CR-01: lgen-seed rows of the same seeds were counted next to the lgen-off rows
+    from bench import seeds
+    env = {"nle_commit": "c" * 40, "lock_sha256": "l", "python": "3.13", "numpy": "2", "numba": "0.6"}
+    store, app = _keyed_app(tmp_path, bench_repo, env)
+    sha = app.results("main")["sha"]
+    for s in range(1000, 1004):
+        store.add_game(sha, None, {"seed": s, "max_depth": 4}, env_id=app.env_id)
+        store.add_game(sha, None, {"seed": s, "lgen": s + seeds.LGEN_OFFSET, "max_depth": 9}, env_id=app.env_id)
+        store.add_game(sha, None, {"seed": s, "max_depth": 9}, env_id="other-env")
+    assert seeds.USE_LGEN == "off"
+    assert app.results("main")["games"] == 4
+    assert app.games("main", limit=100)["matches"] == 4
+    assert app.dashboard("main")["games"] == 4
+    assert app.funnel("main", lo=1000, hi=1004)["n"] == 4
+
+
+def test_a_job_from_another_environment_is_not_resumed(tmp_path, bench_repo):
+    # review CR-02: a resumed job would store new-interpreter games under the old env_id
+    env = {"nle_commit": "c" * 40, "lock_sha256": "l", "python": "3.13", "numpy": "2", "numba": "0.6"}
+    store, app = _keyed_app(tmp_path, bench_repo, env)
+    job_id = app.start_baseline("main", lo=1000, hi=1004)["job_id"]
+    app.scheduler.shutdown()
+    store.interrupt_unfinished()
+    _, app2 = _keyed_app(tmp_path, bench_repo, dict(env, nle_commit="d" * 40))
+    with pytest.raises(ValueError, match="environment"):
+        app2.resume(job_id)
+    assert app2.job(job_id)["state"] == "interrupted"
+    _, app3 = _keyed_app(tmp_path, bench_repo, env)
+    assert app3.resume(job_id) == {"job_id": job_id, "resumed": True}

@@ -265,3 +265,19 @@ def test_every_labelled_claim_is_detected_with_its_kind(line):
 @pytest.mark.parametrize("sentence", _corpus("claims_negative.txt"))
 def test_no_labelled_non_claim_is_detected(sentence):
     assert cc.find_claims(sentence) == []
+
+
+@pytest.mark.parametrize("text", [
+    "I started the bench run, which can take an hour.",
+    "Job 3 has started; next I'll check the funnel.",
+    "The baseline finished, so the A/A can run next.",
+])
+def test_a_future_clause_does_not_hide_a_claim_in_the_same_sentence(db, tmp_path, text):
+    # review CR-03: a hedge word anywhere used to drop the whole sentence, so unproven claims passed
+    decision, _ = _run(db, text, tmp_path)
+    assert decision is not None and decision["decision"] == "block"
+
+
+def test_a_claim_with_a_future_clause_still_passes_with_proof(db, tmp_path):
+    decision, _ = _run(db, "Baseline job 1 started, which can take an hour.", tmp_path)
+    assert decision is None
