@@ -281,3 +281,16 @@ def test_a_future_clause_does_not_hide_a_claim_in_the_same_sentence(db, tmp_path
 def test_a_claim_with_a_future_clause_still_passes_with_proof(db, tmp_path):
     decision, _ = _run(db, "Baseline job 1 started, which can take an hour.", tmp_path)
     assert decision is None
+
+
+@pytest.mark.parametrize("sql", ["SELECT 1", "SELECT 'x'", "SELECT 1 FROM sqlite_master"])
+def test_a_query_proof_must_read_a_bench_table(db, sql):
+    # review WR-02: "[query: SELECT 1 => 1]" used to prove any claim
+    reason = cc.verify_query(db, sql, "1" if "x" not in sql else "x")
+    assert reason is not None and "bench table" in reason
+
+
+@pytest.mark.parametrize("sentence", ["The baseline job began at 16:10.", "I submitted the A/A job.",
+                                      "The bench spawned the pilot run."])
+def test_more_start_verbs_are_claims(sentence):
+    assert [c.kind for c in cc.find_claims(sentence)] == ["start"]
