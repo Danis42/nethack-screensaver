@@ -61,6 +61,9 @@ def main(argv=None):
 
     store = Store(Path(args.data) / "results.db")
     sha_a, sha_b = _sha(args.repo, args.ref_a), _sha(args.repo, args.ref_b)
+    if sha_a == sha_b and args.rep_a == args.rep_b:  # review WR-03: a game compared with itself proves nothing
+        print("refused: both sides are the same commit and replicate; pass --rep-b 1 for an A/A")
+        return 2
     key_a, key_b = {"lgen_mode": args.lgen, "rep": args.rep_a}, {"lgen_mode": args.lgen, "rep": args.rep_b}
     wanted = range(args.seeds) if args.seeds is not None else store.seeds(sha_a, args.lo, args.hi, **key_a)
     if args.lo is not None or args.hi is not None:

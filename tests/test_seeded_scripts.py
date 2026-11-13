@@ -786,10 +786,11 @@ def test_aa_compares_replicate_1_with_replicate_0(store, tmp_path, capsys):
     assert code == 0 and r["compared"] == 4 and r["identical"] == 4 and r["mismatched"] == 0 and r["common"] == 4
 
 
-def test_aa_without_new_flags_reads_replicate_0_only(store, tmp_path, capsys):
+def test_aa_without_new_flags_is_refused(store, tmp_path, capsys):
+    # was "reads replicate 0 only": comparing rep 0 with itself is refused since review WR-03
     _aa(store, range(3), rep1={1: _g(1, turns=7)})
     code, out = replay(capsys, tmp_path, CAND, CAND)
-    assert code == 0 and "3 seeds compared, 0 mismatched" in out  # rep 0 against itself
+    assert code == 2 and "same commit and replicate" in out
 
 
 def test_aa_window_and_lgen_mode(store, tmp_path, capsys):

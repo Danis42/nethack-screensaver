@@ -167,6 +167,8 @@ class App:
         job = self.store.job(int(job_id))
         if job is None:
             raise LookupError(f"no job {job_id}")
+        if job["kind"] in seeds.TOOL_KINDS:  # review WR-01: tool jobs play a seed list, not a window
+            raise ValueError(f"job {job['id']} is a {job['kind']} tool job; tool runs are re-run, not resumed")
         check_resume_env(job, self.env_id)
         with self.lock:
             if not self.store.resume(job["id"]):
