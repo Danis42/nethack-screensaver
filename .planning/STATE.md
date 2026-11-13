@@ -3,7 +3,7 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: "Paused for the night 2026-11-13: 01-06 and 01-14 done; 01-15 Tasks 2 (replay_check A/A, 9c9ada2) and the lgen_pilot.py script (0ad1c14) committed; pilot jobs 3-6 left to finish unattended on the live server. Resume: 01-15 Task 1 (run scripts/lgen_pilot.py --jobs 3 4 5 6 --metric dlvl10, apply rule-strict), then Task 3 (baseline + A/A), then 01-16."
+stopped_at: "Plan 01-15 done 2026-11-13 (decision keep-lgen-off, jobs 3-6; baseline job 7 started 16:10:02, A/A job 8 queued). Resume: plan 01-16 once jobs 7 and 8 are done (~6.5 h from 16:10)."
 last_updated: "2026-11-12T23:39:48.631Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
@@ -12,7 +12,7 @@ progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 16
-  completed_plans: 14
+  completed_plans: 15
   percent: 0
 ---
 
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-11-12)
 ## Current Position
 
 Phase: 01 (Measurement and Proof Foundation) — EXECUTING
-Plan: 15 of 16
+Plan: 16 of 16
 Status: Ready to execute
-Last activity: 2026-11-12 — Phase 01 execution started
+Last activity: 2026-11-13 — 01-15 done; baseline job 7 running, A/A job 8 queued
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -70,6 +70,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P13 | n/a | 2 tasks | 10 files |
 | Phase 01 P14 | n/a | 3 tasks | 2 files |
 | Phase 01 P06 | n/a | 2 tasks | 8 files |
+| Phase 01 P15 | n/a | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,9 @@ Recent decisions affecting current work:
 - [Phase 01]: Bench jobs resume under their own id (serve --resume); 'started' means a game row exists on every surface; tool runs record into tool_games — D-08, MEAS-08, MEAS-09
 - [Phase 01]: 01-14 lgen pilot (owner, 2026-11-12): commit B = exp/elbereth-respect ported onto commit A; rule-strict; primary metric dlvl10 (owner delegated the metric: change fires mostly at Dlvl 5-8 via S_HUMAN elves/watch, so dlvl6 is settled before it acts; dlvl10 base ~32% in 81 screensaver games). Pre-registered in 01-LGEN-PILOT.md at Task 3.
 
+- [Phase 01]: 01-15 lgen pilot decision keep-lgen-off (rule-strict; psi_on - psi_off +0.005, 95% [-0.0070, +0.0170]; jobs 3/4/5/6); DEFAULT_DISCORDANCE 0.019 is small because commit B changes little: pass --discordance for bigger changes
+- [Phase 01]: 01-15 baseline commit e5b5a7f525bc51b8008f665173600aba80de466d (= bot of main), lgen off, job 7 (10,000 games, 400 reused); A/A job 8 (seeds 1000-2999, rep 1); pre-registered in 539b31e
+
 ### Pending Todos
 
 None yet.
@@ -121,6 +125,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-12T23:39:48.563Z
-Stopped at: Paused for the night 2026-11-13: 01-06 and 01-14 done; 01-15 Tasks 2 (replay_check A/A, 9c9ada2) and the lgen_pilot.py script (0ad1c14) committed; pilot jobs 3-6 left to finish unattended on the live server. Resume: 01-15 Task 1 (run scripts/lgen_pilot.py --jobs 3 4 5 6 --metric dlvl10, apply rule-strict), then Task 3 (baseline + A/A), then 01-16.
+Last session: 2026-11-13T16:20
+Stopped at: Plan 01-15 done 2026-11-13 (decision keep-lgen-off, jobs 3-6; baseline job 7 started 16:10:02, A/A job 8 queued). Resume: plan 01-16 once jobs 7 and 8 are done (~6.5 h from 16:10).
 Resume file: None
