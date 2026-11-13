@@ -369,3 +369,13 @@ def test_a_job_from_another_environment_is_not_resumed(tmp_path, bench_repo):
     assert app2.job(job_id)["state"] == "interrupted"
     _, app3 = _keyed_app(tmp_path, bench_repo, env)
     assert app3.resume(job_id) == {"job_id": job_id, "resumed": True}
+
+
+def test_a_tool_job_is_not_resumed(tmp_path, bench_repo):
+    # review WR-01: a resumed tool job (seed list, no window) made every scheduler tick raise
+    store, app = _keyed_app(tmp_path, bench_repo)
+    job_id = store.add_job("staged", {"seeds": [1, 2]})
+    store.interrupt_unfinished()
+    with pytest.raises(ValueError, match="tool"):
+        app.resume(job_id)
+    assert app.job(job_id)["state"] == "interrupted"

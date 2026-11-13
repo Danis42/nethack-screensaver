@@ -822,3 +822,10 @@ def test_aa_too_few_common_seeds_exit_2(store, tmp_path, capsys):
     _aa(store, range(1000, 1010))
     code, out = replay(capsys, tmp_path, CAND, CAND, "--rep-b", "1", "--min", "2000", "--json")
     assert code == 2
+
+
+def test_replay_refuses_to_compare_a_replicate_with_itself(store, tmp_path, capsys):
+    # review WR-03: "replay_check A A" with default replicates reported every game identical to itself
+    fill(store, CAND, [_g(s) for s in range(5)])
+    code, out = replay(capsys, tmp_path, CAND, CAND)
+    assert code == 2 and "same commit and replicate" in out
