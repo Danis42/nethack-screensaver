@@ -4,6 +4,8 @@ env_id: a8f58c2fda006264
 window: 1000-10999
 aa_window: 1000-2999
 prereg_commit: 539b31eabc1b11c90f7f2b84cb5348a0acf1da63
+baseline_job: 7
+aa_job: 8
 
 # Natural baseline and A/A: pre-registration (MEAS-05, D-05, D-06, D-17, D-23)
 
@@ -35,3 +37,7 @@ Exact command (run by plan 01-16):
 ```
 .venv/bin/python scripts/replay_check.py e5b5a7f525bc51b8008f665173600aba80de466d e5b5a7f525bc51b8008f665173600aba80de466d --rep-b 1 --lo 1000 --hi 3000 --lgen off --min 2000 --skip-both watchdog --json
 ```
+
+## Jobs
+
+Baseline job 7 started, first game row at 2026-11-13 16:10:02, games_reused 400. A/A job 8 queued, not started. At about 30 games per minute the baseline needs about 5.4 h for its 9,600 own games and the A/A about 1.1 h after it. Plan 01-16 starts when both are done. After a reboot the owner restarts the server with `uv run screens-bench serve --resume` (Pitfall 10).
