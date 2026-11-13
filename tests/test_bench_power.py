@@ -60,8 +60,8 @@ def test_plan_has_the_declared_fields():
     assert p["mcnemar_mde_at_n"] == pytest.approx(mcnemar_mde(p["n_planned"], 0.2), abs=1e-9)
 
 
-def test_default_discordance_is_unset_until_the_pilot():
-    assert DEFAULT_DISCORDANCE is None
+def test_default_discordance_is_the_pilot_upper_bound():
+    assert DEFAULT_DISCORDANCE == 0.019  # lgen pilot jobs 3/4/5/6, 01-LGEN-PILOT.md
 
 
 @pytest.mark.parametrize("call", [

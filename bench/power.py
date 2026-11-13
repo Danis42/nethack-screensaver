@@ -18,8 +18,10 @@ import numpy as np
 from scipy.special import gammaln
 from scipy.stats import binom
 
-# Set from the lgen pilot's upper confidence bound on psi (plan 01-15); callers pass psi until then.
-DEFAULT_DISCORDANCE = None
+# Wilson upper 95% bound of psi on dlvl10 with lgen off (b 2, c 0, n 400), rounded up: lgen pilot jobs 3/4/5/6,
+# decision in .planning/phases/01-measurement-and-proof-foundation/01-LGEN-PILOT.md. Pitfall 11: this psi comes from
+# a small mid-game fight change; pass --discordance for a change expected to diverge games more.
+DEFAULT_DISCORDANCE = 0.019
 
 _EXACT_TOL = 1e-5
 _SEQ_TOL = 1e-4
