@@ -3,6 +3,7 @@ lgen: off
 env_id: a8f58c2fda006264
 window: 1000-10999
 aa_window: 1000-2999
+prereg_commit: 539b31eabc1b11c90f7f2b84cb5348a0acf1da63
 
 # Natural baseline and A/A: pre-registration (MEAS-05, D-05, D-06, D-17, D-23)
 
