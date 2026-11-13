@@ -3,7 +3,7 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Measurement and Proof Foundation
 status: executing
-stopped_at: "Plan 01-15 done 2026-11-13 (decision keep-lgen-off, jobs 3-6; baseline job 7 started 16:10:02, A/A job 8 queued). Resume: plan 01-16 once jobs 7 and 8 are done (~6.5 h from 16:10)."
+stopped_at: "All 16 Phase 01 plans done 2026-11-14 (A/A pass, baseline job 7 funnel, Sokoban cause, proof index b788816). Phase verification running: code review, then verifier, then security gate."
 last_updated: "2026-11-12T23:39:48.631Z"
 last_activity: 2026-11-12
 last_activity_desc: Phase 01 execution started
@@ -12,7 +12,7 @@ progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
   percent: 0
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-11-12)
 Phase: 01 (Measurement and Proof Foundation) — EXECUTING
 Plan: 16 of 16
 Status: Ready to execute
-Last activity: 2026-11-13 — 01-15 done; baseline job 7 running, A/A job 8 queued
+Last activity: 2026-11-14 — 01-16 done; phase 01 verification in progress
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -71,6 +71,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P14 | n/a | 3 tasks | 2 files |
 | Phase 01 P06 | n/a | 2 tasks | 8 files |
 | Phase 01 P15 | n/a | 3 tasks | 9 files |
+| Phase 01 P16 | n/a | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,8 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-15 lgen pilot decision keep-lgen-off (rule-strict; psi_on - psi_off +0.005, 95% [-0.0070, +0.0170]; jobs 3/4/5/6); DEFAULT_DISCORDANCE 0.019 is small because commit B changes little: pass --discordance for bigger changes
 - [Phase 01]: 01-15 baseline commit e5b5a7f525bc51b8008f665173600aba80de466d (= bot of main), lgen off, job 7 (10,000 games, 400 reused); A/A job 8 (seeds 1000-2999, rep 1); pre-registered in 539b31e
 
+- [Phase 01]: 01-16 A/A pass (1,999/1,999 identical, seed 2073 watchdog on both; job 8); Sokoban zero = all 2,256 drops are sokoban_unsolvable on the entry level (dunlev 4); open: which push fails first
+
 ### Pending Todos
 
 None yet.
@@ -108,7 +111,7 @@ None yet.
 ### Blockers/Concerns
 
 - [Phase 1] RESOLVED by 01-01 (commit 937ef5c, fresh_clone_check passed): NLE builds only from the gitignored `reference/nle-src`; a fresh clone can't `uv sync` (blocks everything)
-- [Phase 1]: Live bench DB is empty; all reference numbers (58.3% Mines, 14.5% starvation, 1.1% Medusa) are from the archived `72ca0b6` baseline until re-measured
+- [Phase 1] RESOLVED by 01-16: fresh baseline job 7 (10,000 games) replaces the archived `72ca0b6` reference numbers; funnel in 01-BASELINE.md
 - [Phase 4]: Explorer stuck root cause unknown (research needed)
 - [Phase 5]: Natural Medusa arrivals are rare (25/2304), so the needs-met rate has wide intervals until Phase 4 raises arrivals; AC gap cause still open
 - [Phase 5]: Medusa reach bar is still an open owner decision, to be set from the first measurement
@@ -125,6 +128,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-13T16:20
-Stopped at: Plan 01-15 done 2026-11-13 (decision keep-lgen-off, jobs 3-6; baseline job 7 started 16:10:02, A/A job 8 queued). Resume: plan 01-16 once jobs 7 and 8 are done (~6.5 h from 16:10).
+Last session: 2026-11-14T00:50
+Stopped at: All 16 Phase 01 plans done 2026-11-14 (A/A pass, baseline job 7 funnel, Sokoban cause, proof index b788816). Phase verification running: code review, then verifier, then security gate.
 Resume file: None
