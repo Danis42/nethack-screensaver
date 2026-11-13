@@ -54,9 +54,10 @@ from collections import namedtuple
 from pathlib import Path
 
 QUERY_SECONDS = 2.0
+BENCH_TABLES = {"games", "jobs", "tool_games"}
 
 _NOT = r"(?:\bnot|n't|\bnever|\bno longer)\s+(?:yet\s+)?(?:been\s+)?(?:be\s+)?"
-START_WORDS = r"started|launched|kicked off|is running|are running|running now|now running"
+START_WORDS = r"started|began|launched|submitted|spawned|kicked off|is running|are running|running now|now running"
 START_RE = re.compile(rf"\b(?:{START_WORDS})\b", re.I)
 START_NOUN_RE = re.compile(r"\b(?:jobs?|runs?|baselines?|experiments?|A/A|bench|pilots?)\b", re.I)
 RESULT_VERB_RE = re.compile(r"\b(?:finished|completed|passes|passed|improved|reduced|raised|rose|"
@@ -183,7 +184,13 @@ def verify_query(db_path, sql, expected):
         return f"cannot open {db_path} read-only ({e})"
     try:
         con.execute("PRAGMA query_only = ON")
-        con.set_authorizer(lambda action, *args: sqlite3.SQLITE_OK if action in _ALLOWED else sqlite3.SQLITE_DENY)
+        read = set()
+
+        def authorize(action, arg1, *rest):
+            if action == sqlite3.SQLITE_READ:
+                read.add(arg1)
+            return sqlite3.SQLITE_OK if action in _ALLOWED else sqlite3.SQLITE_DENY
+        con.set_authorizer(authorize)
         deadline = time.monotonic() + QUERY_SECONDS
         con.set_progress_handler(lambda: 1 if time.monotonic() > deadline else 0, 1000)
         row = con.execute(body).fetchone()
@@ -191,6 +198,8 @@ def verify_query(db_path, sql, expected):
         return f"query refused or failed ({e})"
     finally:
         con.close()
+    if not read & BENCH_TABLES:  # review WR-02: "SELECT 1 => 1" proves nothing
+        return f"query reads no bench table ({', '.join(sorted(BENCH_TABLES))})"
     if row is None:
         return "query returned no rows"
     return None if _same(row[0], expected) else f"query returned {row[0]!r}, not {expected.strip()!r}"
