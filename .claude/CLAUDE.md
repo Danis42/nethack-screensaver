@@ -21,7 +21,7 @@ and no reseeding. Every claim of progress toward it can be checked.**
 - **Determinism:** the bench must stay deterministic per seed (no randomness that breaks A/A comparison); any non-deterministic component (e.g. an LLM) needs a plan for measurement
 - **Proof:** no progress claim without a job ID, commit or query result the owner can check — trust was broken last time
 - **Clean goal:** the final ascension must be one straight game with no human input, rewind or reseed
-- **No additional cost:** LLM work uses local models (Ollama on an RTX 4070 Ti, 12 GB VRAM, 32 GB RAM) and the existing Claude subscription via Claude Code; no paid API tokens or cloud services
+- **No additional cost:** LLM work uses local models (Ollama on an RTX 4070 Ti, 12 GB VRAM, 32 GB RAM) and the existing Claude subscription via Claude Code; no paid API tokens or cloud services. One exception (owner-approved 2026-11-13): free-tier cloud LLM APIs may be used for small research and well-defined helper jobs, if (1) prompts carry public content only (NetHack facts, wiki text), never repo code, bench data or personal details; (2) answers are leads, verified against the 5.0 source or the web before the bot relies on them; (3) nothing in game play or bench measurement depends on them; (4) the client tool is scanned (SkillSpector) before install
 - **Exploits need approval:** farming or exploits are allowed in principle, but each one is proposed to the owner first so they can judge the behaviour
 
 <!-- GSD:project-end -->
