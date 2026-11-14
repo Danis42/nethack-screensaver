@@ -25,16 +25,17 @@ and no reseeding. Every claim of progress toward it can be checked.**
 - ✓ Bench runs many games per commit in parallel worktrees, stores results in SQLite, reports per-rung ladder metrics, and exposes MCP tools — existing
 - ✓ Games are deterministic per seed (A/A run identical), so the same seed can be replayed and compared across commits — existing
 - ✓ Test tools exist: rewind (`scripts/rewind.py`), staged starts near late levels (`scripts/staged_run.py`), scenarios (`scripts/scenario_run.py`), hand-play (`scripts/handplay.py`), human-game study on NLD (`scripts/nld_study.py`) — existing
+- ✓ Natural-game funnel with Wilson intervals is the main metric (MEAS-02); fresh baseline `e5b5a7f525bc51b8008f665173600aba80de466d` = job 7, 10,000 games, lgen off; A/A job 8 identical 1,999/1,999 — Phase 1
+- ✓ Every progress claim needs a job ID, full commit hash or re-run query, enforced by the `check_claims.py` Stop hook (MEAS-09) — Phase 1
+- ✓ Paired always-valid sequential test plus exact McNemar, seed ranges, tool-games table, fact ledger (MEAS-06/07/08/10) — Phase 1
 - ✓ Large body of NetHack 5.0 research notes in `.planning/research/` (route, Medusa, Castle, food, prayer, wishes, survival) — existing
 
 ### Active
 
 - [ ] Compare the possible routes to an ascension with evidence (prior NetHack bots, learning from human games, LLM as offline analyst or in-game planner, scenario and ability testing, statistics, large-scale search) and choose one before building
-- [ ] A progress funnel on natural games from start to ascension (per-stage pass rates with confidence intervals) is the main metric; staged and rewind runs are test tools only
 - [ ] The early wall is fixed by system, not by monster: food (about 14% starve), escape and HP management, getting stuck, resource and item use
 - [ ] The late wall is fixed: the bot gets the missing late-game abilities (cross Medusa, enter and pass the Castle, Gehennom, Vlad's Tower, Wizard's Tower, invocation, Elemental Planes, Astral), each testable on its own
 - [ ] The bot code stays clean: `autoascend/agent.py` (2142 lines) and `autoascend/global_logic.py` (1362 lines) split into understandable modules, guarded by a deterministic regression gate
-- [ ] Every progress claim in a session has proof: bench job ID, commit hash, or a reproducible database query; no "started" without a checkable job
 - [ ] One fresh, clean ascension recorded (seed, commit, dumplog), reproducible from the seed
 
 ### Out of Scope
@@ -48,7 +49,7 @@ and no reseeding. Every claim of progress toward it can be checked.**
 ## Context
 
 - **Fresh start:** commit `af6684a` removed the old plans, state, phases, roadmaps and specs after the last session got stuck. Research notes and hand-game notes were kept. A full backup lives in `archive/` (`screens-v0-final.tar.gz`, `screens-all-branches.bundle`), including the old bench database (146,743 games over 87 commits).
-- **Live bench database is empty:** `~/.local/share/screens-bench/results.db` has 0 games. History is only in the archive. A fresh baseline of `main` is needed before any comparison.
+- **Live bench database:** holds the fresh baseline (job 7, 10,000 games of `e5b5a7f`), the A/A (job 8) and the lgen pilot (jobs 3-6). Archive history stays in `archive/` only.
 - **What went wrong last time:** whack-a-mole fixes, the code got messy, and the assistant claimed it had started workloads while it actually sat idle.
 - **Where games end (baseline `72ca0b6`, 2304 games):** 42% never reach the Gnomish Mines (the old `rung` metric is "highest rung reached", not a funnel, and overstated this); starvation 334 games; no natural game ever got past Medusa in any of the 146k stored games. "Castle 8/20" figures came from staged starts next to the Castle, not from natural games.
 - **Two walls:** the rewind study (`.planning/research/REWIND-20.md`) gave 20 seeds infinite lives. Two thirds of deaths were close calls one reroll avoided, but even with infinite lives no seed got past Medusa. Early on it's survival; late it's missing abilities.
@@ -100,4 +101,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-11-12 after initialization*
+*Last updated: 2026-11-14 after Phase 1*

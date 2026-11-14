@@ -14,7 +14,7 @@ Every phase ends with a measurable result (bench job, funnel metric or staged pa
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Measurement and Proof Foundation** - Reproducible install, key-based funnel, fresh baseline with A/A, paired statistics, claim check
+- [x] **Phase 1: Measurement and Proof Foundation** - Reproducible install, key-based funnel, fresh baseline with A/A, paired statistics, claim check (completed 2026-11-14)
 - [ ] **Phase 2: Proven Change Loop** - Triage, refactor gate and paired experiments shown end to end on the Mines branch fix and the character A/B
 - [ ] **Phase 3: LLM Analyst and Pilot** - Local-first LLM labels deaths and plays handed-over sections with every call recorded, outside the bench
 - [ ] **Phase 4: Early Wall by System** - Food, getting stuck and class-wide safety fixed as systems, shown as higher natural funnel rates
@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The `lgen` pilot (two commits, about 400 seeds each) reports paired discordance with and without `lgen`, and the decision is recorded; the `sokoban_solved` detector is run against a known hand game and the 0/2304 result has a written cause (proof: pilot job IDs, detector test)
   4. The stats tool runs exact McNemar and an always-valid sequential test, a simulation shows its false-positive rate holds under repeated checking, and the power calculator gives the MDE and sample size an experiment must declare before running; dev, confirm and final seed ranges are fixed, and the bench refuses final-range seeds outside clean attempts (proof: simulation report, refusal test)
   5. Staged, scenario and rewind runs land in a separate `tool_games` table with job IDs and never reach the funnel; `check_claims.py` rejects a claim without a job ID, full commit hash or reproducible query; a job counts as started only once its first game row exists; NetHack facts carry a fact-ledger tag (5.0 source, measured or unverified) (proof: tests for each rule)
-**Plans**: 14/16 plans executed
+**Plans**: 16/16 plans complete
 
 Plans:
 **Wave 1**
@@ -69,10 +69,10 @@ Plans:
 - [x] 01-14-PLAN.md — walking-skeleton proof from a fresh clone; owner picks pilot commit B and rule; pilot queued via MCP (wave 8)
 
 **Wave 9** *(blocked on Wave 8 completion)*
-- [ ] 01-15-PLAN.md — lgen decision; A/A command; baseline and A/A pre-registered (D-23); baseline started, A/A queued (wave 9)
+- [x] 01-15-PLAN.md — lgen decision; A/A command; baseline and A/A pre-registered (D-23); baseline started, A/A queued (wave 9)
 
 **Wave 10** *(blocked on Wave 9 completion)*
-- [ ] 01-16-PLAN.md — A/A verdict by the pre-registered command, baseline funnel, Sokoban cause, proof index (wave 10)
+- [x] 01-16-PLAN.md — A/A verdict by the pre-registered command, baseline funnel, Sokoban cause, proof index (wave 10)
 
 **Research**: `lgen` discordance and the sequential test are unmeasured; both need pilot runs and simulation before use
 
@@ -167,7 +167,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7. Phases 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Measurement and Proof Foundation | 14/16 | In Progress | - |
+| 1. Measurement and Proof Foundation | 16/16 | Complete    | 2026-11-14 |
 | 2. Proven Change Loop | 0/TBD | Not started | - |
 | 3. LLM Analyst and Pilot | 0/TBD | Not started | - |
 | 4. Early Wall by System | 0/TBD | Not started | - |

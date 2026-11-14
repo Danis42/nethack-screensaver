@@ -9,15 +9,15 @@ Requirements for the first clean ascension. Each maps to roadmap phases.
 
 ### Measurement and Proof (MEAS)
 
-- [ ] **MEAS-01**: A fresh clone can install and run the bot and bench (`uv sync` works; the NLE build is reproducible, not only from the gitignored `reference/nle-src`)
-- [ ] **MEAS-02**: The bench reports a natural-game funnel by stage keys (Mines, Minetown, Oracle, Sokoban, Sokoban solved, Mines' End, Dlvl 15+, Quest portal, Medusa, Castle, Gehennom, ... Astral, ascended) with Wilson confidence intervals; the old `rung` metric is no longer used for decisions
-- [ ] **MEAS-03**: The `sokoban_solved` detector is checked against a known game, and the 0/2304 result is explained (detector bug fixed, or the bot really never solves it)
-- [ ] **MEAS-04**: The `lgen` level-generation seed is piloted (two commits, about 400 seeds each), its effect on paired comparisons is measured, and the decision whether to use it in the bench is recorded
-- [ ] **MEAS-05**: A fresh natural baseline of `main` exists in the live bench database, plus an A/A run showing reproducibility
-- [ ] **MEAS-06**: Experiments use a paired statistical test valid under repeated checking (exact McNemar and an always-valid sequential test), validated by simulation; the minimum detectable effect and sample size are fixed before a run
-- [ ] **MEAS-07**: Seed ranges are split into dev, confirm and final ranges; confirm seeds are only used at phase gates, final seeds only for clean attempts
-- [ ] **MEAS-08**: Staged, scenario and rewind runs are stored with job IDs in their own table, separate from natural games, and never shown as natural results
-- [ ] **MEAS-09**: Every progress claim is backed by a job ID, full commit hash or reproducible query; a check script rejects claims without one; a job counts as "started" only once its first game row exists
+- [x] **MEAS-01**: A fresh clone can install and run the bot and bench (`uv sync` works; the NLE build is reproducible, not only from the gitignored `reference/nle-src`)
+- [x] **MEAS-02**: The bench reports a natural-game funnel by stage keys (Mines, Minetown, Oracle, Sokoban, Sokoban solved, Mines' End, Dlvl 15+, Quest portal, Medusa, Castle, Gehennom, ... Astral, ascended) with Wilson confidence intervals; the old `rung` metric is no longer used for decisions
+- [x] **MEAS-03**: The `sokoban_solved` detector is checked against a known game, and the 0/2304 result is explained (detector bug fixed, or the bot really never solves it)
+- [x] **MEAS-04**: The `lgen` level-generation seed is piloted (two commits, about 400 seeds each), its effect on paired comparisons is measured, and the decision whether to use it in the bench is recorded
+- [x] **MEAS-05**: A fresh natural baseline of `main` exists in the live bench database, plus an A/A run showing reproducibility
+- [x] **MEAS-06**: Experiments use a paired statistical test valid under repeated checking (exact McNemar and an always-valid sequential test), validated by simulation; the minimum detectable effect and sample size are fixed before a run
+- [x] **MEAS-07**: Seed ranges are split into dev, confirm and final ranges; confirm seeds are only used at phase gates, final seeds only for clean attempts
+- [x] **MEAS-08**: Staged, scenario and rewind runs are stored with job IDs in their own table, separate from natural games, and never shown as natural results
+- [x] **MEAS-09**: Every progress claim is backed by a job ID, full commit hash or reproducible query; a check script rejects claims without one; a job counts as "started" only once its first game row exists
 - [x] **MEAS-10**: NetHack facts used by the bot or plans are tagged as verified against the 5.0 source, measured, or unverified (fact ledger), so 3.6 or LLM-invented knowledge can't slip in unnoticed
 
 ### Code Health (CODE)
@@ -106,15 +106,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MEAS-01 | Phase 1 | Pending |
-| MEAS-02 | Phase 1 | Pending |
-| MEAS-03 | Phase 1 | Pending |
-| MEAS-04 | Phase 1 | Pending |
-| MEAS-05 | Phase 1 | Pending |
-| MEAS-06 | Phase 1 | Pending |
-| MEAS-07 | Phase 1 | Pending |
-| MEAS-08 | Phase 1 | Pending |
-| MEAS-09 | Phase 1 | Pending |
+| MEAS-01 | Phase 1 | Complete |
+| MEAS-02 | Phase 1 | Complete |
+| MEAS-03 | Phase 1 | Complete |
+| MEAS-04 | Phase 1 | Complete |
+| MEAS-05 | Phase 1 | Complete |
+| MEAS-06 | Phase 1 | Complete |
+| MEAS-07 | Phase 1 | Complete |
+| MEAS-08 | Phase 1 | Complete |
+| MEAS-09 | Phase 1 | Complete |
 | MEAS-10 | Phase 1 | Complete |
 | CODE-01 | Phase 2 | Pending |
 | CODE-02 | Phase 2 | Pending |
