@@ -1,35 +1,37 @@
 ---
-status: testing
+status: complete
 phase: 01-measurement-and-proof-foundation
 source: [01-VERIFICATION.md]
 started: 2026-11-14T00:01:09Z
-updated: 2026-11-14T00:01:09Z
+updated: 2026-11-14T12:30:15.487Z
 ---
 
 ## Current Test
 
-number: 1
-name: Prohibition review (7 judgment-tier prohibitions)
-expected: |
-  Owner accepts or rejects the verifier's verdict that all seven held: 01-01 no push of the NLE fork or screens repo to a remote and no backup tooling; 01-03 no LLM, network or paid API in claim detection; 01-03 no bypass switch for the claim checker; 01-04 no 5.0-source fact tag without file:line and verbatim quote; 01-10 no Claude-reachable surface creates clean_attempt jobs or plays final-range seeds; 01-15 no dungeon screening in lgen pairing or seed choice; 01-16 no archive games imported or archive numbers shown as current. Evidence: 01-VERIFICATION.md, section Prohibitions.
-awaiting: user response
+[testing complete]
 
 ## Tests
 
 ### 1. Prohibition review (7 judgment-tier prohibitions)
 expected: Owner accepts the verifier's verdict that all seven held (evidence in 01-VERIFICATION.md, section Prohibitions)
-result: [pending]
+result: pass
+owner_amendments_2026-11-14:
+  - "#2 (01-03): reworded to: no online LLM, network or paid API in claim checking; a local LLM is allowed"
+  - "#4 (01-04): dropped as a prohibition; the source-quote check stays as tooling"
+  - "#6 (01-15): dropped"
+  - "#5 (01-10) and #7 (01-16): dropped after explanation ; code guards stay"
 
 ### 2. Bench server restarted onto the review fixes
 expected: After `uv run screens-bench serve --resume`, GET /api/results?ref=e5b5a7f525bc51b8008f665173600aba80de466d reports games = 10000, matching /api/funnel?job=7 n = 10000
-result: [pending]
+result: pass
+evidence: "2026-11-14 server restarted (bench env a8f58c2fda006264, nle cb9d6572f3); /api/results?ref=e5b5a7f525bc51b8008f665173600aba80de466d games=10000; /api/funnel?job=7 n=10000, window [1000, 11000], lgen off"
 
 ## Summary
 
 total: 2
-passed: 0
+passed: 2
 issues: 0
-pending: 2
+pending: 0
 skipped: 0
 blocked: 0
 
