@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-11-14T16:30:49.019Z",
+  "phase": "2",
+  "phase_name": "Proven Change Loop",
+  "phase_dir": ".planning/phases/02-proven-change-loop",
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 1, "name": "Phase 1 UAT, security check, transition", "status": "done", "commit": "dac717b"},
+    {"id": 2, "name": "Phase 2 discuss-phase (02-CONTEXT.md, D-01..D-16)", "status": "done", "commit": "e501d22"}
+  ],
+  "remaining_tasks": [
+    {"id": 3, "name": "/gsd-plan-phase 2 (reword ROADMAP Phase 2 criterion 4 per D-08)", "status": "not_started"}
+  ],
+  "blockers": [],
+  "async_jobs": [],
+  "human_actions_pending": [],
+  "decisions": [
+    {"decision": "Character first, then Mines branch-stair fix, fresh baseline between", "rationale": "plan_for depends on race", "phase": "2"},
+    {"decision": "Prohibitions amended: no online LLM (local OK); #4-#7 dropped", "rationale": "owner UAT 2026-11-14", "phase": "1"}
+  ],
+  "uncommitted_files": ["?? .planning/state.json"],
+  "next_action": "Run /gsd-plan-phase 2",
+  "context_notes": "Owner wants plain-language explanations, no GSD jargon. Every progress claim needs job ID, full commit hash or query (Stop hook). Run work inline, not in subagents."
+}
