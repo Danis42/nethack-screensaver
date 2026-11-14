@@ -104,6 +104,8 @@ Recent decisions affecting current work:
 
 - [Phase 01]: 01-16 A/A pass (1,999/1,999 identical, seed 2073 watchdog on both; job 8); Sokoban zero = all 2,256 drops are sokoban_unsolvable on the entry level (dunlev 4); open: which push fails first
 
+- [Phase 01]: UAT 2026-11-14 (owner): prohibitions reworded/dropped. #2 now = no online LLM, network or paid API in claim checking (local LLM allowed); #4 source-quote, #5 seed-range/clean_attempt surface, #6 dungeon screening, #7 archive import dropped as prohibitions; their code guards stay as tooling
+
 ### Pending Todos
 
 None yet.
