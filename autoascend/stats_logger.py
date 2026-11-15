@@ -48,8 +48,8 @@ class StatsLogger:
             "sokoban_drop_level_4": 0,
             "drop_to_lighten_load": 0,
             "unstick": 0,
-            "stuck_dive": 0,
-            "stuck_diving": 0,
+            "stuck_dive": 0, "stuck_diving": 0,
+            "mines_left_unwanted": 0,  # climbed out of a Mines level the plan does not want (SURV-04)
             "wait_in_fight": 0,
             "melee_gas_spore": 0,
             "ad_aerarium_below_me": 0,

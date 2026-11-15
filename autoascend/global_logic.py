@@ -20,6 +20,7 @@ from .item.item_priority_base import ItemPriorityBase
 from .ladder import Facts, Ladder
 from .level import Level
 from .plans import DEFAULT_PLAN, Milestone, Plan, ProgressWatch
+from . import stairs
 from .stairs import dive_stairs
 
 from .strategy import Strategy
@@ -284,9 +285,19 @@ class GlobalLogic:
         return self.milestone == Milestone.FIND_SOKOBAN and self._elapsed(SOKOBAN_SEARCH_TURNS)
 
     def _on_wrong_branch(self):
-        """In the Mines by the wrong stairs while looking for Sokoban: exploring on is how these visits end in death."""
-        return self.milestone == Milestone.FIND_SOKOBAN and \
-            self.agent.current_level().dungeon_number == Level.GNOMISH_MINES
+        """On a Mines level the plan does not want (D-07): exploring on is how these visits end in death."""
+        return self.agent.current_level().dungeon_number == Level.GNOMISH_MINES and \
+            not stairs.wants_mines(self.milestone)
+
+    def _leave_mines(self):
+        """Climb out of an unwanted Mines level at once (SURV-04). True if the hero went up a staircase."""
+        exit_ = stairs.mines_exit(self.agent.current_level(), self.agent.bfs()) if self._on_wrong_branch() else None
+        if exit_ is None:
+            return False
+        self.agent.stats_logger.log_event('mines_left_unwanted')
+        self.agent.go_to(*exit_)
+        self.agent.move('<')
+        return True
 
     def _diving_in_mines(self):
         return self.agent.current_level().dungeon_number == Level.GNOMISH_MINES and not self._mines_dive_over
@@ -1153,7 +1164,6 @@ class GlobalLogic:
 
         if any(item.category == nh.COIN_CLASS for item in flatten_items(self.agent.inventory.items)):
             yield True
-            # if 'Please drop that gold and follow me.' in self.message:
             self.agent.stats_logger.log_event('drop_gold')
             self.item_priority._drop_gold_till_turn = self.agent.blstats.time + 100
             self.agent.inventory.arrange_items().run()
@@ -1178,8 +1188,6 @@ class GlobalLogic:
                 # Dlvl 1 runs out of food long before XL 8: leave once hungry.
                 condition = lambda: self.agent.blstats.experience_level >= 8 or \
                                     self.agent.blstats.hunger_state >= Hunger.HUNGRY
-                # explore_stairs_condition = lambda: self.agent.inventory.items.total_nutrition() == 0 and \
-                #                                    self.agent.blstats.hunger_state >= Hunger.NOT_HUNGRY
                 level = (Level.DUNGEONS_OF_DOOM, 1)
 
             elif self.milestone == Milestone.FIND_SOKOBAN:
@@ -1189,15 +1197,6 @@ class GlobalLogic:
             elif self.milestone == Milestone.FIND_GNOMISH_MINES:
                 condition = lambda: self.agent.current_level().dungeon_number == Level.GNOMISH_MINES
                 level = (Level.GNOMISH_MINES, 1)
-
-            # elif self.milestone == Milestone.FIND_LIGHT_GNOMISH_MINES:
-            #     condition = lambda: self.agent.current_level().dungeon_number == Level.GNOMISH_MINES \
-            #             and self.agent.current_level().is_light_level()
-            #     level = (Level.GNOMISH_MINES, 9)
-
-            # elif self.milestone == Milestone.FARM_LIGHT_GNOMISH_MINES:
-            #     condition = lambda: self.agent.blstats.experience_level >= 11
-            #     level = (Level.GNOMISH_MINES, self.agent.current_level().level_number)
 
             elif self.milestone == Milestone.FIND_MINETOWN:
                 condition = self._minetown_found
@@ -1239,7 +1238,7 @@ class GlobalLogic:
             if self._should_bail():
                 self.plan.bail_out()
                 continue
-            if self._dig_deep():
+            if self._dig_deep() or self._leave_mines():
                 continue
             if self._cross_medusa():
                 continue
@@ -1314,7 +1313,8 @@ class GlobalLogic:
                     self.agent.exploration.explore_stairs(go_to_strategy, all=True).condition(explore_stairs_condition),
                 ])
                 .until(self.agent, lambda: condition() or self._should_bail() or self._stuck() or self._deep_dig_due() or
-                                     self._castle_due())
+                                     self._castle_due() or (self._on_wrong_branch() and
+                                     stairs.mines_exit(self.agent.current_level(), self.agent.bfs()) is not None))
             ).run()
 
     def global_strategy(self):
