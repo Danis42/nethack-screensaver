@@ -37,7 +37,7 @@ FARMING = (Milestone.BE_ON_FIRST_LEVEL,)
 AGENT_ARGS = dict(panic_on_errors=True, verbose=False)
 # Until the first ascension every game is a human Valkyrie: neutral, so Mines natives are hostile, which
 # makes them food and experience. "@" brings random characters back.
-CHARACTER = "val-hum-fem-neu"
+CHARACTER = "sam-hum-mal-law"
 
 
 class WatchdogTimeout(KeyboardInterrupt):
