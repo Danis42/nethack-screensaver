@@ -1176,7 +1176,7 @@ class GlobalLogic:
             explore_stairs_condition = lambda: False
             if self.milestone == Milestone.BE_ON_FIRST_LEVEL:
                 # Dlvl 1 runs out of food long before XL 8: leave once hungry.
-                condition = lambda: self.agent.blstats.experience_level >= 8 or \
+                condition = lambda: self.agent.blstats.experience_level >= 1 or \
                                     self.agent.blstats.hunger_state >= Hunger.HUNGRY
                 # explore_stairs_condition = lambda: self.agent.inventory.items.total_nutrition() == 0 and \
                 #                                    self.agent.blstats.hunger_state >= Hunger.NOT_HUNGRY
