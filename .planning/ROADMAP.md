@@ -85,7 +85,7 @@ Plans:
   1. The refactor gate replays the fixed gate seed set and compares frame-hash traces: a pure refactor commit passes, and a deliberately changed commit fails with the first divergent seed and turn reported (proof: two gate job IDs)
   2. Every commit from this phase on carries `Kind: refactor` or `Kind: behavior`, and behaviour commits name their funnel stage, metric and experiment job; ratchet tests (file size limits, no new bare `except`, no new imports of agent internals) fail the suite on violation (proof: ratchet test run, commit log query)
   3. Failure triage replays the baseline's deaths, extracts features and prints system-level causes ranked by expected funnel gain, reproducible with one command on the baseline job (no LLM needed) (proof: command plus baseline job ID)
-  4. With the Mines branch staircase recognised, the share of natural games reaching the Mines rises above the Phase 1 baseline in a significant paired test on dev seeds and again on confirm seeds (proof: dev and confirm job IDs)
+  4. With the Mines branch staircase recognised, the bot takes the Mines stairs only when its plan wants the Mines and leaves an unwanted Mines level at once; the funnel stage and metric this should move are pre-registered before the run, and the change beats the baseline at the chosen character in a significant paired test on dev seeds and again on confirm seeds (proof: pre-registration commit, dev and confirm job IDs)
   5. The first-ascension character (role, race, alignment) is chosen by written research plus a paired bench A/B with the MDE declared beforehand; the winner sits in one `CHARACTER` constant, and a fresh baseline at that character exists (proof: A/B and baseline job IDs)
 **Plans**: TBD
 
