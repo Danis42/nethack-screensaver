@@ -2,7 +2,7 @@
 gsd_state_version: "1.0"
 current_phase: 2
 current_phase_name: Proven Change Loop
-status: ready_to_execute
+status: executing
 stopped_at: Phase 2 planned (5 plans)
 last_updated: "2026-11-14T12:41:00.689Z"
 last_activity: 2026-11-14
@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-11-14)
 ## Current Position
 
 Phase: 2 — Proven Change Loop
-Plan: 0 of 5
-Status: Ready to execute
+Plan: 3 of 5 complete (02-01, 02-02, 02-03); 02-04 running (pilot jobs 12-14)
+Status: Executing
 Last activity: 2026-11-14 — Phase 1 complete, transitioned to Phase 2
 
 Progress: [█░░░░░░░░░] 14%
@@ -106,6 +106,9 @@ Recent decisions affecting current work:
 
 - [Phase 01]: UAT 2026-11-14 (owner): prohibitions reworded/dropped. #2 now = no online LLM, network or paid API in claim checking (local LLM allowed); #4 source-quote, #5 seed-range/clean_attempt surface, #6 dungeon screening, #7 archive import dropped as prohibitions; their code guards stay as tooling
 
+- [Phase 02]: Gate is `python -m bench.gate` (tool job); proof jobs 9 (pass) and 11 (fail); new files capped at 600 lines, Phase 2 start files pinned
+- [Phase 02]: Triage groups owner-reviewed; job 7 ranking led by starvation and lost melee fights; replay check 19 of 25
+
 ### Pending Todos
 
 None yet.
@@ -131,5 +134,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-11-15
-Stopped at: Phase 2 planned: 02-01 labels/ratchets, 02-02 refactor gate, 02-03 triage, 02-04 character, 02-05 Mines stairs
+Stopped at: 02-04 Task 2, character pilots (jobs 12, 13, 14) running; next: psi, owner approves pre-registration
 Resume file: None
