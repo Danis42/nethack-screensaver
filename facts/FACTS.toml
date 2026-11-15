@@ -520,3 +520,51 @@ claim = "G_SGROUP (0x0080) and G_LGROUP (0x0040) in a monster's geno field mean 
 tag = "5.0-source"
 evidence = ["reference/nethack-5.0.0/include/monflag.h:198-199"]
 quote = "#define G_SGROUP 0x0080 /* appear in small groups normally */ #define G_LGROUP 0x0040 /* appear in large groups normally */"
+
+[role-intrinsics-valkyrie]
+claim = "A Valkyrie starts with cold resistance, gains stealth at XL 3 and speed (Fast) at XL 7"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/attrib.c:81-84"]
+quote = "val_abil[] = { { 1, &(HCold_resistance), \"\", \"\" }, { 3, &(HStealth), \"stealthy\", \"\" }, { 7, &(HFast), \"quick\", \"slow\" },"
+
+[role-intrinsics-samurai]
+claim = "A Samurai is Fast from XL 1 and gains stealth at XL 15"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/attrib.c:73-75"]
+quote = "sam_abil[] = { { 1, &(HFast), \"\", \"\" }, { 15, &(HStealth), \"stealthy\", \"\" },"
+
+[role-intrinsics-monk]
+claim = "A Monk starts Fast, sleep resistant and seeing invisible; poison resistance at XL 3, stealth at 5, warning at 7"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/attrib.c:47-52"]
+quote = "mon_abil[] = { { 1, &(HFast), \"\", \"\" }, { 1, &(HSleep_resistance), \"\", \"\" }, { 1, &(HSee_invisible), \"\", \"\" }, { 3, &(HPoison_resistance), \"healthy\", \"\" }, { 5, &(HStealth), \"stealthy\", \"\" }, { 7, &(HWarning), \"sensitive\", \"\" },"
+
+[role-intrinsics-barbarian]
+claim = "A Barbarian starts poison resistant and gains speed at XL 7"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/attrib.c:32-33"]
+quote = "bar_abil[] = { { 1, &(HPoison_resistance), \"\", \"\" }, { 7, &(HFast), \"quick\", \"slow\" },"
+
+[dwarf-race-infravision]
+claim = "A dwarven hero has infravision from XL 1"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/attrib.c:91-92"]
+quote = "dwa_abil[] = { { 1, &HInfravision, \"\", \"\" },"
+
+[human-race-no-intrinsics]
+claim = "A human hero has no racial intrinsics"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/attrib.c:105"]
+quote = "hum_abil[] = { { 0, 0, 0, 0 } };"
+
+[dwarf-race-loves-dwarves-gnomes]
+claim = "For a dwarven hero the race lovemask is MH_DWARF | MH_GNOME (dwarves and gnomes are race-peaceful) and the hatemask MH_ORC"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/role.c:632-635"]
+quote = "MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL, MH_DWARF, MH_DWARF | MH_GNOME, MH_ORC,"
+
+[race-peaceful-before-alignment]
+claim = "peace_minded makes race-peaceful monsters peaceful and race-hostile ones hostile before any alignment check"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/makemon.c:2283-2286"]
+quote = "if (race_peaceful(ptr)) return TRUE; if (race_hostile(ptr)) return FALSE;"
