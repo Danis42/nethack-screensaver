@@ -68,7 +68,7 @@
   "bench/filters.py": 50,
   "bench/frame_trace.py": 49,
   "bench/funnel.py": 41,
-  "bench/gate.py": 164,
+  "bench/gate.py": 163,
   "bench/gitrefs.py": 47,
   "bench/importers.py": 151,
   "bench/mcp_server.py": 183,

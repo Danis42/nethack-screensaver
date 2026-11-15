@@ -8,11 +8,9 @@ the natural games. Verdict "pass" when every compared seed is identical and at m
 (a watchdog ending on either side depends on machine load, so it is never counted as identical); otherwise "fail"
 with the first divergence: lowest differing seed, its step and game turn. The job spec records the candidate's
 tree, so a refactor commit amended after the run (same tree) can cite the job (githooks/commit_kind.py).
-Run it while the bench server is idle: it refuses to start next to a running bench job.
-"""
+It refuses to start next to a running bench job."""
 import argparse
 import json
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -34,8 +32,7 @@ class TraceWorker(ProcessWorker):
 
 
 def tree_of(repo, sha):
-    return subprocess.run(["git", "-C", str(repo), "rev-parse", f"{sha}^{{tree}}"], capture_output=True, text=True,
-                          check=True).stdout.strip()
+    return gitrefs._git(repo, "rev-parse", f"{sha}^{{tree}}")
 
 
 def judge(seeds, base, cand, trace_path):
@@ -107,13 +104,9 @@ def run_gate(store, repo, candidate, baseline, spawn, trace_root, workers=10, se
             "baseline": base, "baseline_ref": baseline, "seeds": list(seeds)}
     job_id = toolruns.record_run(store, "gate", cand, spec)
     path = {sha: Path(trace_root) / sha for sha in (base, cand)}
-    for p in path.values():
-        p.mkdir(parents=True, exist_ok=True)
-    cached = {}
-    for seed in seeds:
-        meta = path[base] / f"{seed}.json"
-        if meta.exists() and (path[base] / f"{seed}.trace").exists():
-            cached[(base, seed)] = json.loads(meta.read_text())
+    [p.mkdir(parents=True, exist_ok=True) for p in path.values()]
+    cached = {(base, s): json.loads((path[base] / f"{s}.json").read_text()) for s in seeds
+              if (path[base] / f"{s}.json").exists() and (path[base] / f"{s}.trace").exists()}
     side = lambda sha: "baseline" if sha == base else "candidate"
 
     def record(sha, seed, result):
@@ -121,7 +114,7 @@ def run_gate(store, repo, candidate, baseline, spawn, trace_root, workers=10, se
         toolruns.add_result(store, job_id, "gate", sha, {**result, "seed": seed, "side": side(sha)})
 
     for (sha, seed), result in sorted(cached.items(), key=lambda kv: kv[0][1]):
-        toolruns.add_result(store, job_id, "gate", sha, {**result, "seed": seed, "side": side(sha)})
+        record(sha, seed, result)
     tasks = [(sha, seed, path[sha] / f"{seed}.trace") for sha in (base, cand) for seed in seeds
              if (sha, seed) not in cached]
     try:
