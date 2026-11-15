@@ -1,12 +1,10 @@
-"""Plays one NetHack game per 'play [seed [lgen]]' line on stdin and prints its result as one JSON line.
-
-Lines: 'play' (unseeded), 'play <seed>', 'play <seed> <lgen>' (lgen = NLE level-generation seed).
-A commit whose run_game cannot take lgen plays the seed alone and leaves lgen out of its result,
-so the scheduler refuses it for an lgen job instead of storing a wrong-mode game.
-
-The bench server starts this script with PYTHONPATH pointing at a commit's worktree, so the
-game code comes from that commit. It must not import the bench package: old commits do not
-have it. Anything the game prints goes to stderr so stdout carries only results."""
+"""Plays one NetHack game per stdin line ('play', 'play <seed>', 'play <seed> <lgen>', 'trace <seed> <path>') and
+prints its result as one JSON line. lgen is NLE's level-generation seed; 'trace' writes the frame-hash trace of
+bench/frame_trace.py to path and adds trace_digest and trace_steps. A seed or lgen the commit's run_game cannot take
+is left out of the result, so the scheduler refuses it. The server starts this script with PYTHONPATH at a commit's
+worktree; it must not import the bench package (old commits lack it; frame_trace is loaded by path). Anything the
+game prints goes to stderr so stdout carries only results."""
+import importlib.util
 import inspect
 import json
 import os
@@ -15,13 +13,13 @@ from dataclasses import asdict
 
 
 def parse(line):
-    """'play' -> (True, None, None); 'play 17' -> (True, 17, None); 'play 17 9' -> (True, 17, 9);
-    anything else -> (False, None, None)."""
+    """'play' -> (True, None, None); 'play 17 9' -> (True, 17, 9); 'trace 17 /p' -> (True, 17, '/p'); else (False, ...)."""
     words = line.split()
+    if len(words) == 3 and words[0] == "trace":
+        return True, int(words[1]), words[2]
     if not words or words[0] != "play" or len(words) > 3:
         return False, None, None
-    numbers = [int(w) for w in words[1:]] + [None, None]
-    return True, numbers[0], numbers[1]
+    return (True, *([int(w) for w in words[1:]] + [None, None])[:2])
 
 
 def main():
@@ -29,21 +27,23 @@ def main():
     os.dup2(sys.stderr.fileno(), sys.stdout.fileno())  # C code printing to fd 1 lands in the log
     sys.stdout = sys.stderr
     from nethack_screensaver.game import run_game
-    can_seed = "seed" in inspect.signature(run_game).parameters  # older commits cannot
-    can_lgen = "lgen" in inspect.signature(run_game).parameters
-
+    params = inspect.signature(run_game).parameters  # older commits cannot take seed or lgen
+    spec = importlib.util.spec_from_file_location("frame_trace", os.path.join(os.path.dirname(__file__), "frame_trace.py"))
+    spec.loader.exec_module(frame_trace := importlib.util.module_from_spec(spec))
     for line in sys.stdin:
-        ok, seed, lgen = parse(line)
+        ok, seed, extra = parse(line)
         if not ok:
             continue
-        if seed is not None and can_seed and lgen is not None and can_lgen:
-            result = asdict(run_game(watchdog_seconds=120, seed=seed, lgen=lgen))
-        elif seed is not None and can_seed:
-            result = asdict(run_game(watchdog_seconds=120, seed=seed))
-            result.pop("lgen", None)  # lgen asked for but not applied: the scheduler refuses it
-        else:
-            result = asdict(run_game(watchdog_seconds=120))
-            result.pop("seed", None)  # unseeded: the scheduler refuses it for seeded jobs
+        trace = frame_trace.Trace(extra) if line.split()[0] == "trace" else None
+        kwargs = {"seed": seed} if seed is not None and "seed" in params else {}
+        if trace is None and extra is not None and "lgen" in params:
+            kwargs["lgen"] = extra
+        result = asdict(run_game(watchdog_seconds=120, **kwargs, **({"on_frame": trace.frame} if trace else {})))
+        if trace:
+            result.update(trace_digest=trace.close(), trace_steps=trace.steps)
+        for key in ("seed", "lgen"):  # not applied (old commit or unseeded): the scheduler refuses such results
+            if key not in kwargs:
+                result.pop(key, None)
         results.write(json.dumps(result) + "\n")
         results.flush()
 
