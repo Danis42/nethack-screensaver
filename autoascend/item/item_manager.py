@@ -52,6 +52,12 @@ _CLASS_WORDS = {  # NetHack 5 class names for objects not seen up close -> (clas
     'gem': (nh.GEM_CLASS, None), 'stone': (nh.GEM_CLASS, None), 'shield': (nh.ARMOR_CLASS, O.ARM_SHIELD),
 }
 JAPANESE = r'(?:magic koto|koto|wakizashi|ninja-to|nunchaku|naginata|osaku|shito|tanko|kabuto|yugake|gunyoki|sake) \[([^]]+)\]'
+SAMURAI_NAMES = {  # what a Samurai sees -> the usual name (objnam.c:105-119, 211-213)
+    'wakizashi': 'short sword', 'ninja-to': 'broadsword', 'nunchaku': 'flail', 'shito': 'knife', 'naginata': 'glaive',
+    'gunyoki': 'food ration', 'osaku': 'lock pick', 'tanko': 'plate mail', 'kabuto': 'helmet',
+    'pair of yugake': 'pair of leather gloves', 'yugake': 'pair of leather gloves', 'koto': 'harp',
+    'magic koto': 'magic harp', 'potion of sake': 'potion of booze', 'potions of sake': 'potions of booze',
+}
 
 
 class ItemManager:
@@ -549,27 +555,8 @@ class ItemManager:
     @utils.copy_result
     @functools.lru_cache(1024 * 256)
     def parse_name(name):
-        if name == 'wakizashi':
-            name = 'short sword'
-        elif name == 'ninja-to':
-            name = 'broadsword'
-        elif name == 'nunchaku':
-            name = 'flail'
-        elif name == 'shito':
-            name = 'knife'
-        elif name == 'naginata':
-            name = 'glaive'
-        elif name == 'gunyoki':
-            name = 'food ration'
-        elif name == 'osaku':
-            name = 'lock pick'
-        elif name == 'tanko':
-            name = 'plate mail'
-        elif name in ['pair of yugake', 'yugake']:
-            name = 'pair of leather gloves'
-        elif name == 'kabuto':
-            name = 'helmet'
-        elif name in ['flint stone', 'flint stones']:
+        name = SAMURAI_NAMES.get(name, name)
+        if name in ['flint stone', 'flint stones']:
             name = 'flint'
         elif name in ['unlabeled scroll', 'unlabeled scrolls', 'blank paper']:
             name = 'scroll of blank paper'
