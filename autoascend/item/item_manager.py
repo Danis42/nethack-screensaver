@@ -51,6 +51,7 @@ _CLASS_WORDS = {  # NetHack 5 class names for objects not seen up close -> (clas
     'wand': (nh.WAND_CLASS, None), 'ring': (nh.RING_CLASS, None), 'amulet': (nh.AMULET_CLASS, None),
     'gem': (nh.GEM_CLASS, None), 'stone': (nh.GEM_CLASS, None), 'shield': (nh.ARMOR_CLASS, O.ARM_SHIELD),
 }
+JAPANESE = r'(?:magic koto|koto|wakizashi|ninja-to|nunchaku|naginata|osaku|shito|tanko|kabuto|yugake|gunyoki|sake) \[([^]]+)\]'
 
 
 class ItemManager:
@@ -84,7 +85,8 @@ class ItemManager:
         with self.agent.atom_operation():
             self.agent.step(A.Command.KNOWN)
             for line in self.agent.popup:
-                if line.startswith('*'):
+                line = re.sub(JAPANESE, r'\1', line).replace('(koto)', '(harp)')  # Samurai, objnam.c:105-119,211
+                if line.startswith('*') and line.endswith(')'):  # '* shito [knife]' has no appearance to map
                     assert line[1] == ' ' and line[-1] == ')' and line.count('(') == 1 and line.count(')') == 1, line
                     name = line[1: line.find('(')].strip()
                     desc = line[line.find('(') + 1: -1].strip()
@@ -155,7 +157,6 @@ class ItemManager:
                 assert low <= high, (low, high)
                 self._glyph_to_price_range[item.glyphs[0]] = (low, high)
 
-                # update mapping for that object
                 self.possible_objects_from_glyph(item.glyphs[0])
 
     def sell_offer_identification(self, glyph, offer, *, shirt_or_dunce):
@@ -689,7 +690,6 @@ class ItemManager:
                    ord(nh.objclass(i).oc_class) == oclass and (sub is None or O.objects[i].sub == sub)]
             return [O.objects[i] for i in ids], [i + nh.GLYPH_OBJ_OFF for i in ids]
 
-        # assert (len(obj_ids) > 0) ^ (len(appearance_ids) > 0), (name, obj_ids, appearance_ids)
         if (len(obj_ids) > 0) == (len(appearance_ids) > 0):
             return [O.from_name('unknown')], O.possible_glyphs_from_object(O.from_name('unknown'))
 
