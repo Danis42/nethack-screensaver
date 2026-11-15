@@ -20,6 +20,7 @@ from .item.item_priority_base import ItemPriorityBase
 from .ladder import Facts, Ladder
 from .level import Level
 from .plans import DEFAULT_PLAN, Milestone, Plan, ProgressWatch
+from .stairs import dive_stairs
 
 from .strategy import Strategy
 
@@ -83,17 +84,6 @@ def sokoban_board(objects, walkable, glyphs):
              & ~utils.isin(objects, G.DOORS | G.WALL)) | traps | boulders
     cells = lambda mask: {(int(y), int(x)) for y, x in zip(*mask.nonzero())}
     return cells(floor), cells(boulders), cells(traps)
-
-
-def dive_stairs(dungeon_number, objects, stair_destination, bfs, mines=False):
-    """Known, reachable downstairs that stay in this dungeon: the main one, or the Gnomish
-    Mines while diving there (`mines`); a diver stuck in the Mines used to climb back out."""
-    if dungeon_number != Level.DUNGEONS_OF_DOOM and not (mines and dungeon_number == Level.GNOMISH_MINES):
-        return []  # the bot also travels up through branches; diving there would loop
-    return [(y, x) for y, x in zip(*utils.isin(objects, G.STAIR_DOWN).nonzero())
-            if bfs[y, x] != -1 and
-            (stair_destination.get((y, x)) is None or
-             stair_destination[(y, x)][0][0] == dungeon_number)]
 
 
 class ItemPriority(ItemPriorityBase):
