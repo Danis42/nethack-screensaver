@@ -8,9 +8,11 @@ from functools import lru_cache
 
 from .metrics import ended_stuck, killer
 
-ANGERED = ("watch captain", "watchman", ", the shopkeeper", "priest of", "priestess of", "vault guard", "wrath of")  # in end_reason
+ANGERED = ("watch captain", "watchman", ", the shopkeeper", "priest of", "priestess of", "vault guard", "wrath of",
+           " of Odin", " of Tyr", " of Loki")  # in end_reason
 RANGED = ("wand", "magic missile", "bolt of", "death ray", "blast of", "arrow", "dagger", "spear", "dart",
-          "crossbow bolt", "boomerang", "explosion", "spell", "knife", "shuriken")
+          "crossbow bolt", "boomerang", "explosion", "spell", "knife", "shuriken", "aklys", "ranseur",
+          "falling rock", "potion of", "poisoned blast")
 RANGED_EXACT = ("rock", "boulder")
 PASSIVE = ("jelly", "blob", "mold", "vortex", "gelatinous cube", "lichen")
 HELPLESS = ("while sleeping", "while frozen", "while paralyzed", "paralyzed by", "while unconscious",
@@ -40,6 +42,20 @@ def monster(name):
     return _monsters().get(name)
 
 
+PREFIXES = ("invisible ", "hallucinogen-distorted ")  # how NetHack names a killer it did not see clearly
+FAINTING = 4  # hunger_at_end: autoascend.glyph.Hunger.FAINTING; 5 is fainted, 6 starved
+
+
+def monster_killer(game):
+    """killer() without the 'invisible' / 'hallucinogen-distorted' prefixes."""
+    k = killer(game)
+    for prefix in PREFIXES:
+        k = k.removeprefix(prefix)
+    if " imitating " in k:  # a chameleon fights as the monster it imitates
+        k = k.split(" imitating ", 1)[1].removeprefix("an ").removeprefix("a ")
+    return k
+
+
 def _has(text, words):
     return any(w in text for w in words)
 
@@ -53,7 +69,7 @@ GROUPS = [
     ("aborted", "NetHack ended the game for lack of progress (ABORTED)",
      lambda g, r, k: r.startswith("ABORTED")),
     ("starvation", "starved, or killed while fainted from hunger: food supply and eating",
-     lambda g, r, k: "starved" in r or "fainted from lack of food" in r),
+     lambda g, r, k: "starved" in r or "fainted from lack of food" in r or g.get("hunger_at_end", 0) >= FAINTING),
     ("bad_food", "ate something harmful: rotten or poisonous corpses, cockatrice meat",
      lambda g, r, k: r.startswith("DEATH") and ("poisoned by" in r or "tasting" in r or "rotten food" in r)
      and _has(r, BAD_FOOD)),
@@ -82,7 +98,7 @@ GROUPS = [
     ("fast", "killed by a monster faster than an unhasted hero: cannot run away from it",
      lambda g, r, k: monster(k) is not None and monster(k)[0] > NORMAL_SPEED),
     ("melee", "killed in melee by a monster its level should handle: fights it lost anyway",
-     lambda g, r, k: r.startswith("DEATH") and k != ""),
+     lambda g, r, k: r.startswith("DEATH") and monster(k) is not None),
     ("other", "anything else", lambda g, r, k: True),
 ]
 NAMES = [name for name, _, _ in GROUPS]
@@ -90,7 +106,7 @@ DESCRIPTIONS = {name: text for name, text, _ in GROUPS}
 
 
 def classify(game):
-    reason, k = game["end_reason"], killer(game)
+    reason, k = game["end_reason"], monster_killer(game)
     for name, _, rule in GROUPS:
         if rule(game, reason, k):
             return name

@@ -69,9 +69,8 @@ def load():
 
 def tighten():
     now, limits = measure(), load()
-    # every file is pinned at its size; a new file above the cap stays out, so the test keeps failing on it
-    limits["lines"] = {p: min(n, limits["lines"].get(p, n)) for p, n in now["lines"].items()
-                       if p in limits["lines"] or n <= limits["new_file_cap"]}
+    # files pinned at the Phase 2 start only go down; files created later keep the new-file cap (D-15)
+    limits["lines"] = {p: min(n, limits["lines"][p]) for p, n in now["lines"].items() if p in limits["lines"]}
     limits["bare_except"] = {p: min(n, limits["bare_except"].get(p, n)) for p, n in now["bare_except"].items()
                              if p in limits["bare_except"]}
     limits["agent_imports"] = sorted(set(limits["agent_imports"]) & set(now["agent_imports"]))

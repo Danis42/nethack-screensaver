@@ -56,3 +56,13 @@ def test_gains_use_conditional_odds_and_add_up():
 def test_rank_is_stable():
     games = [g("DEATH: killed by a newt", xl=8, seed=s) for s in range(5)] + [g("watchdog", seed=9)]
     assert triage.rank(games) == triage.rank(list(reversed(games)))
+
+
+def test_replay_check_fixes():
+    """Rules refined after the replay check of 2026-11-15 (02-TRIAGE.md)."""
+    assert classify(g("DEATH: killed by a hallucinogen-distorted soldier ant", xl=8)) == "groups"
+    assert classify(g("DEATH: killed by an invisible soldier ant", xl=8)) == "groups"
+    assert classify(g("DEATH: killed by a chameleon imitating a minotaur", xl=8)) == "strong"
+    assert classify(g("DEATH: killed by a grid bug", xl=8, hunger_at_end=4)) == "starvation"
+    assert classify(g("DEATH: killed by brainlessness", xl=8)) == "other"
+    assert classify(g("DEATH: killed by an air elemental of Odin", xl=8)) == "angered"
