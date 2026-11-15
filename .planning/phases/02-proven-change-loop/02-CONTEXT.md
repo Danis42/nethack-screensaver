@@ -24,7 +24,7 @@ Requirements: CODE-01, CODE-02, CODE-04, SURV-01, SURV-04, SURV-06. Splitting `a
 - **D-04:** The winner sits in one `CHARACTER` constant (`nethack_screensaver/game.py:40` today).
 
 ### Mines staircase behaviour (SURV-04)
-- **D-05:** The bot tells the Mines branch staircase from the main downstairs. Today `autoascend/glyph/nh5.py:17` maps `S_brdnstair` onto `S_dnstair`, so the two look the same.
+- **D-05 (superseded 2026-11-15):** ~~The bot tells the Mines branch staircase from the main downstairs.~~ Not possible in 5.0: branch stairs look ordinary until used ([fact:branch-stairs-shown-only-after-use]); the owner chose D-06/D-07 without it. Original note: Today `autoascend/glyph/nh5.py:17` maps `S_brdnstair` onto `S_dnstair`, so the two look the same.
 - **D-06:** **Follow the plan:** on the branch level, take the Mines stairs only when the current milestone wants the Mines; otherwise take the main-dungeon stairs.
 - **D-07:** **On a Mines level the plan does not want** (trap hole, arrived before the stairs were known, etc.): **go back up at once.** Evidence: `.planning/research/MINES-ENTRY-NH5.md`, where 17 of 50 accidental arrivals died on that first visit (median stay 1,212 turns).
 - **D-08:** **Success metric fits the behaviour, declared beforehand.** Owner accepts that ROADMAP success criterion 4 ("share reaching the Mines rises") may not fit a follow-the-plan change. The experiment pre-registers the funnel stage and metric it should move (e.g. reaching Sokoban, or dlvl10), then a paired test on dev seeds and again on confirm seeds (with a `gate` field, Phase 1 D-22). ROADMAP criterion 4 wording is updated to match when planned.
