@@ -1,5 +1,9 @@
 """Commit labels (CODE-02, D-14): the rule shared by the git hooks and the log check."""
 import importlib.util
+import json
+import os
+import re
+import sqlite3
 import subprocess
 from pathlib import Path
 
@@ -81,7 +85,27 @@ def test_log_since_phase2_start_is_labelled():
     for sha in commits:
         message = _git("log", "-1", "--format=%B", sha)
         paths = _git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha).split()
-        errors = check(message, paths)
+        errors = check(message, paths) + _gate_errors(sha, message, paths)
         if errors:
             bad[sha[:10]] = errors
     assert not bad, bad
+
+
+def _gate_errors(sha, message, paths):
+    """A bot-code refactor's 'Gate: job N' must be a passing gate run on a commit with the same tree."""
+    gate = re.search(r"^Gate: job (\d+)$", message, re.M)
+    if commit_kind.trailers(message).get("Kind") != "refactor" or not gate or \
+            not any(p.startswith(commit_kind.BOT_CODE) for p in paths):
+        return []
+    db = os.path.join(os.path.expanduser(os.environ.get("SCREENS_BENCH_DATA", "~/.local/share/screens-bench")),
+                      "results.db")
+    if not os.path.exists(db):
+        return []  # no bench database on this machine: the label format was checked above
+    row = sqlite3.connect(db).execute("SELECT kind, spec, result FROM jobs WHERE id = ?", (int(gate[1]),)).fetchone()
+    if row is None or row[0] != "gate":
+        return [f"Gate: job {gate[1]} is not a gate job"]
+    spec, result = json.loads(row[1]), json.loads(row[2] or "{}")
+    tree = _git("rev-parse", f"{sha}^{{tree}}").strip()
+    if result.get("verdict") != "pass" or spec.get("candidate_tree") != tree:
+        return [f"Gate: job {gate[1]} did not pass on this tree ({result.get('verdict')})"]
+    return []
