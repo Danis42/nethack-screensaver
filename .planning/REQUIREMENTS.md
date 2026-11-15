@@ -32,7 +32,7 @@ Requirements for the first clean ascension. Each maps to roadmap phases.
 - [ ] **SURV-01**: Failure triage replays deaths, extracts features and ranks system-level causes by expected funnel gain, so the next fix is chosen by evidence (no LLM needed for this step)
 - [ ] **SURV-02**: Food system: the bot keeps a food reserve, buys food in shops, paces its descent, and starvation drops measurably below the 14.5% baseline
 - [ ] **SURV-03**: Getting stuck is fixed by system (explorer completion, digging out with an owned dig tool), and the "never reaches the Mines" share drops measurably
-- [ ] **SURV-04**: The bot recognises the Mines branch staircase (NetHack 5 branch-stair glyph) and goes straight to it
+- [ ] **SURV-04**: The bot follows its plan at the Mines branch: on a Mines level its plan does not want it climbs straight back up, and stairs it has learned lead to the Mines are taken only when the plan wants the Mines (the branch stairs look ordinary until used, [fact:branch-stairs-shown-only-after-use]; owner decision 2026-11-15)
 - [ ] **SURV-05**: Class-wide safety rules, built and tested together: prayer timeout and lockout, no prayer in Gehennom, passive-damage monsters, cross-aligned unicorns, peacefuls (including while hallucinating), ray bounces
 - [ ] **SURV-06**: Research picks the best character for the first ascension (role, race, alignment) from evidence, a bench A/B confirms it, and one `CHARACTER` constant holds the result
 - [ ] **SURV-07**: Dead or wrong 3.6-era behaviour is removed (e.g. the Excalibur dip, which is impossible for a neutral hero in 5.0)
