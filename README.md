@@ -60,7 +60,14 @@ Errors: `~/.local/state/nethack-screensaver/player.log`.
 uv run pytest                 # fast tests
 uv run pytest -m slow         # plays real games
 uv run python scripts/benchmark.py -n 50 -j 8
+bash scripts/install_hooks.sh # once per checkout: commit labels
 ```
+
+Every commit carries a `Kind:` trailer: `refactor` (play unchanged; bot code also needs `Gate: job <N>`),
+`behavior` (bot code also needs `Stage:`, `Metric:`, `Experiment: job <N>` or `pending`) or `docs` (added
+automatically when only `.planning/` or `*.md` files change). The rule is in `githooks/commit_kind.py`; the
+test suite re-checks every commit since `githooks/PHASE2_START`. `tests/ratchets.json` holds the code limits
+(file lengths, bare `except`, imports from `autoascend.agent`); `scripts/ratchets.py tighten` lowers them.
 
 AutoAscend is MIT licensed (`autoascend/LICENSE`); upstream: maciej-sypetkowski/autoascend @ 8527910.
 

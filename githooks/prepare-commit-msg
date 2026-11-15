@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+"""Adds 'Kind: docs' to a commit that only touches documentation (.planning/, *.md), see commit_kind.py."""
+import subprocess
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from commit_kind import with_docs_label  # noqa: E402
+
+path = Path(sys.argv[1])
+text = path.read_text()
+head, sep, comments = text.partition("\n#")  # editor template: keep git's comment block at the end
+paths = subprocess.run(["git", "diff", "--cached", "--name-only"], capture_output=True, text=True).stdout.split()
+new = with_docs_label(head + "\n", paths)
+if new != head + "\n":
+    path.write_text(new + (("\n#" + comments) if sep else ""))
