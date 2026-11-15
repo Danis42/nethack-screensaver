@@ -568,3 +568,10 @@ claim = "peace_minded makes race-peaceful monsters peaceful and race-hostile one
 tag = "5.0-source"
 evidence = ["reference/nethack-5.0.0/src/makemon.c:2283-2286"]
 quote = "if (race_peaceful(ptr)) return TRUE; if (race_hostile(ptr)) return FALSE;"
+
+[branch-stairs-shown-only-after-use]
+claim = "Branch stairs (e.g. to the Gnomish Mines) are drawn and described as branch stairs only after the hero has used them; before that they look and read like ordinary stairs"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/stairs.c:180-183", "reference/nethack-5.0.0/src/display.c:2345-2350"]
+quote = "known_branch_stairs(stairway *sway) { return (sway && sway->tolev.dnum != u.uz.dnum && sway->u_traversed); }"
+notes = "display.c:2347 uses known_branch_stairs to pick S_brdnstair over S_dnstair; stairs_description (stairs.c:201) says plain 'stairs down' for branch stairs to a not-yet-visited branch."
