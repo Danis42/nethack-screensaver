@@ -21,7 +21,7 @@ LGEN_OFFSET = 10_000_000
 USE_LGEN = "off"  # decision keep-lgen-off: lgen pilot jobs 3/4/5/6, rule-strict, see 01-LGEN-PILOT.md (plan 01-15)
 LGEN_MODES = ("off", "seed")
 NATURAL_KINDS = ("baseline", "experiment")
-TOOL_KINDS = ("staged", "scenario", "rewind")
+TOOL_KINDS = ("staged", "scenario", "rewind", "gate")
 CLEAN_KIND = "clean_attempt"  # Phase 7; never creatable over HTTP or MCP
 GATE_RE = re.compile(r"^[a-z0-9][a-z0-9.-]{0,63}$")
 
