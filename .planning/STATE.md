@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-14)
 ## Current Position
 
 Phase: 2 — Proven Change Loop
-Plan: 3 of 5 complete (02-01, 02-02, 02-03); 02-04 running (pilot jobs 12-14)
+Plan: 3 of 5 complete (02-01, 02-02, 02-03); 02-04 experiments 19, 20, 21 running (MDE 0.04, owner-approved)
 Status: Executing
 Last activity: 2026-11-14 — Phase 1 complete, transitioned to Phase 2
 
@@ -109,6 +109,8 @@ Recent decisions affecting current work:
 - [Phase 02]: Gate is `python -m bench.gate` (tool job); proof jobs 9 (pass) and 11 (fail); new files capped at 600 lines, Phase 2 start files pinned
 - [Phase 02]: Triage groups owner-reviewed; job 7 ranking led by starvation and lost melee fights; replay check 19 of 25
 
+- [Phase 02]: Samurai needed two parser fixes (gate jobs 15, 17), merged; pilots 12/18/14 give psi 0.50/0.50/0.60
+
 ### Pending Todos
 
 None yet.
@@ -134,5 +136,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-11-15
-Stopped at: 02-04 Task 2, character pilots (jobs 12, 13, 14) running; next: psi, owner approves pre-registration
+Stopped at: 02-04 Task 4, character experiments 19 (val-dwa), 20 (sam), 21 (mon) queued/running; 02-05 code on branch mines-follow-plan (wip cd99a5f), Mines stairs not recognisable before use (owner chose leave-unwanted-Mines)
 Resume file: None
