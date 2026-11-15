@@ -1,0 +1,50 @@
+seed 3013, stopped at turn 15070 (target 15070)
+
+
+
+
+
+       -------                 --------------------             -----
+       |....^.                 |..|...............|          .*+....|
+      --...---                ---.[...............----        --.--.---
+   ----..---                .*..!..................!.--       |.......|
+  --.......|                  ---..................|..--   -----....---
+  |........---                  ---------------------..-- --..|..----
+  --...---...--                                     --..---.....--
+   ----- --...---              ----------            --.........|
+          |--...------------ ---........------------  -----..----
+         --..@.............---........).)........*.|      --...|
+        --..----------.---..........)...%)..-----------   .--..--
+       --..-|        ---.................)...|......[*-----.--..--
+    ----..-.|        |..........................-----........--..|
+   --.......|        |............<...........--|   -------......|
+   |.......--      ---....................(.....|        |.......|
+   -+-^..--|       |^..........-------.....*.----        ---------
+     |.....|       |...|.......|     |.......|
+     -------       -------------     ---------
+Agent the Woman-at-arms        St:18/09 Dx:10 Co:17 In:11 Wi:8 Ch:9 Neutral S:2
+Dlvl:11 $:10 HP:92(94) Pw:22(22) AC:-4 Xp:10/5783 T:15070
+
+blstats: [13, 12, 19, 27, 10, 17, 11, 8, 9, 23652, 92, 94, 11, 10, 22, 22, -4, 0, 10, 5783, 15070, 1, 0, 2, 9, 0, 0]
+
+last messages:
+You hit the long worm!  The long worm bites!
+You hit the long worm!
+You miss the long worm.  The long worm misses!
+You kill the long worm!
+You miss the long worm.
+You hit the long worm!
+You drop a ruby potion.
+a - a worm tooth.
+You hit the long worm!
+You kill the long worm!  You materialize in a different location!
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You see no objects here.
+You hear an F note squeak in the distance.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')

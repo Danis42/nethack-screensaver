@@ -1,0 +1,50 @@
+seed 9018, stopped at turn 15696 (target 15696)
+
+
+
+                       --------------
+                       |............-##  ##
+                       |..`.........| #####
+                   ####-............|######.
+                  ##   |%...........|    #
+                  #    ---------|----  ###
+     ----------- ##             #      #
+     |......`...##            ###      #
+     |.........|              #        #
+     |...^\.%..)))####        #    #####
+     --.--------     #        #    #
+       #             #       ##  #@#
+                     #   ----|-  #
+                     #   |.....###
+                     ####|....|
+                        #-....|
+                         |...<|
+                         |....|
+                         ------
+
+Agent the Fighter              St:18/06 Dx:14 Co:18 In:10 Wi:8 Ch:7 Neutral S:2
+Dlvl:16 $:704 HP:80(80) Pw:14(14) AC:-3 Xp:9/4792 T:15696 Satiated
+
+blstats: [34, 12, 19, 24, 14, 18, 10, 8, 7, 20632, 80, 80, 16, 704, 14, 14, -3, 0, 9, 4792, 15696, 0, 0, 0, 16, 0, 0]
+
+last messages:
+The bag is empty.
+The door resists!
+The door opens.
+You hit the iguana!
+You kill the iguana!
+You see here an iguana corpse.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You see here a scroll of create monster.
+O - a scroll of create monster (3 in total).
+What do you want to use or apply? [dgijopruyBGL or ?*]
+The bag is empty.
+You see no objects here.
+The door opens.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')

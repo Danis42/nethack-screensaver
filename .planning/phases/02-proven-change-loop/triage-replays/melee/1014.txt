@@ -1,0 +1,50 @@
+seed 1014, stopped at turn 4168 (target 4168)
+
+
+
+
+
+        -------------
+        |..<........|
+        |...........-
+        |...........|
+        -@---|--.----
+         #####
+
+
+
+
+
+
+
+
+
+
+
+
+Agent the Fighter              St:18 Dx:15 Co:18 In:7 Wi:9 Ch:10 Neutral S:1963
+Dlvl:8 $:51 HP:55(55) Pw:15(15) AC:9 Xp:6/388 T:4168
+
+blstats: [9, 7, 18, 18, 15, 18, 7, 9, 10, 1963, 55, 55, 8, 51, 15, 15, 9, 0, 6, 388, 4168, 1, 0, 0, 8, 0, 0]
+
+last messages:
+You feel less concerned about becoming petrified.
+There is a doorway here.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+There is a doorway here.
+You no longer feel secure from petrification.
+You stop searching.
+You kill the gecko!
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You descend the stairs.
+You see here a ring mail.
+C - a ring mail.
+You see no objects here.
+What do you want to take off? [kw or ?*]
+You can't.  It is cursed.

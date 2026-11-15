@@ -1,0 +1,50 @@
+seed 3098, stopped at turn 7697 (target 7697)
+
+
+
+
+    ---------         ---------
+    |........#########|........#
+    |...>...|        #........|#    -----------
+    |.......|        #|.......|###  |.........|`     ------
+    |.......|        #|...<...|  #  |.........|#     |....|
+    |.......-###     #|.......|  ###|.........|#     |....|
+    ----.----  ####  #---------##  #...........###   |....|
+        ##        #############`####|.........|# ##  |....|
+         #           [#            #|.........|#  @##-....|
+         #####       ##            #-----------#     ------
+             #       #           ###############
+             #       #                      ####
+             #       #
+             ##      #
+          ----.---- ##
+          |.......| #
+          |........##
+          ---------
+
+Agent the Fighter              St:18 Dx:14 Co:17 In:7 Wi:8 Ch:9 Neutral S:10631
+Dlvl:10 $:513 HP:85(85) Pw:22(22) AC:-3 Xp:8/2417 T:7697
+
+blstats: [50, 10, 18, 18, 14, 17, 7, 8, 9, 10631, 85, 85, 10, 513, 22, 22, -3, 0, 8, 2417, 7697, 1, 0, 0, 10, 0, 0]
+
+last messages:
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You see here an orcish helm.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You hit the shrieker!  The shrieker shrieks.
+You hit the shrieker!
+You kill the shrieker!
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+The door opens.
+You see here 8 gold pieces.
+$ - 8 gold pieces (513 in total).
+You see no objects here.

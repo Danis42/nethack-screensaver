@@ -1,0 +1,50 @@
+seed 8812, stopped at turn 3392 (target 3381)
+
+
+
+                        ---------------
+                      ##..............|
+                      # |..............`                           -----------
+                ########-.............|#                          #..........|
+       ------   #   #   ------.--------#                          #|.........|
+       |.....# ######         #        ####                      ##|.......^{|
+       |.(..|# ##             #           ##                    ###-......<..|
+       |.....###              #            ###                  ## -----------
+       |>...|####             #              #                 ###
+       ----|-   #           ###              #   ----------    #
+           ###  #           #               #####.........|    @
+             ############# ##               #####|.........####x
+                ##      -|-|--------    #########|........|  #     ----------
+                 ####   |..........|#########   #|........|  #     |........|
+                    #   |...........# ###       #|.........###     |........|
+                    ####|..........|  #         #.........|#       |........|
+                       #|..........|  #          ----------########-........|
+                       #...........-###                            ----------
+                        ------------
+
+Agent the Skirmisher           St:18/03 Dx:10 Co:18 In:9 Wi:10 Ch:7 Neutral S:8
+Dlvl:3 $:69 HP:14(41) Pw:9(9) AC:3 Xp:5/169 T:3392 Fainting Deaf
+
+blstats: [63, 11, 19, 21, 10, 18, 9, 10, 7, 855, 14, 41, 3, 69, 9, 9, 3, 0, 5, 169, 3392, 4, 0, 0, 3, 16, 0]
+
+last messages:
+You get zapped!  You stop opening the tin.
+What do you want to eat? [t or ?*]
+It is not so easy to open this tin.  The grid bug misses!
+You stop opening the tin.  You faint from lack of food.
+The grid bug bites!  You avoid harm.  The grid bug misses!
+The grid bug bites!  You get zapped!  The grid bug bites!
+You avoid harm.  The grid bug bites!  You avoid harm.
+The grid bug bites!  You avoid harm.  The grid bug misses!
+The grid bug bites!  You get zapped!  The grid bug misses!
+The grid bug misses!  The grid bug bites!  You get zapped!
+The grid bug bites!  You avoid harm.  You regain consciousness.
+What do you want to eat? [t or ?*]
+It is not so easy to open this tin.  The grid bug bites!
+You avoid harm.  You stop opening the tin.  You can hear again.
+What do you want to eat? [t or ?*]
+It is not so easy to open this tin.  The grid bug bites!
+You avoid harm.  You stop opening the tin.
+You faint from lack of food.  The grid bug misses!
+The grid bug bites!  You get zapped!  The grid bug bites!
+You regain consciousness.

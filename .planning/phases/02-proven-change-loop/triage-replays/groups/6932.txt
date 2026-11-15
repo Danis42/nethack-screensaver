@@ -1,0 +1,50 @@
+seed 6932, stopped at turn 6923 (target 6923)
+
+
+
+
+                              -----
+           -----------        |...|
+           |..........########.<.^|
+          #-.....^...|       #|..{|
+          #---.-------       #-----
+          ##  ##             #
+           #   #             #
+   --------o   #             ##
+   |......|@   #              #
+   |......|)   #              #
+   |.......#   #              #
+   |......|    #              #
+   --------    #              #
+               #####          #
+                ---.----------#
+                |............|#
+                |........<....#
+                -.------------
+                 #
+Agent the Fighter              St:13 Dx:15 Co:18 In:8 Wi:10 Ch:11 Neutral S:178
+Dlvl:7 $:100 HP:9(56) Pw:13(13) AC:1 Xp:6/347 T:6923 Hungry
+
+blstats: [11, 10, 13, 13, 15, 18, 8, 10, 11, 1788, 9, 56, 7, 100, 13, 13, 1, 0, 6, 347, 6923, 2, 0, 0, 7, 0, 0]
+
+last messages:
+The hill orc misses!
+You kill the hill orc!  Welcome to experience level 6.
+What do you want to eat? [M or ?*]
+It is not so easy to open this tin.  You are hit by an orcish dagger.
+You stop opening the tin.
+What do you want to eat? [M or ?*]
+It is not so easy to open this tin.  You stop opening the tin.
+You hit the hill orc.
+You miss the hill orc.  The hill orc hits!
+You hit the hill orc.  The hill orc misses!
+You hit the hill orc.  The hill orc hits!
+You hit the hill orc.  The hill orc misses!
+You hit the hill orc.  The hill orc hits!
+You hit the hill orc.
+You hit the hill orc.  The hill orc hits!
+You miss the hill orc.  The hill orc just misses!
+You hit the hill orc.  The hill orc hits!  It is hit!
+You kill the hill orc!  The hill orc picks up an orcish helm.
+Someone shouts "Off with her head!"
+You hit the hill orc.  The hill orc hits!

@@ -160,3 +160,55 @@ the game stopped changing the screen for 120 s (watchdog)
 - seed 2073: `watchdog` (Dlvl 1, XL 1); last message: "Showing known terrain and traps only...  (For instructions type a '?')"
 - seed 10846: `watchdog` (Dlvl 1, XL 1); last message: "All monsters currently shown on the map:"
 
+
+## Ranking (baseline job 7)
+
+Command, re-runnable: `uv run python -m bench.triage e5b5a7f525bc51b8008f665173600aba80de466d --lo 1000 --hi 11000`
+(rules at commit 7bd119384f5428cd5820f60c0051372b68085cf8). "stage gain": expected extra next-stage arrivals if this
+ending were removed; "Dlvl10 gain": expected extra games reaching Dlvl 10.
+
+```
+owner-reviewed 2026-11-15: e5b5a7f525bc51b8008f665173600aba80de466d seeds [1000, 11000) n=10000
+group         games   share  depth  stage gain  Dlvl10 gain  what
+starvation     1529   15.3%   6.37       589.6        596.5  starved, or killed while fainted from hunger: food supply and eating
+melee          1561   15.6%   7.92       583.9        614.3  killed in melee by a monster its level should handle: fights it lost anyway
+groups         1218   12.2%   7.96       468.3        479.0  killed by a monster that comes in groups (ants, bees, elves, soldiers, Mines natives)
+too_deep        995   10.0%  14.92       321.1         13.8  killed in melee 4+ levels deeper than its experience level: descends too fast
+strong          674    6.7%   6.96       279.5        286.1  killed by a monster 3+ difficulty above its experience level: fights it should avoid
+fast            717    7.2%   8.46       270.5        259.0  killed by a monster faster than an unhasted hero: cannot run away from it
+ranged          656    6.6%   7.38       242.1        240.6  killed by wands, rays, missiles or explosions: no answer to ranged attacks
+unicorns        374    3.7%   7.48       158.9        186.7  killed by a unicorn: fights unicorns it should leave alone
+stuck           666    6.7%   10.2       156.9        169.1  ended on a Dlvl 5+ level it could not leave (stuck explorer)
+prayer          381    3.8%   8.36       112.0        148.1  killed while praying: prayed when it could not help (timeout, wrong trouble)
+helpless        253    2.5%   9.01        80.6         74.1  killed while asleep, frozen or paralysed: walked into a disabling attack
+angered         231    2.3%   6.74        71.5        115.9  killed by the watch, a shopkeeper, a priest or its god: angered someone it should not
+passive         202    2.0%  10.35        60.6         48.0  killed by passive or engulfing monsters (jellies, molds, blobs, vortices)
+other           119    1.2%   8.71        38.7         38.6  anything else
+aborted         167    1.7%   9.17        34.7         54.3  NetHack ended the game for lack of progress (ABORTED)
+stoning         101    1.0%  10.29        28.5         26.8  turned to stone by touching or fighting a cockatrice/chickatrice
+bad_food         80    0.8%   7.28        27.6         34.5  ate something harmful: rotten or poisonous corpses, cockatrice meat
+bot_crash        74    0.7%  10.54        12.8         17.7  the bot crashed (Cyclic Panic or another exception)
+watchdog          2    0.0%    1.0         1.2          0.8  the game stopped changing the screen for 120 s (watchdog)
+```
+
+Reading: starvation and lost melee fights each cost about 590 next-stage arrivals, ahead of pack monsters (468).
+"too_deep" deaths are already past Dlvl 10 (mean depth 14.9), so they barely move the Dlvl 10 metric.
+
+## Replay check (D-10)
+
+`scripts/triage_replay.py` replayed 5 evenly spaced baseline games of each top-5 group (labels from the
+owner-reviewed rules at commit c7589925c028b30ce81e4f0fd16bb6bb3a15bcec) to 50 turns before the end; screens are in
+`triage-replays/<group>/<seed>.txt`. Judged by hand against the end reason:
+
+| Group | Agree | Disagreements |
+|---|---|---|
+| melee | 2 of 5 | 3098 hallucinated soldier ant (a pack monster), 5044 "handling a shield of reflection" and 9178 "brainlessness" (not melee) |
+| starvation | 5 of 5 | none (6813 starved standing in a shop with food for sale) |
+| groups | 4 of 5 | 8812 was Fainting when a grid bug killed it: hunger, not packs |
+| too_deep | 3 of 5 | 2946 was polymorphed into a weak form (HD 2), 6937 was blind when a rabid rat killed it |
+| fast | 5 of 5 | none |
+
+Total: agree 19 of 25. The four rule bugs among the disagreements were fixed in commit
+7bd119384f5428cd5820f60c0051372b68085cf8 (killer prefixes and chameleons resolved, non-monster killers to "other",
+hunger_at_end Fainting counts as starvation); the group list itself is unchanged. Polymorph and blindness are not
+groups yet; they stay inside the depth and melee groups.

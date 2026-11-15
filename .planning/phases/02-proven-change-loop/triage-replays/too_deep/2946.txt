@@ -1,0 +1,50 @@
+seed 2946, stopped at turn 17106 (target 17105)
+
+
+
+
+
+                         -----     -------
+                         +.$.-##   |..$..|
+                         |..[| d#  |...{.+
+                         |..>|  ###+.....
+                         -----     |...<.
+                                   +.^...
+                                   ----
+
+
+
+
+
+
+
+
+
+
+
+Agent the Werejackal           St:18 Dx:16 Co:18 In:8 Wi:10 Ch:9 Neutral S:3072
+Dlvl:14 $:37 HP:9(9) Pw:30(30) AC:7 HD:2 T:17106 Stressed
+
+blstats: [31, 5, 18, 18, 16, 18, 8, 10, 9, 30725, 9, 9, 14, 37, 30, 30, 7, 2, 10, 7442, 17106, 1, 2, 0, 14, 0, 0]
+
+last messages:
+Your helm falls to the ground!
+You rebalance your load.  Movement is still difficult.
+Use the command #monster to summon help.
+You are beginning to feel hungry.
+What do you want to eat? [lrtw or ?*]
+You begin eating a partly eaten food ration.
+You finish eating the food ration.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You hear a sceptre pounded in judgment.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You are beginning to feel hungry.
+What do you want to eat? [rtw or ?*]
+Blecch!  Rotten food!  You feel rather light headed.
+You finish eating the food ration.  You feel less confused now.

@@ -1,0 +1,50 @@
+seed 5000, stopped at turn 8609 (target 8609)
+
+
+
+
+        -----------                 -----
+        |......@...                 |...|        ##         ------------
+        |......e)..        ..--.    |....#       #------ # #-.`........|
+        |......%.`.        |....####|...|#########..>..| # #|..........|
+        |......)%.| # #    |r..| # #|...|#   #####|....| ###...........|
+        |......)..-########.....####-.---#    ####.....-### -------.----
+        --------.--        -.---  #############   ------           #
+              ###           ####     #       ##                   ##
+             ##                %###  ##       ######################
+            )#                    #   #                     -|-----.-------
+         ####                     ######                    |.............|
+        -.-                          # ##                   |.............|
+        |$$$                         #  ###                 |............%|
+        |$$$$.  ^            --------.-- -|-                |.............|
+        |$$$$.| `############............<%.|               |.............|
+        -------              |..............|               ---------------
+                             |..............|
+                             ---------------
+
+Agent the Fighter              St:18/01 Dx:14 Co:18 In:9 Wi:11 Ch:10 Neutral S:
+Dlvl:11 $:0 HP:55(83) Pw:21(21) AC:0 Xp:9/3287 T:8609
+
+blstats: [15, 3, 19, 19, 14, 18, 9, 11, 10, 13648, 55, 83, 11, 0, 21, 21, 0, 0, 9, 3287, 8609, 1, 0, 0, 11, 0, 0]
+
+last messages:
+Your banded mail looks completely rusted.
+You miss the rust monster.
+You kill the rust monster!
+What do you want to throw? [GS or ?*]
+In what direction?
+The poisoned dart hits the floating eye.  The poison was deadly...
+You kill the rock mole!
+You see here a poisoned dart.
+What do you want to throw? [GS or ?*]
+In what direction?
+You kill the floating eye!  Your dart is no longer poisoned.
+You see here a poisoned dart.
+S - a poisoned dart (10 in total).
+You see no objects here.
+What do you want to throw? [GS or ?*]
+In what direction?
+The poisoned dart misses the freezing sphere.
+What do you want to throw? [GS or ?*]
+In what direction?
+The poisoned dart misses the freezing sphere.

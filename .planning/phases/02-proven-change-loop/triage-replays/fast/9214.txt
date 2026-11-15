@@ -1,0 +1,50 @@
+seed 9214, stopped at turn 6288 (target 6288)
+
+
+
+
+
+                                   -------
+           ----------------        |.....|
+           |..............|       #......|    -------------
+           |..............|       #-------    |....*......|
+           |..............|       #        #  |...#*......|
+          #-..)...(.......|       #        #  |......S%...|
+          #-----------.----       #        @##-...........|
+          #     #   ###           #           -----------.-
+          #      ###%             ###                    ###
+          #      #                  #                      ##
+          #     -.-------    -------#           ##############
+          #     |.......|   #-......#           #             .
+          #     |.......-####|<....|            #              |
+ --------##     |.......|    |.....|            #
+ |.......#######---------    -------            #
+ |......|      ##################################
+ -------
+
+Agent the Fighter              St:16 Dx:17 Co:18 In:11 Wi:9 Ch:7 Neutral S:3651
+Dlvl:7 $:77 HP:51(64) Pw:17(17) AC:-1 Xp:7/816 T:6288
+
+blstats: [43, 9, 16, 16, 17, 18, 11, 9, 7, 3651, 51, 64, 7, 77, 17, 17, -1, 0, 7, 816, 6288, 1, 0, 0, 7, 0, 0]
+
+last messages:
+What do you want to eat? [vH or ?*]
+Never mind.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+There is a partly eaten iguana corpse here; eat it? [ynq] (n)
+You consume the last bite of your meal.
+You finish eating the iguana corpse.  You see a gas cloud dissipate.
+You see here a rock.
+There is a vapor cloud here.
+O - a dart.
+There is a vapor cloud here.
+You kill the garter snake!
+There is a vapor cloud here.
+You hear someone counting gold coins.
+There is a vapor cloud here.
+You see here a rock.
+You see a gas cloud dissipate.
+You see the garter snake slither under a corpse.

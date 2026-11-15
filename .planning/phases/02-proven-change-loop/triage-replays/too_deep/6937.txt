@@ -1,0 +1,50 @@
+seed 6937, stopped at turn 9703 (target 9703)
+
+
+
+
+
+
+
+                                                                     |
+                                                                    .|
+                                                   ###`#        .....|
+                                                   #@##     ......../|
+                                               ----  ###)............|
+                                              |....###      ..(......|
+                                              .<..|         ----------
+                                              |...|
+
+
+
+
+
+
+
+
+Agent the Fighter              St:17 Dx:15 Co:18 In:10 Wi:9 Ch:8 Neutral S:1004
+Dlvl:13 $:1060 HP:31(72) Pw:22(22) AC:1 Xp:8/2095 T:9703 Blind
+
+blstats: [52, 8, 17, 17, 15, 18, 10, 9, 8, 10040, 31, 72, 13, 1060, 22, 22, 1, 0, 8, 2095, 9703, 1, 0, 0, 13, 2, 0]
+
+last messages:
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+w - a smoky potion.
+What do you want to throw? [$luH or ?*]
+In what direction?
+The dagger hits the yellow light.
+The yellow light explodes!  You are blinded by a blast of light!
+You try to feel what is lying here on the ground.
+It bites!
+You kill it!
+You are beginning to feel hungry.
+There is a homunculus corpse here; eat it? [ynq] (n)
+There is a leocrotta corpse here; eat it? [ynq] (n)
+What do you want to eat? [ntKR or ?*]
+This food really hits the spot!  It misses!
+You stop eating the food ration.
+You hit it.  It bites!  It misses!
+You kill it!  It misses!
+You hit it.  It bites!
+You kill it!

@@ -1,0 +1,50 @@
+seed 2795, stopped at turn 10630 (target 10621)
+
+
+       ---
+      --.--            ----
+      |...|            |..-- ---
+   ---|..--           --...|--.--
+  --.--..|           --...---...|
+  |......|      ------....|....--
+  --..--.|     --...........----                      ---
+   ----|.|     |)%%|......---                       ---.---
+       |.|     |..---.--..-- ---           ----     |.....----
+       |.--    ---- |.--...---.---        --..-------........---
+      --..--        |...........`--       |....--.|............--
+ ---- |....-------- |)[*..........----    |..<....*.............|
+ |..| |.....--..|.---..`.............|    |..........)..^.%.....-
+--..---F...........|[)..^............--   --.--%--..--.........>..|
+|.....Y...........[...................|    --|......|-...----...........
+|......................@..............--------.------....-   - ..............-
+--.......................*...............B[....`    ......       ............|
+ |.............|%----.|...----......--------...|  .....----      --- | ......|
+ --.--...---..----  ----..|  ----.---      |..)| ....---                 -- --
+  -----.`| ----        ----     ---        --..|-.|.-
+      ----                                  --------
+Agent the Fighter              St:16 Dx:14 Co:18 In:9 Wi:7 Ch:9 Neutral S:7852
+Dlvl:5 $:100 HP:84(84) Pw:19(19) AC:6 Xp:8/1888 T:10630 Fainting Deaf
+
+blstats: [23, 15, 16, 16, 14, 18, 9, 7, 9, 7852, 84, 84, 5, 100, 19, 19, 6, 0, 8, 1888, 10630, 4, 0, 2, 1, 16, 0]
+
+last messages:
+Showing known terrain and traps only...  (For instructions type a '?')
+You stop searching.  You faint from lack of food.
+You regain consciousness.
+You are in full health.
+You stop searching.  You faint from lack of food.
+You regain consciousness.
+You can hear again.  You stop searching.
+You stop searching.  You faint from lack of food.
+You regain consciousness.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+What do you want to throw? [$wHMNSW or ?*]
+In what direction?
+You kill the gas spore!  Boom!
+You see here an elven dagger.
+M - an elven dagger.
+You see no objects here.
+You faint from lack of food.  You regain consciousness.

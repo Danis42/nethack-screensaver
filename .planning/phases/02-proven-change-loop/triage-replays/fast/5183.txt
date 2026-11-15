@@ -1,0 +1,50 @@
+seed 5183, stopped at turn 6928 (target 6928)
+
+
+
+
+
+           ----------------
+           |..............|
+           |.............<|
+           |......@.......|
+           ------+------+--
+
+
+
+
+
+
+
+
+
+
+
+
+
+Agent the Skirmisher           St:18/06 Dx:11 Co:17 In:8 Wi:10 Ch:9 Neutral S:1
+Dlvl:9 $:102 HP:47(47) Pw:18(18) AC:-1 Xp:5/314 T:6928
+
+blstats: [18, 6, 19, 24, 11, 17, 8, 10, 9, 1758, 47, 47, 9, 102, 18, 18, -1, 0, 5, 314, 6928, 1, 0, 0, 9, 0, 0]
+
+last messages:
+You see no objects here.
+You see here 37 gold pieces.
+$ - 37 gold pieces (102 in total).
+You see no objects here.
+The door resists!
+The door opens.
+You descend the stairs.
+You see here a scroll labeled EIRIS SAZUN IDISI.
+E - a scroll labeled EIRIS SAZUN IDISI.
+You see no objects here.
+You can't move diagonally into an intact doorway.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You see no objects here.
+You hit the bugbear!
+You kill the bugbear!
+You descend the stairs.
+You see here a cubical amulet.

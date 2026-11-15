@@ -1,0 +1,50 @@
+seed 1004, stopped at turn 11974 (target 11946)
+
+
+
+              ---|-       ----------
+              |...-####   |........|
+              |....   #   |........|         ---------      ----------
+              |.(.|*  ####-........|         |.......|     #.........|
+              --.-- #     |......>.-         |.......|  ####|........|
+                ##   #    |......{.|         |.{.....|  #  #.........|
+                 #   ##   .....I.:B|      **#-.......|######|........|
+                 #   # #  ....-Ieedi#    ####|.......|# #   |........|
+                 #   ####  #   I    #  ######-.-------# #   -------.--
+                 #     #################  # ########### #        ###
+                 #        #    e# ` # ########` ##`#######       #
+                 #            @ #  ###    #   ########## #     ###
+                 #           `      #    ##       --|--# ##    #
+                 #               #####   #        |...|#############
+          -------.--------       #.------#        |...|      -|-.--.-
+          |.`............|       #."....|#        |...|      |......|
+          |..............|       #|.....-#        -----      |......|
+          ................########|.....|                    |....<.|
+          ----------------        -------                    --------
+
+Agent the Skirmisher           St:16 Dx:16 Co:18 In:7 Wi:12 Ch:9 Neutral S:925
+Dlvl:5 $:145 HP:34(34) Pw:10(10) AC:4 Xp:3/79 T:11974 Fainting Deaf
+
+blstats: [30, 12, 16, 16, 16, 18, 7, 12, 9, 925, 34, 34, 5, 145, 10, 10, 4, 0, 3, 79, 11974, 4, 0, 0, 5, 16, 0]
+
+last messages:
+You faint from lack of food.  You regain consciousness.
+You faint from lack of food.  You dream that you hear a clank.
+You regain consciousness.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You faint from lack of food.  You regain consciousness.
+Are you sure you want to pray? [yn] (n)
+You begin praying to Odin.  You finish your prayer.
+The voice of Odin rings out: "Thou hast angered me."
+A black glow surrounds you.  You feel cooler.
+You faint from lack of food.  You regain consciousness.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You faint from lack of food.  You regain consciousness.
+You can hear again.
+You faint from lack of food.  You regain consciousness.

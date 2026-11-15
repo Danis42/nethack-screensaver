@@ -1,0 +1,50 @@
+seed 3141, stopped at turn 7046 (target 7046)
+
+
+
+                  --------                          ----------
+                  |......|     #####################.........|
+  -------         |.......######                    |........|
+  |....<|         |......|#                         |........|              (|
+  |.....|         |!..!.>|                          |........|          %=/)[|
+  |....%|         -%------                          |...`.....#   )@`..?/[())|
+  |......###       #                                ----------#   % Ma  .[+..|
+  |.....|  #       #                                          #   #  d..-..---
+  ----.--  #       #                                          #####
+      #    #       #                                           ##
+      ##   ##     ##                                  -------  ##--------
+       #          #             --------------       #......|   #|......|
+       #          #             |............|########|......####...(...|
+  -----.-         #             |............-#       |.....|    |......|
+  |.....|         #             |............|        |...!.|    |......|
+  |......###  ----.----         |............|        |..(..|    --------
+  |.....|  ###........+         --------------        -------
+  -------     |.......|
+              ---------
+
+Agent the Fighter              St:18/01 Dx:11 Co:17 In:8 Wi:11 Ch:10 Neutral S:
+Dlvl:10 $:399 HP:12(80) Pw:17(17) AC:1 Xp:7/904 T:7046
+
+blstats: [67, 6, 19, 19, 11, 17, 8, 11, 10, 4465, 12, 80, 10, 399, 17, 17, 1, 0, 7, 904, 7046, 1, 0, 0, 10, 0, 0]
+
+last messages:
+The mountain nymph stole a scroll labeled ASHPD SODALG.
+The mountain nymph vanishes!
+Something is written here in the dust.  You read: "Elbereth".
+There is a partly eaten dwarf corpse here; eat it? [ynq] (n)
+You resume your meal.  The giant spider turns to flee.
+The killer bee turns to flee.  The red naga turns to flee.
+The gnome lord picks up an elven broadsword.
+The gnome lord turns to flee.  The red naga breathes fire!
+The blast of fire hits the gnome lord!  The blast of fire hits you!
+You stop eating the dwarf corpse.  The blast of fire bounces!
+The blast of fire hits you!  Valkyrie, your life force is running out.
+The gnome lord is killed by the blast of fire!
+The quasit picks up a glass wand.  The quasit turns to flee.
+Something is written here in the dust.  You read: "Elbereth".
+The quasit zaps itself with a glass wand!
+Suddenly you cannot see the quasit.
+Something is written here in the dust.  You read: "Elbereth".
+The large dog turns to flee.
+Something is written here in the dust.  You read: "Elbereth".
+The gnome mummy turns to flee.

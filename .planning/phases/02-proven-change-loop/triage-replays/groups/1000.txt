@@ -1,0 +1,50 @@
+seed 1000, stopped at turn 6218 (target 6218)
+
+
+
+       ----------------                            ------------
+       |..............|                            |..........|
+       |<........)..".-#*)############             |..........|
+       ---.----------|-              ##############...........|
+          ##         ###########################  #|..........|#############
+           #                    #-----------|-@   #|..........|#      -|---.--
+           #                    #|C.........C|### #---.--------# #####-....>.|
+           #                  ###|.....C.....|  ##############%###    |......|
+           ##                 #  |...-----.%.|    ####################-..*...|
+            ##              ###  |.....{.|...|                        --------
+             ##             #    |..C|{.{|C..|
+              #           ###    |...|.{.|...|         ####
+              ##          #######....-----....#   ######
+               ##         ##     |.....C.....|### #-------
+           -----.----    ###     |C.........C-#####......|
+           |...%.[..| #####      -------------##   |.....|
+           |......%.| ####            #############......|
+           |......)..## ###############            |.....|
+           ----------                              -------
+
+Agent the Fighter              St:15 Dx:11 Co:16 In:11 Wi:7 Ch:12 Neutral S:522
+Dlvl:8 $:6 HP:54(54) Pw:16(16) AC:-4 Xp:7/1214 T:6218
+
+blstats: [46, 6, 15, 15, 11, 16, 11, 7, 12, 5222, 54, 54, 8, 6, 16, 16, -4, 0, 7, 1214, 6218, 1, 0, 0, 8, 0, 0]
+
+last messages:
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+The door opens.
+You see here a raven corpse.
+You hit the leprechaun!  The leprechaun wakes up!
+The leprechaun screams!  The leprechaun hits!
+Your purse feels lighter.  The leprechaun vanishes!
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+The door resists!
+The door opens.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You see no objects here.
+"Velkommen, Agent, welcome to Delphi!"
+You see here a statue of a plains centaur.

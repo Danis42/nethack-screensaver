@@ -1,0 +1,50 @@
+seed 7130, stopped at turn 5359 (target 5359)
+
+
+
+                      -----                                   --------
+                      |...|                                   |......|
+        -----         |...|                                   |..)...|
+       #[...|         |...|                                   |......|
+       #|....#      ##|.%.|        -------------              |......|
+       #|...|#       #..+..######  |...........|              |......|
+       #...(|##       |...|     #  |...........|              ------.-
+       #----- ##      ---.-     #  |...........|                  ###
+       #       %         #      ###-...........|                ###
+       ##      ##      %##         |........k.%-#####           #
+       ##       #      #           -------------    #          ##
+       ##       #    ###                            ##        ##
+       ##       ##[# %                               ###   ---.------
+        ##         # #                                 #   |....<...|
+         @         # #                                 ####...*.....|
+         #         #-|----------                           |........|
+                   %|........).|                           ----------
+                   #-..........|
+                    ------------
+
+Agent the Fighter              St:15 Dx:16 Co:18 In:12 Wi:8 Ch:7 Neutral S:5032
+Dlvl:5 $:28 HP:53(69) Pw:20(20) AC:0 Xp:7/1201 T:5359
+
+blstats: [9, 15, 15, 15, 16, 18, 12, 8, 7, 5032, 53, 69, 5, 28, 20, 20, 0, 0, 7, 1201, 5359, 1, 0, 0, 5, 0, 0]
+
+last messages:
+You start bashing it with your spear.
+You succeed in forcing the lock.
+You see here a broken chest containing 1 item.
+You hear someone reading a scroll of create monster.
+z - a dagger (at the ready).
+There is a doorway here.  You see here a mummy wrapping.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You see here a broken chest containing 1 item.
+t - an effervescent potion (5 in total).
+The chest is empty.
+This door is locked.
+In what direction?
+Whammm!!
+In what direction?
+Whammm!!
+In what direction?
+As you kick the door, it crashes open!

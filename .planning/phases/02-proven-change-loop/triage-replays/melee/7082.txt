@@ -1,0 +1,50 @@
+seed 7082, stopped at turn 6897 (target 6894)
+
+
+
+
+
+                                           ----
+                                           |..
+                                           |..
+                                           |..
+                                            |       #
+                                    #       # #     #
+                                  #####################
+                                   #           #    #
+                                   #-----------|----#
+                                   #|..............|#
+                                   #...............-#
+             |                      |..<...........|
+             |.............         ...............-####@
+             -------------          ----------------
+
+
+
+
+Agent the Fighter              St:17 Dx:13 Co:18 In:8 Wi:11 Ch:10 Neutral S:302
+Dlvl:6 $:50 HP:80(80) Pw:23(23) AC:2 Xp:7/678 T:6897 Satiated
+
+blstats: [56, 15, 17, 17, 13, 18, 8, 11, 10, 3022, 80, 80, 6, 50, 23, 23, 2, 0, 7, 678, 6897, 0, 0, 0, 6, 0, 0]
+
+last messages:
+You finish eating the hobgoblin corpse.
+What do you want to throw? [$jrJ or ?*]
+In what direction?
+The shuriken misses the leprechaun.
+What do you want to throw? [$jrJ or ?*]
+In what direction?
+The shuriken hits the leprechaun.  The leprechaun wakes up!
+The leprechaun screams!  The mountain nymph wakes up.
+You hit the mountain nymph.
+The mountain nymph disarms your very rusty +1 spear (weapon in left hand).
+She stole a very rusty +1 spear.  The mountain nymph vanishes!
+You descend the stairs.
+You see here 9 gold pieces.
+$ - 9 gold pieces (50 in total).
+You see no objects here.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+The door opens.

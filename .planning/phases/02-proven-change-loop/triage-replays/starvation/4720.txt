@@ -1,0 +1,50 @@
+seed 4720, stopped at turn 24278 (target 24278)
+
+
+
+
+      ----------------
+      |......{.......-#
+      |..............|#
+      |..............|###
+      |...............#########
+      --------------.- ########  ----
+                              ##....|
+                              %#  ...
+                                    |
+                                .             #
+                                              @
+                                              #
+       ------------
+       |..........|
+       |..........|
+       |..........|
+       |(..<......|
+       ------------
+
+Agent the Woman-at-arms        St:18 Dx:16 Co:18 In:9 Wi:8 Ch:9 Neutral S:54667
+Dlvl:21 $:783 HP:102(102) Pw:21(21) AC:-5 Xp:11/15449 T:24278 Fainting Deaf
+
+blstats: [46, 12, 18, 18, 16, 18, 9, 8, 9, 54667, 102, 102, 21, 783, 21, 21, -5, 0, 11, 15449, 24278, 4, 0, 0, 21, 16, 0]
+
+last messages:
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+The door opens.
+You faint from lack of food.  You regain consciousness.
+You can hear again.
+You faint from lack of food.  You regain consciousness.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You can hear again.
+You faint from lack of food.  You regain consciousness.
+You can hear again.
+A dagger misses you.
+You hit the dwarf!
+You kill the dwarf!
+You see here a dagger.
+Y - a dagger.  You materialize in a different location!
+You faint from lack of food.  You materialize in a different location!
+You materialize in a different location!  You regain consciousness.

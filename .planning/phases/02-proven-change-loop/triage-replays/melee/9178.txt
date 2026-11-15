@@ -1,0 +1,50 @@
+seed 9178, stopped at turn 3564 (target 3561)
+
+
+
+
+
+
+--..
+|@<.
+--..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Agent the Fighter              St:18/01 Dx:15 Co:18 In:7 Wi:8 Ch:12 Neutral S:1
+Dlvl:5 $:102 HP:71(71) Pw:13(13) AC:-4 Xp:6/339 T:3564
+
+blstats: [1, 5, 19, 19, 15, 18, 7, 8, 12, 1668, 71, 71, 5, 102, 13, 13, -4, 0, 6, 339, 3564, 1, 0, 2, 2, 0, 0]
+
+last messages:
+What do you want to eat? [dfs or ?*]
+This food really hits the spot!  You finish eating the food ration.
+You kill the jackal!
+You see here a jackal corpse.
+There is a jackal corpse here; eat it? [ynq] (n)
+Blecch!  Rotten food!  You finish eating the jackal corpse.
+You see here a broken chest containing 3 items.
+Y - a cyan potion.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+A cloud of gas puts you to sleep!  You wake up.
+You descend the stairs.
+You sense a faint wave of psychic energy.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+You sense a faint wave of psychic energy.  You hear crashing rock.

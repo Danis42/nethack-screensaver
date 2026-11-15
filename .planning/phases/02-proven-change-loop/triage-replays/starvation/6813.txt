@@ -1,0 +1,50 @@
+seed 6813, stopped at turn 11251 (target 11251)
+
+
+
+ -------    #---------------
+ |.....|    #|........{.....#                             ---------------
+ |.....|    #|.............|#`##                          |..???!%!a)[=%|
+ |......#####.....%.!!.....|   #   -----    ------        |)))))%%!a)*@%|
+ |.....|    #|.............)#?#####)....#   |....|  ######a@!a.+!/!?%!(!|
+ |.....|    #|.......<.....|     # |=..|####|....)###     |.!?.???[!(%%!|
+ |......#####---|-----------     `#|{..|   #...{.|        ---------------
+ -------        ###                --.--    ------
+                  ####             # #%######################
+                     #             `#            -----------#
+                     ###            ##           |.<.......|##########
+                       #             #   -----   |.........| ##### #######
+                       #             ####....|   |.........-#######----|-|---
+                       ###              #|..>|#  ----...----      #.........|
+                ---------.------       ##|.... #####....|          |........|
+                |..............|       # ....-######...[.##/       |...{....|
+                |..............|      ## -----      -----          ----------
+                |..............-#######
+                ----------------
+
+Agent the Fighter              St:16 Dx:12 Co:18 In:9 Wi:9 Ch:10 Neutral S:2061
+Dlvl:7 $:210 HP:14(110) Pw:22(22) AC:1 Xp:9/4977 T:11251 Weak
+
+blstats: [70, 4, 16, 16, 12, 18, 9, 9, 10, 20618, 14, 110, 7, 210, 22, 22, 1, 0, 9, 4977, 11251, 3, 0, 0, 7, 0, 0]
+
+last messages:
+Something is written here in the dust.  You read: "Elbereth".
+You see here an egg (for sale, 24 zorkmids).
+The fire ant turns to flee.
+Something is written here in the dust.  You read: "Elbereth".
+You see here an egg (for sale, 24 zorkmids).
+The fire ant turns to flee.  Valkyrie needs food, badly!
+Something is written here in the dust.  You read: "Elbereth".
+You see here an egg (for sale, 36 zorkmids).
+You hear a slow drip.
+Something is written here in the dust.  You read: "Elbereth".
+You see here an egg (for sale, 36 zorkmids).
+Something is written here in the dust.  You read: "Elbereth".
+You see here an egg (for sale, 36 zorkmids).
+The fire ant turns to flee.
+Something is written here in the dust.  You read: "Elbereth".
+You see here an egg (for sale, 36 zorkmids).
+Something is written here in the dust.  You read: "Elbereth".
+You see here an egg (for sale, 36 zorkmids).
+Something is written here in the dust.  You read: "Elbereth".
+You see here an egg (for sale, 36 zorkmids).

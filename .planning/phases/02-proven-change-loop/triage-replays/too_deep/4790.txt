@@ -1,0 +1,50 @@
+seed 4790, stopped at turn 11147 (target 11146)
+
+
+
+
+                                                                  -----------
+                                                                 #..........|
+                                                                 #|.........|
+                                                                 #|....<....|
+                                                                 #|......(..|
+                                                                 #---------.-
+                                                                 #         #
+                                                                 #         #
+                                                                 #        ##
+                                                               ###        #
+                                                               #          #
+                                               ----------------#        ###
+                                               |.....@........|############
+                                               |..............|#       -.-.-
+                                               |.|......{.....|#       |...|
+                                               |...............#       |...|
+                                               ----------------#       |...|
+                                                              ##       ---.-
+                                                                          #
+Agent the Fighter              St:17 Dx:17 Co:18 In:9 Wi:13 Ch:7 Neutral S:1377
+Dlvl:13 $:99 HP:92(92) Pw:35(35) AC:-4 Xp:9/3268 T:11147
+
+blstats: [53, 14, 17, 17, 17, 18, 9, 13, 7, 13771, 92, 92, 13, 99, 35, 35, -4, 0, 9, 3268, 11147, 1, 0, 0, 13, 0, 0]
+
+last messages:
+You hear the footsteps of a guard on patrol.
+There is a broken door here.  You see here a werewolf corpse.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+There is a broken door here.  You see here a werewolf corpse.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+There is a broken door here.  You see here a werewolf corpse.
+#
+# t
+# terrain
+Showing known terrain and traps only...  (For instructions type a '?')
+There is a broken door here.  You see here a werewolf corpse.
+You hear a door open.
+A foul stench makes you feel a little nauseated.
+You hear a door open.
