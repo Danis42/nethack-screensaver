@@ -508,3 +508,15 @@ evidence = ["reference/nethack-5.0.0/dat/soko1-1.lua:65-67", "reference/nethack-
 quote = "des.trap(\"rolling boulder\", 08, 01);"
 web = []
 notes = "Also soko2-1.lua:52, soko2-2.lua:53, soko3-1.lua:58, soko3-2.lua:53, soko4-1.lua:91, soko4-2.lua:53 and :60. reference/nethack-3.6.6/dat/sokoban.des: grep -c rolling = 0. Seen in play: staged soko1 seed 7 shows 'rolling boulder trap' at screen (46,19) next to 18 holes."
+
+[normal-speed-is-12]
+claim = "A monster or hero moving at NORMAL_SPEED has speed 12; a higher mmove is faster than an unhasted hero"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/include/permonst.h:80"]
+quote = "#define NORMAL_SPEED 12"
+
+[group-generation-flags]
+claim = "G_SGROUP (0x0080) and G_LGROUP (0x0040) in a monster's geno field mean it is normally generated in small or large groups"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/include/monflag.h:198-199"]
+quote = "#define G_SGROUP 0x0080 /* appear in small groups normally */ #define G_LGROUP 0x0040 /* appear in large groups normally */"
