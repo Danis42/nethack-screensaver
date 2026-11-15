@@ -53,3 +53,25 @@ d869b5f09f002637ce44f5a4ad69db049b4846ac must show it plays exactly the same for
 rebuilt on it and its pilot re-run once more on seeds 1,000-1,199 (games of earlier Samurai commits are not reused:
 other sha). If the new pilot still crashes in more than 5% of games, the Samurai is dropped from the A/B and alpha
 becomes 0.05 / 2 = 0.025 for the other two.
+
+## Discordance from the pilots (seeds 1,000-1,199, dlvl10 against job 7 rows)
+
+| Finalist | Pilot job | Commit | Seeds that differ | psi | psi used |
+|---|---|---|---|---|---|
+| val-dwa-fem-law | 12 | 95be67f1575d7f49bb57860fe22f9bae7dfcc466 | 100 of 200 | 0.500 | 0.50 |
+| sam-hum-mal-law | 18 | 2d43110afc904e431586db7b1cb40a257cb15e2f | 98 of 200 | 0.490 | 0.50 |
+| mon-hum-mal-neu | 14 | e0a949213697906a049a8b6f23da77926311c0d4 | 113 of 200 | 0.565 | 0.60 |
+
+Samurai pilot 18: 3 of 200 games crashed (1.5%, under the 5% limit of amendment 2); it stays a finalist. Earlier
+Samurai pilots (jobs 13 and 16, older commits) are void. Only psi and crash counts were read from the pilots.
+
+Planned games per finalist at alpha 0.0167, power 0.8 (`/api/power`):
+
+| MDE | psi 0.50 | psi 0.60 |
+|---|---|---|
+| 0.03 | 12,096 | 14,784 |
+| 0.04 | 6,624 | 8,256 |
+| 0.05 | 4,224 | 5,184 |
+
+The MDE is set by the owner at the approval step; the window is [1000, 1000 + n_planned). Where n_planned exceeds
+10,000, the baseline commit plays the extra seeds above 10,999 (`allow_new_baseline`).
