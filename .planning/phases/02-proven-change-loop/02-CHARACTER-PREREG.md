@@ -75,3 +75,10 @@ Planned games per finalist at alpha 0.0167, power 0.8 (`/api/power`):
 
 The MDE is set by the owner at the approval step; the window is [1000, 1000 + n_planned). Where n_planned exceeds
 10,000, the baseline commit plays the extra seeds above 10,999 (`allow_new_baseline`).
+
+## Owner approval (2026-11-16)
+
+MDE 0.04; all three finalists; alpha 0.0167 each. Planned sizes: val-dwa-fem-law 6,624 (psi 0.50), sam-hum-mal-law
+6,624 (psi 0.50), mon-hum-mal-neu 8,256 (psi 0.60), all windows from seed 1,000, so every baseline game is a job 7 row.
+Owner note: hostile Mines dwarves give food, experience and pick-axes, which a dwarvish hero loses; the dlvl10
+comparison measures that trade-off as part of the net effect. The finalist stays in.
