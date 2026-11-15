@@ -43,3 +43,13 @@ discoveries with Japanese names (`* shito [knife]`, `* potion of sake [booze] (f
   1,000-1,199. The Samurai comparison is therefore "Samurai with the parser fix" against the baseline; for the
   baseline character the fix is proven a no-op by the gate.
 - The other two finalists are unchanged; their pilots (jobs 12 and 14) stand.
+
+## Amendment 2 (2026-11-15, before any experiment game)
+
+The re-run Samurai pilot (job 16) still crashed in 33 of 200 games, 31 of them on "a potion of sake": the bot's
+Japanese-name list lacked sake, koto and magic koto. Branch `fix/samurai-names` (on the first fix) replaces that
+list with one table from `src/objnam.c:105-119, 211-213`; refactor gate job 17 against
+d869b5f09f002637ce44f5a4ad69db049b4846ac must show it plays exactly the same for the Valkyrie. The Samurai finalist is
+rebuilt on it and its pilot re-run once more on seeds 1,000-1,199 (games of earlier Samurai commits are not reused:
+other sha). If the new pilot still crashes in more than 5% of games, the Samurai is dropped from the A/B and alpha
+becomes 0.05 / 2 = 0.025 for the other two.
