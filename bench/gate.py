@@ -59,13 +59,16 @@ def judge(seeds, base, cand, trace_path):
     return out
 
 
-def play_all(tasks, spawn, workers, poll=0.2, retries=2):
-    """Plays [(sha, seed, path)] on up to `workers` trace workers; returns {(sha, seed): result}."""
+def play_all(tasks, spawn, workers, poll=0.2, retries=2, on_result=None):
+    """Plays [(sha, seed, path)] on up to `workers` trace workers; returns {(sha, seed): result}.
+    on_result(sha, seed, result) runs as each game finishes, so the job has rows while it runs (started = a row)."""
     pending, done, slots, deaths = list(tasks), {}, [], 0
     while pending or any(s["task"] for s in slots):
         for s in slots:
             for result in s["worker"].results():
                 done[s["task"][:2]] = result
+                if on_result is not None:
+                    on_result(*s["task"][:2], result)
                 s["task"] = None
             if s["task"] is not None and not s["worker"].alive():
                 deaths += 1
@@ -111,19 +114,22 @@ def run_gate(store, repo, candidate, baseline, spawn, trace_root, workers=10, se
         meta = path[base] / f"{seed}.json"
         if meta.exists() and (path[base] / f"{seed}.trace").exists():
             cached[(base, seed)] = json.loads(meta.read_text())
+    side = lambda sha: "baseline" if sha == base else "candidate"
+
+    def record(sha, seed, result):
+        (path[sha] / f"{seed}.json").write_text(json.dumps(result))
+        toolruns.add_result(store, job_id, "gate", sha, {**result, "seed": seed, "side": side(sha)})
+
+    for (sha, seed), result in sorted(cached.items(), key=lambda kv: kv[0][1]):
+        toolruns.add_result(store, job_id, "gate", sha, {**result, "seed": seed, "side": side(sha)})
     tasks = [(sha, seed, path[sha] / f"{seed}.trace") for sha in (base, cand) for seed in seeds
              if (sha, seed) not in cached]
     try:
-        played = play_all(tasks, spawn, workers, poll=poll)
+        played = play_all(tasks, spawn, workers, poll=poll, on_result=record)
     except Exception as e:  # recorded on the job, then re-raised for the caller
         toolruns.finish(store, job_id, "failed", {"error": str(e)})
         raise
-    for (sha, seed), result in played.items():
-        (path[sha] / f"{seed}.json").write_text(json.dumps(result))
     results = {**cached, **played}
-    for (sha, seed), result in sorted(results.items(), key=lambda kv: (kv[0][0] != base, kv[0][1])):
-        toolruns.add_result(store, job_id, "gate", sha, {**result, "seed": seed,
-                                                          "side": "baseline" if sha == base else "candidate"})
     verdict = judge(seeds, {s: results[(base, s)] for s in seeds}, {s: results[(cand, s)] for s in seeds},
                     lambda side, s: path[base if side == "baseline" else cand] / f"{s}.trace")
     verdict["baseline_reused"] = len(cached)
