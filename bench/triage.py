@@ -19,7 +19,7 @@ from . import seeds
 from .triage_groups import DESCRIPTIONS, NAMES, classify
 
 STAGES = [r.key for r in RUNGS]
-STATUS = "draft"  # "draft" until the owner has reviewed the group list once (D-11)
+STATUS = "owner-reviewed 2026-11-15"  # "draft" until the owner has reviewed the group list once (D-11)
 
 
 def last_stage(game):

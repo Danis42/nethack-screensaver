@@ -4,9 +4,9 @@ Baseline: job 7, commit e5b5a7f525bc51b8008f665173600aba80de466d, dev seeds 1,00
 Command: `uv run python -m bench.triage e5b5a7f525bc51b8008f665173600aba80de466d --lo 1000 --hi 11000`
 Rules: `bench/triage_groups.py` (first match wins, recorded fields only, no LLM).
 
-## Groups (draft)
+## Groups (owner-reviewed 2026-11-15)
 
-Waiting for the owner's review (D-11). Groups are listed by expected gain (rules are tried in the order of `GROUPS` in the code); the count is
+Reviewed once by the owner (D-11), approved without changes. Groups are listed by expected gain (rules are tried in the order of `GROUPS` in the code); the count is
 how many baseline games end in each group. Three example games each (lowest seeds).
 
 ### melee (1917 games, 19.2%)
