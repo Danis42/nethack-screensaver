@@ -30,3 +30,16 @@ Written and committed before any finalist game is played. Changes after this com
 - No winner: `CHARACTER` stays `val-hum-fem-neu`.
 - The winner goes into the one `CHARACTER` constant on main as a `Kind: behavior` commit naming its experiment job,
   then a fresh 10,000-game baseline of main on seeds 1,000-10,999 follows. No confirm-seed run is part of SURV-06.
+
+## Amendment 1 (2026-11-15, before any experiment game)
+
+The Samurai pilot (job 13) ended all 200 games on turn 1 with a bot crash: NetHack 5.0 shows a Samurai's
+discoveries with Japanese names (`* shito [knife]`, `* potion of sake [booze] (fizzy)`, harp appearance "koto",
+`src/objnam.c:105-119, 211-213`) and the bot's discoveries parser asserted on them. Its pilot measured nothing.
+
+- Fix: branch `fix/japanese-names` off the baseline, `autoascend/item/item_manager.py` only. It must play exactly
+  like the baseline for the Valkyrie: refactor gate job 15 against e5b5a7f525bc51b8008f665173600aba80de466d.
+- The Samurai finalist is rebuilt on top of the fix (fix + `CHARACTER` line) and its pilot re-run on seeds
+  1,000-1,199. The Samurai comparison is therefore "Samurai with the parser fix" against the baseline; for the
+  baseline character the fix is proven a no-op by the gate.
+- The other two finalists are unchanged; their pilots (jobs 12 and 14) stand.
