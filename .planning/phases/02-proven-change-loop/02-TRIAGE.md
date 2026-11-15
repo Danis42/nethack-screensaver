@@ -6,8 +6,8 @@ Rules: `bench/triage_groups.py` (first match wins, recorded fields only, no LLM)
 
 ## Groups (draft)
 
-Waiting for the owner's review (D-11). Order below is the order the rules are tried; the count is how many
-baseline games end in each group. Three example games each (lowest seeds).
+Waiting for the owner's review (D-11). Groups are listed by expected gain (rules are tried in the order of `GROUPS` in the code); the count is
+how many baseline games end in each group. Three example games each (lowest seeds).
 
 ### melee (1917 games, 19.2%)
 
