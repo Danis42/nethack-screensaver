@@ -114,7 +114,13 @@ Plans:
   3. Class-wide safety rules (prayer timeout and lockout; passive-damage monsters; cross-aligned unicorns; peacefuls, also while hallucinating; ray bounces) and dungeon awareness (the bot knows whether it is in the Dungeons, Mines, Sokoban, Quest or Gehennom, and uses no prayer, Elbereth or sacrifice in Gehennom) each pass a scenario test keyed on monster flags, not species names, and their death causes shrink in the triage ranking (proof: scenario job IDs, triage diff)
   4. 3.6-era behaviour such as the Excalibur dip is gone, and each removal cites its fact-ledger entry with the 5.0 source (proof: ledger entries, commits)
   5. Survival, food and resource logic sit in their own modules behind an ordered decision arbiter, and every extraction commit has a passing gate job; `agent.py` and `global_logic.py` shrink, and the size ratchets hold the new limits (proof: gate job IDs, line counts)
-**Plans**: TBD
+**Plans**: 2 planned, 4 outlined (04-RESEARCH.md, Monk triage on job 23)
+- [ ] 04-01-PLAN.md: Monk kit, no shield (tracer; melee/groups)
+- [ ] 04-02-PLAN.md: cross-aligned unicorns, do not chase (unicorns 5.6%)
+- [ ] 04-03: descent pacing (too_deep 12.8%, strong 8.5%), to plan after research
+- [ ] 04-04: food system (starvation 7.8%)
+- [ ] 04-05: stuck explorer root cause (8.5%)
+- [ ] 04-06: remaining class-wide safety, dungeon awareness, 3.6 removals
 **Research**: the root cause of explorer stuck states is still unknown
 
 ### Phase 5: Medusa and Castle Wall
