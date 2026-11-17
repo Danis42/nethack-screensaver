@@ -79,28 +79,28 @@ def bench_baseline(ref: str = "main", games: int = 576, lo: int | None = None, h
 @mcp.tool()
 def bench_experiment(candidate: str, mde: float, baseline: str = "main", metric: str = "dlvl6",
                      discordance: float | None = None, lo: int | None = None, block: int = 96,
-                     lgen: str | None = None, allow_new_baseline: bool = False) -> dict:
-    """A/B experiment: candidate vs baseline commit on one rate metric (see bench_power first).
-
-    Declare the MDE (smallest effect worth detecting, e.g. 0.03) before the run; the planned size follows from it
-    and the discordance (share of seeds where the two commits differ). The verdict comes from an always-valid
-    sequential test on contiguous seed prefixes, so it stays valid however often it is checked. Commit first; refs
-    resolve to a SHA now. A job counts as started only when `started` is true (its first game row exists); report
-    a start only then, citing the job ID. Returns job_id; run `uv run screens-bench wait <job_id>` as a background
-    shell command to be notified. The baseline must already have stored games in the window (so an unrelated
-    commit cannot become the baseline by accident); allow_new_baseline=True plays it fresh."""
+                     lgen: str | None = None, allow_new_baseline: bool = False, alpha: float = 0.05,
+                     power: float = 0.8, rule: str = "sprt") -> dict:
+    """A/B experiment: candidate vs baseline commit on one rate metric (see bench_power first). Declare the MDE
+    (smallest effect worth detecting, e.g. 0.03) before the run; the size follows from it and the discordance (share
+    of seeds where the commits differ). rule "sprt" (default): Wald's SPRT, "better" or "no detectable effect",
+    fewest games; "mixture": can also say "worse"; both valid however often checked. Commit first; refs resolve to
+    a SHA now. A job counts as started only when `started` is true (first game row exists); cite the job ID then.
+    Returns job_id (`uv run screens-bench wait <job_id>` waits). Baseline needs stored games or allow_new_baseline."""
     return _call("POST", "/api/jobs", {"kind": "experiment", "candidate": candidate, "baseline": baseline,
                                        "metric": metric, "mde": mde, "discordance": discordance, "lo": lo,
-                                       "block": block, "lgen": lgen, "allow_new_baseline": allow_new_baseline})
+                                       "block": block, "lgen": lgen, "allow_new_baseline": allow_new_baseline,
+                                       "alpha": alpha, "power": power, "rule": rule})
 
 
 @mcp.tool()
-def bench_power(mde: float | None = None, discordance: float | None = None, n: int | None = None) -> dict:
-    """What an experiment must declare before it runs. With mde (smallest effect worth detecting, e.g. 0.03):
-    the planned number of seeds per side (n_planned) for the sequential test, and what exact McNemar could detect
-    at that size. With n: the MDE that n seeds per side can detect. discordance is the share of seeds where two
-    commits differ on the metric (needed until a pilot value is recorded)."""
-    return _call("GET", "/api/power", query={"mde": mde, "discordance": discordance, "n": n})
+def bench_power(mde: float | None = None, discordance: float | None = None, n: int | None = None, rule: str = "sprt",
+                alpha: float = 0.05) -> dict:
+    """What an experiment must declare. With mde (smallest effect worth detecting, e.g. 0.03): planned seeds per side
+    (n_planned) for the rule ("sprt" adds mean seeds at the MDE and at no effect) and what exact McNemar could detect
+    there. With n: the MDE that n seeds per side can detect. discordance: share of seeds where two commits differ."""
+    return _call("GET", "/api/power", query={"mde": mde, "discordance": discordance, "n": n, "rule": rule,
+                                             "alpha": alpha})
 
 
 @mcp.tool()

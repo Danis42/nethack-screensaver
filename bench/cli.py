@@ -114,16 +114,12 @@ def _funnel(args):
 
 
 def _power(args):
-    from . import power  # scipy and numpy: loaded only for this subcommand
-    psi = power.DEFAULT_DISCORDANCE if args.discordance is None else args.discordance
-    if psi is None:
-        print(json.dumps({"error": "pass --discordance: no pilot value is recorded yet"}))
+    from . import sprt  # scipy and numpy: loaded only for this subcommand
+    try:
+        out = sprt.power_report(args.mde, args.discordance, args.n, args.alpha, args.power, args.block, args.rule)
+    except ValueError as e:  # no discordance recorded, or a bad value: say why, exit 2
+        print(json.dumps({"error": str(e)}))
         return 2
-    if args.mde is not None:
-        out = power.plan(args.mde, psi, args.alpha, args.power, args.block)
-    else:
-        out = {"n": args.n, "psi": psi, "mcnemar_mde": power.mcnemar_mde(args.n, psi, args.alpha, args.power),
-               "sequential_mde": power.sequential_mde(args.n, psi, args.alpha, args.power, args.block)}
     print(json.dumps(out))
     return 0
 
@@ -175,6 +171,7 @@ def main(argv=None):
     p.add_argument("--alpha", type=float, default=0.05)
     p.add_argument("--power", type=float, default=0.8)
     p.add_argument("--block", type=int, default=96)
+    p.add_argument("--rule", choices=("sprt", "mixture"), default="sprt", help="decision rule to plan for")
     p.set_defaults(fn=_power)
 
     args = ap.parse_args(argv)

@@ -81,13 +81,14 @@ def test_an_experiment_must_declare_its_mde(bench_app, monkeypatch):
 
 
 def test_a_started_experiment_stores_its_declared_plan(bench_app):
-    from bench import power
+    from bench import sprt
     sha = bench_app._sha("main")[0]
     for seed in range(1000, 1096):
         bench_app.store.add_game(sha, None, {"max_depth": 1, "end_reason": "x", "seed": seed})
     job_id = bench_app.start_experiment("feature", "main", mde=0.3, discordance=0.5)["job_id"]
     spec = bench_app.job(job_id)["spec"]
-    plan = power.plan(0.3, 0.5)
+    plan = sprt.plan(0.3, 0.5)  # the default rule for new experiments (owner, 2026-11-17)
+    assert plan["rule"] == "sprt"
     assert spec["declared"] == plan and spec["block"] == 96
     assert (spec["seeds"]["lo"], spec["seeds"]["hi"]) == (1000, 1000 + plan["n_planned"])
 
@@ -301,21 +302,25 @@ def test_a_fully_reused_baseline_is_done_but_never_started(bench_app):
 
 
 def test_power_plans_or_reports_the_mde_at_n(bench_app, bench_url):
-    from bench import power
-    assert bench_app.power(mde=0.03, discordance=0.2) == power.plan(0.03, 0.2)
+    from bench import power, sprt
+    assert bench_app.power(mde=0.03, discordance=0.2) == sprt.plan(0.03, 0.2)
+    assert bench_app.power(mde=0.03, discordance=0.2, rule="mixture") == power.plan(0.03, 0.2)
     at_n = bench_app.power(n=2000, discordance=0.2)
     assert at_n == {"n": 2000, "psi": 0.2, "mcnemar_mde": power.mcnemar_mde(2000, 0.2),
                     "sequential_mde": power.sequential_mde(2000, 0.2)}
     with pytest.raises(ValueError):
         bench_app.power(discordance=0.2)
     status, api = _req(bench_url + "/api/power?mde=0.03&discordance=0.2")
-    assert status == 200 and api == power.plan(0.03, 0.2)
+    assert status == 200 and api == sprt.plan(0.03, 0.2)
+    assert _req(bench_url + "/api/power?mde=0.03&discordance=0.2&rule=mixture")[1] == power.plan(0.03, 0.2)
     assert _req(bench_url + "/api/power?mde=abc&discordance=0.2")[0] == 400
 
 
 def test_power_cli_prints_the_plan(capsys):
-    from bench import power
+    from bench import power, sprt
     assert cli.main(["power", "--mde", "0.03", "--discordance", "0.2"]) == 0
+    assert json.loads(capsys.readouterr().out) == sprt.plan(0.03, 0.2)
+    assert cli.main(["power", "--mde", "0.03", "--discordance", "0.2", "--rule", "mixture"]) == 0
     assert json.loads(capsys.readouterr().out) == power.plan(0.03, 0.2)
 
 

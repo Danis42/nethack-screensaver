@@ -13,9 +13,9 @@ import dataclasses
 import time
 from collections import defaultdict, deque
 
-from . import seeds as seedlib
+from . import seeds as seedlib, sprt
 from .metrics import METRICS, orient
-from .sequential import NO_EFFECT, discordant, judge_sequential
+from .sequential import NO_EFFECT, discordant
 
 MAX_DEATHS_IN_ROW = 3
 
@@ -195,11 +195,11 @@ class Scheduler:
             end = lo + self._prefix(k)
             upto = [(c, b) for seed, c, b in pairs if seed < end]
             looks.append((len(upto), *discordant(upto)))
-        v = judge_sequential(looks, declared["alpha"], declared["n_planned"], declared["mde"])
+        v, oriented = sprt.judge_declared(looks, declared, metric)  # no "rule": the mixture test (jobs <= 21)
         if v.state == "open" and need >= declared["n_planned"]:  # skipped games: the plan is used up anyway
             v = dataclasses.replace(v, state=NO_EFFECT)
         verdict = v.as_dict()
-        verdict["state"] = orient(verdict["state"], metric)
+        verdict["state"] = verdict["state"] if oriented else orient(verdict["state"], metric)
         verdict["pairs"] = len(pairs)
         result = self.job["result"]
         result["looks"].append({"n": v.n, "b": v.b, "c": v.c, "log_lr": v.log_lr})

@@ -7,7 +7,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from . import funnel as funnel_mod, gitrefs, power as powerlib, provenance, report, seeds
+from . import funnel as funnel_mod, gitrefs, power as powerlib, provenance, report, seeds, sprt
 from .filters import parse_where
 from .metrics import METRICS, evaluate
 
@@ -110,10 +110,10 @@ class App:
             return {"job_id": self.scheduler.submit("baseline", spec)}
 
     def start_experiment(self, candidate, baseline="main", metric="dlvl6", mde=None, discordance=None, alpha=0.05,
-                         power=0.8, block=96, lo=None, lgen=None, gate=None, allow_new_baseline=False):
-        """Paired A/B on one rate metric. The MDE is declared before the run; bench.power.plan fixes the planned
+                         power=0.8, block=96, lo=None, lgen=None, gate=None, allow_new_baseline=False, rule="sprt"):
+        """Paired A/B on one rate metric. The MDE is declared before the run; bench.sprt.plan fixes the planned
         size, and the window is [lo, lo + n_planned). The scheduler judges contiguous seed prefixes with the
-        always-valid sequential test (MEAS-06)."""
+        declared rule: "sprt" (Wald, owner-approved 2026-11-17, default) or "mixture" (always-valid, MEAS-06)."""
         rates = [n for n, m in METRICS.items() if m.kind == "rate"]
         if metric not in rates:
             raise ValueError(f"metric must be one of {rates}")
@@ -125,7 +125,7 @@ class App:
         psi = powerlib.DEFAULT_DISCORDANCE if discordance is None else float(discordance)
         if psi is None:
             raise ValueError("pass discordance: no pilot value is recorded yet")
-        declared = powerlib.plan(mde, psi, float(alpha), float(power), int(block))
+        declared = sprt.plan(mde, psi, float(alpha), float(power), int(block), rule)
         lo = seeds.BASELINE_WINDOW[0] if lo is None else lo
         lo, hi = seeds.window(lo, int(lo) + declared["n_planned"])
         span = seeds.check_window(lo, hi, "experiment", gate)
@@ -147,20 +147,9 @@ class App:
         with self.lock:
             return {"job_id": self.scheduler.submit("experiment", spec)}
 
-    def power(self, mde=None, discordance=None, n=None, alpha=0.05, power=0.8, block=96):
-        """What an experiment must declare: with mde, the planned size (bench.power.plan); with n, the MDE that n
-        seeds can detect with exact McNemar and with the sequential test."""
-        psi = powerlib.DEFAULT_DISCORDANCE if discordance is None else float(discordance)
-        if psi is None:
-            raise ValueError("pass discordance: no pilot value is recorded yet")
-        alpha, power, block = float(alpha), float(power), int(block)
-        if mde is not None:
-            return powerlib.plan(float(mde), psi, alpha, power, block)
-        if n is not None:
-            n = int(n)
-            return {"n": n, "psi": psi, "mcnemar_mde": powerlib.mcnemar_mde(n, psi, alpha, power),
-                    "sequential_mde": powerlib.sequential_mde(n, psi, alpha, power, block)}
-        raise ValueError("pass mde (to plan a run) or n (to see what n seeds can detect)")
+    def power(self, mde=None, discordance=None, n=None, alpha=0.05, power=0.8, block=96, rule="sprt"):
+        """What an experiment must declare (bench.sprt.power_report)."""
+        return sprt.power_report(mde, discordance, n, alpha, power, block, rule)
 
     def resume(self, job_id):
         """Queue an interrupted job again; it keeps its id and plays only the seeds not yet stored."""
@@ -370,7 +359,7 @@ def make_handler(app):
                 "/api/experiments": app.experiments,
                 "/api/power": lambda: app.power(_num(q.get("mde")), _num(q.get("discordance")), _int(q.get("n")),
                                                 _num(q.get("alpha"), 0.05), _num(q.get("power"), 0.8),
-                                                _int(q.get("block")) or 96),
+                                                _int(q.get("block")) or 96, q.get("rule", "sprt")),
                 "/api/dashboard": lambda: app.dashboard(q.get("ref", "main")),
                 "/api/metrics": lambda: {n: {"description": m.description, "kind": m.kind}
                                          for n, m in METRICS.items()},

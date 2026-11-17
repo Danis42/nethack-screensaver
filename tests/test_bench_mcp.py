@@ -62,7 +62,9 @@ def test_bench_experiment_forwards_the_mde(url, bench_app):
 
 def test_bench_power_matches_the_api(url):
     from bench import power
-    assert mcp_server.bench_power(mde=0.03, discordance=0.2) == power.plan(0.03, 0.2)
+    from bench import sprt
+    assert mcp_server.bench_power(mde=0.03, discordance=0.2) == sprt.plan(0.03, 0.2)
+    assert mcp_server.bench_power(mde=0.03, discordance=0.2, rule="mixture") == power.plan(0.03, 0.2)
 
 
 def test_bench_experiment_can_start_a_new_baseline(url, bench_app):
