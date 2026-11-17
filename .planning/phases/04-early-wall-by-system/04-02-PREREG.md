@@ -32,5 +32,5 @@ here departs from the template, so the owner is not asked.
 
 - Final job 23 `unicorns` rate: _pending_
 - MDE: _pending_
-- Pilot job: _pending_; discordant seeds: _pending_; psi: _pending_
+- Pilot job: 25 (queued 2026-11-17, seeds 1,000-1,959); discordant seeds: _pending_; psi: _pending_
 - SPRT plan (`screens-bench power --rule sprt`): _pending_
