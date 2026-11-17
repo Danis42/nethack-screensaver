@@ -262,10 +262,10 @@ def test_seeded_game_takes_the_moon_from_the_seed(monkeypatch):
     assert calls["seeds"] == (5, 5, False)
 
 
-def test_games_are_human_valkyries_unless_a_role_is_pinned(monkeypatch):
+def test_games_are_human_monks_unless_a_role_is_pinned(monkeypatch):
     calls = _fake_env_and_wrapper(monkeypatch)
     game.run_game(seed=3)
-    assert calls["env_kwargs"]["character"] == "val-hum-fem-neu"
+    assert calls["env_kwargs"]["character"] == "mon-hum-mal-neu"
     game.run_game(role="Wiz")
     assert calls["env_kwargs"]["character"] == "@"
 
