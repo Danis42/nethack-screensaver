@@ -1,3 +1,4 @@
+from bench.sequential import NO_EFFECT
 from bench_fakes import FakeWorker, game as _game
 from bench.scheduler import Scheduler
 from bench.store import Store
@@ -316,3 +317,48 @@ def test_a_natural_job_touching_the_tool_block_fails_at_dispatch(tmp_path):
     _run(s)
     assert store.job(job)["state"] == "failed" and "tool block" in store.job(job)["result"]["error"]
     assert played == []
+
+
+SPRT_DECLARED = {**DECLARED, "test": "sprt-wald", "rule": "sprt"}
+
+
+def _sprt_experiment(scheduler, metric="dlvl6"):
+    return scheduler.submit("experiment", {"candidate": "cand", "candidate_ref": "branch",
+                                           "baseline": "base", "baseline_ref": "main", "metric": metric,
+                                           "seeds": {"range": "dev", "lo": 1000, "hi": 1384}, "block": 96,
+                                           "declared": SPRT_DECLARED})
+
+
+def test_sprt_job_calls_a_clear_win_better(tmp_path):
+    s, store, _, _ = _scheduler(tmp_path, lambda sha, i: _game(10 if sha == "cand" else 1))
+    job = _sprt_experiment(s)
+    _run(s)
+    v = store.job(job)["result"]["verdict"]
+    assert v["state"] == "better" and v["n"] == 96
+
+
+def test_sprt_job_calls_a_clear_loss_no_effect_not_worse(tmp_path):
+    s, store, _, _ = _scheduler(tmp_path, lambda sha, i: _game(1 if sha == "cand" else 10))
+    job = _sprt_experiment(s)
+    _run(s)
+    v = store.job(job)["result"]["verdict"]
+    assert v["state"] == NO_EFFECT and v["n"] == 96
+
+
+def test_sprt_job_on_a_lower_is_better_metric_is_not_flipped_twice(tmp_path):
+    def make(sha, i):
+        if sha == "cand":
+            return {**_game(3), "end_reason": "ESCAPED: escaped the dungeon"}
+        return _game(3)
+    s, store, _, _ = _scheduler(tmp_path, make)
+    job = _sprt_experiment(s, metric="died")
+    _run(s)
+    v = store.job(job)["result"]["verdict"]
+    assert v["c"] == 96 and v["state"] == "better"
+
+
+def test_a_job_declared_without_a_rule_keeps_the_mixture_test_and_can_say_worse(tmp_path):
+    s, store, _, _ = _scheduler(tmp_path, lambda sha, i: _game(1 if sha == "cand" else 10))
+    job = _experiment(s)
+    _run(s)
+    assert store.job(job)["result"]["verdict"]["state"] == "worse"
