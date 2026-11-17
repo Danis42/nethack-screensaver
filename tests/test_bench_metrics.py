@@ -105,3 +105,10 @@ def test_summary_carries_the_funnel():
     f = summary(games)["funnel"]
     assert len(f["rows"]) == 18 and f["n"] == 1 and f["excluded"] == {"no_ladder": 1}
     assert {r["key"]: r["hits"] for r in f["rows"]}["quest_portal"] == 1
+
+
+def test_unicorn_deaths_lower_is_better():
+    games = [_g(reason="DEATH: killed by a white unicorn"), _g(reason="DEATH: killed by a black unicorn, while helpless"),
+             _g(reason="DEATH: killed by a jackal")]
+    assert evaluate(METRICS["unicorns"], games)["hits"] == 2
+    assert METRICS["unicorns"].lower_is_better

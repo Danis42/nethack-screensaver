@@ -575,3 +575,22 @@ tag = "5.0-source"
 evidence = ["reference/nethack-5.0.0/src/stairs.c:180-183", "reference/nethack-5.0.0/src/display.c:2345-2350"]
 quote = "known_branch_stairs(stairway *sway) { return (sway && sway->tolev.dnum != u.uz.dnum && sway->u_traversed); }"
 notes = "display.c:2347 uses known_branch_stairs to pick S_brdnstair over S_dnstair; stairs_description (stairs.c:201) says plain 'stairs down' for branch stairs to a not-yet-visited branch."
+
+[unicorn-coaligned-peaceful]
+claim = "A unicorn whose alignment sign matches the hero's is generated peaceful"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/makemon.c:1340-1341"]
+quote = "if (is_unicorn(ptr) && sgn(u.ualign.type) == sgn(ptr->maligntyp)) mtmp->mpeaceful = TRUE;"
+
+[unicorn-avoids-hero-line]
+claim = "Off no-teleport levels, a unicorn that sees the hero never moves onto a square in line with the hero; adjacent squares are in line, so melee with one starts only when the hero steps next to it"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/mon.c:2117-2118", "reference/nethack-5.0.0/src/mon.c:2339-2341"]
+quote = "if (is_unicorn(mtmp->data) && !noteleport_level(mtmp)) allowflags |= NOTONL;"
+notes = "mon.c:2339-2341 skips a candidate square when monseeu && monlineu(mon, nx, ny) and NOTONL is set. On no-teleport levels (monmove.c:1939-1943) the unicorn may fail to avoid the hero."
+
+[unicorn-teleports-when-stuck]
+claim = "A unicorn that cannot move teleports away half the time, unless teleport is restricted on the level"
+tag = "5.0-source"
+evidence = ["reference/nethack-5.0.0/src/monmove.c:2064-2066"]
+quote = "if (is_unicorn(ptr) && rn2(2) && !tele_restrict(mtmp)) { (void) rloc(mtmp, RLOC_MSG);"

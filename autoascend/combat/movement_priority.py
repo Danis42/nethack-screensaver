@@ -1,5 +1,5 @@
 from ..utils import adjacent
-from . import utils
+from . import unicorns, utils
 from .monster_utils import WEAK_MONSTERS, ONLY_RANGED_SLOW_MONSTERS, consider_melee_only_ranged_if_hp_full, \
     imminent_death_on_melee, EXPLODING_MONSTERS, WEIRD_MONSTERS
 
@@ -62,8 +62,8 @@ def draw_monster_priority_positive(agent, monster, priority, walkable):
         if len(agent.inventory.get_ranged_combinations()):
             _draw_ranged(priority, y, x, 1, walkable, radius=7, operation='max')
     elif 'unicorn' in mon.mname:
-        if agent.blstats.hitpoints >= 15 or agent.blstats.hitpoints == agent.blstats.max_hitpoints:
-            # freely engage in melee
+        if not unicorns.avoided(agent, mon) and (agent.blstats.hitpoints >= 15 or
+                                                 agent.blstats.hitpoints == agent.blstats.max_hitpoints):
             _draw_around(priority, y, x, 2, radius=1, operation='max')
             _draw_around(priority, y, x, 1, radius=2, operation='max')
     else:
@@ -98,14 +98,6 @@ def draw_monster_priority_negative(agent, monster, priority, walkable):
             # prefer avoiding being in line of fire
             _draw_ranged(priority, y, x, -1, walkable, radius=7)
 
-    # if agent.blstats.hitpoints <= 8 and not is_monster_faster(agent, monster) and not mon.mname in WEAK_MONSTERS \
-    #         and not mon.mname in ONLY_RANGED_SLOW_MONSTERS:
-    #     # stay out of melee range
-    #     _draw_around(priority, y, x, -10, radius=1)
-    #     if not len(agent.inventory.get_ranged_combinations()):
-    #         # prefer avoiding being in line of fire
-    #         _draw_ranged(priority, y, x, -1, walkable, radius=7)
-
     if mon.mname in EXPLODING_MONSTERS:
         _draw_around(priority, y, x, -10, radius=1)
         if mon.mname not in ONLY_RANGED_SLOW_MONSTERS:
@@ -125,7 +117,9 @@ def draw_monster_priority_negative(agent, monster, priority, walkable):
         # ignore
         pass
     elif 'unicorn' in mon.mname:
-        pass
+        if unicorns.avoided(agent, mon):
+            # keep off its adjacent squares; it never steps next to the hero itself
+            _draw_around(priority, y, x, -10, radius=1)  # fact:unicorn-avoids-hero-line
     else:
         if mon.mname not in WEAK_MONSTERS:
             # engage, but ensure striking first if possible

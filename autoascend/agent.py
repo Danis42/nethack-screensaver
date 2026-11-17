@@ -1396,7 +1396,8 @@ class Agent:
             _, y, x, _, glyph = monster
             key = (level, y, x, int(glyph))
             since[key] = self._monster_since.get(key, now)
-            if now - since[key] < STANDOFF_TURNS or utils.adjacent((self.blstats.y, self.blstats.x), (y, x)):
+            if (now - since[key] < STANDOFF_TURNS and not combat.unicorns.avoided(self, monster[3])) or \
+                    utils.adjacent((self.blstats.y, self.blstats.x), (y, x)):
                 coming.append(monster)
         if len(coming) < len(monsters):
             self.stats_logger.log_event('standoff_ignored')
@@ -1434,7 +1435,6 @@ class Agent:
                 yielded = True
                 yield True
                 self.character.parse_enhance_view()
-                # self.character.parse_spellcast_view()
 
             move_priority_heatmap, actions = combat.fight_heur.get_priorities(self)
             actions.extend(combat.fight_heur.get_move_actions(self, dis, move_priority_heatmap))

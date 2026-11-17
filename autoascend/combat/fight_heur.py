@@ -8,6 +8,7 @@ from ..glyph import G, MON
 from ..utils import adjacent
 from .monster_utils import is_monster_faster, is_dangerous_monster, \
     ONLY_RANGED_SLOW_MONSTERS, EXPLODING_MONSTERS, WEAK_MONSTERS, consider_melee_only_ranged_if_hp_full
+from . import unicorns
 from .movement_priority import draw_monster_priority_positive, draw_monster_priority_negative
 from .utils import wielding_ranged_weapon, line_dis_from, inside
 
@@ -23,8 +24,6 @@ def melee_monster_priority(agent, monsters, monster):
         ret -= 17
     if 'were' in mon.mname:
         ret += 1
-    # if not wielding_melee_weapon(agent):
-    #     ret -= 5
     if mon.mname in ONLY_RANGED_SLOW_MONSTERS:
         if not consider_melee_only_ranged_if_hp_full(agent, monster):
             ret -= 100
@@ -319,10 +318,9 @@ def goto_action(agent, priority, monsters):
     assert monsters
     for monster in monsters:
         _, my, mx, mon, _ = monster
-        if not adjacent((agent.blstats.y, agent.blstats.x), (my, mx)):
-            # and not mon.mname in ONLY_RANGED_SLOW_MONSTERS:
+        if not adjacent((agent.blstats.y, agent.blstats.x), (my, mx)) and not unicorns.avoided(agent, mon):
             return [(1, ('go_to', my, mx))]
-    assert 0, monsters
+    return []  # only kept-away unicorns left (adjacent monsters always get a melee action)
 
 
 def get_corridors_priority_map(walkable):
