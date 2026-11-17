@@ -29,6 +29,11 @@ class ContainerContent:
 
 # NLE cuts inventory lines at this many characters, sometimes inside the trailing "(...)"
 _TEXT_LIMIT = nh.NLE_INVENTORY_STR_LENGTH
+# Per-object class, name and appearance, read once: NLE keeps its own static copies ("all fields are constant",
+# win/rl/pynethack.cc), and parse_name scans all objects on every cache miss.
+_OC_CLASS = [ord(nh.objclass(i).oc_class) for i in range(nh.NUM_OBJECTS)]
+_OC_NAME = [nh.objdescr.from_idx(i).oc_name for i in range(nh.NUM_OBJECTS)]
+_OC_DESCR = [nh.objdescr.from_idx(i).oc_descr for i in range(nh.NUM_OBJECTS)]
 _KNOWN_INFOS = ['being worn', 'wielded', 'weapon in hand', 'weapon in hands', 'alternate weapon; not wielded',
                 'at the ready', 'in quiver', 'in quiver pouch', 'lit', 'chained to you', 'on left hand', 'on right hand']
 
@@ -607,14 +612,14 @@ class ItemManager:
         ]
         for i in range(nh.NUM_OBJECTS):
             for pref, c in prefixes:
-                if ord(nh.objclass(i).oc_class) == c:
-                    obj_name = nh.objdescr.from_idx(i).oc_name
+                if _OC_CLASS[i] == c:
+                    obj_name = _OC_NAME[i]
                     if obj_name and name == pref + obj_name:
                         obj_ids.add(i)
 
             for suf, c in suffixes:
-                if ord(nh.objclass(i).oc_class) == c:
-                    obj_name = nh.objdescr.from_idx(i).oc_name
+                if _OC_CLASS[i] == c:
+                    obj_name = _OC_NAME[i]
                     if obj_name and (name == obj_name + suf or \
                                      (c == nh.FOOD_CLASS and \
                                       name == obj_name.split()[0] + suf + ' ' + ' '.join(obj_name.split()[1:]))):
@@ -655,26 +660,26 @@ class ItemManager:
 
         for i in range(nh.NUM_OBJECTS):
             for pref, c in prefixes:
-                if ord(nh.objclass(i).oc_class) == c:
-                    obj_descr = nh.objdescr.from_idx(i).oc_descr
+                if _OC_CLASS[i] == c:
+                    obj_descr = _OC_DESCR[i]
                     if obj_descr and name == pref + obj_descr:
                         appearance_ids.add(i)
 
             for suf, c in suffixes:
-                if ord(nh.objclass(i).oc_class) == c:
-                    obj_descr = nh.objdescr.from_idx(i).oc_descr
+                if _OC_CLASS[i] == c:
+                    obj_descr = _OC_DESCR[i]
                     if obj_descr and name == obj_descr + suf:
                         appearance_ids.add(i)
 
         appearance_ids = list(appearance_ids)
-        assert len(appearance_ids) == 0 or len({ord(nh.objclass(i).oc_class) for i in appearance_ids}), name
+        assert len(appearance_ids) == 0 or len({_OC_CLASS[i] for i in appearance_ids}), name
 
         # NetHack 5 names objects not seen up close by their class: "a potion", "2 scrolls", "a shield"
         class_word = _CLASS_WORDS.get(name[:-1] if name.endswith('s') and name[:-1] in _CLASS_WORDS else name)
         if not obj_ids and not appearance_ids and class_word is not None:
             oclass, sub = class_word
             ids = [i for i in range(nh.NUM_OBJECTS) if O.objects[i] is not None and
-                   ord(nh.objclass(i).oc_class) == oclass and (sub is None or O.objects[i].sub == sub)]
+                   _OC_CLASS[i] == oclass and (sub is None or O.objects[i].sub == sub)]
             return [O.objects[i] for i in ids], [i + nh.GLYPH_OBJ_OFF for i in ids]
 
         if (len(obj_ids) > 0) == (len(appearance_ids) > 0):

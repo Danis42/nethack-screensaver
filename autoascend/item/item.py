@@ -3,6 +3,10 @@ import nle.nethack as nh
 from autoascend import objects as O
 from autoascend.glyph import MON, WEA
 
+# Looked up once: these run millions of times per game. Comparisons stay ==, as before.
+CORPSE, STATUE = O.from_name('corpse'), O.from_name('statue')
+GLOBS = tuple(O.from_name(f'glob of {m}') for m in ('gray ooze', 'brown pudding', 'green slime', 'black pudding'))
+
 
 class Item:
     # beatitude
@@ -77,16 +81,11 @@ class Item:
         if self.is_possible_container():
             return 100000
 
-        if self.objs[0] in [
-            O.from_name("glob of gray ooze"),
-            O.from_name("glob of brown pudding"),
-            O.from_name("glob of green slime"),
-            O.from_name("glob of black pudding"),
-        ]:
+        if self.objs[0] in GLOBS:
             assert self.is_unambiguous()
             return 10000  # weight is unknown
 
-        weight = max((obj.wt for obj in self.objs))
+        weight = max(obj.wt for obj in self.objs)
 
         if self.is_container() and with_content:
             weight += self.content.weight()  # TODO: bag of holding
@@ -238,7 +237,7 @@ class Item:
         return self.object.nutrition / max(self.unit_weight(), 1)
 
     def is_corpse(self):
-        if self.objs[0] == O.from_name('corpse'):
+        if self.objs[0] == CORPSE:
             assert self.is_unambiguous()
             return True
         return False
@@ -246,7 +245,7 @@ class Item:
     ######## STATUE
 
     def is_statue(self):
-        if self.objs[0] == O.from_name('statue'):
+        if self.objs[0] == STATUE:
             assert self.is_unambiguous()
             return True
         return False
@@ -271,7 +270,7 @@ class Item:
 
         if self.is_unambiguous() and self.object.name == 'bag of tricks':
             return False
-        return any((isinstance(obj, O.Container) for obj in self.objs))
+        return O.Container in map(type, self.objs)  # namedtuple classes: no subclasses, so isinstance == type
 
     def content(self):
         assert self.is_container()

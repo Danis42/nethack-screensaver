@@ -398,11 +398,11 @@ class Agent:
         """ Return (line, column) of markers:
         --More-- | (end) | (X of N)
         """
-        if len(regex.findall(' '.join(lines))) > 1:
+        found = regex.findall(' '.join(lines))  # none on the screen: no line has one either (most steps)
+        if len(found) > 1:
             raise ValueError('Too many markers')
-
         result, marker_type = None, None
-        for i, line in enumerate(lines):
+        for i, line in enumerate(lines if found else ()):
             res = regex.findall(line)
             if res:
                 assert len(res) == 1
@@ -425,10 +425,10 @@ class Agent:
             #        With the current implementation, in the worst case, we'll get "Unknown command ' '".
             message = message[:-len('--More--')]
 
-        # assert '\n' not in message and '\r' not in message
         popup = []
 
-        lines = [bytes(line).decode().replace('\0', ' ').replace('\n', '') for line in obs['tty_chars']]
+        screen, w = obs['tty_chars'].tobytes(), obs['tty_chars'].shape[1]  # one conversion, then per-row decode
+        lines = [screen[i:i + w].decode().replace("\0", " ").replace("\n", "") for i in range(0, len(screen), w)]
         marker_pos, marker_type = self._find_marker(lines)
 
         if marker_pos is None:
@@ -636,13 +636,13 @@ class Agent:
         level.items[self.blstats.y, self.blstats.x] = self.inventory.items_below_me
         level.item_count[self.blstats.y, self.blstats.x] = len(self.inventory.items_below_me)
 
-        # TODO: optimize
         ignore_mask = utils.isin(self.glyphs, G.MONS, G.PETS)  # TODO: effects, etc
         item_mask = level.item_count != 0
         mask = item_mask & ~ignore_mask
         level.item_disagreement_counter[~mask] = 0
+        pile_agrees = (level.item_count >= 2) == ((self.last_observation['specials'] & nh.MG_OBJPILE) > 0)  # whole map
         for y, x in zip(*mask.nonzero()):
-            if (level.item_count[y, x] >= 2) == ((self.last_observation['specials'][y, x] & nh.MG_OBJPILE) > 0):
+            if pile_agrees[y, x]:
                 glyphs = (glyph for item in level.items[y, x] for glyph in item.display_glyphs())
                 if self.glyphs[y, x] in glyphs:
                     level.item_disagreement_counter[y, x] = 0
