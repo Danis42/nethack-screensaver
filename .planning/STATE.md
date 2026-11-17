@@ -115,7 +115,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Efficiency 261117-lkz: speed-up batch 1 is wip d0788516e190608da68960d2fa99ba15262c150b on branch speedup (identical digests on 5 seeds, -7% CPU on a 31,657-turn game); gate + merge when job 23 ends
+- Efficiency 261117-lkz: speed-up batches 1-2 are wip 2591a62602b52391305fe337deab475392eedd3d on branch speedup (identical digests on 5 seeds; side by side -7% to -11% CPU); gate + merge when jobs 23/24 end
 - Efficiency detail: hot spots per profile of seed 1405: call_update_functions, item parsing, utils.isin, NLE reward fn
 
 ### Quick Tasks Completed
