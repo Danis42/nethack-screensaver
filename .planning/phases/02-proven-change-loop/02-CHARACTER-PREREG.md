@@ -82,3 +82,17 @@ MDE 0.04; all three finalists; alpha 0.0167 each. Planned sizes: val-dwa-fem-law
 6,624 (psi 0.50), mon-hum-mal-neu 8,256 (psi 0.60), all windows from seed 1,000, so every baseline game is a job 7 row.
 Owner note: hostile Mines dwarves give food, experience and pick-axes, which a dwarvish hero loses; the dlvl10
 comparison measures that trade-off as part of the net effect. The finalist stays in.
+
+## Amendment 3 (2026-11-17, during the experiments): futility stop
+
+Owner decision 2026-11-17 01:4x, after seeing job 19's interim counts (n 3,072, b 700, c 719). This adds a stop rule
+that can only end a finalist *without* a win; it never creates a "better", so the false-win rate stays at most
+alpha.
+
+- Check: `scripts/futility.py <job>` simulates the rest of the planned window in 96-seed blocks, assuming the true
+  dlvl10 effect from now on equals the MDE (0.04) and the observed discordance rate, at alpha 0.0167 (4,000 runs,
+  fixed RNG seed).
+- Rule: a job whose verdict is still "open" and whose simulated P(better) is below 0.05 is stopped. It counts as
+  "no win" in the decision rule. The check runs every 15 minutes on each running job.
+- The decision rule itself (winner = "better"; largest effect among winners; none -> `val-hum-fem-neu`) is unchanged.
+- First use: job 19 (val-dwa-fem-law) at n 3,072: P(better at MDE) 0.013 -> stopped.
