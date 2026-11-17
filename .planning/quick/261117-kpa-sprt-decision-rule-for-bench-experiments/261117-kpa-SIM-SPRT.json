@@ -1,0 +1,202 @@
+{
+ "seed": 20261117,
+ "reps": 20000,
+ "alpha": 0.0167,
+ "power": 0.8,
+ "block": 96,
+ "null": [
+  {
+   "looks": "every 96 seeds",
+   "psi_true": 0.46,
+   "psi_declared": 0.46,
+   "mde": 0.04,
+   "n_planned": 4128,
+   "reps": 20000,
+   "false_better": 181,
+   "rate": 0.00905,
+   "se": 0.0009061211287681134,
+   "bound": 0.01941836338630434,
+   "ok": true,
+   "mean_seeds": 1071.9216
+  },
+  {
+   "looks": "every 96 seeds",
+   "psi_true": 0.2,
+   "psi_declared": 0.46,
+   "mde": 0.04,
+   "n_planned": 4128,
+   "reps": 20000,
+   "false_better": 119,
+   "rate": 0.00595,
+   "se": 0.0009061211287681134,
+   "bound": 0.01941836338630434,
+   "ok": true,
+   "mean_seeds": 1961.3328
+  },
+  {
+   "looks": "every 96 seeds",
+   "psi_true": 0.05,
+   "psi_declared": 0.46,
+   "mde": 0.04,
+   "n_planned": 4128,
+   "reps": 20000,
+   "false_better": 0,
+   "rate": 0.0,
+   "se": 0.0009061211287681134,
+   "bound": 0.01941836338630434,
+   "ok": true,
+   "mean_seeds": 3577.92
+  },
+  {
+   "looks": "every 96 seeds",
+   "psi_true": 0.46,
+   "psi_declared": 0.2,
+   "mde": 0.04,
+   "n_planned": 1824,
+   "reps": 20000,
+   "false_better": 170,
+   "rate": 0.0085,
+   "se": 0.0009061211287681134,
+   "bound": 0.01941836338630434,
+   "ok": true,
+   "mean_seeds": 276.84
+  },
+  {
+   "looks": "every 96 seeds",
+   "psi_true": 0.05,
+   "psi_declared": 0.2,
+   "mde": 0.02,
+   "n_planned": 7680,
+   "reps": 20000,
+   "false_better": 51,
+   "rate": 0.00255,
+   "se": 0.0009061211287681134,
+   "bound": 0.01941836338630434,
+   "ok": true,
+   "mean_seeds": 4681.4112
+  },
+  {
+   "looks": "every discordant pair",
+   "pairs": 4000,
+   "psi_declared": 0.46,
+   "mde": 0.04,
+   "reps": 20000,
+   "false_better": 277,
+   "rate": 0.01385,
+   "se": 0.0009061211287681134,
+   "bound": 0.01941836338630434,
+   "ok": true
+  },
+  {
+   "looks": "every discordant pair",
+   "pairs": 4000,
+   "psi_declared": 0.2,
+   "mde": 0.02,
+   "reps": 20000,
+   "false_better": 230,
+   "rate": 0.0115,
+   "se": 0.0009061211287681134,
+   "bound": 0.01941836338630434,
+   "ok": true
+  }
+ ],
+ "power_cells": [
+  {
+   "psi": 0.46,
+   "mde": 0.04,
+   "delta": 0.0,
+   "sprt": {
+    "n_planned": 4128,
+    "p_better": 0.0089,
+    "mean_seeds": 1072.7664
+   },
+   "mixture": {
+    "n_planned": 6048,
+    "p_better": 0.00135,
+    "mean_seeds": 6033.8064
+   },
+   "seed_ratio_mixture_over_sprt": 5.624529627326136
+  },
+  {
+   "psi": 0.46,
+   "mde": 0.04,
+   "delta": 0.02,
+   "sprt": {
+    "n_planned": 4128,
+    "p_better": 0.21755,
+    "mean_seeds": 2039.1024
+   },
+   "mixture": {
+    "n_planned": 6048,
+    "p_better": 0.09155,
+    "mean_seeds": 5831.3136
+   },
+   "seed_ratio_mixture_over_sprt": 2.859745346776111
+  },
+  {
+   "psi": 0.46,
+   "mde": 0.04,
+   "delta": 0.04,
+   "sprt": {
+    "n_planned": 4128,
+    "p_better": 0.78745,
+    "mean_seeds": 1960.6176
+   },
+   "mixture": {
+    "n_planned": 6048,
+    "p_better": 0.8047,
+    "mean_seeds": 3861.8496
+   },
+   "seed_ratio_mixture_over_sprt": 1.969710768688397
+  },
+  {
+   "psi": 0.2,
+   "mde": 0.02,
+   "delta": 0.0,
+   "sprt": {
+    "n_planned": 7680,
+    "p_better": 0.01145,
+    "mean_seeds": 1795.248
+   },
+   "mixture": {
+    "n_planned": 10272,
+    "p_better": 0.0024,
+    "mean_seeds": 10227.3456
+   },
+   "seed_ratio_mixture_over_sprt": 5.696898478650303
+  },
+  {
+   "psi": 0.2,
+   "mde": 0.02,
+   "delta": 0.01,
+   "sprt": {
+    "n_planned": 7680,
+    "p_better": 0.22655,
+    "mean_seeds": 3459.5952
+   },
+   "mixture": {
+    "n_planned": 10272,
+    "p_better": 0.09945,
+    "mean_seeds": 9856.416
+   },
+   "seed_ratio_mixture_over_sprt": 2.8490084620304708
+  },
+  {
+   "psi": 0.2,
+   "mde": 0.02,
+   "delta": 0.02,
+   "sprt": {
+    "n_planned": 7680,
+    "p_better": 0.80115,
+    "mean_seeds": 3320.256
+   },
+   "mixture": {
+    "n_planned": 10272,
+    "p_better": 0.79605,
+    "mean_seeds": 6536.9568
+   },
+   "seed_ratio_mixture_over_sprt": 1.968811079627595
+  }
+ ],
+ "ok": true
+}

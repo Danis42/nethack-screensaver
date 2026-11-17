@@ -111,9 +111,18 @@ Recent decisions affecting current work:
 
 - [Phase 02]: Samurai needed two parser fixes (gate jobs 15, 17), merged; pilots 12/18/14 give psi 0.50/0.50/0.60
 
+- [Quick 261117-kpa]: Owner (2026-11-17) approved the efficiency research: Wald SPRT is the default decision rule for new experiments (bench/sprt.py, e02665eb5ad4bcb60cdd7e5fde04e682e25857b0); ~2x fewer seeds at the MDE, ~5.6x at no effect (261117-kpa-SIM-SPRT.json). Jobs <= 21 keep the mixture test. Power ~0.79 for a declared 0.80; one-sided (no "worse")
+
 ### Pending Todos
 
-None yet.
+- Efficiency (owner-approved 2026-11-17): skip seeds where a change cannot fire (decision-point log in GameResult + audit sample of skipped seeds); before the 02-05 experiment
+- Efficiency (owner-approved 2026-11-17): bot speed refactors under the refactor gate (hot spots: call_update_functions, item parsing, utils.isin, NLE reward fn ~7% each per profile of seed 1405)
+
+### Quick Tasks Completed
+
+| ID | Date | Task | Commit |
+|----|------|------|--------|
+| 261117-kpa | 2026-11-17 | Wald SPRT decision rule for bench experiments | e02665eb5ad4bcb60cdd7e5fde04e682e25857b0 |
 
 ### Blockers/Concerns
 
