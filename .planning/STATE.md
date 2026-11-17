@@ -113,6 +113,8 @@ Recent decisions affecting current work:
 
 - [Quick 261117-kpa]: Owner (2026-11-17) approved the efficiency research: Wald SPRT is the default decision rule for new experiments (bench/sprt.py, e02665eb5ad4bcb60cdd7e5fde04e682e25857b0); ~2x fewer seeds at the MDE, ~5.6x at no effect (261117-kpa-SIM-SPRT.json). Jobs <= 21 keep the mixture test. Power ~0.79 for a declared 0.80; one-sided (no "worse")
 
+- [Phase 04]: Owner pre-approved the standard pre-registration for all Phase 4 behaviour plans (04-PREREG-TEMPLATE.md, 2026-11-17); ask only on exceptions
+
 ### Pending Todos
 
 - Efficiency 261117-lkz: speed-up batches 1-2 are wip 2591a62602b52391305fe337deab475392eedd3d on branch speedup (identical digests on 5 seeds; side by side -7% to -11% CPU); gate + merge when jobs 23/24 end
