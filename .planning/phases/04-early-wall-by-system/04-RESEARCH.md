@@ -36,6 +36,18 @@ on the full job 23 before each plan's pre-registration.
   deaths come from chasing them.
 - **Excalibur dip** still runs (global_logic.py:1281, 1295) for every role: 3.6-era and useless for a Monk (SURV-07).
 
+## Human Monk winners (04-MONK-HUMAN-STUDY.md, 80 dumplogs, hardfought 3.6/3.7/5.0; recount checked)
+
+- Shield: 39/80 wear one at the end, but 33 of those wield a weapon (late artifact + shield); only 6/80 combine a
+  shield with bare hands. Supports 04-01 for a bare-handed Monk.
+- Body armour: 54/80 wear dragon scale mail despite the -20 to-hit (role.c:271); no other suit. Later kit question
+  (Phase 5), not Phase 4.
+- Unicorns: 80/80 killed cross-aligned unicorns (median 7) and carry a horn: 04-02 avoids them only below XL 10.
+- Pace (52 games, 3.7/5.0): all went Mines before Sokoban (Mines at XL 1-3, Minetown XL 6+, Sokoban XL 6-9,
+  Dlvl 10+ at XL 6-10+, Medusa XL 14+): a reference curve for 04-03.
+- Food: 61/80 ate meat (5.0: -1 alignment per meal, eat.c:1376-1384); 64/80 carry a lizard corpse; 46/80 a ring
+  of slow digestion: inputs for 04-04.
+
 ## Order of work (by triage gain, cheapest first within a tier)
 
 1. 04-01 Monk kit: no shield (melee, groups, strong). Small, sourced, measurable: the Phase 4 tracer.
