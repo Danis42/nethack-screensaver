@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-14)
 ## Current Position
 
 Phase: 2 — Proven Change Loop
-Plan: 3 of 5 complete (02-01, 02-02, 02-03); 02-04: job 19 stopped by futility (amendment 3), job 20 paused at 823 rows, job 21 queued
+Plan: 4 of 5 complete (02-01..02-04); 02-04 winner mon-hum-mal-neu (job 21); fresh baseline job 23 running; next 02-05 (owner pre-registration checkpoint)
 Status: Executing
 Last activity: 2026-11-14 — Phase 1 complete, transitioned to Phase 2
 
@@ -115,14 +115,15 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Efficiency 261117-l4a: bench side on main (858fe1b3484c5fbee1e0547813699fa0c5854024, trigger "mines_unwanted", 10% audit); bot-side visit log is wip baa15c7363869df89dc929e9c3fd09a73055e738 on branch trigger-skip: gate + merge after jobs 20/21, BEFORE the fresh baseline
-- Efficiency (owner-approved 2026-11-17): bot speed refactors under the refactor gate (hot spots: call_update_functions, item parsing, utils.isin, NLE reward fn ~7% each per profile of seed 1405)
+- Efficiency: bot speed refactors under the refactor gate (recommendation 4, not started)
+- Efficiency detail: hot spots per profile of seed 1405: call_update_functions, item parsing, utils.isin, NLE reward fn
 
 ### Quick Tasks Completed
 
 | ID | Date | Task | Commit |
 |----|------|------|--------|
 | 261117-kpa | 2026-11-17 | Wald SPRT decision rule for bench experiments | e02665eb5ad4bcb60cdd7e5fde04e682e25857b0 |
+| 261117-l4a | 2026-11-17 | Trigger-gated experiments (skip seeds a change cannot reach) + visit log | 858fe1b3484c5fbee1e0547813699fa0c5854024, b2b2bbe6d1c9341319b02e937aac7f37ec4db14d (gate job 22) |
 
 ### Blockers/Concerns
 
@@ -145,5 +146,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-11-17
-Stopped at: 02-04, job 19 futility-stopped (e3d88db), job 20 (Samurai) paused at 823 rows, job 21 queued; bench server down, restart with serve --resume
+Stopped at: 02-04 complete (Monk); fresh baseline job 23 running; 02-05 waits for owner pre-registration (SPRT + trigger mines_unwanted available)
 Resume file: .planning/phases/02-proven-change-loop/.continue-here.md

@@ -1,10 +1,10 @@
 ---
 quick_id: 261117-l4a
-status: incomplete
+status: complete
 date: 2026-11-17
 commits:
   - 858fe1b3484c5fbee1e0547813699fa0c5854024  # bench side (main)
-  - baa15c7363869df89dc929e9c3fd09a73055e738  # wip visit log (branch trigger-skip, gate pending)
+  - b2b2bbe6d1c9341319b02e937aac7f37ec4db14d  # visit log (gate job 22, 100 of 100 identical)
 ---
 
 # 261117-l4a Summary: skip seeds where a change cannot fire
@@ -20,11 +20,10 @@ commits:
   plays as on main (2,289 turns, killed by a gnome king).
 - Tests: 913 passed, 6 skipped on the branch (`tests/test_bench_triggers.py`, `tests/test_visits.py`).
 
-## Open
+## Gate and merge
 
-- Refactor gate for the visit log: `bench.gate` refuses to run beside bench jobs; run it after jobs 20/21 and
-  before the fresh baseline, amend `Gate: job N`, merge. Without it the fresh baseline has no visit logs and
-  `trigger` experiments are refused (by design).
+- Gate job 22: pass, 100 of 100 seeds identical. Merged to main as b2b2bbe6d1c9341319b02e937aac7f37ec4db14d before
+  the fresh baseline (job 23), whose games carry the visit log.
 - Expected gain for 02-05: about 2% of baseline games reach the trigger (job 7: 186 of 9,600 end in the Mines while
   FIND_SOKOBAN; the trigger is wider, also counting visits that did not end there), plus the 10% audit: the
   candidate plays roughly 12-15% of seeds.
