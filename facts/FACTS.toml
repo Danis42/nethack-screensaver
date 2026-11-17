@@ -575,3 +575,14 @@ tag = "5.0-source"
 evidence = ["reference/nethack-5.0.0/src/stairs.c:180-183", "reference/nethack-5.0.0/src/display.c:2345-2350"]
 quote = "known_branch_stairs(stairway *sway) { return (sway && sway->tolev.dnum != u.uz.dnum && sway->u_traversed); }"
 notes = "display.c:2347 uses known_branch_stairs to pick S_brdnstair over S_dnstair; stairs_description (stairs.c:201) says plain 'stairs down' for branch stairs to a not-yet-visited branch."
+
+[monk-shield-loses-martial-arts]
+claim = "A Monk wearing a shield loses its martial-arts to-hit bonus (+XL/3+2) and the double punch (Skilled+); the unarmed special-hit path also needs no weapon, body armour or shield"
+tag = "5.0-source"
+evidence = [
+    "reference/nethack-5.0.0/src/uhitm.c:397-401",
+    "reference/nethack-5.0.0/src/uhitm.c:751-752",
+    "reference/nethack-5.0.0/src/uhitm.c:1779",
+]
+quote = "else if (!uwep && !uarms) tmp += (u.ulevel / 3) + 2;"
+notes = "double_punch(): 'if (!uwep && !uarms && skl_lvl > P_BASIC) return (skl_lvl - P_BASIC) > rn2(5);'; hmd.unarmed = !uwep && !uarm && !uarms. Baseline Monks (job 23) often wear Uruk-hai, elven or dwarvish shields."

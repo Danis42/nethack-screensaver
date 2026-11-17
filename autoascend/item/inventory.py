@@ -1262,8 +1262,8 @@ class Inventory:
             slot = item.object.sub
             ac = item.get_ac() - accessories.armor_bonus(item.object)  # value by property, not AC alone
 
-            if self.agent.character.role == Character.MONK and slot == O.ARM_SUIT:
-                continue
+            if self.agent.character.role == Character.MONK and slot in (O.ARM_SUIT, O.ARM_SHIELD):
+                continue  # fact:monk-shield-loses-martial-arts (and no body armour, as before)
 
             if best_ac[slot] is None or best_ac[slot] > ac:
                 best_ac[slot] = ac
