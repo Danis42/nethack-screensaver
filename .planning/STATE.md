@@ -115,7 +115,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Efficiency (owner-approved 2026-11-17): skip seeds where a change cannot fire (decision-point log in GameResult + audit sample of skipped seeds); before the 02-05 experiment
+- Efficiency 261117-l4a: bench side on main (858fe1b3484c5fbee1e0547813699fa0c5854024, trigger "mines_unwanted", 10% audit); bot-side visit log is wip baa15c7363869df89dc929e9c3fd09a73055e738 on branch trigger-skip: gate + merge after jobs 20/21, BEFORE the fresh baseline
 - Efficiency (owner-approved 2026-11-17): bot speed refactors under the refactor gate (hot spots: call_update_functions, item parsing, utils.isin, NLE reward fn ~7% each per profile of seed 1405)
 
 ### Quick Tasks Completed
