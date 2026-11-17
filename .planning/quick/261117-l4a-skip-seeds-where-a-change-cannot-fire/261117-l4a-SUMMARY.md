@@ -24,6 +24,6 @@ commits:
 
 - Gate job 22: pass, 100 of 100 seeds identical. Merged to main as b2b2bbe6d1c9341319b02e937aac7f37ec4db14d before
   the fresh baseline (job 23), whose games carry the visit log.
-- Expected gain for 02-05: about 2% of baseline games reach the trigger (job 7: 186 of 9,600 end in the Mines while
-  FIND_SOKOBAN; the trigger is wider, also counting visits that did not end there), plus the 10% audit: the
-  candidate plays roughly 12-15% of seeds.
+- Gain for 02-05, corrected: the earlier estimate (about 2%) counted games that END in the Mines. Measured on the
+  first 634 Monk games of job 23, the trigger fires in 282 (44.5%), mostly on the way back from Minetown under
+  FIND_SOKOBAN. With the 10% audit the candidate plays about half the seeds: roughly 2x, not the 7x first hoped.
