@@ -115,7 +115,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Efficiency: bot speed refactors under the refactor gate (recommendation 4, not started)
+- Efficiency 261117-lkz: speed-up batch 1 is wip d0788516e190608da68960d2fa99ba15262c150b on branch speedup (identical digests on 5 seeds, -7% CPU on a 31,657-turn game); gate + merge when job 23 ends
 - Efficiency detail: hot spots per profile of seed 1405: call_update_functions, item parsing, utils.isin, NLE reward fn
 
 ### Quick Tasks Completed
