@@ -1,9 +1,16 @@
-# 04-02 pre-registration: keep away from hostile unicorns below XL 10
+# 04-02 pre-registration: below XL 10, never walk up to a hostile unicorn
+
+**Design change before any experiment (2026-11-17):** the first candidate f02e8e8 also stepped away from an adjacent
+unicorn. Debug replays of four job 23 unicorn-death seeds (4367, 8065, 8220, 7432, all in the dev range) showed the
+route leading straight back into a unicorn standing unseen in a dark corridor (seed 7432), so the bot took hits
+without hitting back. The candidate now fights an adjacent unicorn as before and only stops walking up to one. These
+debug replays are development work on single games, not a reading of the experiment; metric, MDE rule and test are
+unchanged.
 
 Written from 04-PREREG-TEMPLATE.md (owner pre-approved 2026-11-17), committed before any candidate game is read. Nothing
 here departs from the template, so the owner is not asked.
 
-- **Candidate:** f02e8e8aefc2ee824da5a73a332c2fd45ac9a934 (branch `unicorns`). Its bot code differs from the baseline
+- **Candidate:** a4431346d842cb5bda83227921c58d59cd6be8b7 (branch `unicorns`). Its bot code differs from the baseline
   only by this change (`git diff --stat b2b2bbe main -- autoascend nethack_screensaver bench` is empty; the candidate
   adds the rule and the `unicorns` metric).
 - **Baseline:** job 23, b2b2bbe6d1c9341319b02e937aac7f37ec4db14d (Monk, seeds 1000-10999).
