@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-11-14)
 ## Current Position
 
 Phase: 2 — Proven Change Loop
-Plan: 3 of 5 complete (02-01, 02-02, 02-03); 02-04 experiments 19, 20, 21 running (MDE 0.04, owner-approved)
+Plan: 3 of 5 complete (02-01, 02-02, 02-03); 02-04: job 19 stopped by futility (amendment 3), job 20 paused at 823 rows, job 21 queued
 Status: Executing
 Last activity: 2026-11-14 — Phase 1 complete, transitioned to Phase 2
 
@@ -135,6 +135,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-15
-Stopped at: 02-04 Task 4, character experiments 19 (val-dwa), 20 (sam), 21 (mon) queued/running; 02-05 code on branch mines-follow-plan (wip cd99a5f), Mines stairs not recognisable before use (owner chose leave-unwanted-Mines)
-Resume file: None
+Last session: 2026-11-17
+Stopped at: 02-04, job 19 futility-stopped (e3d88db), job 20 (Samurai) paused at 823 rows, job 21 queued; bench server down, restart with serve --resume
+Resume file: .planning/phases/02-proven-change-loop/.continue-here.md

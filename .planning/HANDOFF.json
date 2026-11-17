@@ -1,36 +1,92 @@
 {
   "version": "1.0",
-  "timestamp": "2026-11-16T01:16:22+01:00",
+  "timestamp": "2026-11-17T02:05:00+01:00",
   "phase": "2",
   "phase_name": "proven-change-loop",
   "phase_dir": ".planning/phases/02-proven-change-loop",
   "plan": "02-04",
   "status": "paused",
   "completed_tasks": [
-    {"name": "02-01 commit labels and ratchets", "status": "done"},
-    {"name": "02-02 refactor gate", "status": "done"},
-    {"name": "02-03 failure triage", "status": "done"},
-    {"name": "02-04 pilots, pre-registration, owner approval, experiments queued", "status": "in_progress", "commit": "a8d04fcbc7256439f5a2a13f4bf9e4e742f078af"}
+    {
+      "name": "02-01 commit labels and ratchets",
+      "status": "done"
+    },
+    {
+      "name": "02-02 refactor gate",
+      "status": "done"
+    },
+    {
+      "name": "02-03 failure triage",
+      "status": "done"
+    },
+    {
+      "name": "02-04 pilots, pre-registration, owner approval, experiments queued",
+      "status": "in_progress",
+      "commit": "a8d04fcbc7256439f5a2a13f4bf9e4e742f078af"
+    }
   ],
   "remaining_tasks": [
-    {"name": "02-04 apply decision rule to jobs 19-21, set CHARACTER, fresh baseline, result and summary", "status": "not_started"},
-    {"name": "02-05 leave unwanted Mines: rebase, owner pre-registration, pilot, experiment, confirm", "status": "not_started"},
-    {"name": "Phase 2 verification", "status": "not_started"}
+    {
+      "name": "02-04 apply decision rule to jobs 19-21, set CHARACTER, fresh baseline, result and summary",
+      "status": "not_started"
+    },
+    {
+      "name": "02-05 leave unwanted Mines: rebase, owner pre-registration, pilot, experiment, confirm",
+      "status": "not_started"
+    },
+    {
+      "name": "Phase 2 verification",
+      "status": "not_started"
+    }
   ],
   "blockers": [],
   "async_jobs": [
-    {"job_id": "19", "backend": "screens-bench", "status": "running", "note": "val-dwa-fem-law, 6,624 planned, 951 rows at pause"},
-    {"job_id": "20", "backend": "screens-bench", "status": "queued", "note": "sam-hum-mal-law, 6,624 planned"},
-    {"job_id": "21", "backend": "screens-bench", "status": "queued", "note": "mon-hum-mal-neu, 8,256 planned"}
+    {
+      "job_id": "19",
+      "backend": "screens-bench",
+      "status": "stopped",
+      "note": "futility stop (amendment 3) at n 3,072, no win"
+    },
+    {
+      "job_id": "20",
+      "backend": "screens-bench",
+      "status": "running-in-db, server down",
+      "note": "sam-hum-mal-law, 823 rows at pause; resumes with serve --resume"
+    },
+    {
+      "job_id": "21",
+      "backend": "screens-bench",
+      "status": "queued",
+      "note": "mon-hum-mal-neu, 8,256 planned"
+    }
   ],
   "human_actions_pending": [
-    {"action": "Pre-register metric and MDE for the Mines change (02-05 checkpoint)", "context": "after 02-04 ends", "blocking": true}
+    {
+      "action": "Pre-register metric and MDE for the Mines change (02-05 checkpoint)",
+      "context": "after 02-04 ends",
+      "blocking": true
+    }
   ],
   "decisions": [
-    {"decision": "Leave unwanted Mines instead of recognising branch stairs", "rationale": "5.0 shows branch stairs only after use", "phase": "2"},
-    {"decision": "Character A/B: MDE 0.04, three finalists, alpha 0.0167", "rationale": "owner approval 2026-11-16", "phase": "2"}
+    {
+      "decision": "Leave unwanted Mines instead of recognising branch stairs",
+      "rationale": "5.0 shows branch stairs only after use",
+      "phase": "2"
+    },
+    {
+      "decision": "Character A/B: MDE 0.04, three finalists, alpha 0.0167",
+      "rationale": "owner approval 2026-11-16",
+      "phase": "2"
+    },
+    {
+      "decision": "Futility stop: P(better at MDE) < 0.05 -> stop, no win (prereg amendment 3)",
+      "rationale": "owner 2026-11-17; saves bench time, cannot create a false win",
+      "phase": "2"
+    }
   ],
-  "uncommitted_files": ["?? .planning/state.json"],
-  "next_action": "Check bench server is running and jobs 19-21 state; apply pre-registered decision rule when all done.",
+  "uncommitted_files": [
+    "?? .planning/state.json"
+  ],
+  "next_action": "Restart bench with serve --resume, re-create the 15-min check with scripts/futility.py; see .continue-here.md.",
   "context_notes": "See .planning/phases/02-proven-change-loop/.continue-here.md"
 }
