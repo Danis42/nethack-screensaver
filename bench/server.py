@@ -7,7 +7,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from . import funnel as funnel_mod, gitrefs, power as powerlib, provenance, report, seeds, sprt
+from . import funnel as funnel_mod, gitrefs, power as powerlib, provenance, report, seeds, sprt, triggers
 from .filters import parse_where
 from .metrics import METRICS, evaluate
 
@@ -110,10 +110,12 @@ class App:
             return {"job_id": self.scheduler.submit("baseline", spec)}
 
     def start_experiment(self, candidate, baseline="main", metric="dlvl6", mde=None, discordance=None, alpha=0.05,
-                         power=0.8, block=96, lo=None, lgen=None, gate=None, allow_new_baseline=False, rule="sprt"):
+                         power=0.8, block=96, lo=None, lgen=None, gate=None, allow_new_baseline=False, rule="sprt",
+                         trigger=None):
         """Paired A/B on one rate metric. The MDE is declared before the run; bench.sprt.plan fixes the planned
         size, and the window is [lo, lo + n_planned). The scheduler judges contiguous seed prefixes with the
-        declared rule: "sprt" (Wald, owner-approved 2026-11-17, default) or "mixture" (always-valid, MEAS-06)."""
+        declared rule: "sprt" (Wald, owner-approved 2026-11-17, default) or "mixture" (always-valid, MEAS-06). A
+        trigger (bench.triggers.TRIGGERS) lets the candidate skip seeds whose baseline game never meets it."""
         rates = [n for n, m in METRICS.items() if m.kind == "rate"]
         if metric not in rates:
             raise ValueError(f"metric must be one of {rates}")
@@ -137,11 +139,13 @@ class App:
         if not allow_new_baseline and not self.store.played(base, lo, hi, lgen_mode=mode, env_id=self.env_id):
             raise ValueError(f"baseline {base[:10]} has no stored games in [{lo}, {hi}); name the commit that holds "
                              "the baseline (Pitfall 6) or pass allow_new_baseline=true")
+        if trigger is not None:
+            triggers.check(self.store, base, lo, hi, {"lgen_mode": mode, "env_id": self.env_id}, trigger)
         spec = {"candidate": cand, "candidate_ref": candidate, "candidate_subject": cand_subject,
                 "baseline": base, "baseline_ref": baseline, "baseline_subject": base_subject,
                 "metric": metric, "declared": declared, "block": int(block),
                 "seeds": {"range": span, "lo": lo, "hi": hi},
-                "lgen": mode, "gate": gate, **self._env_fields(),
+                "lgen": mode, "gate": gate, "trigger": trigger, **self._env_fields(),
                 "lock_blob_candidate": provenance.lock_blob(self.repo, cand),
                 "lock_blob_baseline": provenance.lock_blob(self.repo, base)}
         with self.lock:

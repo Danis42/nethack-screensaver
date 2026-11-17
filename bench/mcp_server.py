@@ -80,17 +80,17 @@ def bench_baseline(ref: str = "main", games: int = 576, lo: int | None = None, h
 def bench_experiment(candidate: str, mde: float, baseline: str = "main", metric: str = "dlvl6",
                      discordance: float | None = None, lo: int | None = None, block: int = 96,
                      lgen: str | None = None, allow_new_baseline: bool = False, alpha: float = 0.05,
-                     power: float = 0.8, rule: str = "sprt") -> dict:
+                     power: float = 0.8, rule: str = "sprt", trigger: str | None = None) -> dict:
     """A/B experiment: candidate vs baseline commit on one rate metric (see bench_power first). Declare the MDE
     (smallest effect worth detecting, e.g. 0.03) before the run; the size follows from it and the discordance (share
-    of seeds where the commits differ). rule "sprt" (default): Wald's SPRT, "better" or "no detectable effect",
-    fewest games; "mixture": can also say "worse"; both valid however often checked. Commit first; refs resolve to
-    a SHA now. A job counts as started only when `started` is true (first game row exists); cite the job ID then.
+    of seeds where the commits differ). rule "sprt" (default): Wald's SPRT, "better" or "no detectable effect";
+    "mixture" can also say "worse". trigger (bench.triggers): play only seeds the change can reach. Commit first; refs
+    resolve to a SHA now. A job counts as started only when `started` is true (first game row exists); cite the job.
     Returns job_id (`uv run screens-bench wait <job_id>` waits). Baseline needs stored games or allow_new_baseline."""
     return _call("POST", "/api/jobs", {"kind": "experiment", "candidate": candidate, "baseline": baseline,
                                        "metric": metric, "mde": mde, "discordance": discordance, "lo": lo,
                                        "block": block, "lgen": lgen, "allow_new_baseline": allow_new_baseline,
-                                       "alpha": alpha, "power": power, "rule": rule})
+                                       "alpha": alpha, "power": power, "rule": rule, "trigger": trigger})
 
 
 @mcp.tool()

@@ -1,19 +1,18 @@
 """Hands out one game at a time to worker slots for the active job and judges experiments.
 
-Games are seeded: a job names a half-open seed window [lo, hi) in its spec ("seeds"), and the
-scheduler plays the window's seeds in ascending order, skipping seeds already stored or in
-flight. Both sides of an experiment play the same window, so they are compared seed by seed.
-Stored games are reused only under the same game key: commit, seed, lgen mode, environment
-(env_id) and replicate (rep).
+Games are seeded: a job names a half-open seed window [lo, hi) in its spec ("seeds"); the scheduler plays its
+seeds in ascending order, skipping seeds stored or in flight. Both sides of an experiment play the same window and
+are compared seed by seed. Stored games are reused only under the same game key: commit, seed, lgen mode, env_id and
+replicate (rep). With a spec "trigger", bench.triggers.View skips candidate seeds the change cannot reach.
 
-Experiments declare their MDE and planned size before the run (spec "declared", from bench.power.plan).
+Experiments declare their rule, MDE and planned size before the run (spec "declared", from bench.sprt.plan).
 Look k covers the contiguous seed prefix [lo, lo + min((k + 1) * block, n_planned)) and is taken only when
-every seed of it is stored on both sides; the verdict comes from the always-valid sequential test (MEAS-06)."""
+every seed of it is stored on both sides; the verdict comes from the declared rule (bench.sprt.judge_declared)."""
 import dataclasses
 import time
 from collections import defaultdict, deque
 
-from . import seeds as seedlib, sprt
+from . import seeds as seedlib, sprt, triggers
 from .metrics import METRICS, orient
 from .sequential import NO_EFFECT, discordant
 
@@ -90,6 +89,7 @@ class Scheduler:
                           "rep": int(spec.get("replicate", 0))}
             self.store.set_job(job["id"], "running", job["result"])
             self.job, self.error, self._deaths_in_row = job, None, 0
+            self.view = triggers.View(self.store, job)  # store reads; a trigger skips seeds the change cannot reach
         if self._judge():
             return
         self._dispatch()
@@ -178,7 +178,7 @@ class Scheduler:
             return False  # a gap anywhere in the prefix: never judge on completion order
         metric, declared = METRICS[spec["metric"]], spec["declared"]
         window = range(lo, lo + need)
-        cand = self.store.games_by_seed(spec["candidate"], window, **key)
+        cand = self.view.games_by_seed(spec["candidate"], window, **key)
         base = self.store.games_by_seed(spec["baseline"], window, **key)
         pairs = []  # (seed, candidate outcome, baseline outcome), in seed order
         for seed in window:
@@ -187,7 +187,7 @@ class Scheduler:
             except KeyError:  # a game without the metric's field
                 pass
         if not pairs:
-            self.error = f"no game has the fields metric {spec['metric']} needs"
+            self.error = self.view.error or f"no game has the fields metric {spec['metric']} needs"
             self._end("failed", {**self.job["result"], "error": self.error})
             return True
         looks = []
@@ -213,12 +213,12 @@ class Scheduler:
 
     def _played(self, sha, lo, hi):
         """How many seeds of [lo, hi) this commit has played under the job's game key."""
-        return self.store.played(sha, lo, hi, **self.job["key"])
+        return self.view.played(sha, lo, hi, **self.job["key"])
 
     def _wanted(self):
         """(sha, seed) of the next game to play, lowest seed first, or None."""
         for sha, lo, hi in self._targets():
-            taken = self.store.seeds(sha, lo, hi, **self.job["key"]) | self._inflight[sha]
+            taken = self.view.seeds(sha, lo, hi, **self.job["key"]) | self._inflight[sha]
             for seed in range(lo, hi):
                 if seed not in taken:
                     return sha, seed
