@@ -147,6 +147,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-17
-Stopped at: 02-04 complete (Monk); fresh baseline job 23 running; 02-05 waits for owner pre-registration (SPRT + trigger mines_unwanted available)
+Last session: 2026-11-18
+Stopped at: paused by owner. Job 23 (Monk baseline) done; Mines pilot job 24 interrupted at 554 rows; unicorn pilot job 25 queued; 04-02 candidate a4431346d842cb5bda83227921c58d59cd6be8b7 built (Experiment: pending)
 Resume file: .planning/phases/02-proven-change-loop/.continue-here.md
