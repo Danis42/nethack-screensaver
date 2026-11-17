@@ -18,7 +18,7 @@ from autoascend.global_logic import Milestone
 from autoascend.glyph import MON
 from autoascend.item import flatten_items
 from autoascend.plans import DEFAULT_STRATEGY, STRATEGIES, choose_strategy, plan_for, race_from_welcome
-from nethack_screensaver import dungeon_truth, fixed_clock, snapshots, staging
+from nethack_screensaver import dungeon_truth, fixed_clock, staging, visits
 
 HP = 10
 MAX_HP = 11
@@ -81,7 +81,7 @@ class GameResult:
     stuck_reports: list = field(default_factory=list)  # one row per stuck-watch firing (autoascend/stuck.py)
     watchdog_stack: list = field(default_factory=list)  # "dir/file.py:line function", innermost last
     stage: str | None = None  # staged (wizard-mode) game: never mixed into natural-play rates
-    snapshots: dict = field(default_factory=dict)  # hero stats per depth/rung/end (nethack_screensaver/snapshots.py)
+    snapshots: dict = field(default_factory=dict)  # hero stats per depth/rung/end, visits (snapshots.py, visits.py)
 
 
 def _strategy_and_plan(obs: dict, forced: str | None, rng=random) -> tuple[str, tuple]:
@@ -327,13 +327,13 @@ def run_game(
     prev_chars = None
     watchdog = _ScreenWatchdog(watchdog_seconds)
     ctx = _DeathContext()
-    recorder = snapshots.Recorder()
+    recorder = visits.Recorder()  # snapshots plus the visit log
     truth_for = set()  # agents that got the layout (a pinned role resets the env and makes a new agent)
 
     def on_step(obs):
         nonlocal max_depth, turns, xp_level, prev_chars
         ctx.observe(obs)
-        recorder.observe(obs, _reached(wrapper))
+        recorder.observe(obs, _reached(wrapper), _milestone(wrapper))
         agent = getattr(wrapper, "agent", None)
         if agent is not None and id(agent) not in truth_for and _give_ladder_truth(wrapper, env):
             truth_for.add(id(agent))
