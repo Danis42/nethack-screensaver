@@ -7,7 +7,7 @@ import pytest
 
 from bench.provenance import ENV_ID_FIELDS, env_fingerprint, env_id, lock_blob, lock_sha256, worker_facts
 
-PINNED_NLE = "cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72"
+PINNED_NLE = "2f8c692c7876a88fdd262db2e39a5eae73ec3bf6"  # was cb9d6572 before the author-email rewrite (same tree)
 
 
 def _env(**changes):

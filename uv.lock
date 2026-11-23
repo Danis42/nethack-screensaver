@@ -326,7 +326,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "nle", git = "file://$HOME/git/nle-screens.git?rev=cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72" },
+    { name = "nle", git = "https://github.com/Danis42/nle-screens.git?rev=2f8c692c7876a88fdd262db2e39a5eae73ec3bf6" },
     { name = "numba", specifier = ">=0.61" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "opencv-python-headless", specifier = ">=4.10" },
@@ -343,8 +343,8 @@ dev = [
 
 [[package]]
 name = "nle"
-version = "1.3.1.dev21+gcb9d6572f"
-source = { git = "file://$HOME/git/nle-screens.git?rev=cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72#cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72" }
+version = "0.1.dev9844+g2f8c692c7"
+source = { git = "https://github.com/Danis42/nle-screens.git?rev=2f8c692c7876a88fdd262db2e39a5eae73ec3bf6#2f8c692c7876a88fdd262db2e39a5eae73ec3bf6" }
 dependencies = [
     { name = "gymnasium" },
     { name = "numpy" },
