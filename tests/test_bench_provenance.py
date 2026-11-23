@@ -6,7 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from bench.provenance import ENV_ID_FIELDS, env_fingerprint, env_id, folder_tree, lock_blob, lock_sha256, worker_facts
+from bench.nle_build import folder_tree
+from bench.provenance import ENV_ID_FIELDS, env_fingerprint, env_id, lock_blob, lock_sha256, worker_facts
 
 PINNED_NLE = "cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72"  # nle-screens commit whose tree is vendor/nle
 REPO = Path(__file__).resolve().parent.parent
