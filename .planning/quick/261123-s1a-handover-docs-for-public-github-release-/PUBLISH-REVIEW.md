@@ -1,6 +1,6 @@
 # Before publishing: owner review list
 
-Nothing has been pushed. GitHub account `Danis42` is logged in to `gh`; the repo has no remote yet.
+Published 2026-11-23 after owner review.
 
 ## Checked (2026-11-23)
 
@@ -12,27 +12,15 @@ Nothing has been pushed. GitHub account `Danis42` is logged in to `gh`; the repo
 - Not in git (gitignored): `reference/` (699 MB vendored sources), `archive/` (old backups and the 146,743-game
   database), `.worktrees/`, `.venv/`. The live bench database is outside the repo.
 
-## Decide
+## Decided by the owner (2026-11-23) and done
 
-1. **Author email.** All 700 commits carry `Danis42 <8244890+Danis42@users.noreply.github.com>`. On a public repo that address is visible
-   to everyone. Option: rewrite the author to the GitHub no-reply address (`<id>+Danis42@users.noreply.github.com`)
-   in a **separate export clone** with `git filter-repo --mailmap`, leaving this repo untouched. The same applies
-   to the NLE repo if any of its commits carry the address (its own new commits do).
-2. **Licence for this repo's own code.** There is no top-level LICENSE. AutoAscend is MIT; MIT for the rest would
-   match. NetHack's NGPL covers only the NLE repo.
-3. **Personal wording: done at HEAD (2026-11-23).** Verbatim owner quotes are paraphrased, local home paths are
-   repo-relative or `~`, and the hand-game tools and `scripts/wiki_sweep/clean.py` find the repo from their own
-   location. Still left: `pyproject.toml` / `uv.lock` (fixed by step 2 below), older commits in the history, and one
-   commit message that name the home path. The export clone can clean the history with
-   `git filter-repo --replace-text` (home-path repo prefix → empty, home path → `~/`) together with the mailmap.
-4. **Repo names.** Proposal: `nethack-screensaver` (this repo) and `nle-screens` (patched NLE, branch `screens-nh5`).
-
-## Steps after approval (in this order)
-
-1. Create `Danis42/nle-screens` (public), push branch `screens-nh5` (140 MB repo, NetHack history included).
-2. In this repo, change the NLE source in `pyproject.toml` from `file://$HOME/git/nle-screens.git` to
-   `https://github.com/Danis42/nle-screens.git` (same `rev`), `uv lock`, check that `uv sync` and
-   `scripts/fresh_clone_check.py` pass, commit, move tag `ascension-bot-v1` onto that commit.
-3. Create `Danis42/nethack-screensaver` (public), push `main`, the tag and the branches worth keeping
-   (proposal: `mines-candidate`, `monk-shield`, `unicorns`, `speedup`; the `char/*` and proof branches are
-   referenced by job results, so push them too or drop them from HANDOFF.md).
+1. **Author email:** rewritten to the GitHub no-reply address in an export clone (`git filter-repo --mailmap`),
+   for this repo and the NLE fork. The local working repo keeps its original history.
+2. **Licence:** MIT for this repo's own code (`LICENSE`); `autoascend/` keeps its own MIT licence.
+3. **Personal wording:** owner quotes paraphrased and home paths removed at HEAD and, in the export, in every
+   commit (`--replace-text`, `--replace-message`).
+4. **Repos:** `Danis42/nle-screens` (public, branch `screens-nh5`, tip `2f8c692c7876a88fdd262db2e39a5eae73ec3bf6`,
+   same tree as `cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72`) and `Danis42/nethack-screensaver` (public).
+   `pyproject.toml` pins the GitHub fork; seed 1001 replays identically to job 23.
+5. **Hashes:** the rewrite changed every commit hash; `.planning/COMMIT-MAP.tsv` in the published repo maps the
+   original hashes that the documents and bench jobs quote to the published ones.

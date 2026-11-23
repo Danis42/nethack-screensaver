@@ -11,5 +11,5 @@ date: 2026-11-23
 - `README.md`: status banner (bot frozen at `ascension-bot-v1`, main becomes a replay screensaver), install,
   config, expected results from job 23, credits and licences.
 - `PUBLISH-REVIEW.md`: secret scan (clean), owner decisions (author email in 700 commits, licence, personal
-  wording, repo names) and push order. Nothing pushed.
+  wording, repo names) and push order. Published after owner approval (noreply email, MIT).
 - Verify: `uv run pytest` 913 passed, 6 skipped.
