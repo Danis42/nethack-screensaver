@@ -1,0 +1,383 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2cc2a7aee..57190aa20 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -121,14 +121,14 @@ add_subdirectory(util)
+ add_subdirectory(dat)
+ 
+ # Lua.
+-set(LUA_VERSION 5.4.3)
++set(LUA_VERSION 5.4.8) # NetHack 5 checks the exact Lua release (nhlua.c sandbox)
+ include(ExternalProject)
+ ExternalProject_Add(
+   fetch-lua
+   PREFIX "lua"
+-  URL http://www.lua.org/ftp/lua-${LUA_VERSION}.tar.gz
++  URL https://www.lua.org/ftp/lua-${LUA_VERSION}.tar.gz
+   URL_HASH
+-    SHA512=3a1a3ee8694b72b4ec9d3ce76705fe179328294353604ca950c53f41b41161b449877d43318ef4501fee44ecbd6c83314ce7468d7425ba9b2903c9c32a28bbc0
++    SHA256=4f18ddae154e793e46eeab727c59ef1c0c0c2b744e7b94219710d76f530629ae
+   BUILD_IN_SOURCE TRUE
+   CONFIGURE_COMMAND ""
+   BUILD_COMMAND make MYCFLAGS=-fPIC
+@@ -234,6 +234,7 @@ pybind11_add_module(
+   src/decl.c
+   src/drawing.c
+   src/objects.c
++  src/hacklib.c
+   $<TARGET_OBJECTS:tile>)
+ target_link_libraries(_pynethack PUBLIC nethackdl)
+ set_target_properties(_pynethack PROPERTIES CXX_STANDARD 14)
+diff --git a/dat/CMakeLists.txt b/dat/CMakeLists.txt
+index a2140e7a7..bc206ad95 100644
+--- a/dat/CMakeLists.txt
++++ b/dat/CMakeLists.txt
+@@ -8,40 +8,20 @@ set(DATHELP
+     optmenu
+     wizhelp)
+ 
+-file(
+-  GLOB SPECIAL_LEVELS
+-  RELATIVE ${NH_DAT}
+-  asmodeus.lua
+-  baalz.lua
+-  bigrm-??.lua
+-  castle.lua
+-  fakewiz?.lua
+-  juiblex.lua
+-  knox.lua
+-  medusa-?.lua
+-  minend-?.lua
+-  minefill.lua
+-  minetn-?.lua
+-  oracle.lua
+-  orcus.lua
+-  sanctum.lua
+-  soko?-?.lua
+-  tower?.lua
+-  valley.lua
+-  wizard?.lua
+-  nhcore.lua
+-  nhlib.lua
+-  themerms.lua
+-  astral.lua
+-  air.lua
+-  earth.lua
+-  fire.lua
+-  water.lua)
+-
+-file(
+-  GLOB QUEST_LEVELS
+-  RELATIVE ${NH_DAT}
+-  ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua)
++# NetHack 5 levels (sys/unix/Makefile.top SPEC_LEVS / QUEST_LEVS). The patterns
++# must carry the dat directory: NH_DAT was never defined, so they matched nothing.
++set(SPECIAL_LEVEL_PATTERNS
++    asmodeus.lua baalz.lua bigrm-*.lua castle.lua fakewiz?.lua juiblex.lua
++    knox.lua medusa-?.lua minend-?.lua minefill.lua minetn-?.lua oracle.lua
++    orcus.lua sanctum.lua soko?-?.lua tower?.lua valley.lua wizard?.lua
++    nhcore.lua nhlib.lua themerms.lua astral.lua air.lua earth.lua fire.lua
++    water.lua hellfill.lua tut-?.lua)
++list(TRANSFORM SPECIAL_LEVEL_PATTERNS PREPEND ${NLE_DAT}/)
++file(GLOB SPECIAL_LEVELS RELATIVE ${NLE_DAT} ${SPECIAL_LEVEL_PATTERNS})
++
++set(QUEST_LEVEL_PATTERNS ???-goal.lua ???-fil?.lua ???-loca.lua ???-strt.lua)
++list(TRANSFORM QUEST_LEVEL_PATTERNS PREPEND ${NLE_DAT}/)
++file(GLOB QUEST_LEVELS RELATIVE ${NLE_DAT} ${QUEST_LEVEL_PATTERNS})
+ 
+ set(DATDLB
+     ${DATHELP}
+diff --git a/nle/nethack/nethack.py b/nle/nethack/nethack.py
+index 3b5ad4744..0c16ce5ba 100644
+--- a/nle/nethack/nethack.py
++++ b/nle/nethack/nethack.py
+@@ -69,6 +69,11 @@ NETHACKOPTIONS = (
+     "nocmdassist",
+     "nolegacy",
+     "nosparkle",
++    "notutorial",  # NetHack 5 asks "Do you want a tutorial?" at the start
++    "autounlock:none",  # NetHack 5 would ask "Unlock it with your key?" on locked boxes and doors
++    "nosafe_wait",  # NetHack 5 refuses to search/rest next to a monster ("You already found a monster.")
++    "paranoid_confirmation:pray",  # 3.6 default; NetHack 5 also confirms entering water/lava and known traps
++    "notips",  # NetHack 5 shows tips (e.g. on first farlook)
+     "pickup_burden:unencumbered",
+     "pickup_types:$?!/",
+     "runmode:teleport",
+diff --git a/src/end.c b/src/end.c
+index f0776a036..6464f63ac 100644
+--- a/src/end.c
++++ b/src/end.c
+@@ -402,6 +402,15 @@ panic VA_DECL(const char *, str)
+     VA_START(str);
+     VA_INIT(str, char *);
+ 
++    { /* NLE DEBUG (temporary): show the panic even before windows exist */
++        va_list nle_cp;
++        va_copy(nle_cp, VA_ARGS);
++        fputs("NLE PANIC: ", stderr);
++        vfprintf(stderr, str, nle_cp);
++        fputc('\n', stderr);
++        fflush(stderr);
++        va_end(nle_cp);
++    }
+     if (program_state.panicking++)
+         NH_abort(NULL); /* avoid loops - this should never happen*/
+ 
+diff --git a/src/nle.c b/src/nle.c
+index 865f0d3d4..2883fbca3 100644
+--- a/src/nle.c
++++ b/src/nle.c
+@@ -172,6 +172,26 @@ init_nle(FILE *ttyrec, nle_obs *obs)
+ 
+ nle_settings settings;
+ 
++/* NetHack 5's early_init() resets all globals (decl_globals_init), so the
++   file prefixes are set from unixmain() right after it, not before. */
++void
++nle_set_fqn_prefixes(void)
++{
++    char *scoreprefix = (settings.scoreprefix[0] != '\0')
++                            ? settings.scoreprefix
++                            : settings.hackdir;
++    gf.fqn_prefix[SYSCONFPREFIX] = settings.hackdir;
++    gf.fqn_prefix[CONFIGPREFIX] = settings.hackdir;
++    gf.fqn_prefix[HACKPREFIX] = settings.hackdir;
++    gf.fqn_prefix[SAVEPREFIX] = settings.hackdir;
++    gf.fqn_prefix[LEVELPREFIX] = settings.hackdir;
++    gf.fqn_prefix[BONESPREFIX] = settings.hackdir;
++    gf.fqn_prefix[SCOREPREFIX] = scoreprefix;
++    gf.fqn_prefix[LOCKPREFIX] = settings.hackdir;
++    gf.fqn_prefix[TROUBLEPREFIX] = settings.hackdir;
++    gf.fqn_prefix[DATAPREFIX] = settings.hackdir;
++}
++
+ /* TODO: Consider copying the relevant parts of main() in unixmain.c. */
+ void
+ mainloop(fcontext_transfer_t ctx_transfer)
+@@ -202,20 +222,6 @@ mainloop(fcontext_transfer_t ctx_transfer)
+         settings.hackdir[len] = '\0';
+     }
+ 
+-    char *scoreprefix = (settings.scoreprefix[0] != '\0')
+-                            ? settings.scoreprefix
+-                            : settings.hackdir;
+-    gf.fqn_prefix[SYSCONFPREFIX] = settings.hackdir;
+-    gf.fqn_prefix[CONFIGPREFIX] = settings.hackdir;
+-    gf.fqn_prefix[HACKPREFIX] = settings.hackdir;
+-    gf.fqn_prefix[SAVEPREFIX] = settings.hackdir;
+-    gf.fqn_prefix[LEVELPREFIX] = settings.hackdir;
+-    gf.fqn_prefix[BONESPREFIX] = settings.hackdir;
+-    gf.fqn_prefix[SCOREPREFIX] = scoreprefix;
+-    gf.fqn_prefix[LOCKPREFIX] = settings.hackdir;
+-    gf.fqn_prefix[TROUBLEPREFIX] = settings.hackdir;
+-    gf.fqn_prefix[DATAPREFIX] = settings.hackdir;
+-
+     char *argv[1] = { "nethack" };
+ 
+     unixmain(1, argv);
+diff --git a/src/nlernd.c b/src/nlernd.c
+index ff81b877f..17adc4829 100644
+--- a/src/nlernd.c
++++ b/src/nlernd.c
+@@ -174,9 +174,13 @@ nle_set_seed(nle_ctx_t *nle, unsigned long core, unsigned long disp,
+     /* Determines logic in reseed_random() in hacklib.c. */
+     has_strong_rngseed = reseed;
+ 
+-    nle_init_lgen_state(lgen, &nle_lgen_base);
+-    lgen_initialised = true;
+-    nle_seeds[2] = lgen;
++    /* screens: lgen 0 means "dice only": a mid-game reseed (rewind research tool) must not switch on
++       level generation from an uninitialised per-dungeon lgen state; levels keep coming from core. */
++    if (lgen) {
++        nle_init_lgen_state(lgen, &nle_lgen_base);
++        lgen_initialised = true;
++        nle_seeds[2] = lgen;
++    }
+ };
+ 
+ void
+diff --git a/src/pline.c b/src/pline.c
+index 49c293195..1445362e3 100644
+--- a/src/pline.c
++++ b/src/pline.c
+@@ -595,6 +595,14 @@ impossible(const char *s, ...)
+     (void) vsnprintf(pbuf, sizeof pbuf, s, the_args);
+     va_end(the_args);
+     pbuf[BUFSZ - 1] = '\0'; /* sanity */
++    fprintf(stderr, "NLE IMPOSSIBLE: %s\n", pbuf); /* NLE DEBUG (temporary) */
++    fflush(stderr);
++    { /* NLE DEBUG (temporary) */
++        extern int backtrace(void **, int);
++        extern void backtrace_symbols_fd(void *const *, int, int);
++        void *nle_bt[32];
++        backtrace_symbols_fd(nle_bt, backtrace(nle_bt, 32), 2);
++    }
+     paniclog("impossible", pbuf);
+     if (iflags.debug_fuzzer == fuzzer_impossible_panic)
+         panic("%s", pbuf);
+diff --git a/sys/unix/unixmain.c b/sys/unix/unixmain.c
+index 0a7ef21df..edfa87660 100644
+--- a/sys/unix/unixmain.c
++++ b/sys/unix/unixmain.c
+@@ -6,6 +6,8 @@
+ /* main.c - Unix NetHack */
+ 
+ #include "hack.h"
++
++extern void nle_set_fqn_prefixes(void); /* NLE: src/nle.c */
+ #include "dlb.h"
+ 
+ #include <sys/stat.h>
+@@ -65,6 +67,7 @@ unixmain(int argc, char *argv[])
+     boolean plsel_once = FALSE;
+ 
+     early_init(argc, argv);
++    nle_set_fqn_prefixes(); /* NLE: after early_init() reset the globals */
+ 
+ #if defined(__APPLE__)
+     {
+diff --git a/util/CMakeLists.txt b/util/CMakeLists.txt
+index 26be07d2e..98c5c314f 100644
+--- a/util/CMakeLists.txt
++++ b/util/CMakeLists.txt
+@@ -79,6 +79,9 @@ add_library(tile OBJECT ${NETHACK_TILE_SRC} ${NLE_SRC_GEN}/tile.c)
+ target_include_directories(tile PUBLIC ${NLE_INC} ${NLE_INC_GEN}
+                                        ${NLE_WIN}/share ${LUA_INCLUDE})
+ add_dependencies(tile generate_pm_h generate_tile_c)
++# NetHack 5: tile.c only defines glyphmap[] (with tileidx) under TILES_IN_GLYPHMAP;
++# _pynethack needs it for glyph2tile and the pixel observations.
++target_compile_definitions(tile PRIVATE TILES_IN_GLYPHMAP)
+ 
+ set(MAN_PAGES ${NLE_DOC}/makedefs.6 ${NLE_DOC}/dlb.6 ${NLE_DOC}/recover.6
+               ${NLE_DOC}/nethack.6)
+diff --git a/win/rl/pynethack.cc b/win/rl/pynethack.cc
+index 5d651edc7..f9422320b 100644
+--- a/win/rl/pynethack.cc
++++ b/win/rl/pynethack.cc
+@@ -27,7 +27,44 @@ extern "C" {
+ #undef min
+ #undef max
+ 
+-extern short glyph2tile[];   /* in tile.c (made from tilemap.c) */
++extern glyph_map glyphmap[]; /* in tile.c (made from tilemap.c); NetHack 5
++                                replaced glyph2tile[] with glyphmap[].tileidx */
++static short nle_glyph2tile[MAX_GLYPH]; /* glyph -> tile, exported to Python */
++
++/* NetHack 5 made glyph_to_cmap() a function in glyphs.c, which is not part of
++   this module; same body as glyphs.c. */
++static int
++nle_glyph_to_cmap(int glyph)
++{
++    if (glyph == GLYPH_CMAP_STONE_OFF)
++        return S_stone;
++    else if (glyph_is_cmap_main(glyph))
++        return (glyph - GLYPH_CMAP_MAIN_OFF) + S_vwall;
++    else if (glyph_is_cmap_mines(glyph))
++        return (glyph - GLYPH_CMAP_MINES_OFF) + S_vwall;
++    else if (glyph_is_cmap_gehennom(glyph))
++        return (glyph - GLYPH_CMAP_GEH_OFF) + S_vwall;
++    else if (glyph_is_cmap_knox(glyph))
++        return (glyph - GLYPH_CMAP_KNOX_OFF) + S_vwall;
++    else if (glyph_is_cmap_sokoban(glyph))
++        return (glyph - GLYPH_CMAP_SOKO_OFF) + S_vwall;
++    else if (glyph_is_cmap_a(glyph))
++        return (glyph - GLYPH_CMAP_A_OFF) + S_ndoor;
++    else if (glyph_is_cmap_altar(glyph))
++        return S_altar;
++    else if (glyph_is_cmap_b(glyph))
++        return (glyph - GLYPH_CMAP_B_OFF) + S_grave;
++    else if (glyph_is_cmap_c(glyph))
++        return (glyph - GLYPH_CMAP_C_OFF) + S_digbeam;
++    else if (glyph_is_cmap_zap(glyph))
++        return ((glyph - GLYPH_ZAP_OFF) % 4) + S_vbeam;
++    else if (glyph_is_swallow(glyph))
++        return glyph_to_swallow(glyph) + S_sw_tl;
++    else if (glyph_is_explosion(glyph))
++        return glyph_to_explosion(glyph) + S_expl_tl;
++    else
++        return MAXPCHARS;
++}
+ extern int total_tiles_used; /* also in tile.c */
+ 
+ /* Copy from dungeon.c. Necessary to add tile.c.
+@@ -467,7 +504,7 @@ class Nethack
+                     == prev_glyphs[(tile_row * (COLNO - 1)) + tile_col]) {
+                     continue;
+                 }
+-                int tile_index = glyph2tile[glyph];
++                int tile_index = glyphmap[glyph].tileidx;
+ 
+                 // Check tile_index is within bounds of the tileset. If not,
+                 // log and skip this tile.
+@@ -540,6 +577,11 @@ PYBIND11_MODULE(_pynethack, m)
+ {
+     m.doc() = "The NetHack Learning Environment";
+ 
++    /* NetHack 5 fills mons[] and objects[] at run time (early_init); this
++       module has its own copies, used by permonst()/objclass()/objdescr. */
++    monst_globals_init();
++    objects_globals_init();
++
+     py::class_<Nethack>(m, "Nethack")
+         .def(py::init<std::string, std::string, std::string, std::string,
+                       bool, std::string, bool>(),
+@@ -779,9 +821,11 @@ PYBIND11_MODULE(_pynethack, m)
+            py::vectorize([](int glyph) { return glyph_is_swallow(glyph); }));
+     mn.def("glyph_is_warning",
+            py::vectorize([](int glyph) { return glyph_is_warning(glyph); }));
++    for (int g = 0; g < MAX_GLYPH; ++g)
++        nle_glyph2tile[g] = glyphmap[g].tileidx;
+     mn.attr("glyph2tile") =
+-        py::memoryview::from_buffer(glyph2tile, /*shape=*/{ MAX_GLYPH },
+-                                    /*strides=*/{ sizeof(glyph2tile[0]) },
++        py::memoryview::from_buffer(nle_glyph2tile, /*shape=*/{ MAX_GLYPH },
++                                    /*strides=*/{ sizeof(nle_glyph2tile[0]) },
+                                     /*readonly=*/true);
+ 
+     py::class_<permonst>(mn, "permonst", "The permonst struct.")
+@@ -799,19 +843,26 @@ PYBIND11_MODULE(_pynethack, m)
+                 v_h.set_holder_constructed(true);
+             },
+             py::detail::is_new_style_constructor())
+-        /* TODO: NetHack 5 introduces gendered names for monsters.
+-        NLE needs to be aware of this. */
+-        .def_static(
++        /* NetHack 5 has gendered names (pmnames[MALE/FEMALE/NEUTRAL]).
++           mname keeps the 3.6 meaning: the neutral name, else the male one
++           (e.g. "dwarf lord"/"dwarf lady" have no neutral name). */
++        .def_property_readonly(
+             "mname",
+-            [](const permonst &pm, int idx) -> const char * {
+-                if (idx < 0 || idx >= NUM_MGENDERS)
+-                    throw std::out_of_range(
+-                        "Argument should be between 0 and NUM_MGENDERS ("
+-                        + std::to_string(NUM_MGENDERS) + ") but got "
+-                        + std::to_string(idx));
+-                return pm.pmnames[idx];
++            [](const permonst &pm) -> const char * {
++                return pm.pmnames[NEUTRAL] ? pm.pmnames[NEUTRAL]
++                                           : pm.pmnames[MALE];
+             },
+             py::return_value_policy::reference)
++        .def_property_readonly(
++            "pmnames",
++            [](const permonst &pm) {
++                auto name = [](const char *s) -> py::object {
++                    return s ? py::object(py::str(s)) : py::object(py::none());
++                };
++                return py::make_tuple(name(pm.pmnames[MALE]),
++                                      name(pm.pmnames[FEMALE]),
++                                      name(pm.pmnames[NEUTRAL]));
++            })
+         .def_readonly("mlet", &permonst::mlet)     /* symbol */
+         .def_readonly("mlevel", &permonst::mlevel) /* base monster level */
+         .def_readonly("mmove", &permonst::mmove)   /* move speed */
+@@ -885,7 +936,7 @@ PYBIND11_MODULE(_pynethack, m)
+                return glyph_to_trap(glyph);
+            }));
+     mn.def("glyph_to_cmap", py::vectorize([](int glyph) -> int {
+-               return glyph_to_cmap(glyph);
++               return nle_glyph_to_cmap(glyph);
+            }));
+     mn.def("glyph_to_swallow", py::vectorize([](int glyph) -> int {
+                return glyph_to_swallow(glyph);

@@ -1,0 +1,22 @@
+---
+name: Lintcheck Python
+on:
+  push:
+    branches: [main]
+    paths: ['**.py']
+  pull_request:
+    paths: ['**.py']
+jobs:
+  check_python:
+    name: Check Python linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Python with the latest version of uv.
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.13"
+
+      - uses: actions/checkout@v4
+      - run: uv sync
+      - run: uv run ruff format --check --diff .
+      - run: uv run ruff check

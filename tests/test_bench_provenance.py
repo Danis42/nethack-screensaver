@@ -2,12 +2,16 @@ import hashlib
 import re
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
-from bench.provenance import ENV_ID_FIELDS, env_fingerprint, env_id, lock_blob, lock_sha256, worker_facts
+from bench.provenance import ENV_ID_FIELDS, env_fingerprint, env_id, folder_tree, lock_blob, lock_sha256, worker_facts
 
-PINNED_NLE = "2f8c692c7876a88fdd262db2e39a5eae73ec3bf6"  # was cb9d6572 before the author-email rewrite (same tree)
+PINNED_NLE = "cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72"  # nle-screens commit whose tree is vendor/nle
+REPO = Path(__file__).resolve().parent.parent
+VENDOR_TREE = "tree:" + subprocess.run(["git", "-C", str(REPO), "rev-parse", "HEAD:vendor/nle"], capture_output=True,
+                                       text=True).stdout.strip()
 
 
 def _env(**changes):
@@ -78,7 +82,8 @@ def test_lock_sha256_hashes_the_file_bytes(tmp_path):
 
 def test_worker_facts_reads_the_nle_commit_and_versions_from_the_interpreter():
     facts = worker_facts(sys.executable)
-    assert facts["nle_commit"] == PINNED_NLE
+    assert facts["nle_source"].endswith("/vendor/nle")
+    assert facts["nle_commit"].startswith(VENDOR_TREE)  # '+dirty' while vendor/nle has uncommitted edits
     for key in ("python", "numpy", "numba", "nle_version"):
         assert facts[key]
 
@@ -101,4 +106,22 @@ def test_env_fingerprint_adds_the_lock_hash_and_the_interpreter_path(tmp_path):
     env = env_fingerprint(sys.executable, tmp_path)
     assert env["lock_sha256"] == lock_sha256(tmp_path)
     assert env["worker_python"] == sys.executable
-    assert env["nle_commit"] == PINNED_NLE
+    assert env["nle_commit"].startswith(VENDOR_TREE)
+
+
+def test_folder_tree_is_none_outside_git(tmp_path):
+    assert folder_tree(tmp_path) is None
+
+
+def test_folder_tree_is_the_committed_tree_id_and_marks_uncommitted_edits(tmp_path):
+    def git(*args):
+        return subprocess.run(["git", "-C", str(tmp_path), *args], capture_output=True, text=True, check=True)
+    git("init", "-q")
+    (tmp_path / "pkg").mkdir()
+    (tmp_path / "pkg" / "a.c").write_text("int x;\n")
+    git("add", ".")
+    git("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", "x")
+    tree = git("rev-parse", "HEAD:pkg").stdout.strip()
+    assert folder_tree(tmp_path / "pkg") == "tree:" + tree
+    (tmp_path / "pkg" / "a.c").write_text("int y;\n")
+    assert folder_tree(tmp_path / "pkg") == "tree:" + tree + "+dirty"

@@ -23,7 +23,7 @@ bench = ["mcp>=2.3"]
 # NetHack 5.0: NLE has no release for it. The NLE fork (branch screens-nh5) lives in a local bare repo
 # under ~/git (no remote, D-01) and is pinned by commit; uv.lock records the commit and every bench job
 # records it (D-02).
-nle = { git = "https://github.com/Danis42/nle-screens.git", rev = "2f8c692c7876a88fdd262db2e39a5eae73ec3bf6" }
+nle = { path = "vendor/nle" }
 
 [build-system]
 requires = ["hatchling"]

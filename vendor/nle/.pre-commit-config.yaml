@@ -1,0 +1,29 @@
+---
+repos:
+  - hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+    repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.3
+  - hooks:
+      - id: cmake-format
+    repo: https://github.com/cheshirekow/cmake-format-precommit
+    rev: v0.6.13
+  - hooks:
+      - description: Format files with clang-format
+        entry: clang-format -i
+        files: ^(src\/nle|include\/nle|win\/rl|sys\/unix\/nle).*\.(c|cc|cxx|cpp|cu|h|hpp|hxx|cuh|proto)$
+        id: clang-format
+        language: system
+        name: clang-format
+    repo: local
+  - hooks:
+      - id: taplo-format
+    repo: https://github.com/ComPWA/taplo-pre-commit
+    rev: v0.9.3
+  - hooks:
+      - description: Ensure that the committed uv.lock file is up to date.
+        id: uv-lock
+    repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.10.0
