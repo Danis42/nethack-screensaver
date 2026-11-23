@@ -20,8 +20,11 @@ Nothing has been pushed. GitHub account `Danis42` is logged in to `gh`; the repo
    to the NLE repo if any of its commits carry the address (its own new commits do).
 2. **Licence for this repo's own code.** There is no top-level LICENSE. AutoAscend is MIT; MIT for the rest would
    match. NetHack's NGPL covers only the NLE repo.
-3. **Personal wording in `.planning/`.** The planning files quote the owner ("owner's words", decisions with
-   dates) and name the local paths `~/...` (about 15 files). Harmless, but public.
+3. **Personal wording: done at HEAD (2026-11-23).** Verbatim owner quotes are paraphrased, local home paths are
+   repo-relative or `~`, and the hand-game tools and `scripts/wiki_sweep/clean.py` find the repo from their own
+   location. Still left: `pyproject.toml` / `uv.lock` (fixed by step 2 below), older commits in the history, and one
+   commit message that name the home path. The export clone can clean the history with
+   `git filter-repo --replace-text` (home-path repo prefix → empty, home path → `~/`) together with the mailmap.
 4. **Repo names.** Proposal: `nethack-screensaver` (this repo) and `nle-screens` (patched NLE, branch `screens-nh5`).
 
 ## Steps after approval (in this order)

@@ -25,7 +25,7 @@ evidence; every rule claim below cites the 5.0 source in `reference/nethack-5.0.
   milestone; present in the 52 games from 3.7/5.0 only). The XL at an event is the last *rank* line before it, so it
   is a lower bound in rank bands (ranks at XL 3, 6, 10, 14, 18, ...).
 - **Scripts and data (scratch, not in the repo):**
-  `/tmp/claude-1000/-home-user-screens/e674b00c-1ba1-47ac-ac8f-c0480aa60ed4/scratchpad/monk-study/code/`
+  a session scratchpad (not kept)
   (`xlogs.py`, `fetch_dl.py`, `analyze.py`, `report.py`, `cross.py`, `uni.py`, `pace.py`, `food.py`), parsed rows in
   `.../monk-study/dl/rows.json`.
 - Dumplog URLs below are shortened to the part after `https://www.hardfought.org/userdata/`.

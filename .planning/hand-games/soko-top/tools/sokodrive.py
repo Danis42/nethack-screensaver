@@ -8,7 +8,7 @@ import sys
 from collections import deque
 from pathlib import Path
 
-REPO = Path(".")
+REPO = Path(__file__).resolve().parents[4]
 SCR = Path(__file__).parent
 D = REPO / ".planning/hand-games/soko-top"
 LOG = D / "pushes-attempt4.log"

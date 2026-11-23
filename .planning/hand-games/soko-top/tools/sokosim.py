@@ -4,12 +4,12 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, ".")
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parents[4]))
 sys.path.insert(0, str(Path(__file__).parent))
 from autoascend.soko_solver import orientations  # noqa: E402
 from sokoplan import placed  # noqa: E402
 
-start = json.load(open("tests/data/soko_top_hand_start.json"))
+start = json.load(open(__import__("pathlib").Path(__file__).resolve().parents[4] / "tests/data/soko_top_hand_start.json"))
 B = placed(start)
 FLOOR = set(B["floor"]) | set(B["rolling"])
 ROLL = set(B["rolling"])

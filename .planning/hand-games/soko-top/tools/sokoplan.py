@@ -6,7 +6,7 @@ import sys
 import time
 from pathlib import Path
 
-REPO = Path(".")
+REPO = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(REPO))
 from autoascend.soko_solver.search import solve  # noqa: E402
 

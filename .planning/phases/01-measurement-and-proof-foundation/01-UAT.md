@@ -19,7 +19,7 @@ owner_amendments_2026-11-14:
   - "#2 (01-03): reworded to: no online LLM, network or paid API in claim checking; a local LLM is allowed"
   - "#4 (01-04): dropped as a prohibition; the source-quote check stays as tooling"
   - "#6 (01-15): dropped"
-  - "#5 (01-10) and #7 (01-16): dropped after explanation ; code guards stay"
+  - "#5 (01-10) and #7 (01-16): dropped after explanation; code guards stay"
 
 ### 2. Bench server restarted onto the review fixes
 expected: After `uv run screens-bench serve --resume`, GET /api/results?ref=e5b5a7f525bc51b8008f665173600aba80de466d reports games = 10000, matching /api/funnel?job=7 n = 10000
