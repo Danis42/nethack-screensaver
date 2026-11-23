@@ -64,4 +64,6 @@ Every commit carries a `Kind:` trailer (`refactor`, `behavior` or `docs`); the r
 - Bot: [AutoAscend](https://github.com/maciej-sypetkowski/autoascend) by Maciej Sypetkowski and Michał Sypetkowski,
   MIT (`autoascend/LICENSE`), ported from upstream @ 8527910.
 - This repository: MIT (`LICENSE`).
-- Game: NetHack 5.0 through a patched [NLE](https://github.com/NetHack-LE/nle) 1.3.0 ([Danis42/nle-screens](https://github.com/Danis42/nle-screens)); NetHack General Public License.
+- Game: [NetHack](https://www.nethack.org) 5.0 through the [NetHack Learning Environment](https://github.com/NetHack-LE/nle),
+  vendored with our NetHack 5.0 changes in `vendor/nle` (credits and changes: `vendor/nle/SCREENS.md`);
+  NetHack General Public License.

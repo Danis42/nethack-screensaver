@@ -30,7 +30,7 @@ archived database (87 commits) and 0 of the 20,000 games of the two fresh baseli
 | Bot | `autoascend/` | [AutoAscend](https://github.com/maciej-sypetkowski/autoascend) (winner of the NeurIPS 2021 NetHack Challenge, MIT, upstream @ 8527910), ported to Python 3.13, NLE 1.3.0 and NetHack 5.0. Rule/strategy bot: generator strategies (`strategy.py`), milestone plans (`plans.py`, `global_logic.py`), one big `Agent` (`agent.py`). |
 | Screensaver | `nethack_screensaver/`, `bin/`, `zsh/` | zsh idle hook, launcher, renderer with pacing, game log. |
 | Bench | `bench/` | Plays thousands of headless games per git commit (10 slots, each commit from its own worktree), stores them in SQLite, judges experiments with paired statistics, HTTP dashboard on :8765, MCP server for Claude Code. |
-| Patched NLE | [Danis42/nle-screens](https://github.com/Danis42/nle-screens), branch `screens-nh5`, commit `2f8c692c7876a88fdd262db2e39a5eae73ec3bf6` | NLE 1.3.0 moved to NetHack 5.0 (Lua 5.4.8 level files, 3.6-like default options, seed control for rewinds). `pyproject.toml` pins it by commit. Same source tree as `cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72`, the commit the bench jobs record. |
+| Patched NLE | `vendor/nle/` (credits and our changes: `vendor/nle/SCREENS.md`; diff: `vendor/nle-screens.patch`) | [NLE](https://github.com/NetHack-LE/nle) moved to NetHack 5.0 (Lua 5.4.8 level files, 3.6-like default options, seed control for rewinds); upstream base `NetHack-5-upgrade` @ `2a0e3baf`. Same source as the NLE commit `cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72` that the bench jobs record; seed 1001 replays identically to job 23. NetHack General Public License. |
 | Tools | `scripts/` | `rewind.py` (replay with extra lives), `staged_run.py` (wizard-mode starts near late levels), `scenario_run.py`, `handplay.py`, `replay_check.py` (A/A identity), `triage_replay.py`, `futility.py`, `sim_sequential.py` / `sim_sprt.py` (statistics simulations), `nld_study.py` (human games from the NLD dataset), `wiki_sweep/`, `check_claims.py`. |
 | Fact ledger | `facts/FACTS.toml` | NetHack facts the code relies on, each tagged "5.0 source", "measured" or "unverified"; code cites `# fact:<id>`, and a test fails on dangling citations. |
 | Research | `.planning/research/` | 29 notes on NetHack 5.0 (route, Medusa, Castle, food, prayer, wishes, telepathy, AC, character choice, ...); see section 7. |
@@ -167,11 +167,13 @@ finalists `char/*`, and proof branches (`gate-negative`, `pilot/lgen-b`, `proof/
 
 ```sh
 git clone https://github.com/Danis42/nethack-screensaver && cd nethack-screensaver && git checkout ascension-bot-v1
-uv sync                                  # builds the patched NLE from its pinned commit (needs cc, cmake)
+uv sync                                  # builds the patched NLE from vendor/nle (needs cc, cmake)
 uv run pytest
 uv run screens-bench serve               # dashboard on http://localhost:8765
 uv run python -m bench.cli funnel e5b5a7f525bc51b8008f665173600aba80de466d --lo 1000 --hi 11000 --lgen off
 ```
 
-Seeded games repeat only with the same NLE commit, `uv.lock` and the fixed-clock shim (`nethack_screensaver/fixed_clock.py`);
-the bench sets `PYTHONHASHSEED=0` and single-thread BLAS. Each job records an `env_id` built from these.
+Seeded games repeat only with the same NLE source, `uv.lock` and the fixed-clock shim (`nethack_screensaver/fixed_clock.py`);
+the bench sets `PYTHONHASHSEED=0` and single-thread BLAS. Each job records an `env_id` built from these. Jobs 1-25 recorded the NLE as git commit `cb9d6572`; since NLE
+lives in `vendor/nle` the bench records the folder's git tree id instead (`bench/nle_build.py`), so new jobs get a
+new `env_id` although the games are the same.

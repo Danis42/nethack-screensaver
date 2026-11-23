@@ -15,12 +15,12 @@ Published 2026-11-23 after owner review.
 ## Decided by the owner (2026-11-23) and done
 
 1. **Author email:** rewritten to the GitHub no-reply address in an export clone (`git filter-repo --mailmap`),
-   for this repo and the NLE fork. The local working repo keeps its original history.
+   for this repo. The local working repo keeps its original history.
 2. **Licence:** MIT for this repo's own code (`LICENSE`); `autoascend/` keeps its own MIT licence.
 3. **Personal wording:** owner quotes paraphrased and home paths removed at HEAD and, in the export, in every
    commit (`--replace-text`, `--replace-message`).
-4. **Repos:** `Danis42/nle-screens` (public, branch `screens-nh5`, tip `2f8c692c7876a88fdd262db2e39a5eae73ec3bf6`,
-   same tree as `cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72`) and `Danis42/nethack-screensaver` (public).
-   `pyproject.toml` pins the GitHub fork; seed 1001 replays identically to job 23.
+4. **NLE:** no separate repository and no GitHub fork (owner, 2026-11-23). The patched NLE is vendored in
+   `vendor/nle` with upstream credit (quick task 261123-svv). A standalone `Danis42/nle-screens` was public briefly
+   and was deleted by the owner. The main repo is `Danis42/nethack-screensaver` (public).
 5. **Hashes:** the rewrite changed every commit hash; `.planning/COMMIT-MAP.tsv` in the published repo maps the
    original hashes that the documents and bench jobs quote to the published ones.
