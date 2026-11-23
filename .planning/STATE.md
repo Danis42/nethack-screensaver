@@ -126,6 +126,7 @@ Recent decisions affecting current work:
 |----|------|------|--------|
 | 261117-kpa | 2026-11-17 | Wald SPRT decision rule for bench experiments | e02665eb5ad4bcb60cdd7e5fde04e682e25857b0 |
 | 261117-l4a | 2026-11-17 | Trigger-gated experiments (skip seeds a change cannot reach) + visit log | 858fe1b3484c5fbee1e0547813699fa0c5854024, b2b2bbe6d1c9341319b02e937aac7f37ec4db14d (gate job 22) |
+| 261123-s1a | 2026-11-23 | Handover docs for the public GitHub release (HANDOFF.md, README, publish review) | this commit |
 
 ### Blockers/Concerns
 
