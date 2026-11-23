@@ -10,7 +10,7 @@ After 5 minutes idle at your zsh prompt, your terminal shows a game of NetHack. 
 ## Install (bot version, tag `ascension-bot-v1`)
 
 ```sh
-git clone <this repo> ~/screens && cd ~/screens && git checkout ascension-bot-v1
+git clone https://github.com/Danis42/nethack-screensaver ~/screens && cd ~/screens && git checkout ascension-bot-v1
 uv sync          # also builds the patched NLE (NetHack 5.0); needs a C compiler and cmake
 echo 'source ~/screens/zsh/nethack-screensaver.zsh' >> ~/.zshrc
 ```
@@ -63,4 +63,5 @@ Every commit carries a `Kind:` trailer (`refactor`, `behavior` or `docs`); the r
 
 - Bot: [AutoAscend](https://github.com/maciej-sypetkowski/autoascend) by Maciej Sypetkowski and Michał Sypetkowski,
   MIT (`autoascend/LICENSE`), ported from upstream @ 8527910.
-- Game: NetHack 5.0 through a patched [NLE](https://github.com/NetHack-LE/nle) 1.3.0; NetHack General Public License.
+- This repository: MIT (`LICENSE`).
+- Game: NetHack 5.0 through a patched [NLE](https://github.com/NetHack-LE/nle) 1.3.0 ([Danis42/nle-screens](https://github.com/Danis42/nle-screens)); NetHack General Public License.

@@ -5,6 +5,15 @@ what was measured (every number with a bench job, a full commit or a query), wha
 continue. The bot work stopped on 2026-11-18; after the tag `ascension-bot-v1` the `main` branch turns into a
 screensaver that replays recorded games instead of playing live.
 
+## Commit hashes in this repository
+
+Before publishing, the history was cleaned: the author email became a GitHub no-reply address, and local home
+paths and a few personal quotes in the notes were replaced in every commit. That changed all commit hashes. The
+documents and the bench jobs quote the **original** hashes (e.g. baseline
+`e5b5a7f525bc51b8008f665173600aba80de466d`); hashes inside commit messages were updated. `.planning/COMMIT-MAP.tsv`
+maps each original hash to its published one. The bot and game code are unchanged, so a game played from either
+commit is the same.
+
 ## 1. The goal
 
 A terminal screensaver that plays NetHack after the zsh prompt has been idle. From 2026-10-21 on the project had
@@ -21,7 +30,7 @@ archived database (87 commits) and 0 of the 20,000 games of the two fresh baseli
 | Bot | `autoascend/` | [AutoAscend](https://github.com/maciej-sypetkowski/autoascend) (winner of the NeurIPS 2021 NetHack Challenge, MIT, upstream @ 8527910), ported to Python 3.13, NLE 1.3.0 and NetHack 5.0. Rule/strategy bot: generator strategies (`strategy.py`), milestone plans (`plans.py`, `global_logic.py`), one big `Agent` (`agent.py`). |
 | Screensaver | `nethack_screensaver/`, `bin/`, `zsh/` | zsh idle hook, launcher, renderer with pacing, game log. |
 | Bench | `bench/` | Plays thousands of headless games per git commit (10 slots, each commit from its own worktree), stores them in SQLite, judges experiments with paired statistics, HTTP dashboard on :8765, MCP server for Claude Code. |
-| Patched NLE | separate repo `nle-screens`, branch `screens-nh5`, commit `cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72` | NLE 1.3.0 moved to NetHack 5.0 (Lua 5.4.8 level files, 3.6-like default options, seed control for rewinds). `pyproject.toml` pins it by commit. |
+| Patched NLE | [Danis42/nle-screens](https://github.com/Danis42/nle-screens), branch `screens-nh5`, commit `2f8c692c7876a88fdd262db2e39a5eae73ec3bf6` | NLE 1.3.0 moved to NetHack 5.0 (Lua 5.4.8 level files, 3.6-like default options, seed control for rewinds). `pyproject.toml` pins it by commit. Same source tree as `cb9d6572f3fec9b85a6ee5153c879bd6bab4ba72`, the commit the bench jobs record. |
 | Tools | `scripts/` | `rewind.py` (replay with extra lives), `staged_run.py` (wizard-mode starts near late levels), `scenario_run.py`, `handplay.py`, `replay_check.py` (A/A identity), `triage_replay.py`, `futility.py`, `sim_sequential.py` / `sim_sprt.py` (statistics simulations), `nld_study.py` (human games from the NLD dataset), `wiki_sweep/`, `check_claims.py`. |
 | Fact ledger | `facts/FACTS.toml` | NetHack facts the code relies on, each tagged "5.0 source", "measured" or "unverified"; code cites `# fact:<id>`, and a test fails on dangling citations. |
 | Research | `.planning/research/` | 29 notes on NetHack 5.0 (route, Medusa, Castle, food, prayer, wishes, telepathy, AC, character choice, ...); see section 7. |
@@ -157,7 +166,7 @@ finalists `char/*`, and proof branches (`gate-negative`, `pilot/lgen-b`, `proof/
 ## 8. Reproduce
 
 ```sh
-git clone <this repo> && cd <repo> && git checkout ascension-bot-v1
+git clone https://github.com/Danis42/nethack-screensaver && cd nethack-screensaver && git checkout ascension-bot-v1
 uv sync                                  # builds the patched NLE from its pinned commit (needs cc, cmake)
 uv run pytest
 uv run screens-bench serve               # dashboard on http://localhost:8765
