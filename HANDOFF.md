@@ -12,7 +12,9 @@ paths and a few personal quotes in the notes were replaced in every commit. That
 documents and the bench jobs quote the **original** hashes (e.g. baseline
 `e5b5a7f525bc51b8008f665173600aba80de466d`); hashes inside commit messages were updated. `.planning/COMMIT-MAP.tsv`
 maps each original hash to its published one. The bot and game code are unchanged, so a game played from either
-commit is the same.
+commit is the same. Tree ids of commits whose notes were cleaned changed too, so the gate check in
+`tests/test_commit_kind.py` (which compares a commit's tree with the bench job that gated it) only matches the original
+history; without the bench database it is skipped.
 
 ## 1. The goal
 
